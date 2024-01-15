@@ -39,7 +39,6 @@ export const EventRootStackScreens=[
         component:EventBottomTab,
         options:{
             title:'Home',
-            headerShown:false
         }
     },
     {

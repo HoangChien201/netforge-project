@@ -6,7 +6,7 @@ const SearchComponent = () => {
         <View style={styles.container}>
             <View style={styles.flexRow}>
                 <Image source={require('../../../../media/icon/search_icon.png')} style={styles.searchIcon} />
-                <TextInput placeholder='Search' style={styles.inputSearch} />
+                <TextInput placeholder='Search' style={styles.inputSearch} placeholderTextColor={"#fff"}/>
             </View>
             <TouchableOpacity style={styles.filterContainer}>
                 <Image source={require('../../../../media/icon/filter_icon.png')} />
