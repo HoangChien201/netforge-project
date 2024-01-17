@@ -12,11 +12,13 @@ import {
 } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import ManageNavigation from './src/component/navigation/ManageNavigation';
+import LoginScreen from './src/component/events/screens/LoginScreen';
 
 function App(): React.JSX.Element {
   return (
     <>
-      <ManageNavigation/>
+      {/* <ManageNavigation/> */}
+      <LoginScreen/>
     </>
   );
 }
