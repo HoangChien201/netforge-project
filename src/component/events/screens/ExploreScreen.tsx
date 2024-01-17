@@ -3,10 +3,11 @@ import React from 'react'
 import HeaderExplore from '../component/home/HeaderExplore'
 import UpcomingEventsComponent from '../component/home/UpcomingEventsComponent'
 
-const ExploreScreen = () => {
+const ExploreScreen = ({navigation}) => {
+  
   return (
     <View style={styles.container}>
-      <HeaderExplore/>
+      <HeaderExplore navigation={navigation}/>
       <ScrollView style={styles.content}>
         <UpcomingEventsComponent/>
       </ScrollView>
