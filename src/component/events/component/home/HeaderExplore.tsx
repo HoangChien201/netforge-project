@@ -4,8 +4,15 @@ import { COLOR } from '../../../../constant/color'
 import MenuIcon from '../MenuIcon'
 import SearchComponent from './SearchComponent'
 import CategoryComponent from './CategoryComponent'
+import { useNavigation } from '@react-navigation/native'
 
 const HeaderExplore = () => {
+  const navigation=useNavigation()
+
+  function NotificationOnPress(){
+    navigation.navigate('NotificationScreen')
+  }
+
   return (
     <View style={styles.container}>
       <View>
@@ -19,7 +26,7 @@ const HeaderExplore = () => {
             </View>
             <Text style={styles.location}>New York,USA</Text>
           </View>
-          <TouchableOpacity style={styles.notificationContainer}>
+          <TouchableOpacity style={styles.notificationContainer} onPress={NotificationOnPress}>
             <Image source={require('../../../../media/icon/ring_icon.png')} style={styles.notificationIcon} />
           </TouchableOpacity>
         </View>

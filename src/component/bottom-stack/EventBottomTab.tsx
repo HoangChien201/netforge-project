@@ -16,6 +16,7 @@ export default function EventBottomTab():React.JSX.Element{
                         component={item.component}
                         name={item.name}
                         options={item.options}
+                        
                     />
                 })
             }

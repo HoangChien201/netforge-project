@@ -6,11 +6,12 @@ import HelpScreen from "../events/screens/HelpScreen"
 import HomeScreen from "../events/screens/HomeScreen"
 import MessageScreen from "../events/screens/MessageScreen"
 import SettingsScreen from "../events/screens/SettingsScreen"
+import HomeStack from "./HomeStack"
 
 
 
 enum EventRootStackEnum{
-    EventBottomTab="HomeScreen",
+    HomeStack="HomeStack",
     MessageScreen="MessageScreen",
     CalendarScreen="CalendarScreen",
     BookmarkScreen="BookmarkScreen",
@@ -21,7 +22,7 @@ enum EventRootStackEnum{
 }
 
 export type EventRootStackParams={
-    EventBottomTab:undefined,
+    HomeStack:undefined,
     HomeScreen:undefined,
     MessageScreen:undefined,
     CalendarScreen:undefined,
@@ -35,10 +36,10 @@ export type EventRootStackParams={
 export const EventRootStackScreens=[
     {
         id:Math.random()+""+Date,
-        name:EventRootStackEnum.EventBottomTab,
-        component:EventBottomTab,
+        name:EventRootStackEnum.HomeStack,
+        component:HomeStack,
         options:{
-            title:'Home',
+            headerShown:false
         }
     },
     {
