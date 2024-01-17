@@ -22,7 +22,7 @@ export const HomeRootStackScreens=[
         name:HomeRootStackEnum.EventBottomTab,
         component:EventBottomTab,
         options:{
-            title:'Home',
+            headerShown:false
         }
     },
     {

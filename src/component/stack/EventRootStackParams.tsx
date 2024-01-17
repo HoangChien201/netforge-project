@@ -39,7 +39,6 @@ export const EventRootStackScreens=[
         name:EventRootStackEnum.HomeStack,
         component:HomeStack,
         options:{
-            headerShown:false
         }
     },
     {
