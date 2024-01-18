@@ -1,5 +1,9 @@
 import { StyleSheet, Text, View, Image, TouchableOpacity, ImageProps, FlatList } from 'react-native'
 import React from 'react'
+import { useNavigation } from '@react-navigation/native';
+import modalshare from '../component/modal/modalshare';
+import { StackNavigationProp } from '@react-navigation/stack';
+
 
 
 
@@ -22,7 +26,7 @@ const CATEGORIES: Array<CategoryEntity> = [
     id: 3,
     image: require('../../../media/icon/avt_1_icon.png'),
     name: 'LucThienPhu',
-    status: 'your Event Gala Music Festival',
+    status: 'Your Event Gala Music Festival',
     minute: '1 year ago',
   }
 ];
@@ -57,7 +61,10 @@ const ItemRender:React.FC<ItemRenderProp>=({ image, name, status, minute })=>{
 
 }
 
-const NotificationScreen = () => {
+const NotificationScreen = ({navigation}) => {
+function ModelshareOnpress() {
+  navigation.navigate('modalshare')
+}
 
   return <View style={styles.container}>
     <FlatList
@@ -68,6 +75,9 @@ const NotificationScreen = () => {
         )
       }}
       keyExtractor={item => item.id.toString()} />
+      <TouchableOpacity onPress={ModelshareOnpress}>
+        <Text>HiHiHI</Text>
+      </TouchableOpacity>
   </View>;
 }
 
