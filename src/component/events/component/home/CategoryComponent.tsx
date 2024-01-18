@@ -31,6 +31,7 @@ const CATEGORIES:Array<CategoryEntity> = [
     },
 ]
 
+
 const CategoryComponent = () => {
     return (
         <View style={styles.container}>
