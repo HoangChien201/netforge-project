@@ -6,19 +6,21 @@ import SearchComponent from './SearchComponent'
 import CategoryComponent from './CategoryComponent'
 import { useNavigation } from '@react-navigation/native'
 
-const HeaderExplore = () => {
-  const navigation=useNavigation()
-
+const HeaderExplore = ({navigation}) => {
   function NotificationOnPress(){
     navigation.navigate('NotificationScreen')
   }
 
+  function OpenDrawer():void{
+    navigation.openDrawer()
+  }
+  
   return (
     <View style={styles.container}>
       <View>
         {/* begin-tabbar */}
         <View style={styles.tabBarContainer}>
-          <MenuIcon />
+          <MenuIcon onPress={OpenDrawer}/>
           <View style={styles.currentLocationContainer}>
             <View style={styles.flexRow}>
               <Text style={styles.lableLocation}>Current Location</Text>

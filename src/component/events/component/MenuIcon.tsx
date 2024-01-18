@@ -1,9 +1,9 @@
-import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import { GestureResponderEvent, Image, StyleSheet, Text, TouchableOpacity, TouchableOpacityProps, View } from 'react-native'
 import React from 'react'
 
-const MenuIcon = () => {
+const MenuIcon = ({onPress}:{onPress:any}) => {
   return (
-    <TouchableOpacity>
+    <TouchableOpacity onPress={onPress}>
       <Image source={require('../../../media/icon/menu_icon.png')} style={styles.menuIcon}/>
     </TouchableOpacity>
   )

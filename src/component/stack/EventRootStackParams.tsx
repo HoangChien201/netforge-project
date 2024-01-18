@@ -11,7 +11,7 @@ import HomeStack from "./HomeStack"
 
 
 enum EventRootStackEnum{
-    HomeStack="HomeStack",
+    HomeStack="Home",
     MessageScreen="MessageScreen",
     CalendarScreen="CalendarScreen",
     BookmarkScreen="BookmarkScreen",
