@@ -19,7 +19,8 @@ const Remember = () => {
                         backgroundColor: check ? 'grey' : '#3559E0',
                         borderRadius: 20,
                         width: 35,
-                        marginRight: 10
+                        marginRight: 10,
+                        justifyContent:'center'
                     }}>
                         <Image style={{marginStart:check?0:19}} source={require('../../../../media/icon/Remember.png')} />
                     </TouchableOpacity>

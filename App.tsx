@@ -17,8 +17,8 @@ import LoginScreen from './src/component/events/screens/LoginScreen';
 function App(): React.JSX.Element {
   return (
     <>
-      {/* <ManageNavigation/> */}
-      <LoginScreen/>
+      <ManageNavigation/>
+      
     </>
   );
 }
