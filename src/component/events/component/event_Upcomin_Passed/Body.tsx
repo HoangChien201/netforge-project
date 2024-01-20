@@ -28,6 +28,29 @@ const EVENTS: Array<CategoryEntity> = [
     minute: 'Địa điểm 2',
   }
 ];
+const EVENTSPASSED: Array<CategoryEntity> = [
+  {
+    id: 1,
+    image: require('../../../../media/quyet_icon/schedule.png'),
+    name: 'Tên sự kiện đã qua 1',
+    status: 'Thời gian',
+    minute: 'Địa điểm',
+  },
+  {
+    id: 2,
+    image: require('../../../../media/quyet_icon/schedule.png'),
+    name: 'Tên sự kiên đã qua 2',
+    status: 'Thời gian 1',
+    minute: 'Địa điểm 1',
+  },
+  {
+    id: 3,
+    image: require('../../../../media/quyet_icon/schedule.png'),
+    name: 'Thời gian đã qua 3',
+    status: 'Tên sự kiên 2',
+    minute: 'Địa điểm 2',
+  }
+];
 type CategoryEntity = {
   id: number,
   image: ImageProps,
@@ -48,7 +71,7 @@ const PASSED: React.FC = () => {
   const [data, setData] = useState(null);
   return (
     <View>
-    {data ? <ListEventsPassed /> : <EmptyEventPassed />}
+    {data ? <ListEventsPassed EVENTSPASSED={EVENTSPASSED} /> : <EmptyEventPassed />}
   </View>
   )
 };

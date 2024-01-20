@@ -9,7 +9,6 @@ interface ItemRenderProp {
   minute: string
 }
 const ItemRender: React.FC<ItemRenderProp> = ({ image, name, status, minute }) => {
-
   return (
     <TouchableOpacity style={styles.containerUser}>
       <Image style={styles.imageUser} source={image} />

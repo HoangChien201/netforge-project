@@ -13,12 +13,12 @@ import {
 import { NavigationContainer } from '@react-navigation/native';
 import ManageNavigation from './src/component/navigation/ManageNavigation';
 import LoginScreen from './src/component/events/screens/LoginScreen';
-
+import MapScreen from './src/component/events/screens/MapScreen';
 function App(): React.JSX.Element {
   return (
     <>
-      <ManageNavigation/>
-      
+      {/* <ManageNavigation/> */}
+      <MapScreen/>
     </>
   );
 }
