@@ -1,8 +1,11 @@
+
 import ChangePasswordSceen from "../../screen/user/ChangePasswordScreen"
-import LoginScreen from "../../screen/user/LoginScreen"
+
 import SendMailScreen from "../../screen/user/SendMailScreen"
 import SendOTPScreen from "../../screen/user/SendOTPScreen"
 import SignUpScreen from "../../screen/user/SignUpScreen"
+import LoginScreen from "../events/screens/LoginScreen"
+
 
 enum UserRootStackEnum{
     LoginScreen='LoginScreen',
