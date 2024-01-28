@@ -1,7 +1,6 @@
 import { StyleSheet, Text, View, Image, TouchableOpacity, ImageProps, FlatList } from 'react-native'
 import React from 'react'
 import { useNavigation } from '@react-navigation/native';
-import modalshare from '../component/modal/modalshare';
 import { StackNavigationProp } from '@react-navigation/stack';
 
 
