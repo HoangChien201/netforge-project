@@ -17,6 +17,6 @@ export default ReviewScreen
 const styles = StyleSheet.create({
   container: {
     backgroundColor: "#FFFFFF",
-    
+    paddingHorizontal: 10,
   }
 })
