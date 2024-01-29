@@ -13,12 +13,7 @@ enum HomeRootStackEnum{
 export type HomeRootStackParams={
     EventBottomTab:undefined;
     NotificationScreen:undefined;
-<<<<<<< HEAD
-=======
-   
 
-
->>>>>>> 3709edf (modalshare)
 }
 
 export const HomeRootStackScreens=[
@@ -38,8 +33,5 @@ export const HomeRootStackScreens=[
             title:'Notification'
         }
     },
-<<<<<<< HEAD
-=======
 
->>>>>>> 3709edf (modalshare)
 ]

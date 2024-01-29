@@ -1,20 +1,12 @@
-<<<<<<< HEAD
 import { StyleSheet, Text, View, Image, TouchableOpacity, ImageProps, FlatList } from 'react-native'
-import React from 'react'
+import React, {useCallback, useRef} from 'react'
 import { useNavigation } from '@react-navigation/native';
-import { StackNavigationProp } from '@react-navigation/stack';
-=======
-import { StyleSheet, Text, View, Image, TouchableOpacity, ImageProps, FlatList, Modal } from 'react-native'
-import React, { useState, useCallback, useMemo, useRef } from 'react'
+import modalshare from '../component/modal/modalshare';
+
 import {
   BottomSheetModal,
   BottomSheetModalProvider,
 } from '@gorhom/bottom-sheet';
-
-
-
-
->>>>>>> 3709edf (modalshare)
 
 
 
