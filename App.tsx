@@ -17,8 +17,7 @@ import MapScreen from './src/component/events/screens/MapScreen';
 function App(): React.JSX.Element {
   return (
     <>
-      {/* <ManageNavigation/> */}
-      <MapScreen/>
+      <ManageNavigation/>
     </>
   );
 }
