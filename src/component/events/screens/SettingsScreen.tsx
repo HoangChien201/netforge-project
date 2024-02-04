@@ -11,4 +11,8 @@ const SettingsScreen = () => {
 
 export default SettingsScreen
 
-const styles = StyleSheet.create({})
+const styles = StyleSheet.create({
+
+
+  
+})
