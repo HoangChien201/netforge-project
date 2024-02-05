@@ -12,15 +12,11 @@ import {
 } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import ManageNavigation from './src/component/navigation/ManageNavigation';
-import Modalshare from './src/component/events/component/modal/ModalShare';
-
 
 function App(): React.JSX.Element {
   return (
     <>
       <ManageNavigation/>
-      
-    
     </>
   );
 }
