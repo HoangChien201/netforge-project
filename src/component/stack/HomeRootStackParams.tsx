@@ -1,13 +1,11 @@
 import EventBottomTab from "../bottom-stack/EventBottomTab"
 import NotificationScreen from "../events/screens/NotificationScreen"
-import modalshare from "../events/component/modal/modalshare";
 
 
 
 enum HomeRootStackEnum{
     EventBottomTab='EventBottomTab',
     NotificationScreen='NotificationScreen',
-    modalshare = 'modalshare',
 
 
 }
@@ -15,8 +13,6 @@ enum HomeRootStackEnum{
 export type HomeRootStackParams={
     EventBottomTab:undefined;
     NotificationScreen:undefined;
-    modalshare:undefined;
-
 
 }
 
@@ -37,12 +33,5 @@ export const HomeRootStackScreens=[
             title:'Notification'
         }
     },
-    {
-        id:Math.random()+""+Date,
-        name:HomeRootStackEnum.modalshare,
-        component:modalshare,
-        options:{
-            title:'modalshare'
-        }
-    },
+
 ]
