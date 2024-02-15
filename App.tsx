@@ -12,11 +12,12 @@ import {
 } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import ManageNavigation from './src/component/navigation/ManageNavigation';
-
+import CreateNewEventScreen from './src/component/events/screens/CreateNewEventScreen';
 function App(): React.JSX.Element {
   return (
     <>
-      <ManageNavigation/>
+      {/* <ManageNavigation/> */}
+      <CreateNewEventScreen/>
     </>
   );
 }
