@@ -21,6 +21,7 @@
     "react-modal": "^3.16.1",
     "react-native": "0.73.2",
     "react-native-calendars": "^1.1303.0",
+    "react-native-date-picker": "^4.3.6",
     "react-native-gesture-handler": "^2.14.1",
     "react-native-maps": "^1.10.1",
     "react-native-pager-view": "^6.2.3",

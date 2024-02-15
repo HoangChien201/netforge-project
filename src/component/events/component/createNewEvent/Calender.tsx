@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, TouchableOpacity, Dimensions } from 'react-native'
+import { StyleSheet, Text, View, TouchableOpacity, Dimensions,Image } from 'react-native'
 import React, { useState } from 'react'
 import { Calendar, LocaleConfig } from 'react-native-calendars';
 import MapView, { Marker } from 'react-native-maps';
@@ -40,14 +40,24 @@ const Calender = () => {
         <View style={styles.container}>
             <View style={styles.calendarNlocation}>
                 <TouchableOpacity onPress={toggleCalendar} style={styles.caledarButton}>
+                    <View style={{width:'30%',alignItems:'center'}}>
+                    <Image source={require('../../../../media/quyet_icon/calendar_.png')} style={styles.iconCalendar_Location}/>
+                    </View>
+                    <View style={{width:'70%'}}> 
                     <Text style={styles.caledarButtonText} >
                         {showCalendar ? "Hide" : "Calendar"}
                     </Text>
+                    </View>
                 </TouchableOpacity>
                 <TouchableOpacity onPress={toggleLocation} style={styles.caledarButton}>
+                <View style={{width:'30%',alignItems:'center'}}>
+                    <Image source={require('../../../../media/quyet_icon/location_.png')} style={styles.iconCalendar_Location}/>
+                    </View>
+                    <View style={{width:'70%'}}> 
                     <Text style={styles.caledarButtonText} >
-                        {showMaps ? "Hide" : "Location"}
+                        {showCalendar ? "Hide" : "Location"}
                     </Text>
+                    </View>
                 </TouchableOpacity>
             </View>
 
@@ -109,15 +119,16 @@ const styles = StyleSheet.create({
     caledarButton: {
         height: 50,
         width: '48%',
-        backgroundColor: 'blue',
-        borderRadius: 50,
+        backgroundColor: '#E7EAEE',
+        borderRadius: 6,
         marginTop: 5,
         marginBottom: 5,
         alignItems: 'center',
-        justifyContent: 'center'
+        justifyContent: 'space-between',
+        flexDirection:'row'
     },
     caledarButtonText: {
-        color: '#FFF',
+        color: 'black',
         fontFamily: 'Airbnb Cereal App',
         fontSize: 18,
         fontStyle: 'normal',
@@ -146,5 +157,9 @@ const styles = StyleSheet.create({
     },
     confirmNcancel:{
         flexDirection:'row'
+    },
+    iconCalendar_Location:{
+        height:30,
+        width:30,
     }
 })

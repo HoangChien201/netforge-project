@@ -6,10 +6,10 @@ const UploadImage = () => {
         <View style={styles.container}>
             <TouchableOpacity style={styles.imageView}>
                 <View style={styles.image}>
-                    <Image source={require('../../../../media/quyet_icon/schedule.png')}/>
+                    <Image source={require('../../../../media/quyet_icon/event.jpg')} style={styles.imageE}/>
                 </View>
                 <View style={styles.imageButton}>
-                    <Image source={require('../../../../media/quyet_icon/Calendar.png')}/>
+                    <Image source={require('../../../../media/quyet_icon/add-picture_.png')} style={styles.imageAdd}/>
                 </View>
             </TouchableOpacity>
         </View>
@@ -36,8 +36,12 @@ const styles = StyleSheet.create({
         height:'100%',
         width:'100%',
     },
+    imageE:{
+        height:'100%',
+        width:'100%',
+    },
     imageButton:{
-        backgroundColor:'blue',
+        backgroundColor:'#FFF',
         height: 34,
         width:34,
         position:'absolute',
@@ -46,6 +50,10 @@ const styles = StyleSheet.create({
         bottom:20,
         alignItems:'center',
         justifyContent:'center'
-    }
+    },
+    imageAdd:{
+        height:28,
+        width:28
+    },
 
 })
