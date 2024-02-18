@@ -89,20 +89,27 @@ const Calender = () => {
 
             )}
             <View style={styles.confirmNcancel}>
-            {Object.keys(selectedDates).length > 0 && (
+            {Object.keys(selectedDates).length > 0 && showCalendar && (
                 <TouchableOpacity style={styles.confirmCalendar} onPress={handleConfirm} >
-                    <Text>OK</Text>
+                    <Text>Cancel</Text>
                 </TouchableOpacity>
                 
             )}
-            {Object.keys(selectedDates).length > 0 && (
+            {Object.keys(selectedDates).length > 0 && showCalendar && (
                 <TouchableOpacity style={styles.confirmCalendar} onPress={handleConfirm} >
                     <Text>OK</Text>
                 </TouchableOpacity>
                 
             )}
             </View>
-
+            <View>
+            {Object.keys(selectedDates).length > 0 && showCalendar && (
+                <TouchableOpacity style={styles.confirmCalendar} onPress={handleConfirm} >
+                    <Text>Cancel</Text>
+                </TouchableOpacity>
+                
+            )}
+            </View>
             {showMaps && (
                 <Text>
                     Map view
@@ -148,15 +155,17 @@ const styles = StyleSheet.create({
         height: Dimensions.get('window').height,
     },
     confirmCalendar:{
-        height:50,
-        width:50,
+        height:38,
+        width:120,
         backgroundColor:'gray',
-        borderRadius:50,
+        borderRadius:10,
         alignItems:'center',
         justifyContent:'center',
     },
     confirmNcancel:{
-        flexDirection:'row'
+        flexDirection:'row',
+        justifyContent:'space-between',
+        marginTop:10
     },
     iconCalendar_Location:{
         height:30,

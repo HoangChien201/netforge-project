@@ -1,8 +1,30 @@
-import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
-import React from 'react'
+import { Image, ScrollView, StyleSheet, Text, TouchableOpacity, View, Keyboard, KeyboardAvoidingView, } from 'react-native'
+import React, { useState, useEffect } from 'react'
 import UploadImage from '../component/createNewEvent/UploadImage'
 import Body from '../component/createNewEvent/Body'
 const CreateNewEventScreen = () => {
+    const [isKeyboardVisible, setKeyboardVisible] = useState(false);
+
+    useEffect(() => {
+        const keyboardDidShowListener = Keyboard.addListener(
+            'keyboardDidShow',
+            () => {
+                setKeyboardVisible(true);
+            }
+        );
+
+        const keyboardDidHideListener = Keyboard.addListener(
+            'keyboardDidHide',
+            () => {
+                setKeyboardVisible(false);
+            }
+        );
+
+        return () => {
+            keyboardDidShowListener.remove();
+            keyboardDidHideListener.remove();
+        };
+    }, []);
     return (
         <View style={styles.container}>
             <View style={styles.headerShow}>
@@ -11,17 +33,21 @@ const CreateNewEventScreen = () => {
                     <Image source={require('../../../media/quyet_icon/save-light_.png')} style={styles.iconSave} />
                 </TouchableOpacity>
             </View>
-            <UploadImage></UploadImage>
-            <Body></Body>
-            <View style={styles.cancel_push}>
-                <TouchableOpacity style={styles.cancelEvent}>
-                    <Text style={styles.pushEventText}>Cancel</Text>
-                </TouchableOpacity>
-                <TouchableOpacity style={styles.pushEvent}>
-                    <Text style={styles.pushEventText}>Create Event</Text>
-                </TouchableOpacity>
-            </View>
+            <ScrollView style={{    flexGrow: 1,}}>
+                <UploadImage></UploadImage>
+                <Body></Body>
+            </ScrollView>
 
+            {!isKeyboardVisible && (
+            <View style={styles.cancel_push}>
+            <TouchableOpacity style={styles.cancelEvent}>
+                <Text style={styles.pushEventText}>Cancel</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.pushEvent}>
+                <Text style={styles.pushEventText}>Create Event</Text>
+            </TouchableOpacity>
+        </View>
+            )}
         </View>
     )
 }
@@ -90,7 +116,7 @@ const styles = StyleSheet.create({
         justifyContent: 'space-between',
         position: 'absolute',
         bottom: 20,
-        width:'90%',
+        width: '90%',
         marginHorizontal: '5%',
     }
 })

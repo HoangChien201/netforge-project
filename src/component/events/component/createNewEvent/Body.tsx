@@ -5,10 +5,10 @@ import Getlocation from './Getlocation'
 import Information from './Information'
 const Body = () => {
     return (
-        <ScrollView style={styles.container}>
+        <View style={styles.container}>
             <Calender/>
             <Information></Information>
-        </ScrollView>
+        </View>
     )
 }
 
