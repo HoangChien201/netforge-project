@@ -29,7 +29,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'space-between',
         flexDirection: 'row',
-        marginVertical:20
+        marginVertical:20,
     },
     searchIcon: {
 

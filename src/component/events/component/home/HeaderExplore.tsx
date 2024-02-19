@@ -26,7 +26,7 @@ const HeaderExplore = ({navigation}) => {
               <Text style={styles.lableLocation}>Current Location</Text>
               <Image source={require('../../../../media/icon/triangle_icon.png')} style={{ marginHorizontal: 5 }} />
             </View>
-            <Text style={styles.location}>New York,USA</Text>
+            <Text style={styles.location}>Gò Vấp</Text>
           </View>
           <TouchableOpacity style={styles.notificationContainer} onPress={NotificationOnPress}>
             <Image source={require('../../../../media/icon/ring_icon.png')} style={styles.notificationIcon} />
@@ -56,7 +56,7 @@ const styles = StyleSheet.create({
   },
   container: {
     backgroundColor: COLOR.primaryColor,
-    height: 180,
+    height: 150,
     width: '100%',
     borderBottomRightRadius: 34,
     borderBottomLeftRadius: 34,
@@ -74,7 +74,8 @@ const styles = StyleSheet.create({
   },
   currentLocationContainer: {
     maxWidth: 150,
-    height: '100%'
+    height: '100%',
+    alignItems:'center'
   },
   lableLocation: {
     color: "#fff",
@@ -102,7 +103,7 @@ const styles = StyleSheet.create({
   },
   categoryComponent: {
     position:'relative',
-    top:'25%',
+    top:'5%',
     zIndex:10
   }
 })

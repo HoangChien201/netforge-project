@@ -1,4 +1,5 @@
 import EventBottomTab from "../bottom-stack/EventBottomTab"
+import EventDetail from "../events/Quyetcomponent/EventDetail"
 import BookmarkScreen from "../events/screens/BookmarkScreen"
 import CalenderScreen from "../events/screens/CalenderScreen"
 import ContactScreen from "../events/screens/ContactScreen"
@@ -30,7 +31,6 @@ export type EventRootStackParams={
     ContactScreen:undefined,
     SettingScreen:undefined,
     HelpScreen:undefined,
-
 }
 
 export const EventRootStackScreens=[

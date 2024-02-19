@@ -1,4 +1,5 @@
 import EventBottomTab from "../bottom-stack/EventBottomTab"
+import EventDetail from "../events/Quyetcomponent/EventDetail";
 import NotificationScreen from "../events/screens/NotificationScreen"
 
 
@@ -6,6 +7,7 @@ import NotificationScreen from "../events/screens/NotificationScreen"
 enum HomeRootStackEnum{
     EventBottomTab='EventBottomTab',
     NotificationScreen='NotificationScreen',
+    EventDetailScreen='EventDetailScreen'
 
 
 }
@@ -13,6 +15,7 @@ enum HomeRootStackEnum{
 export type HomeRootStackParams={
     EventBottomTab:undefined;
     NotificationScreen:undefined;
+    EventDetailScreen:undefined
 
 }
 
@@ -31,6 +34,14 @@ export const HomeRootStackScreens=[
         component:NotificationScreen,
         options:{
             title:'Notification'
+        }
+    },
+    {
+        id:Math.random()+""+Date,
+        name:HomeRootStackEnum.EventDetailScreen,
+        component:EventDetail,
+        options:{
+            headerShown:false
         }
     },
 
