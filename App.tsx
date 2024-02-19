@@ -12,11 +12,14 @@ import {
 } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import ManageNavigation from './src/component/navigation/ManageNavigation';
+import { UserProvider } from './src/component/navigation/UserContext';
 
 function App(): React.JSX.Element {
   return (
     <>
-      <ManageNavigation/>
+     <UserProvider>
+         <ManageNavigation/>
+      </UserProvider>
     </>
   );
 }

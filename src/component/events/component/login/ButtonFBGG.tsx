@@ -2,7 +2,11 @@ import { Pressable, StyleSheet, Text, View,Image } from 'react-native'
 import React from 'react'
 
 
-const ButtonFBGG = () => {
+const ButtonFBGG = ({text}:{text:string}) => {
+
+  const hanldeLogin = (val:any) =>{
+    
+  }
   return (
     <View>
       <View style={{alignItems:'center'}} >
@@ -18,7 +22,7 @@ const ButtonFBGG = () => {
       </View>
       <View style={styles.account}>
             <Text>Don't have an account? </Text>
-            <Pressable><Text style={{color:'#3559E0'}}>Sign up</Text></Pressable>
+            <Pressable><Text style={{color:'#3559E0'}}>{text}</Text></Pressable>
       </View>
       </View>
     </View>
