@@ -25,7 +25,6 @@ export const POSTSITEMVALUE = {
 
 
 const PostsItem = ({ posts }: { posts: PostsItemType }) => {
-    console.log(posts.create_time);
     
     return (
         <TouchableOpacity>

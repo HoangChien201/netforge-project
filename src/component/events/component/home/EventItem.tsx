@@ -40,7 +40,6 @@ const EventItem: React.FC<EventItemProps> = ({event}) => {
             id:id
         })
     }
-    console.log('date',new Date(date_start).toISOString());
     
     return (
         <TouchableOpacity onPress={ItemOnPress}>

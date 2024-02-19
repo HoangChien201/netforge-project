@@ -16,7 +16,7 @@ const EventDetail: React.FC<EventItemProps> = (props) => {
   const [event, setEvent] = useState<EventItemType>()
 
   const route=useRoute()
-  const event_id=route.params.id
+  const event_id=route.params.id  
 
   async function GetEventDetail() {
     const posts = await GetEventDetailHTTP(event_id)
@@ -75,15 +75,18 @@ const EventDetail: React.FC<EventItemProps> = (props) => {
       >
 
         <View style={[styles.headerImg, { height: 200 - scrollY }]}>
-          <Image source={{uri:event?.image}} style={{ width: '100%', height: '100%' }} />
+          {
+            event?.image && <Image source={{uri:event?.image}} style={{ width: '100%', height: '100%' }} />
+          }
+          
 
         </View>
         {/* Những người tham gia */}
         <View style={[styles.fixedView, { opacity: 1 - scrollY * 0.01 }]}>
           <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-            <Image source={require('./img/Calendar.png')} style={styles.avatarMember1} />
-            <Image source={require('./img/Calendar.png')} style={styles.avatarMember2} />
-            <Image source={require('./img/Calendar.png')} style={styles.avatarMember3} />
+            <Image source={require('../../../media/icon/avt_1_icon.png')} style={styles.avatarMember1} />
+            <Image source={require('../../../media/icon/avt_2_icon.png')} style={styles.avatarMember2} />
+            <Image source={require('../../../media/icon/avt_3_icon.png')} style={styles.avatarMember3} />
           </View>
           <View style={{ flexDirection: 'row' }}>
             <Text style={styles.numberInviteText}>
@@ -118,9 +121,9 @@ const EventDetail: React.FC<EventItemProps> = (props) => {
               <View style={styles.iconAboutEvent} />
               <Image source={require('./img/Location.png')} style={styles.icon} />
             </View>
-            <View style={styles.time}>
-              {/* <Text style={styles.text1}>Gala Convention Center</Text> */}
-              <Text style={styles.text2}>{event?.address}</Text>
+            <View style={[styles.time,{flex:1}]}>
+              <Text style={styles.text1}>Gala Convention Center</Text>
+              <Text style={styles.address}>{event?.address}</Text>
             </View>
           </View>
           {/* Tác giả bài viết */}
@@ -168,19 +171,16 @@ const EventDetail: React.FC<EventItemProps> = (props) => {
 
       </ScrollView>
       <View style={styles.overlay}></View>
-      <View style={styles.buyticketBtn}>
-        <Text style={styles.buyTicketText}>BUY TICKET</Text>
-      </View>
 
       {/* Header - Back - Title - bookmark */}
-      <View style={styles.headerViewStyle}>
+      {/* <View style={styles.headerViewStyle}>
         <Image style={styles.backIcon} source={require('./img/arrow-left.png')} />
         <Text style={styles.titleHeader}>EVENT DETAIL</Text>
         <View style={styles.bookmark}>
           <Image style={styles.bookmarkIcon} source={require('./img/Path_33968.png')} />
         </View>
 
-      </View>
+      </View> */}
 
     </View>
   )
@@ -191,7 +191,6 @@ export default EventDetail
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    width: '100%',
   },
   buyTicketText: {
     fontFamily: 'Airbnb Cereal App',
@@ -371,7 +370,7 @@ const styles = StyleSheet.create({
   },
   timeEvent: {
     flexDirection: 'row',
-    paddingTop: 20
+    paddingTop: 20,
   },
   userEvent: {
     flexDirection: 'row',
@@ -379,7 +378,7 @@ const styles = StyleSheet.create({
     paddingTop: 20
   },
   aboutEvent: {
-
+    paddingHorizontal:20
   },
   time: {
     justifyContent: 'space-between',
@@ -436,5 +435,10 @@ const styles = StyleSheet.create({
     borderRadius: 7,
     opacity: 0.12,
     backgroundColor: '#5669FF'
+  },
+  address:{
+    fontSize:12,
+    color:'#747688',
+    flex:1
   }
 })

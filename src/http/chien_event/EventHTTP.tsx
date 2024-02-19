@@ -15,7 +15,7 @@ export async function GetAllEventHTTP(){
 export async function GetEventDetailHTTP(id:number){
     try {
         const axiosInstance = AxiosInstance();
-        const url = '/event/find-one/'+id;
+        const url = '/event/get-one/'+id;
         const response = await axiosInstance.get(url);
         return response;
     } catch (error) {
