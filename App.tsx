@@ -20,8 +20,6 @@ function App(): React.JSX.Element {
      <UserProvider>
          <ManageNavigation/>
       </UserProvider>
-    </>
-  );
 }
 
 export default App;
