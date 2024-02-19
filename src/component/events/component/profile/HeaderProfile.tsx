@@ -2,16 +2,17 @@ import {StyleSheet, Text, View, Image} from 'react-native';
 import React from 'react';
 import ButtonFollowAndMessages from '../ui/ButtonFollowAndMessages';
 import NumberOfFollow from './NumberOfFollow';
+import { user } from '../../screens/ProfileScreen';
 
 const HeaderProfile = () => {
     return (
         <View style={styles.container}>
             <View style={styles.avatarContainer}>
                 <View style={styles.imgContainer}>
-                    <Image source={require('../../../../media/icon/phuking.jpg')} style={styles.imgAvatar} />
+                    <Image source={{uri:user.avatar}} style={styles.imgAvatar} />
                 </View>
             </View>
-                <Text style={styles.txtNameUser}>Mr.Bean</Text>
+                <Text style={styles.txtNameUser}>{user.fullname}</Text>
                 <NumberOfFollow/>
                 <ButtonFollowAndMessages/>
         </View>
@@ -23,6 +24,7 @@ export default HeaderProfile;
 const styles = StyleSheet.create({
     container:{
         backgroundColor:'#FFFFFF',
+        paddingTop:20
     },
     txtNameUser:{
         fontSize:24,

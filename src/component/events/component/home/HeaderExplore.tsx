@@ -56,7 +56,7 @@ const styles = StyleSheet.create({
   },
   container: {
     backgroundColor: COLOR.primaryColor,
-    height: 180,
+    height: 150,
     width: '100%',
     borderBottomRightRadius: 34,
     borderBottomLeftRadius: 34,
@@ -102,7 +102,7 @@ const styles = StyleSheet.create({
   },
   categoryComponent: {
     position:'relative',
-    top:'25%',
+    top:'5%',
     zIndex:10
   }
 })

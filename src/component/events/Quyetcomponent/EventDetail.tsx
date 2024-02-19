@@ -1,5 +1,8 @@
 import { View, ScrollView, Animated, StyleSheet, Image, Text, ImageProps, TouchableOpacity } from 'react-native'
-import React, { useRef, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
+import { GetEventDetailHTTP } from '../../../http/chien_event/EventHTTP'
+import { useRoute } from '@react-navigation/native'
+import { EventItemType } from '../component/home/EventItem'
 
 interface EventItemProps {
   image: ImageProps,
@@ -7,9 +10,22 @@ interface EventItemProps {
   participants: Array<ImageProps>,
   address: string
 }
-const SettingsScreen: React.FC<EventItemProps> = (props) => {
+const EventDetail: React.FC<EventItemProps> = (props) => {
   const { image, name, participants, address } = props
   const [scrollY, setScrollY] = useState(0);
+  const [event, setEvent] = useState<EventItemType>()
+
+  const route=useRoute()
+  const event_id=route.params.id
+
+  async function GetEventDetail() {
+    const posts = await GetEventDetailHTTP(event_id)
+    setEvent({...posts})
+  }
+  useEffect(() => {
+    GetEventDetail()
+  }, [])
+
 
   const handleScroll = (event: { nativeEvent: { contentOffset: { y: any; }; }; }) => {
     const offsetY = event.nativeEvent.contentOffset.y;
@@ -29,7 +45,7 @@ const SettingsScreen: React.FC<EventItemProps> = (props) => {
     opacity: scrollY > 0 ? 0.5 : 1,
   };
   // làm mờ Invite members
-  const inviteViewStyle ={
+  const inviteViewStyle = {
     height: 60,
     width: '80%',
     backgroundColor: '#FEFEFF',
@@ -59,15 +75,15 @@ const SettingsScreen: React.FC<EventItemProps> = (props) => {
       >
 
         <View style={[styles.headerImg, { height: 200 - scrollY }]}>
-          <Image source={image} style={{ width: '100%', height: '100%' }} />
+          <Image source={{uri:event?.image}} style={{ width: '100%', height: '100%' }} />
 
         </View>
         {/* Những người tham gia */}
-        <View style={[styles.fixedView,{opacity: 1 - scrollY*0.01 }]}>
-          <View style={{flexDirection:'row', alignItems:'center'}}>
-              <Image source={require('./img/Calendar.png')} style={styles.avatarMember1} />
-              <Image source={require('./img/Calendar.png')} style={styles.avatarMember2} />
-              <Image source={require('./img/Calendar.png')} style={styles.avatarMember3} />
+        <View style={[styles.fixedView, { opacity: 1 - scrollY * 0.01 }]}>
+          <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+            <Image source={require('./img/Calendar.png')} style={styles.avatarMember1} />
+            <Image source={require('./img/Calendar.png')} style={styles.avatarMember2} />
+            <Image source={require('./img/Calendar.png')} style={styles.avatarMember3} />
           </View>
           <View style={{ flexDirection: 'row' }}>
             <Text style={styles.numberInviteText}>
@@ -84,7 +100,7 @@ const SettingsScreen: React.FC<EventItemProps> = (props) => {
         </View>
         {/* Thông tin sự kiện */}
         <View style={styles.aboutEvent}>
-          <Text style={styles.titleEvent}>International Band Music Concert</Text>
+          <Text style={styles.titleEvent}>{event?.name}</Text>
           {/* Thời gian sự kiện */}
           <View style={styles.timeEvent}>
             <View style={{ justifyContent: 'center', alignItems: 'center' }}>
@@ -92,8 +108,8 @@ const SettingsScreen: React.FC<EventItemProps> = (props) => {
               <Image source={require('./img/Calendar.png')} style={styles.icon} />
             </View>
             <View style={styles.time}>
-              <Text style={styles.text1}>14 December, 2021 </Text>
-              <Text style={styles.text2}>Tuesday, 04:00 PM - 09:00 PM</Text>
+              <Text style={styles.text1}>{event?.date_start}</Text>
+              <Text style={styles.text2}>04:00 PM - 09:00 PM</Text>
             </View>
           </View>
           {/* Địa điểm sự kiện */}
@@ -103,8 +119,8 @@ const SettingsScreen: React.FC<EventItemProps> = (props) => {
               <Image source={require('./img/Location.png')} style={styles.icon} />
             </View>
             <View style={styles.time}>
-              <Text style={styles.text1}>Gala Convention Center</Text>
-              <Text style={styles.text2}>36 Guild Street London, UK </Text>
+              {/* <Text style={styles.text1}>Gala Convention Center</Text> */}
+              <Text style={styles.text2}>{event?.address}</Text>
             </View>
           </View>
           {/* Tác giả bài viết */}
@@ -131,10 +147,10 @@ const SettingsScreen: React.FC<EventItemProps> = (props) => {
           <View style={styles.Text} >
             <Text style={styles.text1}>About Event</Text>
             <Text style={styles.mainText}>
-              Enjoy your favorite dishe and a lovely your friends and family and have a great time. Food from local food trucks will be available for purchase. Read More...
+              {event?.description}  
             </Text>
           </View>
-          {/* Nội dung bài viết */}
+          {/* Nội dung bài viết
           <View style={styles.Text} >
             <Text style={styles.text1}>About Event</Text>
             <Text style={styles.mainText}>
@@ -142,12 +158,12 @@ const SettingsScreen: React.FC<EventItemProps> = (props) => {
             </Text>
           </View>
           {/* Nội dung bài viết */}
-          <View style={styles.Text} >
+          {/* <View style={styles.Text} >
             <Text style={styles.text1}>About Event</Text>
             <Text style={styles.mainText}>
               Enjoy your favorite dishe and a lovely your friends and family and have a great time. Food from local food trucks will be available for purchase. Read More...
             </Text>
-          </View>
+          </View> */}
         </View>
 
       </ScrollView>
@@ -157,7 +173,7 @@ const SettingsScreen: React.FC<EventItemProps> = (props) => {
       </View>
 
       {/* Header - Back - Title - bookmark */}
-      <View style={headerViewStyle}>
+      <View style={styles.headerViewStyle}>
         <Image style={styles.backIcon} source={require('./img/arrow-left.png')} />
         <Text style={styles.titleHeader}>EVENT DETAIL</Text>
         <View style={styles.bookmark}>
@@ -170,14 +186,14 @@ const SettingsScreen: React.FC<EventItemProps> = (props) => {
   )
 }
 
-export default SettingsScreen
+export default EventDetail
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    width:'100%',
+    width: '100%',
   },
-  buyTicketText:{
+  buyTicketText: {
     fontFamily: 'Airbnb Cereal App',
     fontSize: 16,
     fontStyle: 'normal',
@@ -187,45 +203,45 @@ const styles = StyleSheet.create({
   overlay: {
     ...StyleSheet.absoluteFillObject,
     backgroundColor: 'rgba(255, 255, 255, 0.9)', // Điều chỉnh mức độ mờ tùy ý
-    height:'8%',
-    bottom:0,
-    position:'absolute',
-    top:'92%',
+    height: '8%',
+    bottom: 0,
+    position: 'absolute',
+    top: '92%',
   },
-  buyticketBtn:{
+  buyticketBtn: {
     width: '80%',
-    height:58,
-    backgroundColor:'#5669FF',
-    borderRadius:20,
-    alignItems:'center',
-    justifyContent:'center',
-    position:'absolute',
-    bottom:5,
-    marginStart:'10%',
-    marginLeft:'10%'
+    height: 58,
+    backgroundColor: '#5669FF',
+    borderRadius: 20,
+    alignItems: 'center',
+    justifyContent: 'center',
+    position: 'absolute',
+    bottom: 5,
+    marginStart: '10%',
+    marginLeft: '10%'
   },
-  avatarMember1:{
-    height:35,
-    width:35,
-    borderRadius:35,
-    backgroundColor:'green',
-    zIndex:3
+  avatarMember1: {
+    height: 35,
+    width: 35,
+    borderRadius: 35,
+    backgroundColor: 'green',
+    zIndex: 3
   },
-  avatarMember2:{
-    height:35,
-    width:35,
-    borderRadius:35,
-    backgroundColor:'gray',
-    zIndex:2,
-    margin:-10,
+  avatarMember2: {
+    height: 35,
+    width: 35,
+    borderRadius: 35,
+    backgroundColor: 'gray',
+    zIndex: 2,
+    margin: -10,
   },
-  avatarMember3:{
-    margin:-5,
-    height:35,
-    width:35,
-    borderRadius:35,
-    backgroundColor:'red',
-    zIndex:1
+  avatarMember3: {
+    margin: -5,
+    height: 35,
+    width: 35,
+    borderRadius: 35,
+    backgroundColor: 'red',
+    zIndex: 1
   },
   numberInviteText: {
     fontFamily: 'Airbnb Cereal App',
@@ -331,7 +347,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#FFF',
     paddingHorizontal: 16,
     alignItems: 'center',
-    paddingBottom:80
+    paddingBottom: 80
 
   },
   fixedView: {
