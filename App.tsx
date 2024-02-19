@@ -12,14 +12,14 @@ import {
 } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import ManageNavigation from './src/component/navigation/ManageNavigation';
-import CreateNewEventScreen from './src/component/events/screens/CreateNewEventScreen';
+import { UserProvider } from './src/component/navigation/UserContext';
+
 function App(): React.JSX.Element {
   return (
     <>
-      {/* <ManageNavigation/> */}
-      <CreateNewEventScreen/>
-    </>
-  );
+     <UserProvider>
+         <ManageNavigation/>
+      </UserProvider>
 }
 
 export default App;

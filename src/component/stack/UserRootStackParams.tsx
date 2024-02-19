@@ -1,25 +1,23 @@
 
-import ChangePasswordSceen from "../../screen/user/ChangePasswordScreen"
-
-import SendMailScreen from "../../screen/user/SendMailScreen"
-import SendOTPScreen from "../../screen/user/SendOTPScreen"
-import SignUpScreen from "../../screen/user/SignUpScreen"
+import OtpScreen from "../events/screens/OtpScreen"
+import ResetPassword from "../events/screens/ResetPassword"
+import SignUpScreen from "../events/screens/SignUpScreen"
 import LoginScreen from "../events/screens/LoginScreen"
 
 
-enum UserRootStackEnum{
+export enum UserRootStackEnum{
     LoginScreen='LoginScreen',
     SignUpScreen='SignUpScreen',
-    SendMailScreen='SendMailScreen',
-    SendOTPScreen='SendOTPScreen',
-    ChangePasswordScreen='ChangePasswordScreen',
+    ResetPassword='ResetPassword',
+    OtpScreen='OtpScreen',
+    
 }
 
 export type UserRootStackParams={
     LoginScreen:undefined,
-    SendMailScreen:undefined,
-    SendOTPScreen:undefined,
-    ChangePasswordScreen:undefined,
+    SignUpScreen:undefined,
+    OtpScreen:undefined,
+    ResetPassword:undefined,
 
 }
 
@@ -34,24 +32,24 @@ export const UserRootStackScreens=[
     },
     {
         id:Math.random()+""+Date,
-        name:UserRootStackEnum.SendMailScreen,
-        component:SendMailScreen,
+        name:UserRootStackEnum.SignUpScreen,
+        component:SignUpScreen,
         options:{
             title:''
         }
     },
     {
         id:Math.random()+""+Date,
-        name:UserRootStackEnum.SendOTPScreen,
-        component:SendOTPScreen,
+        name:UserRootStackEnum.OtpScreen,
+        component:OtpScreen,
         options:{
             title:''
         }
     },
     {
         id:Math.random()+""+Date,
-        name:UserRootStackEnum.ChangePasswordScreen,
-        component:ChangePasswordSceen,
+        name:UserRootStackEnum.ResetPassword,
+        component:ResetPassword,
         options:{
             title:''
         }

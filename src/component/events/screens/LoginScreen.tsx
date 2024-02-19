@@ -21,8 +21,9 @@ export default function LoginScreen({ navigation }: { navigation: navigationType
         <TextLogin text='Sign in' />
         <TextInputLogin />
         <Remember />
-        <ButtonLogin />
-        <ButtonFBGG />
+        <ButtonLogin text='SIGN IN' navigation={navigation}/>
+        <Text style={{textAlign:'center',marginTop:30,marginBottom:30}}>OR</Text>
+        <ButtonFBGG text='Sign up'/>
       </ScrollView>
     </View>
 
