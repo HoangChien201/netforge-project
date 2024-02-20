@@ -26,6 +26,12 @@ const FeedbackWrapper = ({posts}:{posts:PostsItemType}) => {
         }
     }
 
+    function IconCommentOnpress(){
+        navigation.navigate('CommentScreen',{
+            id:posts.id
+        })
+    }
+
     return (
         <View style={styles.container}>
             <View style={[styles.flexRow]}>
@@ -35,7 +41,7 @@ const FeedbackWrapper = ({posts}:{posts:PostsItemType}) => {
                 </View>
                 <View style={styles.flexRow}>
                     {
-                        <TouchableOpacity style={styles.icon} >
+                        <TouchableOpacity style={styles.icon} onPress={IconCommentOnpress}>
                             <Image source={require('../../../../media/icon/icon-comment-light.png')}/>
                         </TouchableOpacity>
                     }

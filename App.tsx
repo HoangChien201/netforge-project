@@ -17,9 +17,11 @@ import { UserProvider } from './src/component/navigation/UserContext';
 function App(): React.JSX.Element {
   return (
     <>
-     <UserProvider>
-         <ManageNavigation/>
+      <UserProvider>
+        <ManageNavigation />
       </UserProvider>
+    </>
+  )
 }
 
 export default App;
