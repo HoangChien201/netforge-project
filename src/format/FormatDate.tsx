@@ -24,5 +24,5 @@ export function GetTimeSecond(date){
 
 export function FormarTime(date){
     const setDate=new Date(date)
-    return `${setDate.getDate()}/${setDate.getMonth()}/${setDate.getFullYear()}`
+    return `${setDate.getDate()}/${setDate.getMonth()+1}/${setDate.getFullYear()}`
 }

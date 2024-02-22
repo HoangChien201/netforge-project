@@ -5,9 +5,7 @@ const UploadImage = () => {
     return (
         <View style={styles.container}>
             <TouchableOpacity style={styles.imageView}>
-                <View style={styles.image}>
-                    <Image source={require('../../../../media/quyet_icon/event.jpg')} style={styles.imageE}/>
-                </View>
+                <Image source={require('../../../../media/quyet_icon/event.jpg')} style={styles.image}/>
                 <View style={styles.imageButton}>
                     <Image source={require('../../../../media/quyet_icon/add-picture_.png')} style={styles.imageAdd}/>
                 </View>
@@ -20,7 +18,6 @@ export default UploadImage
 
 const styles = StyleSheet.create({
     container:{
-        marginHorizontal:24,
         alignItems:'center',
         justifyContent:'center',
         backgroundColor:'gray',
@@ -35,6 +32,7 @@ const styles = StyleSheet.create({
     image:{
         height:'100%',
         width:'100%',
+        borderRadius:10
     },
     imageE:{
         height:'100%',

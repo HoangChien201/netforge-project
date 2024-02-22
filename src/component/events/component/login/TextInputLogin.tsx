@@ -14,7 +14,7 @@ const TextInputLogin = () => {
       style={styles.container}
     >
       <Input value={username} onChangeText={setUsername} placeholder='abc@gmail.com'  iconE={true}  />
-      <Input value={password} onChangeText={setPassword} placeholder='password'  iconP={true} iconPass={true}  />
+      <Input value={password} onChangeText={setPassword} placeholder='Mật khẩu'  iconP={true} iconPass={true}  />
     </KeyboardAvoidingView>
 
   )

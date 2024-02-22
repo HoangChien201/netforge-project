@@ -1,3 +1,4 @@
+import React from "react"
 import EventsScreen from "../events/screens/EventsScreen"
 import ExploreScreen from "../events/screens/ExploreScreen"
 import MapScreen from "../events/screens/MapScreen"
@@ -27,10 +28,10 @@ export const EventRootBottomTabScreens=[
         component:ExploreScreen,
         options:{
             headerShown:false,
-            tabBarIcon:({color})=>{
+            tabBarIcon:({color}:{color:string})=>{
                 return <Icon name='explore' size={24} color={color}/>
             },
-            tabBarLabel:'Explore'
+            tabBarLabel:'Khám phá'
         }
     },
     {
@@ -38,34 +39,35 @@ export const EventRootBottomTabScreens=[
         name:EventRootBottomTabEnum.EventsScreen,
         component:EventsScreen,
         options:{
-            tabBarIcon:({color})=>{
+            tabBarIcon:({color}:{color:string})=>{
                 return <Icon name='calendar-month' size={24} color={color}/>
             },
-            tabBarLabel:'Events',
-            title:'Events'
+            tabBarLabel:'Sự kiện',
+            title:'Sự kiện',
+            
 
         }
     },
-    {
-        id:Math.random()+""+Date,
-        name:EventRootBottomTabEnum.MapScreen,
-        component:MapScreen,
-        options:{
-            tabBarIcon:({color})=>{
-                return <Icon name='map' size={24} color={color}/>
-            },
-            tabBarLabel:'Map'
-        }
-    },
+    // {
+    //     id:Math.random()+""+Date,
+    //     name:EventRootBottomTabEnum.MapScreen,
+    //     component:MapScreen,
+    //     options:{
+    //         tabBarIcon:({color}:{color:string})=>{
+    //             return <Icon name='map' size={24} color={color}/>
+    //         },
+    //         tabBarLabel:'Bản đồ'
+    //     }
+    // },
     {
         id:Math.random()+""+Date,
         name:EventRootBottomTabEnum.ProfileScreen,
         component:ProfileScreen,
         options:{
-            tabBarIcon:({color})=>{
+            tabBarIcon:({color}:{color:string})=>{
                 return <Icon name='person' size={24} color={color}/>
             },
-            tabBarLabel:'Profile',
+            tabBarLabel:'Hồ sơ',
             headerShown:false
         }
     },

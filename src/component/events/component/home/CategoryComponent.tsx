@@ -11,7 +11,7 @@ export type CategoryEntity={
 const CATEGORIES:Array<CategoryEntity> = [
     {
         image: require('../../../../media/icon/volleyball_icon.png'),
-        name: 'Sports',
+        name: 'Thể thao',
         backgroundColor: '#F0635A',
     },
     {

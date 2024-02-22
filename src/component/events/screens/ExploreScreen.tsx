@@ -3,7 +3,6 @@ import React, { useEffect, useState } from 'react'
 import HeaderExplore from '../component/home/HeaderExplore'
 import UpcomingEventsComponent from '../component/home/UpcomingEventsComponent'
 import ListPostsItem from '../component/posts/ListPostsItem'
-import { LIST_POSTS } from './AboutScreen'
 import { GetAllPosts } from '../../../http/chien_posts/PostHTTP'
 
 const ExploreScreen = ({navigation}) => {
@@ -21,7 +20,7 @@ const ExploreScreen = ({navigation}) => {
       <HeaderExplore navigation={navigation}/>
       <ScrollView style={styles.content}>
         <UpcomingEventsComponent/>
-        <Text style={styles.title}>Posts</Text>
+        <Text style={styles.title}>Bài viết</Text>
         <ListPostsItem list_post={posts} scrollEnabled={false}/>
       </ScrollView>
     </View>
@@ -32,7 +31,8 @@ export default ExploreScreen
 
 const styles = StyleSheet.create({
   container:{
-    paddingBottom:160
+    paddingBottom:160,
+    backgroundColor:'#fff'
   },
   content:{
     paddingHorizontal:24,

@@ -13,8 +13,8 @@ const HeaderProfile = () => {
                 </View>
             </View>
                 <Text style={styles.txtNameUser}>{user.fullname}</Text>
-                <NumberOfFollow/>
-                <ButtonFollowAndMessages/>
+                {/* <NumberOfFollow/>
+                <ButtonFollowAndMessages/> */}
         </View>
     );
 };

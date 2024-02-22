@@ -42,52 +42,52 @@ export const EventRootStackScreens=[
             headerShown:false
         }
     },
-    {
-        id:Math.random()+""+Date,
-        name:EventRootStackEnum.MessageScreen,
-        component:MessageScreen,
-        options:{
-            title:'Message'
-        }
-    },
-    {
-        id:Math.random()+""+Date,
-        name:EventRootStackEnum.CalendarScreen,
-        component:CalenderScreen,
-        options:{
-            title:'Calender'
-        }
-    },
-    {
-        id:Math.random()+""+Date,
-        name:EventRootStackEnum.BookmarkScreen,
-        component:BookmarkScreen,
-        options:{
-            title:'Bookmark',
-        }
-    },
-    {
-        id:Math.random()+""+Date,
-        name:EventRootStackEnum.ContactScreen,
-        component:ContactScreen,
-        options:{
-            title:'Contact',
-        }
-    },
-    {
-        id:Math.random()+""+Date,
-        name:EventRootStackEnum.SettingScreen,
-        component:SettingsScreen,
-        options:{
-            title:'Setting',
-        }
-    },
-    {
-        id:Math.random()+""+Date,
-        name:EventRootStackEnum.HelpScreen,
-        component:HelpScreen,
-        options:{
-            title:'Help',
-        }
-    },
+    // {
+    //     id:Math.random()+""+Date,
+    //     name:EventRootStackEnum.MessageScreen,
+    //     component:MessageScreen,
+    //     options:{
+    //         title:'Message'
+    //     }
+    // },
+    // {
+    //     id:Math.random()+""+Date,
+    //     name:EventRootStackEnum.CalendarScreen,
+    //     component:CalenderScreen,
+    //     options:{
+    //         title:'Calender'
+    //     }
+    // },
+    // {
+    //     id:Math.random()+""+Date,
+    //     name:EventRootStackEnum.BookmarkScreen,
+    //     component:BookmarkScreen,
+    //     options:{
+    //         title:'Bookmark',
+    //     }
+    // },
+    // {
+    //     id:Math.random()+""+Date,
+    //     name:EventRootStackEnum.ContactScreen,
+    //     component:ContactScreen,
+    //     options:{
+    //         title:'Contact',
+    //     }
+    // },
+    // {
+    //     id:Math.random()+""+Date,
+    //     name:EventRootStackEnum.SettingScreen,
+    //     component:SettingsScreen,
+    //     options:{
+    //         title:'Setting',
+    //     }
+    // },
+    // {
+    //     id:Math.random()+""+Date,
+    //     name:EventRootStackEnum.HelpScreen,
+    //     component:HelpScreen,
+    //     options:{
+    //         title:'Help',
+    //     }
+    // },
 ]

@@ -23,7 +23,7 @@ const HeaderExplore = ({navigation}) => {
           <MenuIcon onPress={OpenDrawer}/>
           <View style={styles.currentLocationContainer}>
             <View style={styles.flexRow}>
-              <Text style={styles.lableLocation}>Current Location</Text>
+              <Text style={styles.lableLocation}>Vị trí hiện tại</Text>
               <Image source={require('../../../../media/icon/triangle_icon.png')} style={{ marginHorizontal: 5 }} />
             </View>
             <Text style={styles.location}>Gò Vấp</Text>
@@ -40,7 +40,7 @@ const HeaderExplore = ({navigation}) => {
       </View>
 
       <View style={styles.categoryComponent}>
-        <CategoryComponent />
+        {/* <CategoryComponent /> */}
       </View>
 
     </View>
@@ -56,7 +56,7 @@ const styles = StyleSheet.create({
   },
   container: {
     backgroundColor: COLOR.primaryColor,
-    height: 150,
+    height: 130,
     width: '100%',
     borderBottomRightRadius: 34,
     borderBottomLeftRadius: 34,

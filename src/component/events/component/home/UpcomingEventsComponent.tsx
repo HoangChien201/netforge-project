@@ -24,7 +24,7 @@ const UpcomingEventsComponent = () => {
 
   return (
     <View style={styles.container}>
-      <TitleBarComponent title='Upcoming Events' />
+      <TitleBarComponent title='Sự kiện mới nhất' />
       <FlatList
         data={events}
         renderItem={({item}:{item:EventItemType}) => {

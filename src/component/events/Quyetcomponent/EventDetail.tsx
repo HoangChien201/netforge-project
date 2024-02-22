@@ -82,8 +82,8 @@ const EventDetail: React.FC<EventItemProps> = (props) => {
 
         </View>
         {/* Những người tham gia */}
-        <View style={[styles.fixedView, { opacity: 1 - scrollY * 0.01 }]}>
-          <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+        {/* <View style={[styles.fixedView, { opacity: 1 - scrollY * 0.01 ,justifyContent:'center'}]}> */}
+          {/* <View style={{ flexDirection: 'row', alignItems: 'center' }}>
             <Image source={require('../../../media/icon/avt_1_icon.png')} style={styles.avatarMember1} />
             <Image source={require('../../../media/icon/avt_2_icon.png')} style={styles.avatarMember2} />
             <Image source={require('../../../media/icon/avt_3_icon.png')} style={styles.avatarMember3} />
@@ -95,12 +95,12 @@ const EventDetail: React.FC<EventItemProps> = (props) => {
             <Text style={styles.numberInviteText}>
               Going
             </Text>
-          </View>
+          </View> */}
 
           <TouchableOpacity style={styles.inviteBtn}>
-            <Text style={styles.inviteText}>Invite</Text>
+            <Text style={styles.inviteText}>Tham gia</Text>
           </TouchableOpacity>
-        </View>
+        {/* </View> */}
         {/* Thông tin sự kiện */}
         <View style={styles.aboutEvent}>
           <Text style={styles.titleEvent}>{event?.name}</Text>
@@ -122,12 +122,12 @@ const EventDetail: React.FC<EventItemProps> = (props) => {
               <Image source={require('./img/Location.png')} style={styles.icon} />
             </View>
             <View style={[styles.time,{flex:1}]}>
-              <Text style={styles.text1}>Gala Convention Center</Text>
+              <Text style={styles.text1}>Địa điểm</Text>
               <Text style={styles.address}>{event?.address}</Text>
             </View>
           </View>
           {/* Tác giả bài viết */}
-          <View style={styles.userEvent}>
+          {/* <View style={styles.userEvent}>
             <View style={styles.userInfor} >
               <View style={styles.avatarAboutUser}>
                 <Image source={require('./img/Location.png')} />
@@ -144,7 +144,7 @@ const EventDetail: React.FC<EventItemProps> = (props) => {
             </View>
 
 
-          </View>
+          </View> */}
 
           {/* Nội dung bài viết */}
           <View style={styles.Text} >
@@ -263,7 +263,8 @@ const styles = StyleSheet.create({
     width: 67,
     borderRadius: 7,
     alignItems: 'center',
-    justifyContent: 'center'
+    justifyContent: 'center',
+    marginVertical:15
   },
   bookmark: {
     justifyContent: 'center',

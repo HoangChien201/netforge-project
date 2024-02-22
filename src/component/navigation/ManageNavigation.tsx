@@ -7,6 +7,7 @@ import { StackNavigationProp } from '@react-navigation/stack'
 import EventStack from '../stack/EventStack'
 import { Todo, UserContext, useMyContext } from './UserContext'
 import { To } from '@react-navigation/native/lib/typescript/src/useLinkTo'
+import AdminBrowse from '../admin/AdminBrowse'
 
 export type navigationType=StackNavigationProp<RootStackParamList>
 type routeType=RouteProp<{ params: { value: string } }, 'params'>
@@ -18,6 +19,7 @@ const ManageNavigation:React.FC = () => {
   return (
     <NavigationContainer>
       {user ? <EventStack/>:<UserStack/>}
+      {/* <AdminBrowse/> */}
     </NavigationContainer>
   )
 }

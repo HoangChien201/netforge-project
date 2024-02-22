@@ -11,7 +11,7 @@ const ButtonLogin = ({text,navigation}:{text:string,navigation:navigationType}) 
   return (
     <View style={{justifyContent:'center',display:'flex',alignItems:'center'}}>
       <TouchableOpacity style={styles.buttonContainer} onPress={()=>setUser("haha")}>
-        <Text style={{color:'#fff'}}>{text}</Text>
+        <Text style={styles.text}>{text}</Text>
         <Image style={{position:'absolute',end:10}} source={require('../../../../media/icon/Next.png')}/>
       </TouchableOpacity>
       
@@ -30,8 +30,12 @@ const styles = StyleSheet.create({
         width:300,
         justifyContent:'center',
         alignItems:'center',
-        height:45,
+        height:58,
         borderRadius:12
-        
+    },
+    text:{
+      color:'#fff',
+      fontWeight:'500',
+      fontSize:16
     }
 })

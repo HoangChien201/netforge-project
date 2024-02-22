@@ -2,17 +2,13 @@ import 'react-native-gesture-handler';
 import React from "react";
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 
-import { EventRootBottomTabParams,EventRootBottomTabScreens } from "./EventRootBottomTabParams";
+import { EventRootBottomTabParams,EventRootBottomTabScreens } from "../bottom-stack/EventRootBottomTabParams";
 
 const Tab=createBottomTabNavigator<EventRootBottomTabParams>();
 
 export default function EventBottomTab():React.JSX.Element{
     return (
-        <Tab.Navigator
-            screenOptions={{
-                
-            }}
-            >
+        <Tab.Navigator>
             {
                 EventRootBottomTabScreens.map((item,index)=>{
                     return <Tab.Screen

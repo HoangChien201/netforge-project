@@ -29,7 +29,7 @@ const ItemRender: React.FC<ItemRenderProp> = ({ image, time, title }) => {
     )
 }
 
-const ItemListEvents = () => {
+const ItemListEvents = ({scrollEnabled}:{scrollEnabled?:boolean}) => {
     const [listEvent, setListEvent] = useState([])
 
     async function GetEvent() {
@@ -50,7 +50,8 @@ const ItemListEvents = () => {
                     )
                 }}
                 keyExtractor={item => item.id.toString()}
-                showsVerticalScrollIndicator={false} />
+                showsVerticalScrollIndicator={false} 
+                scrollEnabled={scrollEnabled}/>
         </View>
     )
 }

@@ -4,12 +4,13 @@ import { useNavigation } from '@react-navigation/native'
 import FeedbackWrapper from './FeedbackWrapper'
 import { FormarTime } from '../../../../format/FormatDate'
 import { create } from 'react-test-renderer'
+import { userType } from '../../screens/ProfileScreen'
 export type PostsItemType = {
     id: number;
     content: string;
     image: string;
     event_id: number;
-    user: number;
+    user: userType;
     like: number | null
     create_time:Date
 }
@@ -27,16 +28,16 @@ export const POSTSITEMVALUE = {
 const PostsItem = ({ posts }: { posts: PostsItemType }) => {
     
     return (
-        <TouchableOpacity>
+        <View>
 
             <View style={styles.container}>
                 <View style={[styles.flexRow,{marginVertical:10}]}>
                     <View style={[styles.flexRow, { marginEnd: 10 }]}>
                         {
-                            <Image source={{ uri: 'https://res.cloudinary.com/delivery-food/image/upload/v1699211235/User-avatar.svg_spk0u7.png' }} style={styles.imagePage} />
+                            <Image source={{ uri: posts.user.avatar }} style={styles.imagePage} />
                         }
 
-                        <Text style={[styles.namePage, styles.text, { color: '#000' }]}>Admin</Text>
+                        <Text style={[styles.namePage, styles.text, { color: '#000' }]}>{posts.user.fullname}</Text>
                     </View>
                     <View style={styles.flexRow}>
                         {
@@ -56,7 +57,7 @@ const PostsItem = ({ posts }: { posts: PostsItemType }) => {
                 </View>
                 <FeedbackWrapper posts={posts} />
             </View>
-        </TouchableOpacity>
+        </View>
     )
 }
 
@@ -68,10 +69,10 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
     container: {
-        height: 400,
+        height:400,
+        marginBottom:15,
         width: '100%',
         borderRadius: 12,
-        overflow: 'hidden'
     },
     imageFull: {
         width: '100%',
@@ -107,7 +108,7 @@ const styles = StyleSheet.create({
     imagePage: {
         width: 30,
         height: 30,
-        borderRadius: 10
+        borderRadius: 30
     },
     time: {
         color: '#4e4b66',

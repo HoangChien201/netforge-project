@@ -16,14 +16,14 @@ export default function LoginScreen({ navigation }: { navigation: navigationType
     <View style={styles.container}>
       <ScrollView>
         <View style={styles.logoContainer}>
-          <Image source={require('../../../media/icon/Logon.png')}></Image>
+          <Image source={require('../../../media/icon/logo-main.jpg')}></Image>
         </View>
-        <TextLogin text='Sign in' />
+        <TextLogin text='Đăng nhập' />
         <TextInputLogin />
-        <Remember />
-        <ButtonLogin text='SIGN IN' navigation={navigation}/>
-        <Text style={{textAlign:'center',marginTop:30,marginBottom:30}}>OR</Text>
-        <ButtonFBGG text='Sign up'/>
+        {/* <Remember /> */}
+        <ButtonLogin text='Đăng nhập' navigation={navigation}/>
+        {/* <Text style={{textAlign:'center',marginTop:30,marginBottom:30}}>OR</Text> */}
+        {/* <ButtonFBGG text='Sign up'/> */}
       </ScrollView>
     </View>
 
