@@ -1,12 +1,8 @@
-import { View, Text } from 'react-native'
 import React, { useContext } from 'react'
-import { NavigationContainer, NavigationProp, RouteProp } from '@react-navigation/native'
-import UserStack from '../stack/UserStack'
-import GroceryStack from '../stack/EventStack'
+import { NavigationContainer, RouteProp } from '@react-navigation/native'
 import { StackNavigationProp } from '@react-navigation/stack'
 import EventStack from '../stack/EventStack'
-import { Todo, UserContext, useMyContext } from './UserContext'
-import { To } from '@react-navigation/native/lib/typescript/src/useLinkTo'
+import {useMyContext } from './UserContext'
 import AdminBrowse from '../admin/AdminBrowse'
 
 export type navigationType=StackNavigationProp<RootStackParamList>
@@ -15,10 +11,9 @@ export type RootStackParamList = {
 
 };
 const ManageNavigation:React.FC = () => {
-  const {user} = useMyContext();
   return (
     <NavigationContainer>
-      {user ? <EventStack/>:<UserStack/>}
+      <EventStack/>
       {/* <AdminBrowse/> */}
     </NavigationContainer>
   )

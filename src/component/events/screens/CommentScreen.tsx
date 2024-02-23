@@ -4,11 +4,14 @@ import { useSelector, useDispatch } from 'react-redux'
 import FormComment from '../component/posts/FormComment';
 import CommentItem, { CommentType } from '../component/posts/CommentItem';
 import { CommentTypeRequest, CreateCommentByPostsHTTP, GetCommentByPostsHTTP } from '../../../http/chien_comment/CommentHTTP';
+import { userType } from './ProfileScreen';
+import { useMyContext } from '../../navigation/UserContext';
 
 // import { comments } from '../../../http/value'
 
 const CommentScreen = ({route}) => {
   const idPosts=route.params.id;
+  const {user}:userType=useMyContext()
   const [valueComment,setValueComment]=useState<Array<CommentType>>([])
 
   async function GetValueComment() {
@@ -26,10 +29,12 @@ const CommentScreen = ({route}) => {
   async function CommentSubmit(comment:string) {
     const dataComment:CommentTypeRequest={
       posts_id:idPosts,
-      user:1,
+      user:user.id,
       content:comment
     }
-      await CreateCommentByPostsHTTP(dataComment)
+    
+      const respone=await CreateCommentByPostsHTTP(dataComment)
+      
       GetValueComment()
   }
   return (

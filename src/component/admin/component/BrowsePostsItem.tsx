@@ -7,6 +7,7 @@ import { COLOR } from '../../../constant/color'
 import { GetTimeComment } from '../../../format/FormatDate'
 import { user as userRoot, userType } from '../../events/screens/ProfileScreen'
 import { AcceptanceBrowsePostsHTTP, RejectBrowsePostsHTTP } from '../../../http/admin/BrowseHTTP'
+import { useMyContext } from '../../navigation/UserContext'
 export type PostsItemType = {
     id: number;
     content: string;
@@ -20,7 +21,7 @@ export type PostsItemType = {
 
 
 const BrowsePostsItem = ({item,getBrowsePosts}:{item:PostsItemType,getBrowsePosts:any}) => {
-    const user:userType= userRoot
+    const {user} = useMyContext();
     async function OnRejectPosts() {
         await RejectBrowsePostsHTTP(item.id)
         getBrowsePosts()

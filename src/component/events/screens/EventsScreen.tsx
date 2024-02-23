@@ -3,9 +3,10 @@ import React, { useState } from 'react'
 import ItemListEvents from '../component/profile/ItemListEvents'
 import { user as userRoot, userType } from './ProfileScreen'
 import ModalCreateEvent from '../component/createNewEvent/ModalCreateEvent'
+import { useMyContext } from '../../navigation/UserContext'
 
 const EventsScreen = (prop) => {  
-  const user: userType = userRoot
+  const {user}: userType = useMyContext()
 
   const [visibleModalCreateEvent, setVisibleModalCreateEvent] = useState(false)
 

@@ -6,6 +6,7 @@ import { user as userRoot, userType } from '../../screens/ProfileScreen'
 import ButtonText from '../ui/ButtonText'
 import { COLOR } from '../../../../constant/color'
 import { CreatePostsHTTP } from '../../../../http/chien_posts/PostHTTP'
+import { useMyContext } from '../../../navigation/UserContext'
 
 interface ModalCreatPostsProps {
     visible: boolean,
@@ -19,7 +20,7 @@ export type PostsRequest = {
 }
 
 const ModalCreatPosts: React.FC<ModalCreatPostsProps> = ({ visible, closeModal,getPosts }) => {
-    const user: userType = userRoot
+    const {user}: userType = useMyContext()
 
     //useState
     const [isValid, setIsValid] = useState(false)

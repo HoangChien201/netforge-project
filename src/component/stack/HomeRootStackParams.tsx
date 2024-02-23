@@ -2,11 +2,13 @@ import EventBottomTab from "../bottom-stack/EventBottomTab"
 import EventDetail from "../events/Quyetcomponent/EventDetail";
 import CommentScreen from "../events/screens/CommentScreen";
 import NotificationScreen from "../events/screens/NotificationScreen"
+import UserStack from "./UserStack";
 
 
 
 enum HomeRootStackEnum {
     EventBottomTab = 'EventBottomTab',
+    UserStack = 'UserStack',
     NotificationScreen = 'NotificationScreen',
     EventDetailScreen = 'EventDetailScreen',
     CommentScreen = 'CommentScreen'
@@ -17,6 +19,7 @@ enum HomeRootStackEnum {
 
 export type HomeRootStackParams = {
     EventBottomTab: undefined;
+    UserStack:undefined;
     NotificationScreen: undefined;
     EventDetailScreen: undefined;
     CommentScreen: undefined
@@ -60,6 +63,14 @@ export const HomeRootStackScreens = [
                 color: '#000'
             },
             title:'Comments'
+        }
+    },
+    {
+        id: Math.random() + "" + Date,
+        name: HomeRootStackEnum.UserStack,
+        component: UserStack,
+        options: {
+            headerShown:false
         }
     },
 

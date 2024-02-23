@@ -6,6 +6,7 @@ import ButtonText from '../component/ui/ButtonText'
 import { COLOR } from '../../../constant/color'
 import { user as RootUser, userType } from './ProfileScreen'
 import { CreateEventHTTP } from '../../../http/chien_event/EventHTTP'
+import { useMyContext } from '../../navigation/UserContext'
 
 export type EventRequest = {
     name: string,
@@ -20,7 +21,7 @@ export type EventRequest = {
 }
 
 const CreateNewEventScreen = ({closeModal}:{closeModal:any}) => {
-    const user: userType = RootUser
+    const {user}: userType = useMyContext()
     const [isKeyboardVisible, setKeyboardVisible] = useState(false);
     const [valueCreate, setValueCreate] = useState<EventRequest>({
         name: '',

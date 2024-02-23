@@ -4,17 +4,16 @@ import Input from './Input'
 
 
 
-const TextInputLogin = () => {
-  const [username, setUsername] = useState<string>('')
-  const [password, setPassword] = useState<string>('')
+const TextInputLogin = ({email,password,updateValue}:{email:string,password:string,updateValue:any}) => {
+  
   return (
 
     <KeyboardAvoidingView
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
       style={styles.container}
     >
-      <Input value={username} onChangeText={setUsername} placeholder='abc@gmail.com'  iconE={true}  />
-      <Input value={password} onChangeText={setPassword} placeholder='Mật khẩu'  iconP={true} iconPass={true}  />
+      <Input value={email} onChangeText={updateValue.bind(this,'email')} placeholder='abc@gmail.com'  iconE={true}  />
+      <Input value={password} onChangeText={updateValue.bind(this,'password')} placeholder='Mật khẩu'  iconP={true} iconPass={true}  />
     </KeyboardAvoidingView>
 
   )

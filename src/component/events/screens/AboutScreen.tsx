@@ -6,8 +6,10 @@ import PostsItem, { PostsItemType } from '../component/posts/PostsItem'
 import ListPostsItem from '../component/posts/ListPostsItem'
 import ModalCreatPosts from '../component/posts/ModalCreatPosts'
 import Loading from '../component/ui/Loading'
+import { useMyContext } from '../../navigation/UserContext'
 const AboutScreen = () => {
-  const user: userType = userRoot
+  const {user}=useMyContext()
+  
   const [listPosts, setListPost] = useState([])
   const [isLoading, setIsLoading] = useState(false)
 

@@ -6,10 +6,10 @@ export type CommentTypeRequest={
     content:string;
 }
 
-export async function GetCommentByPostsHTTP(id:number){
+export async function GetCommentByPostsHTTP(posts_id:number){
     try {
         const axiosInstance = AxiosInstance();
-        const url = '/comment/get-by-posts/'+id;
+        const url = '/comment/get-by-posts/'+posts_id;
         const response = await axiosInstance.get(url);
         return response;
     } catch (error) {

@@ -5,12 +5,11 @@ import { UserRootStackEnum } from '../../../stack/UserRootStackParams'
 import { useMyContext } from '../../../navigation/UserContext'
 
 
-const ButtonLogin = ({text,navigation}:{text:string,navigation:navigationType}) => {
+const ButtonLogin = ({text,navigation,onSubmit}:{text:string,navigation:navigationType,onSubmit:any}) => {
   //setuser vào context
-  const {setUser} = useMyContext();
   return (
     <View style={{justifyContent:'center',display:'flex',alignItems:'center'}}>
-      <TouchableOpacity style={styles.buttonContainer} onPress={()=>setUser("haha")}>
+      <TouchableOpacity style={styles.buttonContainer} onPress={onSubmit}>
         <Text style={styles.text}>{text}</Text>
         <Image style={{position:'absolute',end:10}} source={require('../../../../media/icon/Next.png')}/>
       </TouchableOpacity>
