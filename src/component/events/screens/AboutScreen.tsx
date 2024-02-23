@@ -1,6 +1,5 @@
 import { FlatList, Image, Modal, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import React, { useEffect, useState } from 'react'
-import { user as userRoot, userType } from './ProfileScreen'
 import { GetPostsByUserHTTP } from '../../../http/profile/profilehttp'
 import PostsItem, { PostsItemType } from '../component/posts/PostsItem'
 import ListPostsItem from '../component/posts/ListPostsItem'

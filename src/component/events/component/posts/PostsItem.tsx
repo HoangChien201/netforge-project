@@ -15,15 +15,6 @@ export type PostsItemType = {
     create_time:Date
 }
 
-export const POSTSITEMVALUE = {
-    id: 1,
-    content: 'Nội dung nè',
-    image: 'https://img-s-msn-com.akamaized.net/tenant/amp/entityid/BB1is1P3.img?w=768&h=432&m=6&x=341&y=183&s=146&d=146',
-    event_id: 2,
-    user: 1,
-    like: null
-}
-
 
 const PostsItem = ({ posts }: { posts: PostsItemType }) => {
     
@@ -69,8 +60,9 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
     container: {
-        height:400,
-        marginBottom:15,
+        minHeight:150,
+        maxHeight:400,
+        marginBottom:20,
         width: '100%',
         borderRadius: 12,
     },

@@ -3,10 +3,12 @@ import React, { useEffect, useState } from 'react'
 import BrowsePostsItem, { PostsItemType } from '../component/BrowsePostsItem'
 import { GetBrowseEventHTTP, GetBrowsePostsHTTP } from '../../../http/admin/BrowseHTTP'
 import Loading from '../../events/component/ui/Loading'
+import { useIsFocused } from '@react-navigation/native'
 
 const BrowsePosts = () => {
   const [listBrowsePosts,setListBrowsePosts]=useState<Array<PostsItemType>>([])
   const [isLoading,setIsLoading]=useState(false)
+  const isFocus=useIsFocused()
 
   async function GetBrowsePosts() {
     setIsLoading(true)
@@ -20,7 +22,9 @@ const BrowsePosts = () => {
 
 useEffect(()=>{
     GetBrowsePosts()
-    setInterval(GetBrowsePosts, 10000)
+    setInterval(()=>{
+      isFocus && GetBrowsePosts()
+    }, 10000)
 },[])
 
   return (

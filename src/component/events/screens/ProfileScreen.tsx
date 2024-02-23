@@ -95,7 +95,7 @@ const ProfileScreen = () => {
       navigation.navigate('UserStack')
     }
     return (
-      <View style={{justifyContent:'center',alignItems:'center'}}>
+      <View style={{justifyContent:'center',alignItems:'center',flex:1}}>
         <Button title='Đăng nhập' onPress={GoLogin}></Button>
       </View>
     )

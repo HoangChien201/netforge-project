@@ -1,4 +1,4 @@
-import { FlatList, StyleSheet, Text, TextInput, View } from 'react-native'
+import { Alert, FlatList, StyleSheet, Text, TextInput, View } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import FormComment from '../component/posts/FormComment';
@@ -27,15 +27,19 @@ const CommentScreen = ({route}) => {
   }
 
   async function CommentSubmit(comment:string) {
-    const dataComment:CommentTypeRequest={
-      posts_id:idPosts,
-      user:user.id,
-      content:comment
-    }
-    
-      const respone=await CreateCommentByPostsHTTP(dataComment)
+    if(user){
+      const dataComment:CommentTypeRequest={
+        posts_id:idPosts,
+        user:user.id,
+        content:comment
+      }
       
-      GetValueComment()
+        const respone=await CreateCommentByPostsHTTP(dataComment)
+        
+        GetValueComment()
+    }else{
+      Alert.alert('Thông báo',"Đăng nhập để bình luận")
+    }
   }
   return (
     <View style={styles.container}>

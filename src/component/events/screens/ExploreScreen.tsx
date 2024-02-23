@@ -4,9 +4,12 @@ import HeaderExplore from '../component/home/HeaderExplore'
 import UpcomingEventsComponent from '../component/home/UpcomingEventsComponent'
 import ListPostsItem from '../component/posts/ListPostsItem'
 import { GetAllPosts } from '../../../http/chien_posts/PostHTTP'
+import { useIsFocused } from '@react-navigation/native'
 
 const ExploreScreen = ({navigation}) => {
   const [posts, setPosts] = useState([])
+  const isFocus= useIsFocused()
+
   async function GetPost() {
     const response = await GetAllPosts()
     setPosts([...response])
@@ -14,7 +17,7 @@ const ExploreScreen = ({navigation}) => {
 
   useEffect(() => {
     GetPost()
-  }, [])
+  }, [isFocus])
   return (
     <View style={styles.container}>
       <HeaderExplore navigation={navigation}/>

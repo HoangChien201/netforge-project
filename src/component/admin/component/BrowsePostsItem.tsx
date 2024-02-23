@@ -13,7 +13,7 @@ export type PostsItemType = {
     content: string;
     image: string;
     event_id: number;
-    user: number;
+    user: userType;
     like: number | null
     create_time: Date
 }
@@ -39,10 +39,10 @@ const BrowsePostsItem = ({item,getBrowsePosts}:{item:PostsItemType,getBrowsePost
                 <View style={[styles.flexRow, { marginVertical: 10 }]}>
                     <View style={[styles.flexRow, { marginEnd: 10 }]}>
                         {
-                            user.avatar && <Image source={{ uri: user.avatar }} style={styles.imagePage} />
+                            item.user.avatar && <Image source={{ uri: item.user.avatar }} style={styles.imagePage} />
                         }
 
-                        <Text style={[styles.namePage, styles.text, { color: '#000' }]}>{user.fullname}</Text>
+                        <Text style={[styles.namePage, styles.text, { color: '#000' }]}>{item.user.fullname}</Text>
                     </View>
                     <View style={styles.flexRow}>
                         {
