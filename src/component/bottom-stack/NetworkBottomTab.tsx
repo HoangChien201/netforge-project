@@ -10,7 +10,13 @@ export default function NetworkBottomTab():React.JSX.Element{
     return (
         <Tab.Navigator
             screenOptions={{
-                
+                tabBarStyle: { 
+                    position: 'absolute',
+                    backgroundColor:'#1F1F2F',
+                    margin:20,
+                    borderRadius:15,
+                 },
+                 
             }}
             >
             {
