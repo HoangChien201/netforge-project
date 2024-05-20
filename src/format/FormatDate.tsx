@@ -22,7 +22,19 @@ export function GetTimeSecond(date){
     return Math.floor(time).toString()
 }
 
-export function FormarTime(date){
+export function FormatDate(date_param:Date){
+    const setDate=new Date(date_param)
+    const date=setDate.getDate() > 9 ? setDate.getDate() : '0'+setDate.getDate()
+    const month=setDate.getMonth() > 9 ? setDate.getMonth() : '0'+setDate.getMonth()
+    const year=setDate.getFullYear() > 9 ? setDate.getFullYear() : '0'+setDate.getFullYear()
+
+    return `${date}-${month}-${year}`
+}
+
+export function FormatTime(date:Date){
     const setDate=new Date(date)
-    return `${setDate.getDate()}/${setDate.getMonth()+1}/${setDate.getFullYear()}`
+    const minute=setDate.getMinutes() > 9 ? setDate.getMinutes() : setDate.getMinutes()+'0'
+    const hour=setDate.getHours() > 9 ? setDate.getHours() : '0'+setDate.getHours()
+
+    return `${hour}:${minute}`
 }
