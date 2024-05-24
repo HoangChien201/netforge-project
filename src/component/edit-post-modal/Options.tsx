@@ -31,8 +31,10 @@ const Options = ({ onSelectImage, onSelectEmoji }) => {
         if (response.errorMessage) return;
         if (response.assets && response.assets.length > 0) {
             const asset = response.assets[0];
+            //onSelectImage(asset.uri);
             onSelectImage(asset.uri);
-            // Do something with the image URI
+            
+
         }
     }, []);
     const handleEmojiSelect = (emoji: any) => {

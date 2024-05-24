@@ -4,14 +4,15 @@ import { COLOR } from '../constant/color'
 import BODY from '../component/create-post-screen/Body'
 import BODYMODAL from '../component/edit-post-modal/Body'
 import {upLoadImage,createNew} from '../http/QuyetHTTP'
+
 const CreatePostScreen = () => {
   const [showModalEdit, setShowModalEdit] = useState(false);
   const [text, setText] = useState('');
   const [image, setImage] = useState(null);
   const [imagePath, setImagePath] = useState('');
   const [type, setType] = useState(1);
-
-  const uploadImage = async () => {
+  // upload ảnh lên cloud và tạo bài viết mới
+  const uploadPost = async () => {
     try {
       let uploadedImagePath = imagePath;
       if (image) {
@@ -47,7 +48,7 @@ const CreatePostScreen = () => {
         </TouchableOpacity>
         <Text style={styles.headerText}>Create New Post</Text>
         <TouchableOpacity onPress={ShowModalEdit}>
-          <Text style={styles.headerPostText}>Post</Text>
+          <Text style={styles.headerPostText} >Post</Text>
         </TouchableOpacity>
       </View>
       <BODY  text={text} setText={setText} image={image} setImage={setImage} type={type} setType={setType}></BODY>

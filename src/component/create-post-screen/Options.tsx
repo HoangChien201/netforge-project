@@ -9,7 +9,7 @@ import ImageResizer from 'react-native-image-resizer';
 
 const Options = ({ onSelectImage, onSelectEmoji }) => {
     const [showEmojiModal, setShowEmojiModal] = useState(false);
-
+    // mở máy ảnh
     const openCamera = useCallback(async () => {
         const options = {
             mediaType: 'photo',
@@ -18,7 +18,7 @@ const Options = ({ onSelectImage, onSelectEmoji }) => {
         };
         launchCamera(options, takePhoto);
     }, []);
-
+    // mở thư viện
     const openLibrary = useCallback(async () => {
         const options = {
             mediaType: 'photo',
@@ -27,7 +27,7 @@ const Options = ({ onSelectImage, onSelectEmoji }) => {
         };
         launchImageLibrary(options, takePhoto);
     }, []);
-
+    // chọn ảnh tạo uri
     const takePhoto = useCallback(async (response) => {
         if (response.didCancel) return;
         if (response.errorCode) return;
@@ -38,14 +38,14 @@ const Options = ({ onSelectImage, onSelectEmoji }) => {
             onSelectImage(asset.uri);
 
             //resizeImage(asset.uri);
-
-
         }
     }, []);
+    // lấy emiji đưa qua TextArea
     const handleEmojiSelect = (emoji: any) => {
         onSelectEmoji(emoji);
         setShowEmojiModal(false);
     };
+    // căn chỉnh kích thước ảnh (không dùng đến)
     const resizeImage = (uri) => {
         ImageResizer.createResizedImage(uri, 300, 300, 'JPEG', 90)
             .then(resizedImage => {

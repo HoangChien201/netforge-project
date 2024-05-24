@@ -3,18 +3,23 @@ import React, { useState } from 'react'
 import { COLOR } from '../../constant/color'
 import { Image } from 'react-native';
 
-const User = () => {
+const User = ({setType}) => {
     const [dropdownVisible, setDropdownVisible] = useState(false);
     const [selectedOption, setSelectedOption] = useState('Public');
 
-    const options = ['Public', 'Private', 'Friend'];
+    const options = [
+        { label: 'Public', value: 1 },
+        { label: 'Private', value: 2 },
+        { label: 'Friend', value: 3 }
+    ];
 
     const toggleDropdown = () => {
         setDropdownVisible(!dropdownVisible);
     };
 
-    const selectOption = (option: React.SetStateAction<string>) => {
-        setSelectedOption(option);
+    const selectOption = (option) => {
+        setSelectedOption(option.label);
+        setType(option.value);
         setDropdownVisible(false);
     };
     return (
@@ -39,7 +44,7 @@ const User = () => {
                                 style={styles.dropdownOption}
                                 onPress={() => selectOption(option)}
                             >
-                                <Text style={styles.optionText}>{option}</Text>
+                                <Text style={styles.optionText}>{option.label}</Text>
                             </TouchableOpacity>
                         ))}
                     </View>

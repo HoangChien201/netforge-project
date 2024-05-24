@@ -7,14 +7,21 @@ import { TouchableOpacity } from 'react-native'
 import { COLOR } from '../../constant/color'
 const Body = ({ text, setText, image, setImage, type, setType }) => {
     const [imagePath, setImagePath] = useState('');
+
+    // Emoji
     const handleEmojiSelect = (emoji: any) => {
         setText(text + emoji);
     };
+    // chọn ảnh
     const handleImageSelect = (uri) => {
         setImage(uri);
-        console.log(uri);
+        //console.log(uri);
 
     };
+    // xóa ảnh
+    const deleteImage = () =>{
+        setImage(null);
+    }
     return (
         <View style={styles.container}>
             <View style={styles.header}>
@@ -22,7 +29,7 @@ const Body = ({ text, setText, image, setImage, type, setType }) => {
                     <USER setType={setType}></USER>
                     <View>
                         {image ? <Image source={{ uri: image }} style={styles.image} resizeMode="contain" /> : null}
-                        {image ? <TouchableOpacity style={styles.buttonDeleteImage}>
+                        {image ? <TouchableOpacity style={styles.buttonDeleteImage} onPress={deleteImage}>
                             <Text style={styles.textDeleteImage}>Delete</Text>
                         </TouchableOpacity> : null}
 
