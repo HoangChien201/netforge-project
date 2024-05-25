@@ -1,6 +1,6 @@
 import React, { ContextType, ReactNode, createContext, useContext, useState } from "react";
 
-interface Todo {
+ export interface Todo {
     user: string,
     setUser: React.Dispatch<React.SetStateAction<string>>
 }

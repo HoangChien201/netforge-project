@@ -7,6 +7,7 @@
 import 'react-native-gesture-handler';
 import React from 'react';
 import {
+  StatusBar,
   Text,
   View,
 } from 'react-native';
@@ -17,6 +18,7 @@ import { UserProvider } from './src/component/navigation/UserContext';
 function App(): React.JSX.Element {
   return (
     <>
+    <StatusBar barStyle="dark-content" backgroundColor="transparent"/>
       <UserProvider>
         <ManageNavigation />
       </UserProvider>
