@@ -4,6 +4,8 @@ import Input from './Input'
 import ButtonLogin from './ButtonLogin'
 import { COLOR } from '../../constant/color'
 import { emailPattern } from '../../constant/valid'
+import { regiter } from '../http/userHttp/user'
+import { NavigationProp, ParamListBase, useNavigation } from '@react-navigation/native'
 
 interface user{
   email:string,
@@ -18,7 +20,8 @@ export type valid ={
   confirmpassword:boolean
 }
 
-const Form= ({setModal}:{setModal:()=>void}) => {
+const Form= ({setModal}:{setModal:(values:boolean)=>void}) => {
+  const navigation:NavigationProp<ParamListBase> = useNavigation();
   const [valueF,setValueF] = useState<user>({email:"hoangduy@gmail.com",password:"123",fullname:"Lê Hoàng Duy",confirmpassword:"123"})
   const [valid,setValid] = useState<valid>({email:true,password:true,fullname:true,confirmpassword:true})
 
@@ -58,10 +61,20 @@ const Form= ({setModal}:{setModal:()=>void}) => {
         
         return
       }
-      setModal(true)
-      setTimeout(() => {
-        setModal(false)
-      }, 1000);
+
+      const result = await regiter(email,fullname,password);
+      console.log(result);
+      
+      if(result){
+        setModal(true)
+        setTimeout(() => {
+          setModal(false)
+          navigation.goBack()
+        }, 1000);
+      
+        console.log("hihi"); 
+      }
+     
 
       
   }
@@ -72,7 +85,7 @@ const Form= ({setModal}:{setModal:()=>void}) => {
       <Input invalid={!valid.password} label="Password" value={valueF.password} onchangText={onChangText.bind(this,'password')} iconPass password={true} />
       <Input invalid={!valid.confirmpassword} label="Confirm Password" value={valueF.confirmpassword} onchangText={onChangText.bind(this,'confirmpassword')} iconPass password={true} />
       <View>
-        <ButtonLogin chilren='Login' textColor='#fff' onPress={submit}/>
+        <ButtonLogin chilren='Sign Up' textColor='#fff' onPress={submit}/>
       </View>
     </View>
   )

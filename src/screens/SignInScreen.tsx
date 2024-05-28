@@ -1,19 +1,27 @@
 import { Image, KeyboardAvoidingView, Platform, StatusBar, StyleSheet, Text, View } from 'react-native'
-import React from 'react'
+import React, { useState } from 'react'
 import { COLOR } from '../constant/color'
 import { Colors } from 'react-native/Libraries/NewAppScreen'
 import Form from '../component/form/Form'
 import ModalPoup from '../component/Modal/ModalPoup'
+import { useNavigation } from '@react-navigation/native'
+import { navigationType } from '../component/stack/UserStack'
+import { TouchableOpacity } from 'react-native-gesture-handler'
 
 const SignupScreen: React.FC = () => {
+    const [modal,setModal]= useState(false);
+    const navigation = useNavigation<navigationType>()
+    
     return (
         <>
             <StatusBar barStyle="light-content" backgroundColor={COLOR.primary200} />
             <View style={styles.container}>
                 <View style={{ flexDirection: "row", padding: 20 }}>
-                    <View style={[styles.viewToolbar, styles.viewAll]}>
-                        <Image source={require("../media/Dicons/back.png")} style={styles.image} />
+                    <View  style={[styles.viewToolbar, styles.viewAll]}>
+                       <TouchableOpacity onPress={()=>navigation.goBack()} style={{flexDirection:"row",alignItems:"center"}}>
+                       <Image  source={require("../media/Dicons/back.png")} style={styles.image} />
                         <Text style={{ color: "white" }}>Back</Text>
+                       </TouchableOpacity>
                     </View>
                     <View style={[styles.viewAll]}>
                         <Text style={styles.labelLogin}>Create Account</Text>
@@ -26,7 +34,7 @@ const SignupScreen: React.FC = () => {
                         <Text>Create Account to keep exploring amazing</Text>
                         <Text>destinations around the world!</Text>
                     </View>
-                    <Form />
+                    <Form setModal={setModal} />
                     <View style={styles.text}>
                         <Text style={{ color: "black" }}>Already have an account?</Text>
                         <Text style={{ fontSize: 15, color: COLOR.primary200, fontWeight: "bold" }}>Sign in</Text>
@@ -39,6 +47,7 @@ const SignupScreen: React.FC = () => {
                     </View>
                     
                 </KeyboardAvoidingView>
+                <ModalPoup visible={modal} text='Đăng kí thành công'/>
             </View>
         </>
     )

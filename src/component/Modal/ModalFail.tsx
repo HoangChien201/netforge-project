@@ -3,7 +3,7 @@ import React, { Children, ReactNode, useEffect, useRef, useState } from "react"
 import { Animated, Image, Modal, StyleSheet, Text, View } from "react-native"
 
 
-const ModalPoup = ({ visible, text }: { visible: boolean, text: string}) => {
+const ModalFail = ({ visible, text }: { visible: boolean, text: string }) => {
 
     const scaleValues = useRef(new Animated.Value(0)).current;
     useEffect(() => {
@@ -32,9 +32,9 @@ const ModalPoup = ({ visible, text }: { visible: boolean, text: string}) => {
                     <View style={{ alignItems: "center", justifyContent: 'center' }}>
                         
                            <View style={{ alignItems: "center", justifyContent: 'center' }}>
-                                <Image source={require('../../media/Dicons/check.png')} style={{ height: 150, width: 150 }} />
+                                <Image source={require('../../media/Dicons/cross.png')} style={{ height: 150, width: 150 }} />
                                 <Text style={{ marginVertical: 30, fontSize: 18, textAlign: "center", fontFamily: "popins" }}>{text}</Text>
-                            </View> 
+                            </View>
                         
                     </View>
                 </Animated.View>
@@ -45,7 +45,7 @@ const ModalPoup = ({ visible, text }: { visible: boolean, text: string}) => {
 
 }
 
-export default ModalPoup
+export default ModalFail
 
 const styles = StyleSheet.create({
     modalBackGround: {

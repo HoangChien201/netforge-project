@@ -13,7 +13,7 @@ const UserContext = createContext<Todo | undefined>(undefined);
 
 export const UserProvider: React.FC<MyContextProviderProps> = ({ children }) => {
 
-    const [user, setUser] = useState<string>('');
+    const [user, setUser] = useState(null);
     return (
         <UserContext.Provider value={{ user, setUser }}>
             {children}

@@ -6,6 +6,7 @@ import NetworkStack from '../stack/NetworkStack'
 import LoginScreen from '../../screens/LoginScreen'
 import SignupScreen from '../../screens/SignInScreen'
 import ModalPoup from '../Modal/ModalPoup'
+import UserStack from '../stack/UserStack'
 
 export type navigationType=StackNavigationProp<RootStackParamList>
 type routeType=RouteProp<{ params: { value: string } }, 'params'>
@@ -18,7 +19,7 @@ const ManageNavigation:React.FC = () => {
   return (
     <NavigationContainer>
       
-      {user ? <NetworkStack/> : <LoginScreen/>}
+      {user ? <NetworkStack/> : <UserStack/>}
     </NavigationContainer>
   )
 }

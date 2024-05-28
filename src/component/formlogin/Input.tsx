@@ -1,5 +1,5 @@
 import { View, Text, StyleSheet, TextInput, Animated  } from "react-native"
-import React, { useCallback, useState } from "react"
+import React, { useCallback, useEffect, useState } from "react"
 import { Image } from "react-native"
 import Iconbutton from "../form/Iconbutton"
 import { COLOR } from "../../constant/color"
@@ -14,34 +14,42 @@ type props = {
     iconE?: boolean,
     iconP?: boolean,
     iconPass?: boolean,
-    invalid?:boolean
+    invalid?:boolean,
 
 }
 
 const InputLogin = (props: props) => {
     const { label, onchangText, value, requireField, password, iconE, iconP, iconPass, invalid } = props;
     const [hidePassword, setHidePassword] = useState<boolean | undefined>(password)
-
+    const [showInvalid, setShowInvalid] = useState(invalid);
+    const [isFocused, setIsFocused] = useState(false);
     const ref = React.useRef<TextInput>(null);
-
-  console.log("2");
-  
-    const handleFocus = useCallback(() => {
+    
+    console.log("2",invalid);
+    useEffect(() => {
+        setShowInvalid(invalid);
+        
+    }, [invalid]);
+    
+    console.log("3",showInvalid);
+    const handleFocus = () => {
         if (ref.current) {
+            setIsFocused(true)
             ref.current.setNativeProps({
             style: { borderColor: COLOR.primary200, borderBottomWidth: 1 } // Đặt màu border khi focus
           });
         }
        
-      },[]);
+      };
     
-      const handleBlur = useCallback(() => {
+      const handleBlur = () => {
         if (ref.current) {
+            setIsFocused(false)
             ref.current.setNativeProps({
-            style: { borderColor: 'black', borderBottomWidth: 1 } // Xóa màu border khi blur
+            style: { borderColor: '#DDDDDD', borderBottomWidth: 1 } // Xóa màu border khi blur
           });
         }
-      },[]);
+      };
 
     function Secure() {
         if (hidePassword) {
@@ -61,15 +69,24 @@ const InputLogin = (props: props) => {
          </View>
         )
     }
-
+    console.log("showw",showInvalid);
     const onchantext = (value: string) => {
         onchangText(value)
+        console.log("value",value);
+        
+          if(value !== "" ) {
+            setShowInvalid(false);
+          }
+       handleFocus();
+            // Ẩn thông báo khi người dùng bắt đầu gõ
+        
     }
+    
     return (
         
         <View  style={[invalid && {margin:0},{margin:9}]}>
             <Text  style={[styles.label]}>{label} {requireField && <Text style={{color:"#C30052"}}>*</Text>}</Text>
-            <TextInput  onFocus={handleFocus} onBlur={handleBlur} ref={ref} placeholder={"Enter"+" "+label} style={[styles.input,invalid && styles.validation]} secureTextEntry={hidePassword} value={value} onChangeText={onchantext} />
+            <TextInput  onFocus={handleFocus} onBlur={handleBlur} ref={ref} placeholder={"Enter"+" "+label} style={[styles.input,showInvalid && styles.validation]} secureTextEntry={hidePassword} value={value} onChangeText={onchantext} />
             {iconE && <Image style={styles.iconMail} source={require('../../media/icon/Mail.png')} />}
             {iconPass && <Image style={styles.iconMail} source={require('../../media/icon/Password.png')} />}
             {iconP && <Image style={{
@@ -83,7 +100,9 @@ const InputLogin = (props: props) => {
                 password && <EyePass/>
             }
             {
-                invalid && <Text style={{fontSize:10,position:"absolute",bottom:-15,left:10,color:"red",fontWeight:"400", fontFamily: "poppins"
+                
+                
+                showInvalid && <Text style={{fontSize:10,position:"absolute",bottom:-15,left:10,color:"red",fontWeight:"400", fontFamily: "poppins"
                 }}>Vui lòng nhập đúng định dạng {label} !</Text>
             }
          
@@ -118,10 +137,10 @@ const styles = StyleSheet.create({
         start: 10
     },
     validation:{
-        borderRadius: 6,
+      
         borderColor:"#C30052",
-        borderWidth:1,
-        height: 60,
+        borderBottomWidth: 1,
+        height: 50,
         paddingLeft: 35,
     }
 })
