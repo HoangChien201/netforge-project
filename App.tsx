@@ -7,6 +7,7 @@
 import 'react-native-gesture-handler';
 import React from 'react';
 import {
+  StatusBar,
   Text,
   View,
 } from 'react-native';
@@ -18,12 +19,12 @@ import { GestureHandlerRootView } from 'react-native-gesture-handler';
 function App(): React.JSX.Element {
   return (
     <>
+    <StatusBar barStyle="dark-content" backgroundColor="transparent"/>
       <GestureHandlerRootView style={{ flex: 1 }}>
         <UserProvider>
           <ManageNavigation />
         </UserProvider>
       </GestureHandlerRootView>
-
     </>
   )
 }
