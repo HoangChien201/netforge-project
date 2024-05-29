@@ -1,15 +1,15 @@
 import React, { useState, useCallback } from 'react';
 import { StyleSheet, TouchableOpacity, View, Image, Modal, FlatList, Text } from 'react-native';
 import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
-import { EmojiData } from '../../constant/emoji';
 import EmojiList from './EmojiList';
 import { COLOR } from '../../constant/color';
-import ImageResizer from 'react-native-image-resizer';
+
+import ImagePicker from 'react-native-image-picker';
 
 
-const Options = ({ onSelectImage, onSelectEmoji }) => {
+const Options = ({ onSelectMedia, onSelectEmoji }) => {
     const [showEmojiModal, setShowEmojiModal] = useState(false);
-    // mở máy ảnh
+    // camera
     const openCamera = useCallback(async () => {
         const options = {
             mediaType: 'photo',
@@ -18,43 +18,35 @@ const Options = ({ onSelectImage, onSelectEmoji }) => {
         };
         launchCamera(options, takePhoto);
     }, []);
-    // mở thư viện
+    // kho ảnh
     const openLibrary = useCallback(async () => {
         const options = {
-            mediaType: 'photo',
+            mediaType: 'mixed',
             quality: 1,
-            saveToPhotos: true,
+            selectionLimit: 0, // Cho phép chọn nhiều ảnh
         };
         launchImageLibrary(options, takePhoto);
     }, []);
-    // chọn ảnh tạo uri
+
+
+    // lấy ảnh
     const takePhoto = useCallback(async (response) => {
         if (response.didCancel) return;
         if (response.errorCode) return;
         if (response.errorMessage) return;
         if (response.assets && response.assets.length > 0) {
-            const asset = response.assets[0];
-
-            onSelectImage(asset.uri);
-
-            //resizeImage(asset.uri);
+            const newImages = response.assets.map(asset => asset.uri);
+            onSelectMedia(newImages);
+            console.log(newImages);
+            
         }
     }, []);
-    // lấy emiji đưa qua TextArea
-    const handleEmojiSelect = (emoji: any) => {
+    const handleEmojiSelect = (emoji) => {
         onSelectEmoji(emoji);
         setShowEmojiModal(false);
     };
-    // căn chỉnh kích thước ảnh (không dùng đến)
-    const resizeImage = (uri) => {
-        ImageResizer.createResizedImage(uri, 300, 300, 'JPEG', 90)
-            .then(resizedImage => {
-                onSelectImage(resizedImage.uri);
-            })
-            .catch(err => {
-                console.error(err);
-            });
-    };
+
+
     return (
         <View style={styles.container}>
             <TouchableOpacity style={styles.button} onPress={openLibrary}>
@@ -90,35 +82,49 @@ const styles = StyleSheet.create({
     icon: {
         height: 30,
         width: 30,
+
+    }, iconv: {
+        height: 28,
+        width: 28,
     },
     button: {
         alignItems: 'center',
         marginStart: 16,
         padding: 5,
+        backgroundColor: 'white',
+        borderRadius: 5,
+        shadowColor: 'black',
+        shadowOpacity: 0.5,
+        shadowRadius: 5,
+        shadowOffset: {
+            width: 0,
+            height: 2,
+        },
+        elevation: 5,
     },
-    emoji: {
+    media: {
         fontSize: 24,
     },
     modalContainer: {
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
-        backgroundColor: 'rgba(0, 0, 0, 0.5)', // Màu nền và mức độ trong suốt của modal
+        backgroundColor: 'rgba(0, 0, 0, 0.5)',
     },
     modalContent: {
-        width: '90%', // Điều chỉnh kích thước chiều rộng của modal
-        height: '30%', // Điều chỉnh kích thước chiều cao của modal
+        width: '90%',
+        height: '30%',
         backgroundColor: 'white',
         borderRadius: 10,
         padding: 10,
-        maxHeight: '80%', // Chiều cao tối đa của modal
+        maxHeight: '80%',
     },
     closeButton: {
         fontSize: 18,
         fontWeight: 'bold',
         marginBottom: 10,
         alignSelf: 'flex-end',
-        color: COLOR.PrimaryColor
+        color: COLOR.PrimaryColor,
     },
 });
 

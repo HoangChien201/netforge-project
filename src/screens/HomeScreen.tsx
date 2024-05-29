@@ -1,14 +1,14 @@
-import { StyleSheet, Text, View } from 'react-native'
-import React from 'react'
-
+import React from 'react';
+import { StyleSheet, View, Image, TouchableOpacity, Text } from 'react-native';
 const HomeScreen = () => {
-  return (
-    <View>
-      <Text>HomeScreen</Text>
-    </View>
-  )
-}
 
-export default HomeScreen
+    return (
+        <View>
+        </View>
+    );
+};
 
-const styles = StyleSheet.create({})
+export default HomeScreen;
+
+const styles = StyleSheet.create({
+});

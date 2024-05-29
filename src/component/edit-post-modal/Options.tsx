@@ -4,7 +4,7 @@ import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
 import { EmojiData } from '../../constant/emoji';
 import EmojiList from './EmojiList';
 import { COLOR } from '../../constant/color';
-const Options = ({ onSelectImage, onSelectEmoji }) => {
+const Options = ({ onSelectNewMedia, onSelectEmoji }) => {
     const [showEmojiModal, setShowEmojiModal] = useState(false);
 
     const openCamera = useCallback(async () => {
@@ -18,9 +18,9 @@ const Options = ({ onSelectImage, onSelectEmoji }) => {
 
     const openLibrary = useCallback(async () => {
         const options = {
-            mediaType: 'photo',
+            mediaType: 'mixed',
             quality: 1,
-            saveToPhotos: true,
+            selectionLimit: 0,
         };
         launchImageLibrary(options, takePhoto);
     }, []);
@@ -30,9 +30,10 @@ const Options = ({ onSelectImage, onSelectEmoji }) => {
         if (response.errorCode) return;
         if (response.errorMessage) return;
         if (response.assets && response.assets.length > 0) {
-            const asset = response.assets[0];
+            const newImages = response.assets.map(asset => asset.uri);
             //onSelectImage(asset.uri);
-            onSelectImage(asset.uri);
+            onSelectNewMedia(newImages);
+            
             
 
         }
@@ -43,12 +44,12 @@ const Options = ({ onSelectImage, onSelectEmoji }) => {
     };
     return (
         <View style={styles.container}>
-            <TouchableOpacity style={styles.button} onPress={openLibrary}>
+            {/* <TouchableOpacity style={styles.button} onPress={openLibrary}>
                 <Image style={styles.icon} source={require('../../media/quyet_icon/folder_p.png')} />
             </TouchableOpacity>
             <TouchableOpacity style={styles.button} onPress={openCamera}>
                 <Image style={styles.icon} source={require('../../media/quyet_icon/camera_p.png')} />
-            </TouchableOpacity>
+            </TouchableOpacity> */}
             <TouchableOpacity style={styles.button} onPress={() => setShowEmojiModal(true)}>
                 <Image style={styles.icon} source={require('../../media/quyet_icon/smile_p.png')} />
             </TouchableOpacity>

@@ -1,9 +1,9 @@
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { COLOR } from '../../constant/color'
 import { Image } from 'react-native';
 
-const User = ({setType}) => {
+const User = ({type,setType}) => {
     const [dropdownVisible, setDropdownVisible] = useState(false);
     const [selectedOption, setSelectedOption] = useState('Public');
 
@@ -12,7 +12,11 @@ const User = ({setType}) => {
         { label: 'Private', value: 2 },
         { label: 'Friend', value: 3 }
     ];
-
+    useEffect(() => {
+        // Dựa vào giá trị type nhận được từ props để chọn option mặc định
+        const defaultOption = options.find(option => option.value === type);
+        setSelectedOption(defaultOption ? defaultOption.label : ''); // Nếu không tìm thấy option tương ứng, selectedOption sẽ là chuỗi rỗng
+    }, [type]);
     const toggleDropdown = () => {
         setDropdownVisible(!dropdownVisible);
     };

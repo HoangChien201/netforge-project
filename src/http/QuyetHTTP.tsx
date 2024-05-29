@@ -1,50 +1,61 @@
 import AxiosInstance from "./AxiosInstance";
+//getOnePost
+export const getPostById = async (postId) => {
+    try {
+        const url = `/v1/post/posts/${postId}`;
+        const result = await AxiosInstance().get(url);
+        console.log('Server response:', result); // Logging toàn bộ phản hồi từ server
+        return result;
+    } catch (error) {
+        console.error(error);
+        throw error;
+    }
+};
 
 // Upload image
-export const upLoadImage = async (form) => {
+export const upLoadMedia = async (formData) => {
     try {
         const axiosInstance = AxiosInstance('multipart/form-data');
-        const url = '/v1/media/upload';
-        const result = await axiosInstance.post(url, form);
+        const url = '/v1/image/upload';
+        const result = await axiosInstance.post(url, formData);
         return result;
     } catch (error) {
         console.log(error);
         throw error;
     }
 }
-
 // Create new post
-export const createNew = async (creator, type, text, imagePath) => {
+export const createNewPost = async (creator, type, text, images) => {
     try {
-        const url = '/v1/post/createNew';
+        const url = '/v1/post/posts';
         const body = {
             creator: creator,
-            type:type,
+            type: type,
             text: text,
-            path: imagePath
+            images: images
         };
         return await AxiosInstance().post(url, body);
     } catch (error) {
-        console.log(error);
+        console.error(error);
         throw error;
     }
-}
+};
 
 // Update post
-export const updatePost = async (postId, type, text, imagePath) => {
+export const updatePost = async (postId, type, text, images) => {
     try {
-        const url = `/v1/post/update/${postId}`;
+        const url = `/v1/post/posts/${postId}`;
         const body = {
             text: text,
-            type:type,
-            path: imagePath
+            type: type,
+            images: images
         };
         return await AxiosInstance().put(url, body);
     } catch (error) {
-        console.log(error);
+        console.error(error);
         throw error;
     }
-}
+};
 
 // Delete post
 export const deletePost = async (postId) => {
@@ -52,7 +63,7 @@ export const deletePost = async (postId) => {
         const url = `/v1/post/delete/${postId}`;
         return await AxiosInstance().delete(url);
     } catch (error) {
-        console.log(error);
+        console.error(error);
         throw error;
     }
-}
+};
