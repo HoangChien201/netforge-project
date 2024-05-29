@@ -14,14 +14,17 @@ import {
 import { NavigationContainer } from '@react-navigation/native';
 import ManageNavigation from './src/component/navigation/ManageNavigation';
 import { UserProvider } from './src/component/navigation/UserContext';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
 function App(): React.JSX.Element {
   return (
     <>
     <StatusBar barStyle="dark-content" backgroundColor="transparent"/>
-      <UserProvider>
-        <ManageNavigation />
-      </UserProvider>
+      <GestureHandlerRootView style={{ flex: 1 }}>
+        <UserProvider>
+          <ManageNavigation />
+        </UserProvider>
+      </GestureHandlerRootView>
     </>
   )
 }
