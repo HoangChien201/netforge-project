@@ -30,12 +30,12 @@ const ModalFail = ({ visible, text }: { visible: boolean, text: string }) => {
             <View style={styles.modalBackGround}>
                 <Animated.View style={[styles.modalContainer, { transform: [{ scale: scaleValues }] }]}>
                     <View style={{ alignItems: "center", justifyContent: 'center' }}>
-                        
-                           <View style={{ alignItems: "center", justifyContent: 'center' }}>
-                                <Image source={require('../../media/Dicons/cross.png')} style={{ height: 150, width: 150 }} />
-                                <Text style={{ marginVertical: 30, fontSize: 18, textAlign: "center", fontFamily: "popins" }}>{text}</Text>
-                            </View>
-                        
+
+                        <View style={{ alignItems: "center", justifyContent: 'center' }}>
+                            <Image source={require('../../media/Dicons/cross.png')} style={{ height: 150, width: 150 }} />
+                            <Text style={{ marginVertical: 30, fontSize: 18, textAlign: "center", fontFamily: "popins" }}>{text}</Text>
+                        </View>
+
                     </View>
                 </Animated.View>
             </View>

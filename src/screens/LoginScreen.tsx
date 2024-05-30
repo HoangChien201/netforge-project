@@ -11,21 +11,21 @@ import { UserRootStackEnum, UserRootStackParams } from '../component/stack/UserR
 import { navigationType } from '../component/navigation/ManageNavigation'
 
 const LoginScreen = () => {
-    const navigation:NavigationProp<ParamListBase> = useNavigation();
-    const [showModal,setShowModal] = useState(false)
-    const [status,setStatus] = useState(true)
-    const [isLoading,setIsLoading] = useState(false)
-   const hanlerRegiter = ()=>{
+    const navigation: NavigationProp<ParamListBase> = useNavigation();
+    const [showModal, setShowModal] = useState(false)
+    const [status, setStatus] = useState(true)
+    const [isLoading, setIsLoading] = useState(false)
+    const hanlerRegiter = () => {
         navigation.navigate(UserRootStackEnum.SignUp);
-   }
+    }
 
     return (
         <>
             <StatusBar barStyle="light-content" backgroundColor={COLOR.primary200} />
             <View style={styles.container}>
                 <View style={{ flexDirection: "row", paddingVertical: 75 }}>
-                    <View style={{position:"absolute",right:0,top:0}}>
-                        <Image source={require('../media/Dicons/Ellipse.png')}/>
+                    <View style={{ position: "absolute", right: 0, top: 0 }}>
+                        <Image source={require('../media/Dicons/Ellipse.png')} />
                     </View>
                     <View style={[styles.viewAll]}>
                         <Text style={styles.labelLogin}>Login</Text>
@@ -33,21 +33,21 @@ const LoginScreen = () => {
                     <View style={styles.viewAll}></View>
                 </View>
                 <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'null'} style={styles.viewContent}>
-                   <Loading isLoading= {isLoading}/>
-                    <FormLogin setIsLoading={setIsLoading} setStatus={setStatus} setModal={setShowModal}/>
-                    <View style={{alignItems:"center",padding:10}}>
-                        <Text>Don't have an account yet ? Register <Text onPress={hanlerRegiter} style={{color:COLOR.primary200}}>Here</Text></Text>
+                    <Loading isLoading={isLoading} />
+                    <FormLogin setIsLoading={setIsLoading} setStatus={setStatus} setModal={setShowModal} />
+                    <View style={{ alignItems: "center", padding: 10 }}>
+                        <Text>Don't have an account yet ? Register <Text onPress={hanlerRegiter} style={{ color: COLOR.primary200 }}>Here</Text></Text>
                     </View>
-                    <View style={{flexDirection:"row",justifyContent:'center',alignItems:'center',padding:15}}>
-                        <View style={{height:0.2,backgroundColor:"black",width:"36%"}}></View>
-                        <View style={{width:"29%"}}>
-                            <Text style={{textAlign:'center',paddingHorizontal:2}}>Or login with</Text>
+                    <View style={{ flexDirection: "row", justifyContent: 'center', alignItems: 'center', padding: 15 }}>
+                        <View style={{ height: 0.2, backgroundColor: "black", width: "36%" }}></View>
+                        <View style={{ width: "29%" }}>
+                            <Text style={{ textAlign: 'center', paddingHorizontal: 2 }}>Or login with</Text>
                         </View>
-                        <View style={{height:0.2,backgroundColor:"black",width:"36%"}}></View>
+                        <View style={{ height: 0.2, backgroundColor: "black", width: "36%" }}></View>
                     </View>
-                    <View style={{flexDirection:'row',justifyContent:'space-between',paddingVertical:20}}>
-                    <ButtonImage children='Facebook' source={require('../media/icon/Facebook.png')} style={styles.buttonImage}/>
-                    <ButtonImage children='Google' source={require('../media/icon/Google.png')} style={styles.buttonImage}/>
+                    <View style={{ flexDirection: 'row', justifyContent: 'space-between', paddingVertical: 20 }}>
+                        <ButtonImage children='Facebook' source={require('../media/icon/Facebook.png')} style={styles.buttonImage} />
+                        <ButtonImage children='Google' source={require('../media/icon/Google.png')} style={styles.buttonImage} />
                     </View>
                 </KeyboardAvoidingView>
                 {status ? (
@@ -83,7 +83,7 @@ const styles = StyleSheet.create({
         color: "#fff",
         fontWeight: "bold",
         fontSize: 40,
-        paddingLeft:30
+        paddingLeft: 30
     },
     viewContent: {
         backgroundColor: "#ffff", flex: 1, marginTop: 15, borderTopEndRadius: 30, borderTopStartRadius: 30, padding: 18
@@ -95,12 +95,12 @@ const styles = StyleSheet.create({
         justifyContent: "center",
         marginTop: 10
     },
-    buttonImage:{
-        paddingHorizontal:24,
+    buttonImage: {
+        paddingHorizontal: 24,
         paddingVertical: 12,
         borderRadius: 6,
         height: 50,
-        backgroundColor:COLOR.primary350,
-        width:174
+        backgroundColor: COLOR.primary350,
+        width: 174
     }
 })
