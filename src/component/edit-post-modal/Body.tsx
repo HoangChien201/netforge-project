@@ -11,15 +11,20 @@ import Icon from 'react-native-vector-icons/Feather';
 import Video from 'react-native-video'
 import renderMedia from './Media'
 import MediaModal from './MediaModal'
-const Body = ({ showModalEdit, setShowModalEdit, post, user }) => {
+import { useMyContext } from '../navigation/UserContext';
+import ModalFail from '../Modal/ModalFail'
+import ModalPoup from '../Modal/ModalPoup'
+const Body = ({ showModalEdit, setShowModalEdit }) => {
     const [text, setText] = useState('');
     const [newMedia, setNewMedia] = useState([]);
     const [media, setMedia] = useState([]);
     const [type, setType] = useState(1);
     const [showModal, setShowModal] = useState(false);
-
+    const { user, setUser } = useMyContext();
     const postId = '6655db23dbf3bd429a543f08';
-
+    const [status, setStatus] = useState('');
+    const [showPopup, setShowPopup] = useState(false);
+    const [isError, setIsError] = useState(false);
     const ShowModalMedia = () => {
         setShowModal(true);
     }
@@ -45,12 +50,6 @@ const Body = ({ showModalEdit, setShowModalEdit, post, user }) => {
     useEffect(() => {
         getOnePost();
     }, []);
-    // lấy thông tin user
-    useEffect(() => {
-        if (user) {
-        }
-    }, [post]);
-    // Emoji
     const handleEmojiSelect = (emoji: any) => {
         setText(text + emoji);
     };
@@ -60,8 +59,8 @@ const Body = ({ showModalEdit, setShowModalEdit, post, user }) => {
     };
     useEffect(() => {
         console.log('media mới nè: ' + newMedia);
-        console.log('media sau upload'+media);
-        
+        console.log('media sau upload' + media);
+
     }, [newMedia]);
     // Hàm xóa ảnh cũ
     const onDeleteOldMedia = (image) => {
@@ -100,20 +99,63 @@ const Body = ({ showModalEdit, setShowModalEdit, post, user }) => {
                 // upload post
                 const newPost = await updatePost(creator, type, text, uploadedMediaPaths);
                 console.log('Bài viết đã được cập nhật:', newPost);
-                setShowModalEdit(false);
+                setTimeout(() => {
+                    setStatus('Cập nhật thành công');
+                    setShowPopup(true);
+                    setIsError(false);
+                    // Đặt lại giá trị sau một khoảng thời gian nhất định
+                    setTimeout(() => {
+                        setStatus('');
+                        setShowPopup(false);
+                        setShowModalEdit(false);
+                    }, 1100);
+                }, 1100);
+
+
             } else {
                 try {
                     const newPost = await updatePost(creator, type, text, media);
                     console.log('Bài viết đã được cập nhật:', newPost);
-                    setShowModalEdit(false);
+                    setTimeout(() => {
+                        setStatus('Cập nhật thành công');
+                        setShowPopup(true);
+                        setIsError(false);
+                        // Đặt lại giá trị sau một khoảng thời gian nhất định
+                        setTimeout(() => {
+                            setStatus('');
+                            setShowPopup(false);
+                            setShowModalEdit(false);
+                        }, 1100);
+
+                    }, 1100);
+                    
                 } catch (error) {
                     console.error('Lỗi khi cập nhật bài viết:', error);
+                    setTimeout(() => {
+                        setStatus('Cập nhật không thành công');
+                        setShowPopup(true);
+                        setIsError(true);
+                        // Đặt lại giá trị sau một khoảng thời gian nhất định
+                        setTimeout(() => {
+                            setStatus('');
+                            setShowPopup(false);
+                        }, 1100);
+                    }, 1100);
                 }
-
                 console.log('No media to upload');
             }
         } catch (error) {
             console.error('Lỗi khi cập nhật bài viết:', error);
+            setTimeout(() => {
+                setStatus('Cập nhật không thành công');
+                setShowPopup(true);
+                setIsError(true);
+                // Đặt lại giá trị sau một khoảng thời gian nhất định
+                setTimeout(() => {
+                    setStatus('');
+                    setShowPopup(false);
+                }, 1100);
+            }, 1100);
         }
     };
     // hiển thị danh sách media
@@ -259,9 +301,9 @@ const Body = ({ showModalEdit, setShowModalEdit, post, user }) => {
                     <Icon name='edit' size={20} color={'white'} />
                     <Text style={{ fontSize: 12, color: 'white' }}>Chỉnh sửa</Text>
                 </TouchableOpacity>
-                {renderMedia({ media, setMedia,setShowModal })}
+                {renderMedia({ media, setMedia, setShowModal })}
             </View>
-                <MediaModal showModal={showModal} setShowModal={setShowModal} media={media} setMedia={setMedia} />
+            <MediaModal showModal={showModal} setShowModal={setShowModal} media={media} setMedia={setMedia} />
             {/* Đây là view sử dụng modal -----------------------------------*/}
 
             {/* {newMedia && newMedia.length > 0 ?
@@ -281,6 +323,13 @@ const Body = ({ showModalEdit, setShowModalEdit, post, user }) => {
             {/* Danh sách hình ảnh ------------------------------------------------------*/}
             <TEXTAREA text={text} setText={setText} />
             <OPTIONS onSelectEmoji={handleEmojiSelect} onSelectNewMedia={newMediaSelected} />
+            {showPopup ? (
+                isError ? (
+                    <ModalFail text={status} visible={showPopup} />
+                ) : (
+                    <ModalPoup text={status} visible={showPopup} />
+                )
+            ) : null}
         </Modal>
     )
 }

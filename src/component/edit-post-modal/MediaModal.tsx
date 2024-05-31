@@ -5,12 +5,15 @@ import Video from 'react-native-video';
 import { COLOR } from '../../constant/color';
 import { launchImageLibrary } from 'react-native-image-picker';
 import { upLoadMedia } from '../../http/QuyetHTTP';
-
+import ModalFail from '../Modal/ModalFail'; 
+import ModalPoup from '../Modal/ModalPoup';
 const MediaModal = ({ showModal, setShowModal, media, setMedia }) => {
     const [playingVideo, setPlayingVideo] = useState(null);
     const [newMedia, setNewMedia] = useState([]);
     const [totalMedia, setTotalMedia] = useState([...media]);
-
+    const [status, setStatus] = useState('');
+    const [showPopup, setShowPopup] = useState(false);
+    const [isError, setIsError] = useState(false);
     useEffect(() => {
         setTotalMedia([...media, ...newMedia]);
         console.log('media: ' + media);
@@ -66,21 +69,35 @@ const MediaModal = ({ showModal, setShowModal, media, setMedia }) => {
                 console.log('Uploaded media paths:', uploadedMediaPaths);
                 setMedia(prevMedia => [...prevMedia, ...uploadedMediaPaths]);
                 setNewMedia([]);
-                setShowModal(false)
+                setTimeout(() => {
+                    setStatus('Đã thêm ảnh mới');
+                    setShowPopup(true);
+                    setIsError(false);
+                    // Đặt lại giá trị sau một khoảng thời gian nhất định
+                    setTimeout(() => {
+                        setStatus('');
+                        setShowPopup(false);
+                        setShowModal(false)
+                    }, 1100);
+                }, 1100);
+
             } else {
                 console.log('No media to upload');
+                setShowModal(false)
             }
         } catch (error) {
             console.error('Lỗi khi tạo bài viết:', error);
+            setShowModal(false)
         }
     };
 
     return (
         <Modal visible={showModal} animationType="slide" style={styles.container}>
             <View style={styles.header}>
-                <TouchableOpacity onPress={() => { setShowModal(false) }}>
+                {/* <TouchableOpacity onPress={() => { setShowModal(false) }}>
                     <Icon name='x' size={28} color={'white'} style={{ marginStart: 5 }} />
-                </TouchableOpacity>
+                </TouchableOpacity> */}
+                <View></View>
                 <TouchableOpacity onPress={uploadNewMedia}>
                     <Icon name='check' size={28} color={'white'} style={{ marginEnd: 5 }} />
                 </TouchableOpacity>
@@ -124,6 +141,13 @@ const MediaModal = ({ showModal, setShowModal, media, setMedia }) => {
                     </View>
                 </TouchableOpacity>
             </ScrollView>
+            {showPopup ? (
+                isError ? (
+                    <ModalFail text={status} visible={showPopup} />
+                ) : (
+                    <ModalPoup text={status} visible={showPopup} />
+                )
+            ) : null}
         </Modal>
     );
 };

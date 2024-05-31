@@ -2,11 +2,11 @@ import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import React, { useState } from 'react'
 import { COLOR } from '../../constant/color'
 import { Image } from 'react-native';
-
+import { useMyContext } from '../navigation/UserContext';
 const User = ({setType}) => {
     const [dropdownVisible, setDropdownVisible] = useState(false);
     const [selectedOption, setSelectedOption] = useState('Public');
-
+    const { user, setUser } = useMyContext();
     const options = [
         { label: 'Public', value: 1 },
         { label: 'Private', value: 2 },
@@ -25,8 +25,8 @@ const User = ({setType}) => {
     return (
         <View style={styles.container}>
             <View style={styles.userInfor}>
-                <Image style={styles.userInforAvatar} source={require('../../media/quyet_icon/event.jpg')}/>
-                <Text style={styles.userInforName}>Quyết đẹp trai</Text>
+                {user.avatar? <Image style={styles.userInforAvatar} source={{uri: user.avatar}}/>  : <Image style={styles.userInforAvatar} source={require('../../media/quyet_icon/smile_p.png')}/>  }
+                <Text style={styles.userInforName}>{user.name}</Text>
             </View>
             <View style={styles.type}>
                 <TouchableOpacity style={styles.dropdownButton} onPress={toggleDropdown}>

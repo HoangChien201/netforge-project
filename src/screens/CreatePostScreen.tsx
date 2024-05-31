@@ -4,35 +4,37 @@ import { COLOR } from '../constant/color'
 import BODY from '../component/create-post-screen/Body'
 import BODYMODAL from '../component/edit-post-modal/Body'
 import { upLoadMedia, createNewPost } from '../http/QuyetHTTP'
-
+import ModalPoup from '../component/Modal/ModalPoup'
+import ModalFail from '../component/Modal/ModalFail'
+import { useMyContext } from '../component/navigation/UserContext';
 const CreatePostScreen = () => {
-  const [showModalEdit, setShowModalEdit] = useState(false);
   const [text, setText] = useState('');
   const [media, setMedia] = useState([]);
   const [type, setType] = useState(1);
   const [creator, setCreator] = useState(2)
-
+  const [status, setStatus] = useState('');
+  const [showPopup, setShowPopup] = useState(false);
+  const [isError, setIsError] = useState(false);
+  const { user, setUser } = useMyContext();
   // upload ảnh lên cloud và tạo bài viết mới
+  const clear =() =>{
+    setText('');
+    setMedia([]);
+    setType(1);
+  }
   const uploadPost = async () => {
-    console.log('text: ' + text, 'media: ' + media, 'type: ' + type, 'creator: ' + creator);
+    console.log('text: ' + text, 'media: ' + media, 'type: ' + type, 'creator: ' + user._id);
+    setCreator(user._id);
     try {
-      if (media && media.length > 0) {
+      if (media && media.length > 0 && text.length > 0) {
         let uploadedMediaPaths = [];
         // Upload multiple media files
         const formData = new FormData();
         media.forEach((file, index) => {
-          // console.log("File " + (index + 1) + ":");
-          // console.log("URI:", file);
-          // console.log("Type: " + (file.type || 'image/jpeg'));
-          // console.log("Name: " + (file.name || `media${index}.jpg`));
-          // let imgPath = file.replace("file:///", "");
-          // console.log(imgPath);
-          
-          // Append each file to FormData
           formData.append('media', {
             uri: file,
-            type: file.type || 'image/jpeg', 
-            name: file.name || `media${index}.jpg`, 
+            type: file.type || 'image/jpeg',
+            name: file.name || `media${index}.jpg`,
           });
         });
 
@@ -43,26 +45,66 @@ const CreatePostScreen = () => {
         console.log('Uploaded media paths:', uploadedMediaPaths);
 
         //Create new post with the uploaded media paths
-        const newPost = await createNewPost(creator, type, text, uploadedMediaPaths);
+        const newPost = await createNewPost({ creator, type, text, uploadedMediaPaths });
         console.log('Bài viết đã được tạo:', newPost);
-
+        setTimeout(() => {
+          setStatus('Tạo bài viết thành công');
+          setShowPopup(true);
+          setIsError(false);
+          // Đặt lại giá trị sau một khoảng thời gian nhất định
+          setTimeout(() => {
+            setStatus('');
+            setShowPopup(false);
+            setIsError(true);
+          }, 1500);
+        }, 1000);
+        clear();
         // Close the modal after creating the post
-      } else {
+      } else if (text.length > 0) {
         // upload post withought media
-
-        console.log('No media to upload');
+        const newPost = await createNewPost({ creator, type, text });
+        console.log('Bài viết đã được tạo:', newPost);
+        setTimeout(() => {
+          setStatus('Tạo bài viết thành công');
+          setShowPopup(true);
+          setIsError(false);
+          // Đặt lại giá trị sau một khoảng thời gian nhất định
+          setTimeout(() => {
+            setStatus('');
+            setShowPopup(false);
+          }, 1500);
+        }, 1000);
+      } else {
+        setTimeout(() => {
+          setStatus('Bạn chưa viết gì');
+          setShowPopup(true);
+          setIsError(true);
+          // Đặt lại giá trị sau một khoảng thời gian nhất định
+          setTimeout(() => {
+            setStatus('');
+            setShowPopup(false);
+          }, 1500);
+        }, 1000);
       }
+      clear();
     } catch (error) {
       console.error('Lỗi khi tạo bài viết:', error);
+      setTimeout(() => {
+        setStatus('Có lỗi khi tạo');
+        setShowPopup(true);
+        setIsError(true);
+        // Đặt lại giá trị sau một khoảng thời gian nhất định
+        setTimeout(() => {
+          setStatus('');
+          setShowPopup(false);
+        }, 1500);
+      }, 1000);
     }
   };
 
   const log = () => {
-    console.log(text, media, type, creator);
+    console.log(text, media, type, user.avatar);
 
-  }
-  const ShowModalEdit = () => {
-    setShowModalEdit(true);
   }
   return (
     <View style={styles.container}>
@@ -70,13 +112,28 @@ const CreatePostScreen = () => {
         <TouchableOpacity>
           <Image style={styles.headerClose} source={require('../media/quyet_icon/x_w.png')} />
         </TouchableOpacity>
-        <Text style={styles.headerText}>Create New Post</Text>
-        <TouchableOpacity onPress={ShowModalEdit} >
-          <Text style={styles.headerPostText} >Post</Text>
+        <Text style={styles.headerText}>Tạo bài viết</Text>
+        <TouchableOpacity onPress={log} >
+          <Text style={styles.headerPostText} >Lưu</Text>
         </TouchableOpacity>
       </View>
-      <BODY text={text} setText={setText} media={media} setMedia={setMedia} type={type} setType={setType}></BODY>
-      <BODYMODAL showModalEdit={showModalEdit} setShowModalEdit={setShowModalEdit} />
+      <BODY text={text}
+        setText={setText}
+        media={media}
+        setMedia={setMedia}
+        type={type}
+        setType={setType}
+        setStatus={setStatus}
+        setShowPopup={setShowPopup}
+
+      />
+      {showPopup ? (
+        isError ? (
+          <ModalFail text={status} visible={showPopup} />
+        ) : (
+          <ModalPoup text={status} visible={showPopup} />
+        )
+      ) : null}
     </View>
   )
 }

@@ -25,14 +25,11 @@ export const upLoadMedia = async (formData) => {
     }
 }
 // Create new post
-export const createNewPost = async (creator, type, text, images) => {
+export const createNewPost = async (postDetails) => {
     try {
         const url = '/v1/post/posts';
         const body = {
-            creator: creator,
-            type: type,
-            text: text,
-            images: images
+            ...postDetails
         };
         return await AxiosInstance().post(url, body);
     } catch (error) {
