@@ -5,15 +5,21 @@ import { COLOR } from '../constant/color'
 import REQFriend from '../component/notificationes/RequestFriend'
 import OldNotificationes from '../component/notificationes/OldNotificationes'
 import NewNotificationes from '../component/notificationes/NewNotificationes'
-
-
+import MODALFRIEND from '../component/friend-request-accept-modal/Body'
+import MODALHISTORIES from '../component/user-histories-modal/Body'
 const NotificationScreen = () => {
   const [showModalEdit, setShowModalEdit] = useState(false);
+  const [showModalFriend, setShowModalFriend] = useState(false);
   const [status, setStatus] = useState('');
   const [showPopup, setShowPopup] = useState(false);
   const [isError, setIsError] = useState(false);
+  const [reload, setReload] = useState(false)
+  const [dot, setDot] = useState(Number);
   const ShowModalEdit = () => {
     setShowModalEdit(true);
+  }
+  const ShowModalFriend = () => {
+    setShowModalFriend(true);
   }
   return (
     <View style={styles.container}>
@@ -23,18 +29,31 @@ const NotificationScreen = () => {
           <Text>edit</Text>
         </TouchableOpacity>
       </View>
-
-      <REQFriend></REQFriend>
-      <View style={{flexDirection:'column'}}>
+      <TouchableOpacity onPress={ShowModalFriend}>
+        <REQFriend/>
+        {dot>0?  <View style={styles.dot}>
+        <Text style={{color:'red', fontSize:16}}>{dot}</Text>
+        </View> : null}
+      </TouchableOpacity>
+      <View style={{ flexDirection: 'column' }}>
         <NewNotificationes></NewNotificationes>
       </View>
-      <View style={{flexDirection:'column'}}>  
+      <View style={{ flexDirection: 'column' }}>
         <OldNotificationes></OldNotificationes>
       </View>
       <BODYMODAL
         showModalEdit={showModalEdit}
         setShowModalEdit={setShowModalEdit}
       />
+      <MODALFRIEND
+        showModalFriend={showModalFriend}
+        setShowModalFriend={setShowModalFriend}
+        setDot={setDot}
+        setReload={()=>{
+          setReload(false)
+        }}
+      />
+      <MODALHISTORIES />
     </View>
   )
 }
@@ -59,5 +78,16 @@ const styles = StyleSheet.create({
     fontSize: 24,
     color: COLOR.primary100
 
+  },
+  dot:{
+    height:20,
+    width:20,
+    position:'absolute',
+    top:31,
+    start: 35,
+    backgroundColor:COLOR.primary300,
+    alignItems:'center',
+    justifyContent:'center',
+    borderRadius:10
   }
 })

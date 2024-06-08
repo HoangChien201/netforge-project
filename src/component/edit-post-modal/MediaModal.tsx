@@ -104,7 +104,7 @@ const MediaModal = ({ showModal, setShowModal, media, setMedia }) => {
             </View>
             <ScrollView>
                 {totalMedia.map((media, index) => (
-                    <View key={index} style={styles.MediaItem}>
+                    <View key={index.toString()} style={styles.MediaItem}>
                         {media.endsWith('.mp4') ? (
                             <View style={{ alignItems: 'center', justifyContent: 'center' }}>
                                 <Video

@@ -4,14 +4,15 @@ import React, { useContext, useRef, useState } from 'react'
 
 import { COLOR } from '../../constant/color'
 import { emailPattern } from '../../constant/valid'
-
+import TouchId from './TouchId'
 import ButtonLogin from '../form/ButtonLogin'
 import InputLogin from './Input'
 import Remember from './Remember'
-import { login } from '../http/userHttp/user'
+import { login, loginWithTouchId } from '../http/userHttp/user'
 import { useMyContext } from '../navigation/UserContext'
 import AsyncStorage from '@react-native-async-storage/async-storage'
-
+import { Icon } from 'react-native-vector-icons/Icon'
+import IconE from 'react-native-vector-icons/Ionicons'
 
 interface user {
   email: string,
@@ -52,33 +53,43 @@ const FormLogin = ({ setModal, setStatus, setIsLoading }: { setModal: (value: bo
       try {
         const result = await login(email, password);
         console.log(result);
-        
-        if (result) {
-          setTimeout(() => {
-            setUser(result);
 
-          }, 2000);
-          await AsyncStorage.setItem('token', result.token);
-          console.log("Token set", result.token);
-          setIsLoading(true)
-          setModal(true);
-          setStatus(true);
-
-          setTimeout(() => {
-
-            setModal(false);
-          }, 1000);
-
-        } else {
-          setModal(true);
-          setStatus(false);
-          setTimeout(() => {
-            setModal(false);
-          }, 1000);
-
-        }
+        handleLoginResult(result);
       } catch (error) {
         console.log("Login error", error);
+      }
+    }
+  };
+
+  const handleLoginResult = async (result) => {
+    if (result) {
+      setTimeout(() => {
+        setUser(result);
+      }, 2000);
+      await AsyncStorage.setItem('token', result.token);
+      console.log("Token set", result.token);
+      setIsLoading(true);
+      setModal(true);
+      setStatus(true);
+      setTimeout(() => {
+        setModal(false);
+      }, 1000);
+    } else {
+      setModal(true);
+      setStatus(false);
+      setTimeout(() => {
+        setModal(false);
+      }, 1000);
+    }
+  };
+  const handleAuthSuccess = async (isAuth) => {
+    if (isAuth) {
+      const { email } = { ...valueF };
+      try {
+        const result = await loginWithTouchId(email);
+        handleLoginResult(result);
+      } catch (error) {
+        console.log("Touch ID login error", error);
       }
     }
   };
@@ -94,8 +105,9 @@ const FormLogin = ({ setModal, setStatus, setIsLoading }: { setModal: (value: bo
         </TouchableOpacity>
 
       </View>
-      <View>
+      <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
         <ButtonLogin textLogin chilren='Login' textColor='#fff' onPress={submit} />
+        <TouchId onAuthSuccess={handleAuthSuccess} />
       </View>
     </View>
   )

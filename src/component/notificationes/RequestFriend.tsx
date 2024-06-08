@@ -4,7 +4,7 @@ import  Icon from 'react-native-vector-icons/AntDesign'
 import {COLOR} from '../../constant/color'
 const RequestFriend = () => {
     return (
-        <TouchableOpacity style={styles.container}>
+        <View style={styles.container}>
             <View style={styles.iconFriend} >
                 <Icon name='adduser' size={24} color={COLOR.PrimaryColor}/>
             </View>
@@ -12,7 +12,7 @@ const RequestFriend = () => {
                 <Text style={styles.text1}>Yêu cầu kết bạn</Text>
                 <Text style={styles.text2}>Phê duyệt hoặc bỏ qua yêu cầu</Text>
             </View>
-        </TouchableOpacity>
+        </View>
     )
 }
 

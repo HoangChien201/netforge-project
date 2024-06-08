@@ -16,15 +16,18 @@ const CreatePostScreen = () => {
   const [showPopup, setShowPopup] = useState(false);
   const [isError, setIsError] = useState(false);
   const { user, setUser } = useMyContext();
+  const [friends, setFriends] = useState([]);
   // upload ảnh lên cloud và tạo bài viết mới
+
   const clear =() =>{
     setText('');
     setMedia([]);
     setType(1);
   }
   const uploadPost = async () => {
-    console.log('text: ' + text, 'media: ' + media, 'type: ' + type, 'creator: ' + user._id);
+    console.log('text: ' + text, 'media: ' + media, 'type: ' + type, 'creator: ' + user._id , 'friends: '+friends) ;
     setCreator(user._id);
+    const tags = friends.map(friendId => ({ friendId: String(friendId) }));
     try {
       if (media && media.length > 0 && text.length > 0) {
         let uploadedMediaPaths = [];
@@ -43,9 +46,9 @@ const CreatePostScreen = () => {
         uploadedMediaPaths = uploadResult.map(item => item.url);
 
         console.log('Uploaded media paths:', uploadedMediaPaths);
-
+        
         //Create new post with the uploaded media paths
-        const newPost = await createNewPost({ creator, type, text, uploadedMediaPaths });
+        const newPost = await createNewPost({ creator, type, text,tags, uploadedMediaPaths });
         console.log('Bài viết đã được tạo:', newPost);
         setTimeout(() => {
           setStatus('Tạo bài viết thành công');
@@ -62,7 +65,7 @@ const CreatePostScreen = () => {
         // Close the modal after creating the post
       } else if (text.length > 0) {
         // upload post withought media
-        const newPost = await createNewPost({ creator, type, text });
+        const newPost = await createNewPost({ creator, type, text, tags });
         console.log('Bài viết đã được tạo:', newPost);
         setTimeout(() => {
           setStatus('Tạo bài viết thành công');
@@ -103,7 +106,8 @@ const CreatePostScreen = () => {
   };
 
   const log = () => {
-    console.log(text, media, type, user.avatar);
+    const tags = friends.map(friendId => ({ friendId: String(friendId) }));
+    console.log(text, media, type,tags);
 
   }
   return (
@@ -113,7 +117,7 @@ const CreatePostScreen = () => {
           <Image style={styles.headerClose} source={require('../media/quyet_icon/x_w.png')} />
         </TouchableOpacity>
         <Text style={styles.headerText}>Tạo bài viết</Text>
-        <TouchableOpacity onPress={log} >
+        <TouchableOpacity onPress={uploadPost} >
           <Text style={styles.headerPostText} >Lưu</Text>
         </TouchableOpacity>
       </View>
@@ -125,6 +129,8 @@ const CreatePostScreen = () => {
         setType={setType}
         setStatus={setStatus}
         setShowPopup={setShowPopup}
+        friends={friends}
+        setFriends={setFriends}
 
       />
       {showPopup ? (

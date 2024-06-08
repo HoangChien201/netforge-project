@@ -30,4 +30,16 @@ export const regiter = async (email: string, password: string, fullname: string)
         console.log(error);
 
     }
+    
 }
+export const loginWithTouchId = async (email) => {
+    try {
+        const axioInstance = AxiosInstance();
+        const url = "/v1/auth/login/touchid";
+        const body = { email };
+        const res = await axioInstance.post(url, body);
+        return res.data;
+    } catch (error) {
+        console.log(error);
+    }
+};

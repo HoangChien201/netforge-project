@@ -36,7 +36,7 @@ const renderMedia = ({ media, setMedia, setShowModal }) => {
 
                 {media.map((uri, index) => (
                     uri.endsWith('.mp4') ? (
-                        <View key={index} style={styles.mediaContainer}>
+                        <View key={index.toString()} style={styles.mediaContainer}>
                             <Video
                                 source={{ uri }}
                                 style={styles.oneMedia}
@@ -58,8 +58,8 @@ const renderMedia = ({ media, setMedia, setShowModal }) => {
                             </View>
                         </View>
                     ) : (
-                        <View style={styles.oneMedia}>
-                            <Image key={index} source={{ uri }} style={styles.oneMedia} resizeMode="contain" />
+                        <View style={styles.oneMedia} key={index.toString()} >
+                            <Image source={{ uri }} style={styles.oneMedia} resizeMode="contain" />
                         </View>
 
                     )
@@ -73,7 +73,7 @@ const renderMedia = ({ media, setMedia, setShowModal }) => {
 
                 {media.map((uri, index) => (
                     uri.endsWith('.mp4') ? (
-                        <View key={index} style={styles.mediaContainer}>
+                        <View key={index.toString()} style={styles.mediaContainer}>
                             <Video
                                 source={{ uri }}
                                 style={styles.twoMedia}
@@ -91,8 +91,8 @@ const renderMedia = ({ media, setMedia, setShowModal }) => {
                             </TouchableOpacity>
                         </View>
                     ) : (
-                        <View style={styles.mediaContainer}>
-                            <Image key={index} source={{ uri }} style={styles.oneMedia} resizeMode="contain" />
+                        <View style={styles.mediaContainer} key={index.toString}>
+                            <Image  source={{ uri }} style={styles.oneMedia} resizeMode="contain" />
                         </View>
                     )
                 ))}

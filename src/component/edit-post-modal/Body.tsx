@@ -21,7 +21,7 @@ const Body = ({ showModalEdit, setShowModalEdit }) => {
     const [type, setType] = useState(1);
     const [showModal, setShowModal] = useState(false);
     const { user, setUser } = useMyContext();
-    const postId = '6655db23dbf3bd429a543f08';
+    const postId = '6661dd1f16cb1119b949a3de';
     const [status, setStatus] = useState('');
     const [showPopup, setShowPopup] = useState(false);
     const [isError, setIsError] = useState(false);

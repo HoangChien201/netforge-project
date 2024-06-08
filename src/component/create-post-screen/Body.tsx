@@ -8,7 +8,7 @@ import { COLOR } from '../../constant/color';
 import SwiperFlatList from 'react-native-swiper-flatlist';
 import Icon from 'react-native-vector-icons/Feather';
 
-const Body = ({ text, setText, media, setMedia, type, setType,setStatus, setShowPopup }) => {
+const Body = ({ text, setText, media, setMedia, type, setType,setStatus, setShowPopup, friends, setFriends }) => {
     //const [media, setMedia] = useState([]);
     const [playingVideo, setPlayingVideo] = useState(null);
     const [viewMore, setViewMore] = useState(false);
@@ -62,7 +62,7 @@ const Body = ({ text, setText, media, setMedia, type, setType,setStatus, setShow
                                     </TouchableOpacity>
                             </View>
                         ) : (
-                            <View style={styles.oneMedia}>                            
+                            <View style={styles.oneMedia} key={index.toString()}>                            
                                 <Image key={index} source={{ uri }} style={styles.oneMedia} resizeMode="contain" />
                                 <TouchableOpacity style={styles.buttonDeleteImage} onPress={() => deleteImage(uri)}>
                                         <Icon name='trash-2' size={28} color={COLOR.PrimaryColor} />
@@ -99,7 +99,7 @@ const Body = ({ text, setText, media, setMedia, type, setType,setStatus, setShow
                                     </TouchableOpacity>
                             </View>
                         ) : (
-                            <View style={styles.mediaContainer}>                            
+                            <View style={styles.mediaContainer} key={index.toString()}>                            
                                 <Image key={index} source={{ uri }} style={styles.oneMedia} resizeMode="contain" />
                                 <TouchableOpacity style={styles.buttonDeleteImage} onPress={() => deleteImage(uri)}>
                                         <Icon name='trash-2' size={28} color={COLOR.PrimaryColor} />
@@ -112,9 +112,9 @@ const Body = ({ text, setText, media, setMedia, type, setType,setStatus, setShow
         } else if (numMedia === 3) {
             return (
                 <TouchableOpacity style={styles.threeMediaContainer} onPress={()=>setViewMore(true)}>
-                    <View style={styles.media1ContainerOf3}>
+                    <View style={styles.media1ContainerOf3} >
                         {item[0].endsWith('.mp4') ? (
-                            <View style={styles.media1of3}>
+                            <View style={styles.media1of3} >
                                 <Video
                                     source={{ uri: item[0] }}
                                     style={styles.mediaFill}
@@ -283,7 +283,7 @@ const Body = ({ text, setText, media, setMedia, type, setType,setStatus, setShow
                 <SwiperFlatList
                     data={item}
                     renderItem={({ item }) => (
-                        <View style={styles.imageContainer}>
+                        <View style={styles.imageContainer} key={item.toString()}>
                             {item.endsWith('.mp4') ? (
                                 <View>
                                     <Video
@@ -298,7 +298,7 @@ const Body = ({ text, setText, media, setMedia, type, setType,setStatus, setShow
                                     </TouchableOpacity>
                                 </View>
                             ) : (
-                                <View>
+                                <View key={item.toString}>
                                     <Image source={{ uri: item }} style={styles.image} resizeMode="contain" />
                                     <TouchableOpacity style={styles.buttonDeleteImage} onPress={() => deleteImage(item)}>
                                         <Icon name='trash-2' size={28} color={COLOR.PrimaryColor} />
@@ -338,7 +338,7 @@ const Body = ({ text, setText, media, setMedia, type, setType,setStatus, setShow
                     </View>
                 }
 
-                <TEXTAREA text={text} setText={setText} />
+                <TEXTAREA text={text} setText={setText} setFriends={setFriends} friends={friends}/>
                 <OPTIONS onSelectEmoji={handleEmojiSelect} onSelectMedia={handleMediaSelect}/>
             </View>
         </View>
