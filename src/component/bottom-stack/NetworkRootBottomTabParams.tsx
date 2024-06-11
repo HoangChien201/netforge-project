@@ -8,15 +8,13 @@ import NotificationScreen from "../../screens/NotificationScreen"
 import ProfileScreen from "../../screens/ProfileScreen"
 import { View } from "react-native"
 import { COLOR } from "../../constant/color"
-import CommentsScreen from "../../screens/CommentsScreen"
 
 enum NetworkRootBottomTabEnum {
     HomeScreen = 'HomeScreen',
     ExploreScreen = 'ExploreScreen',
     CreatePostScreen = 'CreatePostScreen',
     NotificationScreen = 'NotificationScreen',
-    ProfileScreen = 'ProfileScreen',
-    CommentsScreen = 'CommentsScreen'
+    ProfileScreen = 'ProfileScreen'
 }
 
 export type NetworkRootBottomTabParams = {
@@ -24,8 +22,7 @@ export type NetworkRootBottomTabParams = {
     ExploreScreen: undefined,
     CreatePostScreen: undefined,
     NotificationScreen: undefined,
-    ProfileScreen: undefined,
-    CommentsScreen: undefined
+    ProfileScreen: undefined
 }
 
 export const NetworkRootBottomTabScreens = [
@@ -100,6 +97,5 @@ export const NetworkRootBottomTabScreens = [
 
         }
     },
-    
 
 ]

@@ -47,7 +47,7 @@ const LoginScreen = () => {
                     </View>
                     <View style={{flexDirection:'row',justifyContent:'space-between',paddingVertical:20}}>
                     <ButtonImage children='Facebook' source={require('../media/icon/Facebook.png')} style={styles.buttonImage}/>
-                    <ButtonImage children='Google' source={require('../media/icon/Google.png')} style={styles.buttonImage}/>
+<ButtonImage children='Google' source={require('../media/icon/Google.png')} style={styles.buttonImage}/>
                     </View>
                 </KeyboardAvoidingView>
                 {status ? (

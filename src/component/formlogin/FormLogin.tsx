@@ -24,7 +24,7 @@ export type valid = {
 }
 
 const FormLogin = ({ setModal, setStatus, setIsLoading }: { setModal: (value: boolean) => void, setStatus: (value: boolean) => void, setIsLoading: (value: boolean) => void }) => {
-  const [valueF, setValueF] = useState<user>({ email: "hoangduy@gmail.com", password: "123" })
+  const [valueF, setValueF] = useState<user>({ email: "vanquyet@gmail.com", password: "123" })
   const [valid, setValid] = useState<valid>({ email: true, password: true })
 
   const { setUser } = useMyContext();
@@ -45,28 +45,34 @@ const FormLogin = ({ setModal, setStatus, setIsLoading }: { setModal: (value: bo
     const isValidPassword = trimmedPassword.length > 0;
 
     if (!isValidEmail || !isValidPassword) {
-
+ 
+      
       setValid({ email: isValidEmail, password: isValidPassword });
-    } else {
+    
+    } 
+
       setValid({ email: true, password: true });
+      console.log(valid);
+      
       try {
         const result = await login(email, password);
-        if (result?.data) {
+        console.log(result);
+        if (result) {
+          
+          
           setTimeout(() => {
-            setUser(result?.data);
+            setUser(result);
 
           }, 2000);
-          await AsyncStorage.setItem('token', result.data.token);
-          console.log("Token set", result.data.token);
+          await AsyncStorage.setItem('token', result.token);
+          console.log("Token set", result.token);
           setIsLoading(true)
           setModal(true);
           setStatus(true);
-
           setTimeout(() => {
 
             setModal(false);
           }, 1000);
-
         } else {
           setModal(true);
           setStatus(false);
@@ -78,7 +84,7 @@ const FormLogin = ({ setModal, setStatus, setIsLoading }: { setModal: (value: bo
       } catch (error) {
         console.log("Login error", error);
       }
-    }
+    
   };
   return (
     <View>

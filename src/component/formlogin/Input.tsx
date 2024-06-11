@@ -25,13 +25,13 @@ const InputLogin = (props: props) => {
     const [isFocused, setIsFocused] = useState(false);
     const ref = React.useRef<TextInput>(null);
     
-    console.log("2",invalid);
+
     useEffect(() => {
         setShowInvalid(invalid);
         
     }, [invalid]);
     
-    console.log("3",showInvalid);
+
     const handleFocus = () => {
         if (ref.current) {
             setIsFocused(true)
@@ -69,14 +69,13 @@ const InputLogin = (props: props) => {
          </View>
         )
     }
-    console.log("showw",showInvalid);
+   
     const onchantext = (value: string) => {
         onchangText(value)
-        console.log("value",value);
+  
+
         
-          if(value !== "" ) {
-            setShowInvalid(false);
-          }
+          
        handleFocus();
             // Ẩn thông báo khi người dùng bắt đầu gõ
         
@@ -90,7 +89,7 @@ const InputLogin = (props: props) => {
             {iconE && <Image style={styles.iconMail} source={require('../../media/icon/Mail.png')} />}
             {iconPass && <Image style={styles.iconMail} source={require('../../media/icon/Password.png')} />}
             {iconP && <Image style={{
-                position: 'absolute',
+position: 'absolute',
                 top: 22,
                 start: 10,
                 width:15,

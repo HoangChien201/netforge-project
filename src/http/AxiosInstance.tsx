@@ -4,7 +4,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 // Sử dụng địa chỉ IP của máy chủ thay vì localhost
 const AxiosInstance = (contentType = 'application/json') => {
     const axiosInstance = axios.create({
-        baseURL: 'http://192.168.1.33:3000/',
+        baseURL: 'http://192.168.137.1:8080/',
     });
 
     axiosInstance.interceptors.request.use(
