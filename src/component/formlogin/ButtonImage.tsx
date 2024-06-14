@@ -6,7 +6,7 @@ const ButtonImage = (props) => {
     return (
         <Pressable style={({ pressed }) => pressed && styles.pressed}>
             <View style={[styles.container,style]}>
-                <Image styles={styles.image} source={source} resizeMode='contain'/>
+                <Image style={styles.image} source={source} resizeMode='contain'/>
                 <Text style={styles.children}>{children}</Text>
             </View>
         </Pressable>
