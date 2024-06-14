@@ -2,38 +2,35 @@ import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import React, { useState, useEffect } from 'react'
 import { COLOR } from '../../constant/color'
 import { Image } from 'react-native';
-import { useMyContext } from '../navigation/UserContext';
-interface UserProps {
-    setPermission: (permission: number) => void;
-    permission: number;
-}
-const User: React.FC<UserProps> = ({ setPermission, permission }) => {
+
+const User = ({type,setType}) => {
     const [dropdownVisible, setDropdownVisible] = useState(false);
     const [selectedOption, setSelectedOption] = useState('Public');
-    const { user, setUser } = useMyContext();
+
     const options = [
-        { label: 'Bạn bè', value: 1 },
-        { label: 'Cá nhân', value: 2 },
+        { label: 'Public', value: 1 },
+        { label: 'Private', value: 2 },
+        { label: 'Friend', value: 3 }
     ];
     useEffect(() => {
-        const defaultOption = options.find(option => option.value === permission);
+        // Dựa vào giá trị type nhận được từ props để chọn option mặc định
+        const defaultOption = options.find(option => option.value === type);
         setSelectedOption(defaultOption ? defaultOption.label : ''); // Nếu không tìm thấy option tương ứng, selectedOption sẽ là chuỗi rỗng
-    }, [permission]);
+    }, [type]);
     const toggleDropdown = () => {
         setDropdownVisible(!dropdownVisible);
     };
 
-    const selectOption = (option: { label: any; value: any; }) => {
+    const selectOption = (option) => {
         setSelectedOption(option.label);
-        setPermission(option.value);
+        setType(option.value);
         setDropdownVisible(false);
     };
     return (
         <View style={styles.container}>
             <View style={styles.userInfor}>
-                {user.avatar ? <Image style={styles.userInforAvatar} source={user.avatar} /> : <View style={styles.emptyUserInforAvatar} />}
-
-                <Text style={styles.userInforName}>{user.fullname}</Text>
+                <Image style={styles.userInforAvatar} source={require('../../media/quyet_icon/event.jpg')}/>
+                <Text style={styles.userInforName}>Quyết đẹp trai</Text>
             </View>
             <View style={styles.type}>
                 <TouchableOpacity style={styles.dropdownButton} onPress={toggleDropdown}>
@@ -68,31 +65,24 @@ const styles = StyleSheet.create({
         padding: 20,
         flexDirection: 'row',
         justifyContent: 'space-between',
-        alignItems: 'center'
+        alignItems:'center'
     },
     userInfor: {
         width: '70%',
-        flexDirection: 'row',
-        alignItems: 'center',
+        flexDirection:'row',
+        alignItems:'center',
     },
     userInforAvatar: {
         width: 50,
         height: 50,
-        borderRadius: 100,
-    },
-    emptyUserInforAvatar: {
-        width: 50,
-        height: 50,
-        borderRadius: 100,
-        borderWidth: 1,
-        borderColor: 'gray'
+        borderRadius:100,
     },
     userInforName: {
         width: '70%',
-        color: 'black',
-        fontWeight: '400',
-        fontSize: 18,
-        marginTop: 15,
+        color:'black',
+        fontWeight:'400',
+        fontSize:18,
+        marginTop:15,
         marginStart: 10
     },
     type: {
@@ -108,18 +98,18 @@ const styles = StyleSheet.create({
         color: '#FFF',
         textAlign: 'center',
     },
-    buttonType: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        justifyContent: 'space-between',
+    buttonType:{
+        flexDirection:'row',
+        alignItems:'center',
+        justifyContent:'space-between',
 
     },
-    buttonTypeIcon: {
-        height: 20,
+    buttonTypeIcon:{
+        height:20,
         width: 20,
     },
-    buttonTypeText: {
-        height: 20,
+    buttonTypeText:{
+        height:20,
         width: 20,
     },
     dropdown: {
@@ -131,8 +121,8 @@ const styles = StyleSheet.create({
         shadowOffset: { width: 0, height: 2 },
         shadowOpacity: 0.25,
         shadowRadius: 3.84,
-        position: 'absolute',
-        width: 100
+        position:'absolute',
+        width:100
     },
     dropdownOption: {
         padding: 10,

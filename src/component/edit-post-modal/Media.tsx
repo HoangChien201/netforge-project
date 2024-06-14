@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { StyleSheet, Text, View, TouchableOpacity, Image, FlatList, Permission } from 'react-native';
+import { StyleSheet, Text, View, TouchableOpacity, Image, FlatList } from 'react-native';
 import Video from 'react-native-video';
 import USER from './User';
 import TEXTAREA from './TextArea';
@@ -8,50 +8,58 @@ import { COLOR } from '../../constant/color';
 import SwiperFlatList from 'react-native-swiper-flatlist';
 import Icon from 'react-native-vector-icons/Feather';
 
-interface renderMedia{
-    images:string;
-    meida:string;
-    setMedia: (Permission:string) => void;
-    setShowModal: (Permission:boolean) => void;
-};
-
-const renderMedia:React.FC<renderMedia> = ({images, media, setMedia, setShowModal }) => {
+const renderMedia = ({ media, setMedia, setShowModal }) => {
     const [playingVideo, setPlayingVideo] = useState(null);
     const [viewMore, setViewMore] = useState(false);
+
+    const handleMediaSelect = (uris) => {
+        setMedia(uris);
+        console.log(media);
+    };
+    const deleteImage = (uri) => {
+        const updatedImages = media.filter(media => media !== uri);
+        setMedia(updatedImages);
+        console.log(updatedImages);
+
+    };
     const togglePlayVideo = (uri) => {
         setPlayingVideo(playingVideo === uri ? null : uri);
     };
 
-    if (!images || images.length === 0) {
+    if (!media || media.length === 0) {
         return null;
     }
-    const numMedia = images.length;
+    const numMedia = media.length;
     if (numMedia === 1) {
         return (
             <View style={styles.oneMediaContainer}>
 
-                {images.map((item:imageType, index) => (
-                    item.url.endsWith('.mp4') ? (
-                        <View key={index.toString()} style={styles.mediaContainer}>
+                {media.map((uri, index) => (
+                    uri.endsWith('.mp4') ? (
+                        <View key={index} style={styles.mediaContainer}>
                             <Video
-                                source={{uri: item.url }}
+                                source={{ uri }}
                                 style={styles.oneMedia}
                                 resizeMode="cover"
-                                paused={playingVideo !== item.url}
+                                paused={playingVideo !== uri}
                                 repeat={true}
                             />
                             <TouchableOpacity
                                 style={styles.playButton}
-                                onPress={() => togglePlayVideo(item.url)}
+                                onPress={() => togglePlayVideo(uri)}
                             >
                                 <Text style={styles.playButtonText}>
-                                    {playingVideo === item.url ? <Icon name="pause-circle" size={24} color={'#fff'} /> : <Icon name="play-circle" size={24} color={'#fff'} />}
+                                    {playingVideo === uri ? <Icon name="pause-circle" size={24} color={'#fff'} /> : <Icon name="play-circle" size={24} color={'#fff'} />}
                                 </Text>
                             </TouchableOpacity>
+                            <View>
+                                <Image source={{ uri: item }} style={styles.image} resizeMode="contain" />
+
+                            </View>
                         </View>
                     ) : (
-                        <View style={styles.oneMedia} key={index.toString()} >
-                            <Image source={{ uri: item.url }} style={styles.oneMedia} resizeMode="contain" />
+                        <View style={styles.oneMedia}>
+                            <Image key={index} source={{ uri }} style={styles.oneMedia} resizeMode="contain" />
                         </View>
 
                     )
@@ -62,28 +70,29 @@ const renderMedia:React.FC<renderMedia> = ({images, media, setMedia, setShowModa
         return (
             
             <View style={styles.twoMediaContainer}>
-                {images.map((item:imageType, index) => (
-                    item.url.endsWith('.mp4') ? (
-                        <View key={index.toString()} style={styles.mediaContainer}>
+
+                {media.map((uri, index) => (
+                    uri.endsWith('.mp4') ? (
+                        <View key={index} style={styles.mediaContainer}>
                             <Video
-                                source={{ uri: item.url }}
+                                source={{ uri }}
                                 style={styles.twoMedia}
                                 resizeMode="cover"
-                                paused={playingVideo !== item}
+                                paused={playingVideo !== uri}
                                 repeat={true}
                             />
                             <TouchableOpacity
                                 style={styles.playButton}
-                                onPress={() => togglePlayVideo(item.url)}
+                                onPress={() => togglePlayVideo(uri)}
                             >
                                 <Text style={styles.playButtonText}>
-                                    {playingVideo === item ? <Icon name="pause-circle" size={24} color={'#fff'} /> : <Icon name="play-circle" size={24} color={'#fff'} />}
+                                    {playingVideo === uri ? <Icon name="pause-circle" size={24} color={'#fff'} /> : <Icon name="play-circle" size={24} color={'#fff'} />}
                                 </Text>
                             </TouchableOpacity>
                         </View>
                     ) : (
-                        <View style={styles.mediaContainer} key={index.toString()}>
-                            <Image  source={{ uri: item.url }} style={styles.oneMedia} resizeMode="contain" />
+                        <View style={styles.mediaContainer}>
+                            <Image key={index} source={{ uri }} style={styles.oneMedia} resizeMode="contain" />
                         </View>
                     )
                 ))}
@@ -93,74 +102,74 @@ const renderMedia:React.FC<renderMedia> = ({images, media, setMedia, setShowModa
         return (
             <TouchableOpacity style={styles.threeMediaContainer} onPress={() => setViewMore(true)}>
                 <View style={styles.media1ContainerOf3}>
-                    {images[0].url.endsWith('.mp4') ? (
+                    {media[0].endsWith('.mp4') ? (
                         <View style={styles.media1of3}>
                             <Video
-                                source={{ uri: images[0].url }}
+                                source={{ uri: media[0] }}
                                 style={styles.mediaFill}
                                 resizeMode="cover"
-                                paused={playingVideo !== images[0].url}
+                                paused={playingVideo !== media[0]}
                                 repeat={true}
                             />
                             <TouchableOpacity
                                 style={styles.playButton}
-                                onPress={() => togglePlayVideo(images[0].url)}
+                                onPress={() => togglePlayVideo(media[0])}
                             >
                                 <Text style={styles.playButtonText}>
-                                    {playingVideo === images[0].url ? <Icon name="pause-circle" size={24} color={'#fff'} /> : <Icon name="play-circle" size={24} color={'#fff'} />}
+                                    {playingVideo === media[0] ? <Icon name="pause-circle" size={24} color={'#fff'} /> : <Icon name="play-circle" size={24} color={'#fff'} />}
                                 </Text>
                             </TouchableOpacity>
                         </View>
                     ) : (
-                        <Image source={{ uri: images[0].url }} style={styles.mediaFill} resizeMode="cover" />
+                        <Image source={{ uri: media[0] }} style={styles.mediaFill} resizeMode="cover" />
                     )}
                 </View>
                 <View style={styles.threeMedia23Container}>
                     <View style={styles.media23Container}>
-                        {images[1].url.endsWith('.mp4') ? (
+                        {media[1].endsWith('.mp4') ? (
                             <View style={styles.media1of3}>
                                 <Video
-                                    source={{ uri: images[1].url }}
+                                    source={{ uri: media[1] }}
                                     style={styles.mediaFill}
                                     resizeMode="cover"
-                                    paused={playingVideo !== images[1].url}
+                                    paused={playingVideo !== media[1]}
                                     repeat={true}
                                 />
                                 <TouchableOpacity
                                     style={styles.playButton}
-                                    onPress={() => togglePlayVideo(images[1].url)}
+                                    onPress={() => togglePlayVideo(media[1])}
                                 >
                                     <Text style={styles.playButtonText}>
-                                        {playingVideo === images[1].url ? <Icon name="pause-circle" size={24} color={'#fff'} /> : <Icon name="play-circle" size={24} color={'#fff'} />}
+                                        {playingVideo === media[1] ? <Icon name="pause-circle" size={24} color={'#fff'} /> : <Icon name="play-circle" size={24} color={'#fff'} />}
                                     </Text>
                                 </TouchableOpacity>
                             </View>
                         ) : (
-                            <Image source={{ uri: images[1].url }} style={styles.mediaFill} resizeMode="cover" />
+                            <Image source={{ uri: media[1] }} style={styles.mediaFill} resizeMode="cover" />
                         )}
                     </View>
                     <View style={styles.media23Container}>
-                        {images[2].url.endsWith('.mp4') ? (
+                        {media[2].endsWith('.mp4') ? (
                             <View style={styles.media1of3}>
                                 <Video
-                                    source={{ uri: images[2].url }}
+                                    source={{ uri: media[2] }}
                                     style={styles.mediaFill}
                                     resizeMode="cover"
                                     repeat={true}
-                                    paused={playingVideo !== images[2].url}
+                                    paused={playingVideo !== media[2]}
 
                                 />
                                 <TouchableOpacity
                                     style={styles.playButton}
-                                    onPress={() => togglePlayVideo(images[2].url)}
+                                    onPress={() => togglePlayVideo(media[2])}
                                 >
                                     <Text style={styles.playButtonText}>
-                                        {playingVideo === images[2].url ? <Icon name="pause-circle" size={24} color={'#fff'} /> : <Icon name="play-circle" size={24} color={'#fff'} />}
+                                        {playingVideo === media[2] ? <Icon name="pause-circle" size={24} color={'#fff'} /> : <Icon name="play-circle" size={24} color={'#fff'} />}
                                     </Text>
                                 </TouchableOpacity>
                             </View>
                         ) : (
-                            <Image source={{ uri: images[2].url }} style={styles.mediaFill} resizeMode="cover" />
+                            <Image source={{ uri: media[2] }} style={styles.mediaFill} resizeMode="cover" />
                         )}
                     </View>
                 </View>
@@ -170,80 +179,80 @@ const renderMedia:React.FC<renderMedia> = ({images, media, setMedia, setShowModa
         return (
             <View style={styles.multipleMediaContainer}>
                 <View style={styles.media1ContainerOf3}>
-                    {images[0].url.endsWith('.mp4') ? (
+                    {media[0].endsWith('.mp4') ? (
                         <View style={styles.media1of3}>
                             <Video
-                                source={{ uri: images[0].url }}
+                                source={{ uri: media[0] }}
                                 style={styles.mediaFill}
                                 resizeMode="cover"
-                                paused={playingVideo !== images[0].url}
+                                paused={playingVideo !== media[0]}
                                 repeat={true}
                             />
                             <TouchableOpacity
                                 style={styles.playButton}
-                                onPress={() => togglePlayVideo(images[0].url)}
+                                onPress={() => togglePlayVideo(media[0])}
                             >
                                 <Text style={styles.playButtonText}>
-                                    {playingVideo === images[0].url ? <Icon name="pause-circle" size={24} color={'#fff'} /> : <Icon name="play-circle" size={24} color={'#fff'} />}
+                                    {playingVideo === media[0] ? <Icon name="pause-circle" size={24} color={'#fff'} /> : <Icon name="play-circle" size={24} color={'#fff'} />}
                                 </Text>
                             </TouchableOpacity>
                         </View>
                     ) : (
-                        <Image source={{ uri: images[0].url }} style={styles.mediaFill} resizeMode="cover" />
+                        <Image source={{ uri: media[0] }} style={styles.mediaFill} resizeMode="cover" />
                     )}
                 </View>
                 <View style={styles.multipleMedia23Container}>
                     <View style={styles.multiplemediaContainer}>
-                        {images[1].url.endsWith('.mp4') ? (
+                        {media[1].endsWith('.mp4') ? (
                             <View style={styles.media1of3}>
                                 <Video
-                                    source={{ uri: images[1].url }}
+                                    source={{ uri: media[1] }}
                                     style={styles.mediaFill}
                                     resizeMode="cover"
-                                    paused={playingVideo !== images[1].url}
+                                    paused={playingVideo !== media[1]}
                                     repeat={true}
                                 />
                                 <TouchableOpacity
                                     style={styles.playButton}
-                                    onPress={() => togglePlayVideo(images[1].url)}
+                                    onPress={() => togglePlayVideo(media[1])}
                                 >
                                     <Text style={styles.playButtonText}>
-                                        {playingVideo === images[1].url ? <Icon name="pause-circle" size={24} color={'#fff'} /> : <Icon name="play-circle" size={24} color={'#fff'} />}
+                                        {playingVideo === media[1] ? <Icon name="pause-circle" size={24} color={'#fff'} /> : <Icon name="play-circle" size={24} color={'#fff'} />}
                                     </Text>
                                 </TouchableOpacity>
                             </View>
                         ) : (
-                            <Image source={{ uri: images[1].url }} style={styles.mediaFill} resizeMode="cover" />
+                            <Image source={{ uri: media[1] }} style={styles.mediaFill} resizeMode="cover" />
                         )}
                     </View>
                     <View style={styles.multiplemediaContainer}>
-                        {images[2].url.endsWith('.mp4') ? (
+                        {media[2].endsWith('.mp4') ? (
                             <View style={styles.media1of3}>
                                 <Video
-                                    source={{ uri: images[2].url }}
+                                    source={{ uri: media[2] }}
                                     style={styles.mediaFill}
                                     resizeMode="cover"
                                     repeat={true}
-                                    paused={playingVideo !== images[2].url}
+                                    paused={playingVideo !== media[2]}
 
                                 />
                                 <TouchableOpacity
                                     style={styles.playButton}
-                                    onPress={() => togglePlayVideo(images[2].url)}
+                                    onPress={() => togglePlayVideo(media[2])}
                                 >
                                     <Text style={styles.playButtonText}>
-                                        {playingVideo === images[2].url ? <Icon name="pause-circle" size={24} color={'#fff'} /> : <Icon name="play-circle" size={24} color={'#fff'} />}
+                                        {playingVideo === media[2] ? <Icon name="pause-circle" size={24} color={'#fff'} /> : <Icon name="play-circle" size={24} color={'#fff'} />}
                                     </Text>
                                 </TouchableOpacity>
                             </View>
                         ) : (
-                            <Image source={{ uri: images[2].url }} style={styles.mediaFill} resizeMode="cover" />
+                            <Image source={{ uri: media[2] }} style={styles.mediaFill} resizeMode="cover" />
                         )}
                     </View>
                     {numMedia > 3 && (
                         <TouchableOpacity style={styles.multiplemediaContainer} onPress={() => setShowModal(true)}>
                             <Text style={styles.viewMoreText}>View More</Text>
-                            <Image source={{ uri: images[3].url }} style={styles.viewMore} resizeMode="cover" />
+                            <Image source={{ uri: media[3] }} style={styles.viewMore} resizeMode="cover" />
                         </TouchableOpacity>
                     )}
                 </View>

@@ -13,6 +13,7 @@ export default function UserStack():React.JSX.Element{
     return (
         <Stack.Navigator
             screenOptions={{
+               
                 cardStyle:{
                     backgroundColor:'#fff'
                 },
