@@ -1,31 +1,52 @@
-import { Image, Modal, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Image, Modal, Platform, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import React, { useState, useCallback, useEffect } from 'react';
 import Icon from 'react-native-vector-icons/Feather';
 import Video from 'react-native-video';
 import { COLOR } from '../../constant/color';
 import { launchImageLibrary } from 'react-native-image-picker';
 import { upLoadMedia } from '../../http/QuyetHTTP';
-import ModalFail from '../Modal/ModalFail'; 
+import ModalFail from '../Modal/ModalFail';
 import ModalPoup from '../Modal/ModalPoup';
-const MediaModal = ({ showModal, setShowModal, media, setMedia }) => {
+import Loading from '../Modal/Loading';
+
+export type fileType = {
+    fileName: string,
+    uri: string,
+    type: string
+}
+export type fortmat = {
+    url: string,
+    resource_type: string
+}
+interface MediaModal {
+    showModal: boolean;
+    setShowModal: (Permission: boolean) => void;
+    media: string;
+    setMedia: (Permission: any) => void;
+    setImages: (Permission: any) => void;
+    images: string;
+}
+const MediaModal: React.FC<MediaModal> = ({ showModal, setShowModal, media, setMedia, setImages, images }) => {
     const [playingVideo, setPlayingVideo] = useState(null);
     const [newMedia, setNewMedia] = useState([]);
-    const [totalMedia, setTotalMedia] = useState([...media]);
+    const [totalMedia, setTotalMedia] = useState([...images]);
     const [status, setStatus] = useState('');
     const [showPopup, setShowPopup] = useState(false);
     const [isError, setIsError] = useState(false);
+    const [mediaUpload, setMediaUpload] = useState([]);
+    const [isloading, setIsLoading] = useState(false)
     useEffect(() => {
-        setTotalMedia([...media, ...newMedia]);
-        console.log('media: ' + media);
-        console.log('newMedia: ' + newMedia);
-        console.log('Total: ' + totalMedia);
-    }, [media, newMedia]);
+        //setTotalMedia([...media, ...newMedia]);
+        // console.log('Media: ' + media);
+        // console.log('MediaUpload: ' + JSON.stringify(mediaUpload));
+        // console.log('Total: ' + JSON.stringify(totalMedia));
+    }, [totalMedia, images, mediaUpload]);
 
     const onDeleteOldMedia = (uri) => {
         const updatedMedia = totalMedia.filter(media => media !== uri);
+        const updatedMediaUpload = mediaUpload.filter(media => media.uri !== uri.url);
+        setMediaUpload(updatedMediaUpload);
         setTotalMedia(updatedMedia);
-        setMedia(updatedMedia.filter(mediaItem => !newMedia.includes(mediaItem))); // Cập nhật lại state `media`
-        setNewMedia(updatedMedia.filter(mediaItem => newMedia.includes(mediaItem))); // Cập nhật lại state `newMedia`
     };
 
     const togglePlayVideo = (media) => {
@@ -46,30 +67,66 @@ const MediaModal = ({ showModal, setShowModal, media, setMedia }) => {
         if (response.errorCode) return;
         if (response.errorMessage) return;
         if (response.assets && response.assets.length > 0) {
+            const newImageUpload: fileType = response.assets.map(asset => {
+                const { type, fileName, uri } = asset
+                return {
+                    type,
+                    fileName,
+                    uri
+                }
+
+            }
+
+            );
+
+            const newFormat: fileType = response.assets.map(asset => {
+                const { type, uri } = asset
+                return {
+                    resource_type: type,
+                    url: uri
+                }
+
+            });
             const newImages = response.assets.map(asset => asset.uri);
-            setNewMedia(prevNewMedia => [...prevNewMedia, ...newImages]);
+            setTotalMedia(prevNewMedia => [...prevNewMedia, ...newFormat]);
+            setMediaUpload(preMediaUpload => [...preMediaUpload, ...newImageUpload]);
+
         }
     }, []);
 
     const uploadNewMedia = async () => {
         try {
-            if (newMedia && newMedia.length > 0) {
-                let uploadedMediaPaths = [];
+            setIsLoading(true)
+            if (mediaUpload && mediaUpload.length > 0) {
                 const formData = new FormData();
-                newMedia.forEach((file, index) => {
-                    formData.append('media', {
-                        uri: file,
+                mediaUpload.forEach((file: fileType, index) => {
+                    formData.append('files', {
+                        uri: Platform.OS === 'android' ? file.uri : file.uri.replace('file://', ''),
                         type: file.type || 'image/jpeg',
-                        name: file.name || `media${index}.jpg`,
+                        name: file.fileName || `image-${index}.jpg`,
                     });
                 });
 
                 const uploadResult = await upLoadMedia(formData);
-                uploadedMediaPaths = uploadResult.map(item => item.url);
-                console.log('Uploaded media paths:', uploadedMediaPaths);
-                setMedia(prevMedia => [...prevMedia, ...uploadedMediaPaths]);
-                setNewMedia([]);
+                let medias: { url: any; resource_type: any }[] = [];
+                if (Array.isArray(uploadResult)) {
+                    setIsLoading(false)
+                    medias = uploadResult.map(item => ({
+                        url: item.url,
+                        resource_type: item.resource_type,
+                    }));
+                    console.log('Uploaded media paths:', medias);
+                    setImages(preImages => [...preImages, ...medias]);
+                    const mediaUrls = medias.map(item => item.url);
+                    setMedia(prevMedia => [...prevMedia, ...mediaUrls]);
+                } else {
+                    console.error('uploadedMedias is not an array or is undefined');
+                }
+                console.log('Uploaded media paths:', medias);
+
+                setMediaUpload([]);
                 setTimeout(() => {
+                    console.log('những file ảnh upload to post: ' + media);
                     setStatus('Đã thêm ảnh mới');
                     setShowPopup(true);
                     setIsError(false);
@@ -86,13 +143,14 @@ const MediaModal = ({ showModal, setShowModal, media, setMedia }) => {
                 setShowModal(false)
             }
         } catch (error) {
-            console.error('Lỗi khi tạo bài viết:', error);
+            console.error('Lỗi khi upload ảnh:', error);
             setShowModal(false)
         }
     };
 
     return (
         <Modal visible={showModal} animationType="slide" style={styles.container}>
+            <Loading isLoading={isloading} />
             <View style={styles.header}>
                 {/* <TouchableOpacity onPress={() => { setShowModal(false) }}>
                     <Icon name='x' size={28} color={'white'} style={{ marginStart: 5 }} />
@@ -105,10 +163,10 @@ const MediaModal = ({ showModal, setShowModal, media, setMedia }) => {
             <ScrollView>
                 {totalMedia.map((media, index) => (
                     <View key={index.toString()} style={styles.MediaItem}>
-                        {media.endsWith('.mp4') ? (
+                        {media.url.endsWith('.mp4') ? (
                             <View style={{ alignItems: 'center', justifyContent: 'center' }}>
                                 <Video
-                                    source={{ uri: media }}
+                                    source={{ uri: media.url }}
                                     style={styles.image}
                                     resizeMode="cover"
                                     controls={false}
@@ -126,7 +184,7 @@ const MediaModal = ({ showModal, setShowModal, media, setMedia }) => {
                             </View>
                         ) : (
                             <View>
-                                <Image source={{ uri: media }} style={styles.image} resizeMode="cover" />
+                                <Image source={{ uri: media.url }} style={styles.image} resizeMode="cover" />
                                 <TouchableOpacity style={styles.buttonDeleteImage} onPress={() => onDeleteOldMedia(media)}>
                                     <Icon name='x' size={28} color={'white'} />
                                 </TouchableOpacity>

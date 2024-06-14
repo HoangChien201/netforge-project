@@ -5,15 +5,16 @@ import { getFriends } from '../../http/QuyetHTTP'
 import { COLOR } from '../../constant/color';
 
 
-const TextArea = ({ text, setText, friends, setFriends }) => {
+const TextArea = ({ content, setContent, friends, setFriends }) => {
     const [value, setValue] = useState([]);
     const mentions = [];
     const getFriendList = async () => {
         try {
-            const result = await getFriends();
+            const status = 2;
+            const result = await getFriends(status);
             setValue(result);
         } catch (error) {
-            console.log(error);
+            console.log('getFriends error:' + error);
             throw error;
 
         }
@@ -22,7 +23,7 @@ const TextArea = ({ text, setText, friends, setFriends }) => {
         getFriendList();
     }, [])
     const replacedText = replaceMentionValues(
-        text,
+        content,
         mention => {
             const { name, id } = mention;
             mentions.push({ name, id });
@@ -30,11 +31,11 @@ const TextArea = ({ text, setText, friends, setFriends }) => {
         }
     );
     useEffect(()=>{
-        console.log(text);
+        console.log(content);
         console.log(mentions);
         const ids = mentions.map(mention => mention.id);
         setFriends(ids);
-    },[text])
+    },[content])
     const renderSuggestions: FC<MentionSuggestionsProps> = ({ keyword, onSuggestionPress }) => {
         if (!keyword) {
             return null;
@@ -61,8 +62,8 @@ const TextArea = ({ text, setText, friends, setFriends }) => {
     return (
         <View style={styles.container}>
             <MentionInput
-                value={text}
-                onChange={setText}
+                value={content}
+                onChange={setContent}
                 partTypes={[
                     {
                         trigger: '@',

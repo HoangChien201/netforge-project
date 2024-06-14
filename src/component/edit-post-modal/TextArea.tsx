@@ -1,56 +1,59 @@
 import React, { FC, useEffect, useState } from 'react';
 import { StyleSheet, View, TextInput, Text, FlatList, Image } from 'react-native';
 import { MentionInput, MentionSuggestionsProps, replaceMentionValues } from 'react-native-controlled-mentions';
-import {COLOR} from '../../constant/color';
-import {getFriends} from '../../http/QuyetHTTP'
-const TextArea = ({ text, setText }) => {
-    const displayText = replaceMentionValues(text, ({ name }) => `@${name}`);
+import { COLOR } from '../../constant/color';
+import { getFriends } from '../../http/QuyetHTTP'
+interface User {
+    id: string;
+    fullname: string;
+    avatar: string;
+}
+const TextArea = ({ content, setContent, setTags }) => {
+    const displayText = replaceMentionValues(content, ({ name }) => `@${name}`);
     const [value, setValue] = useState([]);
-    const mentions = [];
+    const mentions: { name: string; id: string; }[] = [];
+    const status = 2;
     const getFriendList = async () => {
         try {
-            const result = await getFriends();
-            setValue(result);
+            const result = await getFriends(status);
+            setValue(result.user);
         } catch (error) {
-            console.log(error);
+            console.log('lỗi khi lấy ds bạn bè: ' + error);
             throw error;
-
         }
     }
     useEffect(() => {
         getFriendList();
-    }, [])
+        if (mentions.length > 0) {
+            const ids = mentions.map(mention => mention.id);
+            setTags(ids);
+        }
+    }, [content])
     const replacedText = replaceMentionValues(
-        text,
+        content,
         mention => {
             const { name, id } = mention;
             mentions.push({ name, id });
             return `@[${name}](${id})`;
         }
     );
-    useEffect(()=>{
-        console.log(text);
-        console.log(mentions);
-        const ids = mentions.map(mention => mention.id);
-        //setFriends(ids);
-    },[text])
     const renderSuggestions: FC<MentionSuggestionsProps> = ({ keyword, onSuggestionPress }) => {
         if (!keyword) {
             return null;
         };
         const suggestions = value.filter(user =>
-            user.name.toLowerCase().includes(keyword.toLowerCase())
+            user.fullname.toLowerCase().includes(keyword.toLowerCase())
         );
         return (
             <FlatList
                 style={styles.flatList}
                 data={suggestions}
-                keyExtractor={item => item.idReq}
+                keyExtractor={item => item.id}
                 renderItem={({ item }) => (
                     <View style={styles.suggestionItem}>
                         <Image source={{ uri: item.avatar }} style={styles.avatar} />
-                        <Text onPress={() => onSuggestionPress({ id: item.idReq, name: item.name })}>
-                            {item.name}
+                        <Text onPress={() => onSuggestionPress({ id: item.id, name: item.fullname })}>
+                            {item.fullname}
                         </Text>
                     </View>
                 )}
@@ -60,8 +63,8 @@ const TextArea = ({ text, setText }) => {
     return (
         <View style={styles.container}>
             <MentionInput
-                value={text}
-                onChange={setText}
+                value={content}
+                onChange={setContent}
                 partTypes={[
                     {
                         trigger: '@',

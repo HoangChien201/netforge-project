@@ -2,7 +2,7 @@ import AxiosInstance from "../../../http/AxiosInstance"
 export const login = async (email: string, password: string) => {
     try {
         const axioInstance = AxiosInstance();
-        const url = "/v1/auth/login";
+        const url = "/auth/sign-in/";
         const body = {
             email: email,
             password: password

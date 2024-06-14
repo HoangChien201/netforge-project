@@ -8,13 +8,13 @@ import { COLOR } from '../../constant/color';
 import SwiperFlatList from 'react-native-swiper-flatlist';
 import Icon from 'react-native-vector-icons/Feather';
 
-const Body = ({ text, setText, media, setMedia, type, setType,setStatus, setShowPopup, friends, setFriends }) => {
+const Body = ({ content, setContent, media, setMedia, permission, setPermission,setStatus, setShowPopup, friends, setFriends }) => {
     //const [media, setMedia] = useState([]);
     const [playingVideo, setPlayingVideo] = useState(null);
     const [viewMore, setViewMore] = useState(false);
 
     const handleEmojiSelect = (emoji) => {
-        setText(text + emoji);
+        setContent(content + emoji);
     };
 
     const handleMediaSelect = (uris) => {
@@ -317,7 +317,7 @@ const Body = ({ text, setText, media, setMedia, type, setType,setStatus, setShow
     return (
         <View style={styles.container}>
             <View style={styles.header}>
-                <USER setType={setType} />
+                <USER setPermission={setPermission} />
                 {/*----------------------- danh sách media chia theo khung ----------------*/}
                 {/* ---------------------danh sách hiển thị theo list -------------------------*/}
 
@@ -338,7 +338,7 @@ const Body = ({ text, setText, media, setMedia, type, setType,setStatus, setShow
                     </View>
                 }
 
-                <TEXTAREA text={text} setText={setText} setFriends={setFriends} friends={friends}/>
+                <TEXTAREA content={content} setContent={setContent} setFriends={setFriends} friends={friends}/>
                 <OPTIONS onSelectEmoji={handleEmojiSelect} onSelectMedia={handleMediaSelect}/>
             </View>
         </View>

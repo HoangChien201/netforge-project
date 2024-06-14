@@ -1,4 +1,4 @@
-import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import { Image, Platform, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import React, { useState } from 'react'
 import { COLOR } from '../constant/color'
 import BODY from '../component/create-post-screen/Body'
@@ -7,54 +7,63 @@ import { upLoadMedia, createNewPost } from '../http/QuyetHTTP'
 import ModalPoup from '../component/Modal/ModalPoup'
 import ModalFail from '../component/Modal/ModalFail'
 import { useMyContext } from '../component/navigation/UserContext';
+import { fileType } from '../component/create-post-screen/Options'
+import Loading from '../component/Modal/Loading'
+
 const CreatePostScreen = () => {
-  const [text, setText] = useState('');
-  const [media, setMedia] = useState([]);
-  const [type, setType] = useState(1);
-  const [creator, setCreator] = useState(2)
   const [status, setStatus] = useState('');
   const [showPopup, setShowPopup] = useState(false);
   const [isError, setIsError] = useState(false);
   const { user, setUser } = useMyContext();
   const [friends, setFriends] = useState([]);
-  // upload ảnh lên cloud và tạo bài viết mới
-
-  const clear =() =>{
-    setText('');
+  const [content, setContent] = useState('');
+  // const [tags, setTags] = useState([]);
+  const [media, setMedia] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const type = 1;
+  const [permission, setPermission] = useState(1)
+  const clear = () => {
+    setContent('');
     setMedia([]);
-    setType(1);
-  }
+    setPermission(1);
+  };
+  const tags = [
+    { "user": "1" },
+    { "user": "2" }
+  ];
   const uploadPost = async () => {
-    console.log('text: ' + text, 'media: ' + media, 'type: ' + type, 'creator: ' + user._id , 'friends: '+friends) ;
-    setCreator(user._id);
-    const tags = friends.map(friendId => ({ friendId: String(friendId) }));
     try {
-      if (media && media.length > 0 && text.length > 0) {
-        let uploadedMediaPaths = [];
-        // Upload multiple media files
+      setIsLoading(true);
+      if (media && media.length>0 && content.length > 0) {
         const formData = new FormData();
-        media.forEach((file, index) => {
-          formData.append('media', {
-            uri: file,
-            type: file.type || 'image/jpeg',
-            name: file.name || `media${index}.jpg`,
+        media.forEach((file: fileType, index) => {
+          formData.append('files', {
+            uri: Platform.OS === 'android' ? file.uri : file.uri.replace('file://', ''),
+            type: file.type || 'image/jpeg', 
+            name: file.fileName || `image-${index}.jpg`,
           });
         });
-
-        // upload media to cloudinary
-        const uploadResult = await upLoadMedia(formData);
-        uploadedMediaPaths = uploadResult.map(item => item.url);
-
-        console.log('Uploaded media paths:', uploadedMediaPaths);
-        
+        console.log('media: ' + media);
+        console.log('formData: ' + JSON.stringify(formData))
+        const uploadedMedias = await upLoadMedia(formData);
+        let medias: { url: any; resource_type: any }[] = [];
+        if (Array.isArray(uploadedMedias)) {
+          medias = uploadedMedias.map(item => ({
+            url: item.url,
+            resource_type: item.resource_type,
+          }));
+          console.log('Uploaded media paths:', medias);
+        } else {
+          console.error('uploadedMedias is not an array or is undefined');
+        }
         //Create new post with the uploaded media paths
-        const newPost = await createNewPost({ creator, type, text,tags, uploadedMediaPaths });
-        console.log('Bài viết đã được tạo:', newPost);
+        const newPost = await createNewPost({ content, type, tags, medias, permission });
+        console.log('Bài viết đã được tạo:', JSON.stringify(newPost));
         setTimeout(() => {
+          setIsLoading(false);
           setStatus('Tạo bài viết thành công');
           setShowPopup(true);
           setIsError(false);
-          // Đặt lại giá trị sau một khoảng thời gian nhất định
           setTimeout(() => {
             setStatus('');
             setShowPopup(false);
@@ -62,16 +71,16 @@ const CreatePostScreen = () => {
           }, 1500);
         }, 1000);
         clear();
-        // Close the modal after creating the post
-      } else if (text.length > 0) {
+      } else if (content.length > 0) {
         // upload post withought media
-        const newPost = await createNewPost({ creator, type, text, tags });
-        console.log('Bài viết đã được tạo:', newPost);
+        console.log('here: ' + JSON.stringify(media));
+        const newPost = await createNewPost({ content, type, tags, permission });
+        console.log('Bài viết đã được tạo không medias:', newPost);
         setTimeout(() => {
+          setIsLoading(false);
           setStatus('Tạo bài viết thành công');
           setShowPopup(true);
           setIsError(false);
-          // Đặt lại giá trị sau một khoảng thời gian nhất định
           setTimeout(() => {
             setStatus('');
             setShowPopup(false);
@@ -79,10 +88,10 @@ const CreatePostScreen = () => {
         }, 1000);
       } else {
         setTimeout(() => {
+          setIsLoading(false);
           setStatus('Bạn chưa viết gì');
           setShowPopup(true);
           setIsError(true);
-          // Đặt lại giá trị sau một khoảng thời gian nhất định
           setTimeout(() => {
             setStatus('');
             setShowPopup(false);
@@ -93,10 +102,10 @@ const CreatePostScreen = () => {
     } catch (error) {
       console.error('Lỗi khi tạo bài viết:', error);
       setTimeout(() => {
+        setIsLoading(false);
         setStatus('Có lỗi khi tạo');
         setShowPopup(true);
         setIsError(true);
-        // Đặt lại giá trị sau một khoảng thời gian nhất định
         setTimeout(() => {
           setStatus('');
           setShowPopup(false);
@@ -106,27 +115,29 @@ const CreatePostScreen = () => {
   };
 
   const log = () => {
-    const tags = friends.map(friendId => ({ friendId: String(friendId) }));
-    console.log(text, media, type,tags);
+    //const tags = friends.map(friendId => ({ friendId: String(friendId) }));
+    console.log(content, media, type, permission, tags);
 
   }
+
+  const uries = media.map((file: fileType) => file.uri)
+
   return (
     <View style={styles.container}>
+      <Loading isLoading={isLoading} />
       <View style={styles.header} >
-        <TouchableOpacity>
-          <Image style={styles.headerClose} source={require('../media/quyet_icon/x_w.png')} />
-        </TouchableOpacity>
+        <Text></Text>
         <Text style={styles.headerText}>Tạo bài viết</Text>
         <TouchableOpacity onPress={uploadPost} >
           <Text style={styles.headerPostText} >Lưu</Text>
         </TouchableOpacity>
       </View>
-      <BODY text={text}
-        setText={setText}
-        media={media}
+      <BODY content={content}
+        setContent={setContent}
+        media={uries}
         setMedia={setMedia}
-        type={type}
-        setType={setType}
+        permission={permission}
+        setPermission={setPermission}
         setStatus={setStatus}
         setShowPopup={setShowPopup}
         friends={friends}

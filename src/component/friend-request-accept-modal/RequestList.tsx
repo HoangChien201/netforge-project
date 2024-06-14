@@ -8,7 +8,7 @@ const RequestList = ({ dataRequest, setDataRequest, setReload }) => {
 const cancelReq = async (friendId)=>{
     try {
         await cancelRequest(friendId);
-        setDataRequest(prevData => prevData.filter(friend => friend.idReq !== friendId));
+        setDataRequest(prevData => prevData.filter(friend => friend.user.id !== friendId));
     } catch (error) {
         console.log(error);
         console.log(friendId);
@@ -21,14 +21,17 @@ const cancelReq = async (friendId)=>{
     return (
         <View style={styles.container}>
             {dataRequest.map(friend => (
-                <View style={styles.itemWA} key={friend.idReq}>
+                <View style={styles.itemWA} key={friend.user.id}>
                     <View style={styles.user}>
-                        <Image source={{uri: friend.avatar}} style={styles.avatarne}/>
-                        <Text style={styles.userName}>{friend.name}</Text>
+                        {friend.user.avatar? <Image source={{uri: friend.user.avatar}} style={styles.avatarne}/>  : 
+                        <View style={{height:48, width:48, borderRadius:50, borderWidth:1,borderColor:'gray', backgroundColor:'#DDDDDD',marginStart:10,}}/>
+                        }
+                        
+                        <Text style={styles.userName}>{friend.user.fullname}</Text>
                     </View>
                     <View style={styles.button}>
                         <TouchableOpacity style={styles.buttonReject} onPress={()=>{
-                            cancelReq(friend.idReq)
+                            cancelReq(friend.user.id)
                         }}>
                             <Text style={styles.textAccept}>Hủy bỏ</Text>
                         </TouchableOpacity>
@@ -59,7 +62,7 @@ const styles = StyleSheet.create({
             height: 2,
         },
         elevation: 5,
-        marginTop: 2,
+        marginTop: 5,
         justifyContent: 'space-between'
     },
     user: {
@@ -103,9 +106,10 @@ const styles = StyleSheet.create({
         fontWeight: '400'
     },
     avatarne:{
-        height:40,
-        width:40,
-        marginStart:10
+        height:48,
+        width:48,
+        marginStart:10,
+        borderRadius:50
     }
 
 

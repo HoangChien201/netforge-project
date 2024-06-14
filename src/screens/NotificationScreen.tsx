@@ -10,6 +10,7 @@ import MODALHISTORIES from '../component/user-histories-modal/Body'
 const NotificationScreen = () => {
   const [showModalEdit, setShowModalEdit] = useState(false);
   const [showModalFriend, setShowModalFriend] = useState(false);
+  const [showModalHistories, setShowModalHistories] = useState(false);
   const [status, setStatus] = useState('');
   const [showPopup, setShowPopup] = useState(false);
   const [isError, setIsError] = useState(false);
@@ -21,12 +22,20 @@ const NotificationScreen = () => {
   const ShowModalFriend = () => {
     setShowModalFriend(true);
   }
+  const ShowModalHistories=()=>{
+    setShowModalHistories(true)
+  }
   return (
     <View style={styles.container}>
       <View style={styles.header}>
         <Text style={styles.headerText}>Thông báo</Text>
-        <TouchableOpacity style={{ height: 20, width: 60, backgroundColor: 'white', borderRadius: 10, alignItems: 'center' }} onPress={ShowModalEdit}>
-          <Text>edit</Text>
+        <TouchableOpacity style={{ height: 20, width: 60, backgroundColor: 'white', borderRadius: 10, alignItems: 'center' }} 
+        onPress={ShowModalEdit}>
+          <Text>edit Post</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={{ height: 20, width: 60, backgroundColor: 'white', borderRadius: 10, alignItems: 'center' }} 
+        onPress={ShowModalHistories}>
+          <Text>History</Text>
         </TouchableOpacity>
       </View>
       <TouchableOpacity onPress={ShowModalFriend}>
@@ -53,7 +62,9 @@ const NotificationScreen = () => {
           setReload(false)
         }}
       />
-      <MODALHISTORIES />
+      <MODALHISTORIES
+      showModalHistories={showModalHistories}
+      setShowModalHistories = {setShowModalHistories} />
     </View>
   )
 }

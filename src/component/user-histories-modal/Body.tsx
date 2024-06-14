@@ -1,17 +1,41 @@
-import { StyleSheet, Text, View, Modal, TouchableOpacity, Dimensions } from 'react-native'
-import React, { useState } from 'react'
+import { StyleSheet, Text, View, Modal, TouchableOpacity, Dimensions, ScrollView } from 'react-native'
+import React, { useEffect, useState } from 'react'
 import CommentHistories from './CommentHistories'
 import LikeHistories from './LikeHistories'
 import Icon from 'react-native-vector-icons/AntDesign'
 import { COLOR } from '../../constant/color'
+import { getUserHistories } from '../../http/QuyetHTTP'
 import Animated, { useSharedValue, useAnimatedStyle, withTiming } from 'react-native-reanimated'
 
 const { width } = Dimensions.get('window');
 
-const Body = () => {
+const Body = ({ showModalHistories, setShowModalHistories }) => {
     const [view, setView] = useState(true);
     const translateX = useSharedValue(0);
+    const [data, setData] = useState([]);
+    const [dataLikeP, setDataLikeP] = useState([]);
+    const [dataLikeC, setDataLikeC] = useState([]);
+    const [dataComment, setDataComment] = useState([]);
+    const getData = async () => {
+        try {
+            const result = await getUserHistories();
+            setData(result);
+            setDataLikeP(result.likePosts);
+            setDataLikeC(result.likeComments);
+            setDataComment(result.comments)
+            // console.log('dataH' + JSON.stringify(result));
+            // console.log('data likeP: ' + JSON.stringify(result.likePosts));
+            // console.log('data likeC: ' + JSON.stringify(result.likeComments));
+            // console.log('data Comment: ' + JSON.stringify(result.comments));
+        } catch (error) {
+            console.log('lỗi lấy useHistories: ' + error);
 
+        }
+
+    }
+    useEffect(() => {
+        getData();
+    }, [])
     const animatedStyle = useAnimatedStyle(() => {
         return {
             transform: [{ translateX: translateX.value }]
@@ -27,12 +51,19 @@ const Body = () => {
         setView(false);
         translateX.value = withTiming(-width, { duration: 300 });
     };
-
+    const ShowModalHistories = () => {
+        setShowModalHistories(false);
+    };
     return (
-        <Modal style={styles.container} visible={true}>
+        <Modal style={styles.container} visible={showModalHistories}
+            animationType="fade"
+        >
             <View style={styles.header}>
                 <View style={styles.back}>
-                    <Icon name='left' size={24} color={'white'} />
+                    <TouchableOpacity onPress={ShowModalHistories}>
+                        <Icon name='left' size={24} color={'white'} />
+                    </TouchableOpacity>
+
                     <Text style={styles.textHead}>Lịch sử hoạt động</Text>
                 </View>
 
@@ -48,12 +79,25 @@ const Body = () => {
                 </View>
             </View>
             <Animated.View style={[styles.container, animatedStyle]}>
-                <View style={styles.page}>
-                    <LikeHistories />
+                <View>
+                    <View style={styles.header}>
+                        <Text style={styles.headerText}>Lịch sử thích</Text>
+                    </View>
+                    <ScrollView style={styles.page}>
+                        <LikeHistories dataLikeP={dataLikeP} dataLikeC={dataLikeC} />
+                    </ScrollView>
                 </View>
-                <View style={styles.page}>
-                    <CommentHistories />
+                <View>
+                    <View style={styles.header}>
+                        <Text style={styles.headerText}>Lịch sử bình luận</Text>
+                    </View>
+                    <ScrollView style={styles.page}>
+
+                        <CommentHistories dataComment={dataComment} />
+
+                    </ScrollView>
                 </View>
+
             </Animated.View>
         </Modal>
     )
@@ -64,7 +108,8 @@ export default Body
 const styles = StyleSheet.create({
     container: {
         height: '100%',
-        flexDirection: 'row', // Add this line to enable horizontal scrolling
+        flexDirection: 'row',
+        width: '200%'
     },
     header: {},
     typeHis: {
@@ -105,6 +150,14 @@ const styles = StyleSheet.create({
         marginStart: 5
     },
     page: {
-        width: width, // Each page should take up the full width of the screen
+        width: (width),
+        height: '100%',
+        // Each page should take up the full width of the screen
+    },
+    headerText: {
+        fontSize: 20,
+        color: 'black',
+        fontWeight: '500',
+        marginStart:10
     },
 });

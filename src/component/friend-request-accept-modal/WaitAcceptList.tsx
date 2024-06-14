@@ -7,7 +7,7 @@ const WaitAcceptList = ({ dataWaitAccept, setDataWaitAccept, setReload }) => {
     const cancelReq = async (friendId) => {
         try {
             await cancelWaitAccept(friendId);
-            setDataWaitAccept(prevData => prevData.filter(friend => friend.idReq !== friendId));
+            setDataWaitAccept(prevData => prevData.filter(friend => friend.user.id !== friendId));
         } catch (error) {
             console.log(error);
 
@@ -16,7 +16,7 @@ const WaitAcceptList = ({ dataWaitAccept, setDataWaitAccept, setReload }) => {
     const acceptReq = async (friendId) => {
         try {
             await acceptRequest(friendId);
-            setDataWaitAccept(prevData => prevData.filter(friend => friend.idReq !== friendId));
+            setDataWaitAccept(prevData => prevData.filter(friend => friend.user.id  !== friendId));
         } catch (error) {
             console.log(error);
 
@@ -24,25 +24,28 @@ const WaitAcceptList = ({ dataWaitAccept, setDataWaitAccept, setReload }) => {
     };
 
     if (!dataWaitAccept || dataWaitAccept.length === 0) {
-        return <EmptyWA />; // Hoặc hiển thị một thông báo khác tùy ý
+        return <EmptyWA />;
     }
+
     return (
         <ScrollView style={styles.container}>
             {dataWaitAccept.map(friend => (
-                <View style={styles.itemWA} key={friend.idReq}>
+                <View style={styles.itemWA} key={friend.user.id}>
                     <View style={styles.user}>
-                        <Image source={{ uri: friend.avatar }} style={styles.avatarne} />
-                        <Text style={styles.userName}>{friend.name}</Text>
+                    {friend.user.avatar? <Image source={{uri: friend.user.avatar}} style={styles.avatarne}/>  : 
+                        <View style={{height:48, width:48, borderRadius:50, borderWidth:1,borderColor:'gray', backgroundColor:'#DDDDDD',marginStart:10,}}/>
+                        }
+                        <Text style={styles.userName}>{friend.user.fullname}</Text>
                     </View>
                     <View style={styles.button}>
                         <TouchableOpacity style={styles.buttonReject} onPress={() => {
-                            cancelReq(friend.idReq)
+                            cancelReq(friend.user.id)
                         }}>
                             <Text style={styles.textAccept}>Từ chối</Text>
                         </TouchableOpacity>
                         <View style={{ width: 10 }}></View>
                         <TouchableOpacity style={styles.buttonAccept}onPress={() => {
-                            acceptReq(friend.idReq)
+                            acceptReq(friend.user.id)
                         }}>
                             <Text style={styles.textAccept}>Chấp nhận</Text>
                         </TouchableOpacity>
@@ -73,7 +76,7 @@ const styles = StyleSheet.create({
             height: 2,
         },
         elevation: 5,
-        marginTop: 2,
+        marginTop: 5,
         justifyContent: 'space-between'
     },
     user: {
@@ -117,9 +120,10 @@ const styles = StyleSheet.create({
         fontWeight: '400'
     },
     avatarne: {
-        height: 40,
-        width: 40,
-        marginStart: 10
+        height: 45,
+        width: 45,
+        marginStart: 10,
+        borderRadius:40
     }
 
 })
