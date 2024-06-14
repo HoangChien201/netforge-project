@@ -102,3 +102,5 @@ export const EmojiData = [
     { emoji: '🤖' },
     { emoji: '🎃' },
 ];
+
+export const EmojiReaction=['😂','🥰','😭','😡','😱']

@@ -1,15 +1,16 @@
+import MessageScreen from "../../screens/message/MessageScreen";
 import NetworkBottomTab from "../bottom-stack/NetworkBottomTab"
-
-import UserStack from "./UserStack";
-
-
+import MessageStack from "./MessageStack";
 
 enum NetworkRootStackEnum {
-    NetworkBottomTab='NetworkBottomTab'
+    NetworkBottomTab='NetworkBottomTab',
+    MessageStack='MessageStack'
+
 }
 
 export type NetworkRootStackParams = {
     NetworkBottomTab: undefined;
+    MessageStack:undefined;
 }
 
 export const NetworkRootStackScreens = [
@@ -21,7 +22,14 @@ export const NetworkRootStackScreens = [
             headerShown: false
         }
     },
-    
+    {
+        id: Math.random() + "" + Date,
+        name: NetworkRootStackEnum.MessageScreen,
+        component: MessageStack,
+        options: {
+            headerShown: false
+        }
+    },
 
 
 ]
