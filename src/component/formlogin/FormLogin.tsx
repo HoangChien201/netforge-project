@@ -24,7 +24,7 @@ export type valid = {
 }
 
 const FormLogin = ({ setModal, setStatus, setIsLoading }: { setModal: (value: boolean) => void, setStatus: (value: boolean) => void, setIsLoading: (value: boolean) => void }) => {
-  const [valueF, setValueF] = useState<user>({ email: "vanquyet@gmail.com", password: "123" })
+  const [valueF, setValueF] = useState<user>({ email: "hoangchien@gmail.com", password: "123456" })
   const [valid, setValid] = useState<valid>({ email: true, password: true })
 
   const { setUser } = useMyContext();
@@ -52,20 +52,23 @@ const FormLogin = ({ setModal, setStatus, setIsLoading }: { setModal: (value: bo
     } 
 
       setValid({ email: true, password: true });
+      setIsLoading(true);
+
       console.log(valid);
+
       
       try {
         const result = await login(email, password);
-        console.log(result);
-        if (result) {
+        console.log(result?.data);
+        if (result?.data) {
           
           
           setTimeout(() => {
             setUser(result);
 
           }, 2000);
-          await AsyncStorage.setItem('token', result.token);
-          console.log("Token set", result.token);
+          await AsyncStorage.setItem('token', result.data.token);
+          console.log("Token set", result.data.token);
           setIsLoading(true)
           setModal(true);
           setStatus(true);
@@ -81,6 +84,10 @@ const FormLogin = ({ setModal, setStatus, setIsLoading }: { setModal: (value: bo
           }, 1000);
 
         }
+        
+        console.log(result);
+        await AsyncStorage.setItem('userToken', result.data.token);
+        handleLoginResult(result);
       } catch (error) {
         console.log("Login error", error);
       }
@@ -99,7 +106,7 @@ const FormLogin = ({ setModal, setStatus, setIsLoading }: { setModal: (value: bo
 
       </View>
       <View>
-        <ButtonLogin textLogin chilren='Login' textColor='#fff' onPress={submit} />
+<ButtonLogin textLogin chilren='Login' textColor='#fff' onPress={submit} />
       </View>
     </View>
   )
