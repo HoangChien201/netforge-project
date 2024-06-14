@@ -53,9 +53,6 @@ const FormLogin = ({ setModal, setStatus, setIsLoading }: { setModal: (value: bo
 
       setValid({ email: true, password: true });
       setIsLoading(true);
-      try {
-
-      console.log(valid);
       
       try {
         const result = await login(email, password);
@@ -93,7 +90,8 @@ const FormLogin = ({ setModal, setStatus, setIsLoading }: { setModal: (value: bo
         console.log(result);
         await AsyncStorage.setItem('userToken', result.data.token);
         handleLoginResult(result);
-      } catch (error) {
+      } 
+      }catch (error) {
         console.log("Login error", error);
       }
     
