@@ -1,14 +1,34 @@
-import { StyleSheet, Text, View } from 'react-native'
-import React from 'react'
+import {
+  Button,
+  FlatList,
+  Image,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+  SafeAreaView
+} from 'react-native';
+import React, { useState } from 'react';
+import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
+import { TestProfile } from './TestProfile';
+import { SafeAreaProvider,  } from 'react-native-safe-area-context';
 
-const ProfileScreen = () => {
+
+const ProfileScreen: React.FC = () => {
+  const Tab = createMaterialTopTabNavigator();
+
   return (
-    <View>
-      <Text>ProfileScreen</Text>
-    </View>
-  )
-}
+    <SafeAreaProvider>
+          <TestProfile/>
+    </SafeAreaProvider>
 
-export default ProfileScreen
+  );
 
-const styles = StyleSheet.create({})
+};
+
+export default ProfileScreen;
+
+const styles = StyleSheet.create({
+  
+});
