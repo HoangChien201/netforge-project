@@ -7,12 +7,14 @@ import OPTIONS from './Options';
 import { COLOR } from '../../constant/color';
 import SwiperFlatList from 'react-native-swiper-flatlist';
 import Icon from 'react-native-vector-icons/Feather';
-const Body = ({ text, setText, media, setMedia, type, setType }) => {
+
+const Body = ({ content, setContent, media, setMedia, permission, setPermission,setStatus, setShowPopup, friends, setFriends }) => {
     //const [media, setMedia] = useState([]);
     const [playingVideo, setPlayingVideo] = useState(null);
     const [viewMore, setViewMore] = useState(false);
+
     const handleEmojiSelect = (emoji) => {
-        setText(text + emoji);
+        setContent(content + emoji);
     };
 
     const handleMediaSelect = (uris) => {
@@ -39,7 +41,7 @@ const Body = ({ text, setText, media, setMedia, type, setType }) => {
                 <View style={styles.oneMediaContainer}>
                     {item.map((uri, index) => (
                         uri.endsWith('.mp4') ? (
-                            <View key={index} style={styles.mediaContainer}>
+                            <View key={index.toString()} style={styles.mediaContainer}>
                                 <Video
                                     source={{ uri }}
                                     style={styles.oneMedia}
@@ -55,13 +57,12 @@ const Body = ({ text, setText, media, setMedia, type, setType }) => {
                                         {playingVideo === uri ? <Icon name="pause-circle" size={24} color={'#fff'} /> : <Icon name="play-circle" size={24} color={'#fff'} />}
                                     </Text>
                                 </TouchableOpacity>
-                                <View>
-                                    <Image source={{ uri: item }} style={styles.image} resizeMode="contain" />
-
-                                </View>
+                                <TouchableOpacity style={styles.buttonDeleteImage} onPress={() => deleteImage(uri)}>
+                                        <Icon name='trash-2' size={28} color={COLOR.PrimaryColor} />
+                                    </TouchableOpacity>
                             </View>
                         ) : (
-                            <View style={styles.oneMedia}>                            
+                            <View style={styles.oneMedia} key={index.toString()}>                            
                                 <Image key={index} source={{ uri }} style={styles.oneMedia} resizeMode="contain" />
                                 <TouchableOpacity style={styles.buttonDeleteImage} onPress={() => deleteImage(uri)}>
                                         <Icon name='trash-2' size={28} color={COLOR.PrimaryColor} />
@@ -77,7 +78,7 @@ const Body = ({ text, setText, media, setMedia, type, setType }) => {
                 <View style={styles.twoMediaContainer}>
                     {item.map((uri, index) => (
                         uri.endsWith('.mp4') ? (
-                            <View key={index} style={styles.mediaContainer}>
+                            <View key={index.toString()} style={styles.mediaContainer}>
                                 <Video
                                     source={{ uri }}
                                     style={styles.twoMedia}
@@ -93,9 +94,12 @@ const Body = ({ text, setText, media, setMedia, type, setType }) => {
                                         {playingVideo === uri ? <Icon name="pause-circle" size={24} color={'#fff'} /> : <Icon name="play-circle" size={24} color={'#fff'} />}
                                     </Text>
                                 </TouchableOpacity>
+                                <TouchableOpacity style={styles.buttonDeleteImage} onPress={() => deleteImage(uri)}>
+                                        <Icon name='trash-2' size={28} color={COLOR.PrimaryColor} />
+                                    </TouchableOpacity>
                             </View>
                         ) : (
-                            <View style={styles.mediaContainer}>                            
+                            <View style={styles.mediaContainer} key={index.toString()}>                            
                                 <Image key={index} source={{ uri }} style={styles.oneMedia} resizeMode="contain" />
                                 <TouchableOpacity style={styles.buttonDeleteImage} onPress={() => deleteImage(uri)}>
                                         <Icon name='trash-2' size={28} color={COLOR.PrimaryColor} />
@@ -108,9 +112,9 @@ const Body = ({ text, setText, media, setMedia, type, setType }) => {
         } else if (numMedia === 3) {
             return (
                 <TouchableOpacity style={styles.threeMediaContainer} onPress={()=>setViewMore(true)}>
-                    <View style={styles.media1ContainerOf3}>
+                    <View style={styles.media1ContainerOf3} >
                         {item[0].endsWith('.mp4') ? (
-                            <View style={styles.media1of3}>
+                            <View style={styles.media1of3} >
                                 <Video
                                     source={{ uri: item[0] }}
                                     style={styles.mediaFill}
@@ -279,7 +283,7 @@ const Body = ({ text, setText, media, setMedia, type, setType }) => {
                 <SwiperFlatList
                     data={item}
                     renderItem={({ item }) => (
-                        <View style={styles.imageContainer}>
+                        <View style={styles.imageContainer} key={item.toString()}>
                             {item.endsWith('.mp4') ? (
                                 <View>
                                     <Video
@@ -294,7 +298,7 @@ const Body = ({ text, setText, media, setMedia, type, setType }) => {
                                     </TouchableOpacity>
                                 </View>
                             ) : (
-                                <View>
+                                <View key={item.toString}>
                                     <Image source={{ uri: item }} style={styles.image} resizeMode="contain" />
                                     <TouchableOpacity style={styles.buttonDeleteImage} onPress={() => deleteImage(item)}>
                                         <Icon name='trash-2' size={28} color={COLOR.PrimaryColor} />
@@ -313,7 +317,7 @@ const Body = ({ text, setText, media, setMedia, type, setType }) => {
     return (
         <View style={styles.container}>
             <View style={styles.header}>
-                <USER setType={setType} />
+                <USER setPermission={setPermission} />
                 {/*----------------------- danh sách media chia theo khung ----------------*/}
                 {/* ---------------------danh sách hiển thị theo list -------------------------*/}
 
@@ -334,7 +338,7 @@ const Body = ({ text, setText, media, setMedia, type, setType }) => {
                     </View>
                 }
 
-                <TEXTAREA text={text} setText={setText} />
+                <TEXTAREA content={content} setContent={setContent} setFriends={setFriends} friends={friends}/>
                 <OPTIONS onSelectEmoji={handleEmojiSelect} onSelectMedia={handleMediaSelect}/>
             </View>
         </View>
