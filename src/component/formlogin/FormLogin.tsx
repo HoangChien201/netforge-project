@@ -48,10 +48,40 @@ const FormLogin = ({ setModal, setStatus, setIsLoading }: { setModal: (value: bo
     const isValidPassword = trimmedPassword.length > 0;
     if (!isValidEmail || !isValidPassword) {
       setValid({ email: isValidEmail, password: isValidPassword });
-    } else {
+    
+    } 
+
       setValid({ email: true, password: true });
       setIsLoading(true);
       try {
+
+      console.log(valid);
+      
+      try {
+        const result = await login(email, password);
+        console.log(result);
+        if (result) {
+          
+          
+          setTimeout(() => {
+            setUser(result);
+
+          }, 2000);
+          await AsyncStorage.setItem('token', result.token);
+          console.log("Token set", result.token);
+          setIsLoading(true)
+          setModal(true);
+          setStatus(true);
+          setTimeout(() => {
+
+            setModal(false);
+          }, 1000);
+        } else {
+          setModal(true);
+          setStatus(false);
+          setTimeout(() => {
+            setModal(false);
+          }, 1000);
 
         await AsyncStorage.setItem('email', email);
         await AsyncStorage.setItem('password', password);
@@ -66,7 +96,7 @@ const FormLogin = ({ setModal, setStatus, setIsLoading }: { setModal: (value: bo
       } catch (error) {
         console.log("Login error", error);
       }
-    }
+    
   };
 
   const handleLoginResult = async (result) => {
