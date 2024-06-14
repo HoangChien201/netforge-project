@@ -102,6 +102,7 @@ export const EmojiData = [
     { emoji: '🤖' },
     { emoji: '🎃' },
 ];
+export const EmojiReaction=['😂','🥰','😭','😡','😱']
 export const reaction = [
     {
         id:"1",
@@ -140,3 +141,4 @@ export const reaction = [
         type:6
     },
 ]
+

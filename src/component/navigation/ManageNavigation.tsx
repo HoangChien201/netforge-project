@@ -26,7 +26,6 @@ const ManageNavigation:React.FC = () => {
   const {user} = useMyContext();
   return (
     <NavigationContainer>
-      
       {user ? <NetworkStack/> : <UserStack/>}
     </NavigationContainer>
   )

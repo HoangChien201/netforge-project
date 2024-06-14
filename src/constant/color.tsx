@@ -7,4 +7,7 @@ export const COLOR={
     primary350:'#EEF1F4',
     primary400:'#b9babc',
     primary500:'#77757f',
+    backgroundMessageReceier:'#F9F9F9',
+    backgroundMessageSender:'#E65B0C'
+
 }
