@@ -8,14 +8,18 @@ import NotificationScreen from "../../screens/NotificationScreen"
 import ProfileScreen from "../../screens/ProfileScreen"
 import { View } from "react-native"
 import { COLOR } from "../../constant/color"
+
+import ProfileStack from "../stack/ProfileStack"
+
 import HomeStack from "../stack/HomeStack"
+
 
 enum NetworkRootBottomTabEnum {
     HomeStack = 'HomeStack',
     ExploreScreen = 'ExploreScreen',
     CreatePostScreen = 'CreatePostScreen',
     NotificationScreen = 'NotificationScreen',
-    ProfileScreen = 'ProfileScreen'
+    ProfileStack = 'ProfileStack'
 }
 
 export type NetworkRootBottomTabParams = {
@@ -23,7 +27,7 @@ export type NetworkRootBottomTabParams = {
     ExploreScreen: undefined,
     CreatePostScreen: undefined,
     NotificationScreen: undefined,
-    ProfileScreen: undefined
+    ProfileStack: undefined
 }
 
 export const NetworkRootBottomTabScreens = [
@@ -87,15 +91,14 @@ export const NetworkRootBottomTabScreens = [
     },
     {
         id: Math.random() + "" + Date,
-        name: NetworkRootBottomTabEnum.ProfileScreen,
-        component: ProfileScreen,
+        name: NetworkRootBottomTabEnum.ProfileStack,
+        component: ProfileStack,
         options: {
             tabBarShowLabel: false,
+            headerShown: false,
             tabBarIcon: ({ focused }: { focused: boolean }) => {
                 return <Icon name="user" size={24} color={focused ? COLOR.PrimaryColor : '#fff'} />
             }
-
-
         }
     },
 
