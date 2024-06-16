@@ -4,7 +4,7 @@ import Input from './Input'
 import ButtonLogin from './ButtonLogin'
 import { COLOR } from '../../constant/color'
 import { emailPattern } from '../../constant/valid'
-import { regiter } from '../http/userHttp/user'
+import { regiter } from '../../http/userHttp/user'
 import { NavigationProp, ParamListBase, useNavigation } from '@react-navigation/native'
 
 interface user{

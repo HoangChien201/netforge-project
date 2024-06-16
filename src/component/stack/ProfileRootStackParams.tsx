@@ -24,7 +24,7 @@ export const ProfileRootStackScreens=[
         component: ProfileScreen,
         options: {
             headerShown: true,
-            headerLeft: () => null,
+            // headerLeft: () => null,
         }
     },
     {
@@ -38,14 +38,14 @@ export const ProfileRootStackScreens=[
             // ),
         }
     },
-    {
-        id: Math.random() + "" + Date,
-        name: ProfileRootStackEnum.Live,
-        component: Live,
-        options: {
-            headerShown: true,
-            tabBarShowLabel: false,
-        }
-    }
+    // {
+    //     id: Math.random() + "" + Date,
+    //     name: ProfileRootStackEnum.Live,
+    //     component: Live,
+    //     options: {
+    //         headerShown: true,
+    //         tabBarShowLabel: false,
+    //     }
+    // }
     
 ]

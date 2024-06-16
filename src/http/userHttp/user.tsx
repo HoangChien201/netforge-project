@@ -1,4 +1,5 @@
-import AxiosInstance from "../../../http/AxiosInstance"
+import AxiosInstance from "../AxiosInstance";
+
 export const login = async (email: string, password: string) => {
     try {
         const axioInstance = AxiosInstance();

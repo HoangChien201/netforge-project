@@ -1,9 +1,9 @@
 import 'react-native-gesture-handler';
 import React from "react";
 import { StackNavigationProp, createStackNavigator } from '@react-navigation/stack';
-import { ProfileRootStackScreens, ProfileRootStackParams } from './ProfileRootStackParams';
 import { createDrawerNavigator } from '@react-navigation/drawer';
 import { RootStackParamList } from '../navigation/ManageNavigation';
+import { ProfileRootStackParams, ProfileRootStackScreens } from './ProfileRootStackParams';
 
 
 const Drawer =createDrawerNavigator<ProfileRootStackParams>();

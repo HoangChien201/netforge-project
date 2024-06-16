@@ -15,7 +15,7 @@ type Props = {
 const ButtonLogin:React.FC<Props> = (props) => {
     const {chilren,textColor,onPress,textLogin} = props
         return(
-            <View style={{backgroundColor:COLOR.primary200,width:"100%",height:50,borderRadius:15,marginTop:15}}>
+            <View style={{backgroundColor:COLOR.primary200,width:"80%",height:50,borderRadius:15,marginTop:15}}>
                 <Pressable style={({pressed})=>pressed ? styles.pressed:styles.pressed2} onPress={onPress}>
                    {textLogin &&  <View></View>}
                     <Text style={[styles.text,{color:textColor}]}>{chilren}</Text>

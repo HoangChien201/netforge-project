@@ -2,7 +2,7 @@ import { FlatList, ScrollView, StyleSheet, Text, View } from 'react-native'
 import React, { useEffect, useState } from 'react'
 
 import ItemPost from './ItemPost'
-import { getAll } from '../http/userHttp/getpost'
+import { getAll } from '../../http/userHttp/getpost'
 import { AxiosResponse } from 'axios'
 
 const ListPorts = () => {
