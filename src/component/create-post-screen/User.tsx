@@ -1,15 +1,16 @@
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import { COLOR } from '../../constant/color'
 import { Image } from 'react-native';
-import { useMyContext } from '../navigation/UserContext';
-const User = ({setPermission}) => {
+
+const User = ({setType}) => {
     const [dropdownVisible, setDropdownVisible] = useState(false);
-    const [selectedOption, setSelectedOption] = useState('Bạn bè');
-    const { user, setUser } = useMyContext();
+    const [selectedOption, setSelectedOption] = useState('Public');
+
     const options = [
-        { label: 'Bạn bè', value: 1 },
-        { label: 'Cá nhân', value: 2 }
+        { label: 'Public', value: 1 },
+        { label: 'Private', value: 2 },
+        { label: 'Friend', value: 3 }
     ];
 
     const toggleDropdown = () => {
@@ -18,18 +19,14 @@ const User = ({setPermission}) => {
 
     const selectOption = (option) => {
         setSelectedOption(option.label);
-        setPermission(option.value);
+        setType(option.value);
         setDropdownVisible(false);
     };
-    useEffect(()=>{
-        console.log(user);
-        
-    },[])
     return (
         <View style={styles.container}>
             <View style={styles.userInfor}>
-                {user.avatar? <Image style={styles.userInforAvatar} source={{uri: user.avatar}}/>  : <Image style={styles.userInforAvatar} source={require('../../media/quyet_icon/smile_p.png')}/>  }
-                <Text style={styles.userInforName}>{user.fullname}</Text>
+                <Image style={styles.userInforAvatar} source={require('../../media/quyet_icon/event.jpg')}/>
+                <Text style={styles.userInforName}>Quyết đẹp trai</Text>
             </View>
             <View style={styles.type}>
                 <TouchableOpacity style={styles.dropdownButton} onPress={toggleDropdown}>

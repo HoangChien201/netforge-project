@@ -74,7 +74,7 @@ const Form= ({setModal}:{setModal:(values:boolean)=>void}) => {
       
         console.log("hihi"); 
       }
-
+     
 
       
   }
