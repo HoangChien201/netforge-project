@@ -36,7 +36,7 @@ export const NetworkRootStackScreens = [
     },
     {
         id: Math.random() + "" + Date,
-        name: NetworkRootStackEnum.MessageScreen,
+        name: NetworkRootStackEnum.MessageStack,
         component: MessageStack,
         options: {
             headerShown: false
