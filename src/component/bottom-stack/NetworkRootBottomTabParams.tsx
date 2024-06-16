@@ -76,7 +76,8 @@ export const NetworkRootBottomTabScreens = [
 
 
         }
-    }, {
+    }, 
+    {
         id: Math.random() + "" + Date,
         name: NetworkRootBottomTabEnum.NotificationScreen,
         component: NotificationScreen,

@@ -7,7 +7,7 @@ const ListMessageScreen = () => {
   return (
     <View style={styles.container}>
       <View style={styles.headerContainer}>
-        <Text style={styles.header}>Messages</Text>
+        <Text style={styles.header}>Tin Nhắn</Text>
         <TouchableOpacity>
           <EntypoIcon name='new-message' size={24} color={'#000'}/>
         </TouchableOpacity>

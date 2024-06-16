@@ -30,6 +30,8 @@ const FormLogin = ({ setModal, setStatus, setIsLoading }: { setModal: (value: bo
   const { setUser } = useMyContext();
 
   function onChangText(key: string, values: string) {
+    console.log('loginsưqe');
+
     setValueF({
       ...valueF,
       [key]: values
@@ -46,10 +48,12 @@ const FormLogin = ({ setModal, setStatus, setIsLoading }: { setModal: (value: bo
 
     if (!isValidEmail || !isValidPassword) {
  
+      console.log('login');
       
       setValid({ email: isValidEmail, password: isValidPassword });
     
     } 
+    console.log('loginnnn');
 
       setValid({ email: true, password: true });
       setIsLoading(true);

@@ -16,6 +16,7 @@ export default function NetworkBottomTab():React.JSX.Element{
                     margin:20,
                     borderRadius:15,
                  },
+                 headerShown:false
                  
             }}
             >
