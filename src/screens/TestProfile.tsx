@@ -20,7 +20,7 @@ import { ProfileRootStackEnum } from '../component/stack/ProfileRootStackParams'
 import { getUSerByID } from '../http/PhuHTTP';
 import { useFocusEffect } from '@react-navigation/native';
 import ImageViewModal from '../component/profile/ImageViewModal';
-import { FormatDate, formattedDate } from '../format/FormatDate';
+import { FormatDate } from '../format/FormatDate';
 
 
 const HEADER_HEIGHT_EXPANDED = 35;
@@ -218,7 +218,7 @@ export const TestProfile = () => {
             </Text>
 
             {userData && (
-              <Text style={[styles.txtBirthDay,]}>Ngày sinh {formattedDate(userData.dateOfBirth)}</Text>
+              <Text style={[styles.txtBirthDay,]}>Ngày sinh {FormatDate(userData.dateOfBirth)}</Text>
             )}
 
 

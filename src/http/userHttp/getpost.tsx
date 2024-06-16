@@ -1,5 +1,5 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import AxiosInstance from "../../../http/AxiosInstance"
+import AxiosInstance from "../AxiosInstance";
 export const getAll = async () => {
     try {
         const axioInstance = AxiosInstance();

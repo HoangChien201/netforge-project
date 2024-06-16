@@ -14,17 +14,17 @@ const CommentsScreen = () => {
            <View style = {styles.UserContai}>
            <View style = {styles.ViewUser}>
             <TouchableOpacity onPress={() => Close()}>
-            <Image source={require('../media/icon_tuong/back.png')} style = {styles.IconBack}/>
+            <Image source={require('../media/icon/Back.png')} style = {styles.IconBack}/>
             </TouchableOpacity>
             
-            <Image source={require('../media/icon_tuong/imagecuatoi.jpg')} style = {styles.imageUser}/>
+            <Image source={require('../media/icon/phuking.jpg')} style = {styles.imageUser}/>
             <View style = {styles.ViewNameUser}>
                 <Text style = {styles.NameUser}>Le Thanh Tuong</Text>
                 <Text style = {styles.Status}>đã đăng 1 bài viết</Text>
             </View>
            
             <TouchableOpacity>
-            <Image style = {styles.iconOption} source={require('../media/icon_tuong/option.png')}/>
+            <Image style = {styles.iconOption} source={require('../media/quyet_icon/down_b.png')}/>
             </TouchableOpacity>
             
            </View>
@@ -33,7 +33,7 @@ const CommentsScreen = () => {
             <KeyboardAvoidingView style = {{flex: 1}} keyboardVerticalOffset={60} behavior={Platform.OS === "ios" ? "padding" :undefined}>
                 <View style={styles.ViewSendCmt}>
                     <TouchableOpacity>
-                        <Image style={styles.ImageCmt} source={require('../media/icon_tuong/cameracolor.png')} />
+                        <Image style={styles.ImageCmt} source={require('../media/quyet_icon/camera_b.png')} />
                     </TouchableOpacity>
                     
                         <View style={styles.boderInput}>
@@ -44,7 +44,7 @@ const CommentsScreen = () => {
                         </View>
                     
                     <TouchableOpacity style={styles.btnSend}>
-                        <Image source={require('../media/icon_tuong/send.png')} />
+                        <Image source={require('../media/quyet_icon/add-picture_.png')} />
                     </TouchableOpacity>
                 </View>
                 </KeyboardAvoidingView>

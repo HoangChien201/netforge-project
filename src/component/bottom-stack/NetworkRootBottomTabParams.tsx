@@ -12,13 +12,14 @@ import { COLOR } from "../../constant/color"
 import ProfileStack from "../stack/ProfileStack"
 
 import HomeStack from "../stack/HomeStack"
-
+import MessageStack from "../stack/MessageStack"
+import CommentsScreen from "../../screens/CommentsScreen"
 
 enum NetworkRootBottomTabEnum {
     HomeStack = 'HomeStack',
     ExploreScreen = 'ExploreScreen',
     CreatePostScreen = 'CreatePostScreen',
-    NotificationScreen = 'NotificationScreen',
+    MessageStack = 'MessageStack',
     ProfileStack = 'ProfileStack'
 }
 
@@ -26,7 +27,7 @@ export type NetworkRootBottomTabParams = {
     HomeScreen: undefined,
     ExploreScreen: undefined,
     CreatePostScreen: undefined,
-    NotificationScreen: undefined,
+    MessageStack: undefined,
     ProfileStack: undefined
 }
 
@@ -44,7 +45,7 @@ export const NetworkRootBottomTabScreens = [
     }, {
         id: Math.random() + "" + Date,
         name: NetworkRootBottomTabEnum.ExploreScreen,
-        component: ExploreScreen,
+        component: CommentsScreen,
         options: {
             tabBarShowLabel: false,
             tabBarIcon: ({ focused }: { focused: boolean }) => {
@@ -76,15 +77,14 @@ export const NetworkRootBottomTabScreens = [
 
 
         }
-    }, 
-    {
+    }, {
         id: Math.random() + "" + Date,
-        name: NetworkRootBottomTabEnum.NotificationScreen,
+        name: NetworkRootBottomTabEnum.MessageStack,
         component: NotificationScreen,
         options: {
             tabBarShowLabel: false,
             tabBarIcon: ({ focused }: { focused: boolean }) => {
-                return <Icon name="bells" size={24} color={focused ? COLOR.PrimaryColor : '#fff'} />
+                return <Icon name="message1" size={24} color={focused ? COLOR.PrimaryColor : '#fff'} />
             }
 
 

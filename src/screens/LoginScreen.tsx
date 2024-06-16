@@ -1,5 +1,5 @@
 import { Image, KeyboardAvoidingView, Modal, Platform, StatusBar, StyleSheet, Text, View } from 'react-native'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { COLOR } from '../constant/color'
 import ModalPoup from '../component/Modal/ModalPoup'
 import FormLogin from '../component/formlogin/FormLogin'
@@ -9,16 +9,19 @@ import Loading from '../component/Modal/Loading'
 import { NavigationProp, ParamListBase, useNavigation } from '@react-navigation/native'
 import { UserRootStackEnum, UserRootStackParams } from '../component/stack/UserRootStackParams'
 import { navigationType } from '../component/navigation/ManageNavigation'
-
+import AsyncStorage from '@react-native-async-storage/async-storage'
+import AxiosInstance from '../http/AxiosInstance'
+import { useMyContext } from '../component/navigation/UserContext'
+//import TouchId from '../component/Modal/TouchId'
 const LoginScreen = () => {
     const navigation: NavigationProp<ParamListBase> = useNavigation();
     const [showModal, setShowModal] = useState(false)
-    const [status, setStatus] = useState(true)
-    const [isLoading, setIsLoading] = useState(false)
+    const [status, setStatus] = useState(true);;
+    const [isLoading, setIsLoading] = useState(false);
+    const [visible, setVisible] = useState(true)
     const hanlerRegiter = () => {
         navigation.navigate(UserRootStackEnum.SignUp);
     }
-
     return (
         <>
             <StatusBar barStyle="light-content" backgroundColor={COLOR.primary200} />
@@ -55,6 +58,7 @@ const LoginScreen = () => {
                 ) : (
                     <ModalFail text="Sai thông tin đăng nhập" visible={showModal} />
                 )}
+                {/* <TouchId visible={visible} setVisible={setVisible}/> */}
             </View>
         </>
     )

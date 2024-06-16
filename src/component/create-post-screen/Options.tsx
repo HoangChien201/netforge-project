@@ -6,6 +6,11 @@ import { COLOR } from '../../constant/color';
 
 import ImagePicker from 'react-native-image-picker';
 
+export type fileType={
+    fileName:string,
+    uri:string,
+    type:string
+}
 
 const Options = ({ onSelectMedia, onSelectEmoji }) => {
     const [showEmojiModal, setShowEmojiModal] = useState(false);
@@ -35,9 +40,17 @@ const Options = ({ onSelectMedia, onSelectEmoji }) => {
         if (response.errorCode) return;
         if (response.errorMessage) return;
         if (response.assets && response.assets.length > 0) {
-            const newImages = response.assets.map(asset => asset.uri);
+            const newImages:fileType = response.assets.map(asset =>{
+                const {type,fileName,uri}= asset
+               return {
+                type,
+                fileName,
+                uri
+               }
+                
+            } );
+
             onSelectMedia(newImages);
-            console.log(newImages);
             
         }
     }, []);

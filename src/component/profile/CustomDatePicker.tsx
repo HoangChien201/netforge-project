@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, Image } from 'react-native';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
-import { formattedDate } from '../../format/FormatDate';
+import { FormatDate } from '../../format/FormatDate';
 
 interface CustomDatePickerProps {
     selectedDate: Date;
@@ -38,7 +38,7 @@ const CustomDatePicker:React.FC<CustomDatePickerProps> = ({ selectedDate, onDate
     <View>
       <TouchableOpacity style={styles.dateButton} onPress={showDatePicker}>
         <Image style={styles.icon} source={require('../../media/icon/birthday-icon.png')} />
-        <Text style={styles.dateButtonText}>{formattedDate(selectedDate)}</Text>
+        <Text style={styles.dateButtonText}>{FormatDate(selectedDate)}</Text>
       </TouchableOpacity>
       {/* {error && <Text style={styles.errorText}>{error}</Text>} */}
       <DateTimePickerModal

@@ -1,10 +1,11 @@
 import { StyleSheet, Text, View } from 'react-native'
-import React, { useRef, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import MessageItem, { messageType } from '../../component/message/MessageItem'
 import HeaderMessageComponent from '../../component/message/HeaderMessageComponent'
 import { COLOR } from '../../constant/color'
 import { FlatList } from 'react-native-gesture-handler'
 import TextingComponent from '../../component/message/TextingComponent'
+import { useNavigation } from '@react-navigation/native'
 
 const MESSAGES_DEFAULT: Array<messageType> = [
   {
@@ -67,6 +68,12 @@ export const user={
 const MessageScreen = () => {
   const [messages,setMessages]=useState<Array<messageType>>(MESSAGES_DEFAULT)
   const flatListRef=useRef()
+  const navigation=useNavigation()
+  useEffect(() => {
+        
+    navigation.getParent()?.setOptions({ tabBarStyle: {display:'none'}});
+    
+}, []);
   const partner = {
     avatar: 'https://res.cloudinary.com/delivery-food/image/upload/v1717925230/btywul9nnqtzlzjaawrx.jpg',
     fullname: "Hoàng Chiến",

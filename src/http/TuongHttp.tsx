@@ -1,6 +1,6 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import AxiosInstance from "./AxiosInstance";
-import { login } from "../component/http/userHttp/user";
+import { login } from "./userHttp/user";
 
 
 // tìm kiếm
