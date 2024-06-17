@@ -6,18 +6,18 @@ import { RootStackParamList } from '../navigation/ManageNavigation';
 import { ProfileRootStackParams, ProfileRootStackScreens } from './ProfileRootStackParams';
 
 
-const Drawer =createDrawerNavigator<ProfileRootStackParams>();
+const Stack =createStackNavigator<ProfileRootStackParams>();
 export type navigationType = StackNavigationProp<RootStackParamList>
 export default function ProfileStack():React.JSX.Element{
     return (
-        <Drawer.Navigator
+        <Stack.Navigator
             screenOptions={{
-                
             }}
+            initialRouteName='MenuScreen'
         >
             {
                 ProfileRootStackScreens.map((item,index)=>{
-                    return <Drawer.Screen
+                    return <Stack.Screen
                         key={item.id}
                         component={item.component}
                         name={item.name}
@@ -25,6 +25,6 @@ export default function ProfileStack():React.JSX.Element{
                     />
                 })
             }
-        </Drawer.Navigator>
+        </Stack.Navigator>
     )
 }
