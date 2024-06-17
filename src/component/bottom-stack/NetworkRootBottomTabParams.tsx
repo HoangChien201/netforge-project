@@ -1,23 +1,20 @@
 import React from "react"
+import { View } from "react-native"
 
 import Icon from 'react-native-vector-icons/AntDesign'
-import ExploreScreen from "../../screens/ExploreScreen"
-import HomeScreen from "../../screens/HomeScreen"
 import CreatePostScreen from "../../screens/CreatePostScreen"
 import NotificationScreen from "../../screens/NotificationScreen"
-import ProfileScreen from "../../screens/ProfileScreen"
-import { View } from "react-native"
 import { COLOR } from "../../constant/color"
-
-import ProfileStack from "../stack/ProfileStack"
-
 import HomeStack from "../stack/HomeStack"
-import MessageStack from "../stack/MessageStack"
 import CommentsScreen from "../../screens/CommentsScreen"
+import MenuScreen from "../../screens/MenuScreen"
+import ProfileStack from "../stack/ProfileStack"
+import MessageStack from "../stack/MessageStack"
+
 
 enum NetworkRootBottomTabEnum {
     HomeStack = 'HomeStack',
-    ExploreScreen = 'ExploreScreen',
+    NotificationScreen = 'NotificationScreen',
     CreatePostScreen = 'CreatePostScreen',
     MessageStack = 'MessageStack',
     ProfileStack = 'ProfileStack'
@@ -25,7 +22,7 @@ enum NetworkRootBottomTabEnum {
 
 export type NetworkRootBottomTabParams = {
     HomeScreen: undefined,
-    ExploreScreen: undefined,
+    NotificationScreen: undefined,
     CreatePostScreen: undefined,
     MessageStack: undefined,
     ProfileStack: undefined
@@ -44,12 +41,12 @@ export const NetworkRootBottomTabScreens = [
         }
     }, {
         id: Math.random() + "" + Date,
-        name: NetworkRootBottomTabEnum.ExploreScreen,
-        component: CommentsScreen,
+        name: NetworkRootBottomTabEnum.MessageStack,
+        component: MessageStack,
         options: {
             tabBarShowLabel: false,
             tabBarIcon: ({ focused }: { focused: boolean }) => {
-                return <Icon name="search1" size={24} color={focused ? COLOR.PrimaryColor : '#fff'} />
+                return <Icon name="message1" size={24} color={focused ? COLOR.PrimaryColor : '#fff'} />
             }
         }
     }, {
@@ -79,12 +76,12 @@ export const NetworkRootBottomTabScreens = [
         }
     }, {
         id: Math.random() + "" + Date,
-        name: NetworkRootBottomTabEnum.MessageStack,
+        name: NetworkRootBottomTabEnum.NotificationScreen,
         component: NotificationScreen,
         options: {
             tabBarShowLabel: false,
             tabBarIcon: ({ focused }: { focused: boolean }) => {
-                return <Icon name="message1" size={24} color={focused ? COLOR.PrimaryColor : '#fff'} />
+                return <Icon name="bells" size={24} color={focused ? COLOR.PrimaryColor : '#fff'} />
             }
 
 
@@ -96,9 +93,8 @@ export const NetworkRootBottomTabScreens = [
         component: ProfileStack,
         options: {
             tabBarShowLabel: false,
-            headerShown: false,
             tabBarIcon: ({ focused }: { focused: boolean }) => {
-                return <Icon name="user" size={24} color={focused ? COLOR.PrimaryColor : '#fff'} />
+                return <Icon name="menu-fold" size={24} color={focused ? COLOR.PrimaryColor : '#fff'} />
             }
         }
     },

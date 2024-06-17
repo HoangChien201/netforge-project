@@ -71,7 +71,7 @@ const MessageScreen = () => {
   const navigation=useNavigation()
   useEffect(() => {
         
-    navigation.getParent()?.setOptions({ tabBarStyle: {display:'none'}});
+    // navigation.getParent()?.setOptions({ tabBarStyle: {display:'none'}});
     
 }, []);
   const partner = {

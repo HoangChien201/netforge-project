@@ -8,9 +8,9 @@ import TouchId from './TouchId'
 import ButtonLogin from '../form/ButtonLogin'
 import InputLogin from './Input'
 import Remember from './Remember'
-import { login } from '../../http/userHttp/user'
 import { useMyContext } from '../navigation/UserContext'
 import AsyncStorage from '@react-native-async-storage/async-storage'
+import { login } from '../../http/userHttp/user'
 
 
 interface user {
@@ -39,7 +39,6 @@ const FormLogin = ({ setModal, setStatus, setIsLoading }: { setModal: (value: bo
 
   const submit = async () => {
     //await AsyncStorage.clear();
-    console.log('submit');
     const { email, password } = { ...valueF };
     const trimmedEmail = email.trim();
     const isValidEmail = emailPattern.test(trimmedEmail);
@@ -55,17 +54,23 @@ const FormLogin = ({ setModal, setStatus, setIsLoading }: { setModal: (value: bo
 
         // await AsyncStorage.setItem('email', email);
         // await AsyncStorage.setItem('password', password);
-        const result = await login(email, password);
+        const result = await login(email,password);
         console.log(result);
+        setIsLoading(false);
         
         if (result) {
+            setUser(result);
+
+          }
+          
+          console.log(result);
+          await AsyncStorage.setItem('userToken', result.data.token);
+          handleLoginResult(result);
           setIsLoading(false);
-        }
-        
-        console.log(result);
-        await AsyncStorage.setItem('userToken', result.data.token);
-        handleLoginResult(result);
+          
       } catch (error) {
+        setIsLoading(false);
+
         console.log("Login error", error);
       }
     }
