@@ -51,10 +51,6 @@ console.log(index);
       horizontal
       showsHorizontalScrollIndicator={false}
       />
-
-      <TouchableOpacity onPress={()=>{setIndex(index+1)}}>
-        <Text>hihi</Text>
-      </TouchableOpacity>
     </View>
   )
 }

@@ -16,7 +16,7 @@ const CreatePostScreen = () => {
   const [isError, setIsError] = useState(false);
   const { user, setUser } = useMyContext();
   const [friends, setFriends] = useState([]);
-  const [content, setContent] = useState('');
+  const [content, setContent] = useState('duy ne');
   // const [tags, setTags] = useState([]);
   const [media, setMedia] = useState([]);
   const [isLoading, setIsLoading] = useState(false);

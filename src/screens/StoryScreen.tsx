@@ -1,6 +1,7 @@
 import React, { useRef, useEffect, useState, useCallback } from 'react';
 import { View, ScrollView, Text, Dimensions, TouchableOpacity, StyleSheet, Image, TextInput, Pressable } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import AntDesignIcon from 'react-native-vector-icons/AntDesign';
 import Animated, { useSharedValue, useAnimatedStyle, withSpring } from 'react-native-reanimated';
 import TestProgress from '../component/storys/ProgressBarScreen';
 import ProgressBarr from '../component/storys/ProgressBarr';
@@ -71,7 +72,7 @@ const Item = ({ navigate, index, currentIndex, setCurrentIndex, dataLength }) =>
         </View>
         <View>
           <Pressable onPress={()=>navigate.goBack()}>
-          <Image source={require('../media/Dicons/cross.png')} style={{ width: 25, height: 25 }} />
+          <AntDesignIcon name='close' size={20} color='#000'  />
           </Pressable>
         </View>
       </View>
