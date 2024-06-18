@@ -11,7 +11,7 @@ const ActionBar = ({   setIsLike , isLike,type, postId, comment_count, share_cou
     
     const [nameReaction, setNameReaction] = useState(null);
     const [numberLike, setNumberLike] = useState<number>(1000);
-    const [number, setNumber] = useState<number>(type);
+    const [number, setNumber] = useState<number | null>(type);
     const animationRef = useRef(null);
 
     const likepost = async (idPost: number, type: number) => {
@@ -51,7 +51,7 @@ const ActionBar = ({   setIsLike , isLike,type, postId, comment_count, share_cou
         if (reactionMap) {
             return (
                 <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', marginRight: 10 }}>
-                    <TouchableOpacity onLongPress={OnPressIcon} onPress={() => setNameReaction(null)}>
+                    <TouchableOpacity onLongPress={OnPressIcon} onPress={() => setNumber(null)}>
                         <Image source={reactionMap.Emoji} style={{ width: 24, height: 24 }} />
                     </TouchableOpacity>
                 </View>

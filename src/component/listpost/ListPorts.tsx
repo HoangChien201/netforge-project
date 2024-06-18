@@ -7,13 +7,13 @@ import { AxiosResponse } from 'axios';
 const ListPorts = () => {
   const [islike, setIsLike] = useState(false);
   const [active,setActive]= useState<number | null>(null)
-  const [data, setData] = useState([]);
+  const [data, setData] = useState<any>([]);
 
   useEffect(() => {
     const getAllPost = async () => {
       try {
-        const response: AxiosResponse<any, any> = await getAll();
-        console.log("res", response);
+        const response: any = await getAll();
+     
         if (response) {
           // const filteredPosts = response.filter(post => post.type === 1);
           setData([...response]);

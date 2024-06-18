@@ -4,28 +4,32 @@ import ActionBar from './ActionBar';
 import { DateOfTimePost } from '../../format/DateOfTimePost';
 import ItemImg from './ItemImg';
 
-const ItemPost = ({ index,data, setIsLike, islike,setActive,active }) => {
+const ItemPost = ({ index, data, setIsLike, islike, setActive, active }) => {
     const { creater, share_count, reaction, content, media, comment_count, create_at, id } = data;
-  console.log("index",index);
-  
+ 
+
     const handleItemPress = () => {
         setIsLike(false);
-        if(active === index){
+        if (active === index) {
             setActive(null)
-            console.log("hih",active+"df"+index);
-            
-        }else{
+        
+
+        } else {
             setActive(index)
         }
-      
+
     };
 
     return (
-        <TouchableOpacity onPress={handleItemPress} activeOpacity={1} style={{marginBottom: 6, backgroundColor: "#fff"}}>
+        <TouchableOpacity onPress={handleItemPress} activeOpacity={1} style={{ marginBottom: 6, backgroundColor: "#fff" }}>
             <View style={styles.home}>
                 <View style={styles.containerAvt}>
                     {/* <Image source={require('../../media/icon/phuking.jpg')} style={styles.avt} /> */}
-                    <Image source={{uri:creater.avatar === null ? null:creater.avatar}} style={styles.avt} />
+                    {creater.avatar ? (
+                        <Image source={{ uri: creater.avatar }} style={styles.avt} />
+                    ) : (
+                        <Image source={require('../../media/icon/phuking.jpg')} style={styles.avt} /> 
+                    )}
                     <View>
                         <Text style={styles.nameUser}>{creater.fullname === null ? "Người dùng" : creater.fullname}</Text>
                         <View style={{ flexDirection: 'row', alignItems: 'center', marginVertical: 3 }}>
