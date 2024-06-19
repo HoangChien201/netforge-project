@@ -4,7 +4,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 //getOnePost
 //
 // https://network-social-sever.onrender.com
-export const getPostById = async (postId: string) => {
+export const getPostById = async (postId: any) => {
     try {
         const token = await AsyncStorage.getItem('token');
         const url = `/posts/find-one/${postId}`;

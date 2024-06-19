@@ -14,7 +14,7 @@ const images: string[] = [
 
 const ItemImg = ({image}:{image:Medias[]}) => {
   const [img, setImag] = useState<Medias[]>([...image]);
-  console.log("media",img);
+  //console.log("media",img);
   
 
   return (
@@ -86,7 +86,7 @@ const ItemImg = ({image}:{image:Medias[]}) => {
 
       {
         img.length > 3 ?
-          <View style={{ flex: 0.5, height: 210 }}>
+          <View style={{ flex: 0.5, height: 210,overflow:'hidden' }}>
             <FlatList
               data={img.slice(1)}
               renderItem={({ item, index }:{item:Medias[],index:number}) => (

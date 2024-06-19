@@ -1,5 +1,5 @@
-import React, { FC, useEffect, useState } from 'react';
-import { StyleSheet, View, TextInput, Text, FlatList, Image } from 'react-native';
+import React, { FC, useEffect, useMemo, useState } from 'react';
+import { StyleSheet, View, TextInput, Text, FlatList, Image, ToastAndroid } from 'react-native';
 import { MentionInput, MentionSuggestionsProps, replaceMentionValues } from 'react-native-controlled-mentions';
 import { COLOR } from '../../constant/color';
 import { getFriends } from '../../http/QuyetHTTP'
@@ -8,57 +8,105 @@ interface User {
     fullname: string;
     avatar: string;
 }
-const TextArea = ({ content, setContent, setTags }) => {
-    // const displayText = replaceMentionValues(content, ({ name }) => `@${name}`);
-    const [value, setValue] = useState([]);
-    const mentions: { name: string; id: string; }[] = [];
-    const status = 2;
+type Props = {
+    content: any,
+    setContent: (value:any) => void,
+    friends: any,
+    setFriends: (value: any) => void
+}
+const TextArea: React.FC<Props> = ({ content, setContent, friends, setFriends }) => {
+    const [value, setValue] = useState<any[]>([]);
+    const mentions: { name: any; id: any; }[] = useMemo(() => [], [content]);
+
     const getFriendList = async () => {
         try {
+            const status = 2;
             const result = await getFriends(status);
-            setValue(result.user);
+            setValue(result);
+            console.log('lũ bạn:' + JSON.stringify(result));
         } catch (error) {
-            console.log('lỗi khi lấy ds bạn bè: ' + error);
+            console.log('getFriends error:' + error);
             throw error;
         }
     }
     useEffect(() => {
-        // getFriendList();
-        // if (mentions.length > 0) {
-        //     const ids = mentions.map(mention => mention.id);
-        //     setTags(ids);
-        // }
-    }, [content])
-    // const replacedText = replaceMentionValues(
-    //     content,
-    //     mention => {
-    //         const { name, id } = mention;
-    //         mentions.push({ name, id });
-    //         return `@[${name}](${id})`;
-    //     }
-    // );
+        getFriendList();
+    }, []);
+    useEffect(() => {
+        replaceMentionValues(
+            content,
+            mention => {
+                const { name, id } = mention;
+                if (!mentions.some(m => m.id === id)) {
+                    mentions.push({ name, id });
+                }
+                return `@[${name}](${id})`;
+            }
+        );
+        if (mentions.length > 0) {
+            const ids = mentions.map(mention => mention.id);
+            setFriends(ids);
+            console.log('id lũ bạn: ' + ids);
+            console.log('mentions : ' + JSON.stringify(mentions));
+            setValue(prevValue => prevValue.filter(item => !ids.includes(item.user.id)));
+        } else {
+            setFriends([]);
+        }
+    }, [content]);
+
     const renderSuggestions: FC<MentionSuggestionsProps> = ({ keyword, onSuggestionPress }) => {
         if (!keyword) {
             return null;
-        };
-        const suggestions = value.filter(user =>
-            user.fullname.toLowerCase().includes(keyword.toLowerCase())
-        );
+        }
+        const idsToExclude = mentions.map(mention => Number(mention.id)); // Chuyển đổi id trong mentions thành số
+
+        const suggestions = value.filter(user => {
+            const userId = Number(user.user.id); // Chuyển đổi id của user thành số
+            return (
+                user.user.fullname.toLowerCase().includes(keyword.toLowerCase()) &&
+                !idsToExclude.includes(userId)
+            );
+        });
+
         return (
             <FlatList
                 style={styles.flatList}
                 data={suggestions}
-                keyExtractor={item => item.id}
+                keyExtractor={item => item.id.toString()}
                 renderItem={({ item }) => (
                     <View style={styles.suggestionItem}>
-                        <Image source={{ uri: item.avatar }} style={styles.avatar} />
-                        <Text onPress={() => onSuggestionPress({ id: item.id, name: item.fullname })}>
-                            {item.fullname}
+                        {item.user.avatar ? <Image source={{ uri: item.user.avatar }} style={styles.avatar} /> :
+                            <View style={[styles.avatar, { borderWidth: 1, borderColor: '#EEEEEE', borderRadius: 100, backgroundColor: '#DDDDDD' }]}></View>}
+
+                        <Text onPress={() => handleSuggestionPress(item.user, onSuggestionPress)}>
+                            {item.user.fullname}
                         </Text>
                     </View>
                 )}
             />
         );
+    };
+    const handleSuggestionPress = (user: { id: any; fullname: string; }, onSuggestionPress: (suggestion: Suggestion) => void) => {
+        let isAlreadyMentioned = false;
+        const userId = Number(user.id);
+        for (let i = 0; i < mentions.length; i++) {
+            const mentionId = Number(mentions[i].id);
+            if (mentionId === userId) {
+                isAlreadyMentioned = true;
+                break;
+            }
+            console.log('1 = ' + mentions[i].id);
+            console.log('2 = ' + user.id);
+
+
+        }
+        console.log('isAlreadyMentioned:', isAlreadyMentioned);
+        if (isAlreadyMentioned) {
+            ToastAndroid.show('Người dùng đã được nhắc đến!', ToastAndroid.SHORT);
+        } else {
+            onSuggestionPress({ id: user.id, name: user.fullname });
+            mentions.push({ id: user.id, name: user.fullname });
+        }
     };
     return (
         <View style={styles.container}>

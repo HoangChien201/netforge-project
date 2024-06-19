@@ -51,7 +51,7 @@ const renderMedia:React.FC<renderMedia> = ({images, media, setMedia, setShowModa
                         </View>
                     ) : (
                         <View style={styles.oneMedia} key={index.toString()} >
-                            <Image source={{ uri: item.url }} style={styles.oneMedia} resizeMode="contain" />
+                            <Image source={{ uri: item.url }} style={styles.oneMedia} resizeMode="cover" />
                         </View>
 
                     )
@@ -83,7 +83,7 @@ const renderMedia:React.FC<renderMedia> = ({images, media, setMedia, setShowModa
                         </View>
                     ) : (
                         <View style={styles.mediaContainer} key={index.toString()}>
-                            <Image  source={{ uri: item.url }} style={styles.oneMedia} resizeMode="contain" />
+                            <Image  source={{ uri: item.url }} style={styles.oneMedia} resizeMode="cover" />
                         </View>
                     )
                 ))}
