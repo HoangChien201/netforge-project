@@ -6,8 +6,9 @@ import { COLOR } from '../../constant/color'
 import { FlatList } from 'react-native-gesture-handler'
 import TextingComponent from '../../component/message/TextingComponent'
 import { useNavigation } from '@react-navigation/native'
+import MessageCall from '../../component/message/MessageCall'
 
-const MESSAGES_DEFAULT: Array<messageType> = [
+export const MESSAGES_DEFAULT: Array<messageType> = [
   {
     "id": 1,
     "create_at": "2024-05-31T09:12:47.456Z",
@@ -22,6 +23,7 @@ const MESSAGES_DEFAULT: Array<messageType> = [
     },
     "reactions": [
       {
+        "user":2,
         "reaction": 3
       }
     ]
@@ -40,9 +42,11 @@ const MESSAGES_DEFAULT: Array<messageType> = [
     },
     "reactions": [
       {
+        "user":1,
         "reaction": 2
       },
       {
+        "user":2,
         "reaction": 0
       }
     ]
@@ -52,8 +56,36 @@ const MESSAGES_DEFAULT: Array<messageType> = [
     "create_at": "2024-05-31T09:12:47.456Z",
     "update_at": "2024-06-12T10:57:38.809Z",
     "state": 1,
-    "type": "video",
-    "message": "https://res.cloudinary.com/delivery-food/video/upload/v1718214172/kqomdj0lkwxgglhvtni5.mp4",
+    "type": "image",
+    "message": "file:///data/user/0/com.eventproject/cache/rn_image_picker_lib_temp_a5e9e753-6e98-4f9d-ad7e-f1b9ab5c12f2.jpg",
+    "sender": {
+      "id": 2,
+      "fullname": "Le Hoang lan",
+      "avatar": "https://res.cloudinary.com/delivery-food/image/upload/v1717925230/btywul9nnqtzlzjaawrx.jpg"
+    },
+    "reactions": []
+  },
+  {
+    "id": 4,
+    "create_at": "2024-05-31T09:12:47.456Z",
+    "update_at": "2024-06-12T10:57:38.809Z",
+    "state": 1,
+    "type": "audiocall",
+    "message": "",
+    "sender": {
+      "id": 1,
+      "fullname": "Le Hoang lan",
+      "avatar": "https://res.cloudinary.com/delivery-food/image/upload/v1717925230/btywul9nnqtzlzjaawrx.jpg"
+    },
+    "reactions": []
+  },
+  {
+    "id": 5,
+    "create_at": "2024-05-31T09:12:47.456Z",
+    "update_at": "2024-06-12T10:57:38.809Z",
+    "state": 1,
+    "type": "videocall",
+    "message": "",
     "sender": {
       "id": 2,
       "fullname": "Le Hoang lan",
@@ -71,7 +103,7 @@ const MessageScreen = () => {
   const navigation=useNavigation()
   useEffect(() => {
         
-    // navigation.getParent()?.setOptions({ tabBarStyle: {display:'none'}});
+    navigation.getParent()?.setOptions({ tabBarStyle: {display:'none'}});
     
 }, []);
   const partner = {
@@ -107,6 +139,7 @@ const MessageScreen = () => {
           showsVerticalScrollIndicator={false}
         />
       </View>
+      
       <TextingComponent addMessage={addMessage}/>
     </View>
   )

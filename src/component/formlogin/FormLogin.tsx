@@ -23,6 +23,21 @@ export type valid = {
   password: boolean,
 }
 
+const RESULT={
+  "data": {
+    "id": 5,
+    "email": "hoangchien12@gmail.com",
+    "fullname": null,
+    "avatar": "https://res.cloudinary.com/delivery-food/image/upload/v1718218858/fp7kzwqvzxmsjvbynygp.jpg",
+    "phone": null,
+    "role": 2,
+    "gender": null,
+    "address": null,
+    "dateOfBirth": null,
+    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjo1LCJlbWFpbCI6ImhvYW5nY2hpZW4xMkBnbWFpbC5jb20iLCJmdWxsbmFtZSI6bnVsbCwiYXZhdGFyIjoiaHR0cHM6Ly9yZXMuY2xvdWRpbmFyeS5jb20vZGVsaXZlcnktZm9vZC9pbWFnZS91cGxvYWQvdjE3MTgyMTg4NTgvZnA3a3p3cXZ6eG1zanZieW55Z3AuanBnIiwicGhvbmUiOm51bGwsInJvbGUiOjIsImdlbmRlciI6bnVsbCwiYWRkcmVzcyI6bnVsbCwiZGF0ZU9mQmlydGgiOm51bGx9LCJpYXQiOjE3MTg3ODIwNTksImV4cCI6My42ZSsyN30.AKr4k9NJMhRpaA1hPzxfgM-fWpsGE5UqOEESuYUfi2o"
+  }
+}
+
 const FormLogin = ({ setModal, setStatus, setIsLoading }: { setModal: (value: boolean) => void, setStatus: (value: boolean) => void, setIsLoading: (value: boolean) => void }) => {
   const [valueF, setValueF] = useState<user>({ email: "tquyet2000@gmail.com", password: "12345" })
   const [valid, setValid] = useState<valid>({ email: true, password: true })
@@ -50,6 +65,7 @@ const FormLogin = ({ setModal, setStatus, setIsLoading }: { setModal: (value: bo
     } else {
       setValid({ email: true, password: true });
       setIsLoading(true);
+      setUser(RESULT);
       try {
 
         // await AsyncStorage.setItem('email', email);
@@ -59,7 +75,7 @@ const FormLogin = ({ setModal, setStatus, setIsLoading }: { setModal: (value: bo
         setIsLoading(false);
         
         if (result) {
-            setUser(result);
+            setUser(RESULT);
 
           }
           
