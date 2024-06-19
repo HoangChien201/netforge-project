@@ -59,12 +59,12 @@ const FormLogin = ({ setModal, setStatus, setIsLoading }: { setModal: (value: bo
         setIsLoading(false);
         
         if (result) {
-            setUser(result);
+            setUser(result.data);
 
           }
           
           console.log(result);
-          await AsyncStorage.setItem('userToken', result.data.token);
+          await AsyncStorage.setItem('userToken', result?.data.token);
           handleLoginResult(result);
           setIsLoading(false);
           

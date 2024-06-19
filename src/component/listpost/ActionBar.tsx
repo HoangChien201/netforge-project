@@ -4,16 +4,32 @@ import { useNavigation } from '@react-navigation/native';
 import AntDesignIcon from 'react-native-vector-icons/AntDesign';
 import { reaction } from '../../constant/emoji';
 import * as Animatable from 'react-native-animatable';
-import { likePost } from '../../http/userHttp/getpost';
+import { deleteLikePost, likePost, updateLikePost } from '../../http/userHttp/getpost';
+import { useMyContext } from '../navigation/UserContext';
 
 const ActionBar = ({   setIsLike , isLike,type, postId, comment_count, share_count,index1,active,setActive }: {setActive:(value:number)=>void,index1:number,active:number|null,setIsLike:(value:boolean)=>void ,isLike:boolean,type: number, postId: number, comment_count: number, share_count: number }) => {
     const navigation = useNavigation();
-    
+    const {user}= useMyContext()
     const [nameReaction, setNameReaction] = useState(null);
     const [numberLike, setNumberLike] = useState<number>(1000);
     const [number, setNumber] = useState<number | null>(type);
     const animationRef = useRef(null);
 
+
+    
+    const deleteLike = async (idPost: number) => {
+        try {
+            console.log("user_idde",user.id);
+            console.log("ahihi", idPost);
+            const result:any = await deleteLikePost(idPost, user.id);
+            if (result) {
+                console.log("ahihi", idPost);
+            }
+        } catch (error) {
+            console.log("lỗi like post", error);
+            throw error;
+        }
+    };
     const likepost = async (idPost: number, type: number) => {
         try {
             const result = await likePost(idPost, type);
@@ -46,12 +62,16 @@ const ActionBar = ({   setIsLike , isLike,type, postId, comment_count, share_cou
         }
     };
 
-    const ViewReaction = (type: number) => {
+    const ViewReaction = (type: number,postId:number,user_id:any) => {
         const reactionMap = reaction.find(item => item.type === type);
         if (reactionMap) {
             return (
                 <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', marginRight: 10 }}>
-                    <TouchableOpacity onLongPress={OnPressIcon} onPress={() => setNumber(null)}>
+                    <TouchableOpacity onLongPress={OnPressIcon} onPress={() => {
+                          deleteLike(postId,user_id)
+                          setNumber(null)
+                    }
+                      }>
                         <Image source={reactionMap.Emoji} style={{ width: 24, height: 24 }} />
                     </TouchableOpacity>
                 </View>
@@ -67,7 +87,7 @@ const ActionBar = ({   setIsLike , isLike,type, postId, comment_count, share_cou
                     {number === null ?
                         <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', marginRight: 10 }}>
                             <TouchableOpacity onLongPress={OnPressIcon} onPress={() => {
-                                setNameReaction(require('../../media/Dicons/thumb-up.png'));
+                                
                                 setNumber(1);
                                 likepost(postId, 1);
                             }}>
@@ -75,7 +95,7 @@ const ActionBar = ({   setIsLike , isLike,type, postId, comment_count, share_cou
                             </TouchableOpacity>
                         </View> :
                         <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}>
-                            {ViewReaction(number)}
+                            {ViewReaction(number,postId,user.id)}
                         </View>
                     }
                     <Text style={styles.text}>{format(numberLike)}</Text>
@@ -89,11 +109,11 @@ const ActionBar = ({   setIsLike , isLike,type, postId, comment_count, share_cou
                     <Text style={styles.text}>{share_count ? share_count : 0}</Text>
                 </View>
             </View>
-            {isLike &&index1===active &&
+            {isLike && index1===active &&
                 <Animatable.View
                     ref={animationRef}
                     animation="fadeInUp"
-                    duration={200}
+                    duration={100}
                     style={{ flexDirection: "row", position: 'absolute', bottom: 40, width: "74%", backgroundColor: '#fff', padding: 7, borderRadius: 20 }}
                 >
                     {reaction.map((item, index) => (
@@ -101,7 +121,7 @@ const ActionBar = ({   setIsLike , isLike,type, postId, comment_count, share_cou
                             setNumber(item.type);
                             setNameReaction(item.Emoji);
                             setIsLike(false);
-                            likepost(postId, item.type);
+                            item.Emoji === null ? likepost(postId, item.type):updateLikePost(postId,user.id,item.type)
                         }}>
                             <Image source={item.Emoji} style={{ width: 25, height: 25, marginVertical: 6 }} />
 

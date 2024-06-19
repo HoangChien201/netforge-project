@@ -4,7 +4,7 @@ import ItemPost from './ItemPost';
 import { getAll } from '../../http/userHttp/getpost';
 import { AxiosResponse } from 'axios';
 
-const ListPorts = () => {
+const ListPorts = ({onrefresh}) => {
   const [islike, setIsLike] = useState(false);
   const [active,setActive]= useState<number | null>(null)
   const [data, setData] = useState<any>([]);
@@ -25,7 +25,7 @@ const ListPorts = () => {
       }
     };
     getAllPost();
-  }, []);
+  }, [onrefresh]);
 
   return (
     <View style={{ backgroundColor: 'rgba(155,155,155,0.2)' }}>

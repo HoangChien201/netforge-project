@@ -6,13 +6,33 @@ import ItemImg from './ItemImg';
 
 const ItemPost = ({ index, data, setIsLike, islike, setActive, active }) => {
     const { creater, share_count, reaction, content, media, comment_count, create_at, id } = data;
- 
 
+   
+
+   
+   const fommatContent = ()=>{
+    const fomat = content.split(/@\[([^\]]+)\]\(\d+\)/g)
+    return (
+        <View  style={{ marginHorizontal: 20, paddingBottom: media ? 0 : 20,flexDirection:'row',flexWrap:'wrap' }}>
+          {fomat.map((fomat, index) => {
+            if (index % 2 === 1) {
+              return (
+                <Text key={index} style={{ color: 'black',fontWeight:'bold' }}>{fomat}</Text>
+              );
+            } else {
+              return (
+                <Text key={index} style={{ color: 'black'}}>{fomat}</Text>
+              );
+            }
+          })}
+        </View>
+      );
+   }
     const handleItemPress = () => {
         setIsLike(false);
         if (active === index) {
             setActive(null)
-        
+
 
         } else {
             setActive(index)
@@ -28,7 +48,7 @@ const ItemPost = ({ index, data, setIsLike, islike, setActive, active }) => {
                     {creater.avatar ? (
                         <Image source={{ uri: creater.avatar }} style={styles.avt} />
                     ) : (
-                        <Image source={require('../../media/icon/phuking.jpg')} style={styles.avt} /> 
+                        <Image source={require('../../media/icon/phuking.jpg')} style={styles.avt} />
                     )}
                     <View>
                         <Text style={styles.nameUser}>{creater.fullname === null ? "Người dùng" : creater.fullname}</Text>
@@ -44,9 +64,7 @@ const ItemPost = ({ index, data, setIsLike, islike, setActive, active }) => {
                     </TouchableOpacity>
                 </View>
             </View>
-            <View style={{ marginHorizontal: 20, paddingBottom: media ? 0 : 20 }}>
-                <Text style={{ color: 'black' }}>{content}</Text>
-            </View>
+            {fommatContent()}
             {media.length > 0 ? <ItemImg image={media} /> : null}
             <ActionBar setActive={setActive} active={active} index1={index} isLike={islike} postId={id} type={reaction} comment_count={comment_count} share_count={share_count} setIsLike={setIsLike} />
         </TouchableOpacity>
