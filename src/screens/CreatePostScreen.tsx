@@ -43,8 +43,8 @@ const CreatePostScreen = () => {
             name: file.fileName || `image-${index}.jpg`,
           });
         });
-        console.log('media: ' + media);
-        console.log('formData: ' + JSON.stringify(formData))
+        // console.log('media: ' + media);
+        // console.log('formData: ' + JSON.stringify(formData))
         const uploadedMedias = await upLoadMedia(formData);
         let medias: { url: any; resource_type: any }[] = [];
         if (Array.isArray(uploadedMedias)) {
@@ -153,7 +153,7 @@ const CreatePostScreen = () => {
       ) : null}
     </View>
   )
-}
+};
 
 export default CreatePostScreen
 

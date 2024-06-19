@@ -14,7 +14,7 @@ const images: string[] = [
 
 const ItemImg = ({image}:{image:Medias[]}) => {
   const [img, setImag] = useState<Medias[]>([...image]);
-  console.log("media",img);
+  // console.log("media",img);
   
 
   return (

@@ -1,46 +1,51 @@
-import {
-  StyleSheet,
-  Text,
-  View,
-  Image,
-  TouchableOpacity,
-  KeyboardAvoidingView,
-  TextInput,
-  Alert,
-} from 'react-native';
-import React, {useState} from 'react';
-import {COLOR} from '../constant/color';
-import {navigationType} from '../component/stack/UserStack';
-import {emailPattern} from '../constant/valid';
-import Loading from '../component/Modal/Loading';
-import ButtonLogin from '../component/form/ButtonLogin';
-import {UserRootStackEnum} from '../component/stack/UserRootStackParams';
-import {NavigationProp, ParamListBase, RouteProp, useNavigation, useRoute,} from '@react-navigation/native';
-import InputLogin from '../component/formlogin/Input';
-import { resetPassword } from '../http/PhuHTTP';
-import ModalPoup from '../component/Modal/ModalPoup';
+import { Image, KeyboardAvoidingView, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import React, { useEffect, useState } from 'react'
+import { useIsFocused, useNavigation } from '@react-navigation/native';
+import { COLOR } from '../constant/color';
 import ModalFail from '../component/Modal/ModalFail';
-import Icon from 'react-native-vector-icons/Ionicons';
+import ModalPoup from '../component/Modal/ModalPoup';
+import ButtonLogin from '../component/form/ButtonLogin';
+import InputLogin from '../component/formlogin/Input';
+import Loading from '../component/Modal/Loading';
+import { resetPassword } from '../http/PhuHTTP';
+import { useMyContext } from '../component/navigation/UserContext';
 
 interface resetPass {
     newPassword: string,
     confirmPassword: string,
+    oldPassword: string
 }
 export type valid = {
     newPassword: boolean,
     confirmPassword: boolean,
+    oldPassword: boolean,
 }
 
-export const ResetPassword:React.FC = () => {
-    const navigation: NavigationProp<ParamListBase> = useNavigation();
-    const [isLoading,setIsLoading] = useState(false);
+const ChangePassword = () => {
+  const navigation = useNavigation()
+  const isFocus = useIsFocused()
+  const {user} = useMyContext();
+  const email = user.email;
+//   const stPassword = await AsyncStorage.getItem('password');
+//   console.log(stPassword)
+
+  useEffect(() => {
+    if (isFocus) {
+      navigation.getParent()?.setOptions({
+        tabBarStyle: {
+          display: 'none',
+        }
+      });
+    }
+  }, [isFocus]);
+
+
+  const [isLoading,setIsLoading] = useState(false);
     const [showModal,setShowModal] = useState(false);
     const [status,setStatus] = useState(true);
-    const [valueF, setValueF] = useState<resetPass>({ newPassword: "",confirmPassword: "" });
-    const [valid, setValid] = useState<valid>({ newPassword: true , confirmPassword: true});
+    const [valueF, setValueF] = useState<resetPass>({ newPassword: "",confirmPassword: "" , oldPassword: ""});
+    const [valid, setValid] = useState<valid>({ newPassword: true , confirmPassword: true, oldPassword:true});
     
-    const route: RouteProp<{ params: { email: string } }, 'params'> = useRoute();
-    const { email } = route.params;
 
     function onChangText(key: string, values: string) {
         setValueF({
@@ -59,14 +64,14 @@ export const ResetPassword:React.FC = () => {
     }
 
     const handleChangePassword = async() => {
-        //const token = await AsyncStorage.getItem('TokenForgot');
-        const { newPassword, confirmPassword} = { ...valueF };
+        const { newPassword, confirmPassword, oldPassword} = { ...valueF };
         let isValidNewPass = newPassword.trim().length > 0;
         let isValidConfirmPass = confirmPassword.trim() === newPassword.trim();
-
+        let isValidOldPassword = oldPassword.trim().length > 0;
         setValid({
             newPassword: isValidNewPass,
-            confirmPassword: isValidConfirmPass
+            confirmPassword: isValidConfirmPass,
+            oldPassword: isValidOldPassword,
         });
 
         if (isValidNewPass && isValidConfirmPass) {
@@ -79,7 +84,7 @@ export const ResetPassword:React.FC = () => {
                     setIsLoading(false);
                     setTimeout(() => {
                         setShowModal(false);
-                        navigation.navigate(UserRootStackEnum.LoginScreen);
+                        // navigation.navigate(UserRootStackEnum.LoginScreen);
                     }, 2000);
                 } else {
                     showModalFalse();
@@ -93,27 +98,14 @@ export const ResetPassword:React.FC = () => {
 
     return (
     <View style={styles.container}>
-        <View  style={styles.viewToolbar}>
-                <TouchableOpacity onPress={()=>navigation.goBack()} style={{alignItems:"center"}}>
-                    <Icon name="arrow-back" size={24} color="#fff"  />
-                </TouchableOpacity>
-        </View>
-        <View style={{flexDirection: 'row', paddingVertical: 75}}>    
-        <View style={{position: 'absolute', right: 0, top: 0}}>
-            <Image source={require('../media/Dicons/Ellipse.png')} />
-        </View>
-        <View style={[styles.viewAll]}>
-            <Text style={styles.txt1}>Cập nhập mật khẩu mới</Text>
-        </View>
-        </View>
-        <KeyboardAvoidingView style={styles.viewContent}>
+        
         <Loading isLoading= {isLoading}/>
         <View>
             <View style={{marginTop: 16}}>
-                <Text style={styles.txt2}>
-                    Vui lòng cập nhập lại mật khẩu mới của bạn.</Text>   
+                {/* <Text style={styles.txt2}>
+                    Vui lòng cập nhập lại mật khẩu mới của bạn.</Text>    */}
             </View>
-                {/* <InputLogin invalid={!valid.oldPassword} label="Mật khẩu cũ" value={valueF.oldPassword} onchangText={onChangText.bind(this, 'oldPassword')} iconPass password={true} /> */}
+                <InputLogin invalid={!valid.oldPassword} label="Mật khẩu cũ" value={valueF.oldPassword} onchangText={onChangText.bind(this, 'oldPassword')} iconPass password={true} />
                 <InputLogin invalid={!valid.newPassword} label="Mật khẩu mới" value={valueF.newPassword} onchangText={onChangText.bind(this, 'newPassword')} iconPass password={true} />
                 <InputLogin invalid={!valid.confirmPassword} label="Xác nhận lại mật khẩu mới" value={valueF.confirmPassword} onchangText={onChangText.bind(this, 'confirmPassword')} iconPass password={true} />
         </View>
@@ -131,7 +123,7 @@ export const ResetPassword:React.FC = () => {
             onPress={handleChangePassword}
           />
         </View>
-      </KeyboardAvoidingView>
+      {/* </KeyboardAvoidingView> */}
       {status ? (
             <ModalPoup text="Đặt lại mật khẩu thành công!" visible={showModal} />
         ) : (
@@ -141,12 +133,15 @@ export const ResetPassword:React.FC = () => {
   );
 };
 
+export default ChangePassword
+
 const styles = StyleSheet.create({
     container: {
         flex: 1,
         width: '100%',
         height: '100%',
-        backgroundColor: COLOR.PrimaryColor,
+        backgroundColor: "#ffff",
+        padding: 18 
     },
     viewAll: {
         flex: 1,

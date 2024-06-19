@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, Image } from 'react-native';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
-import { FormatDate } from '../../format/FormatDate';
+import { formattedDate  } from '../../format/FormatDate';
+import Icon from 'react-native-vector-icons/Ionicons';
 
 interface CustomDatePickerProps {
     selectedDate: Date;
@@ -37,8 +38,8 @@ const CustomDatePicker:React.FC<CustomDatePickerProps> = ({ selectedDate, onDate
   return (
     <View>
       <TouchableOpacity style={styles.dateButton} onPress={showDatePicker}>
-        <Image style={styles.icon} source={require('../../media/icon/birthday-icon.png')} />
-        <Text style={styles.dateButtonText}>{FormatDate(selectedDate)}</Text>
+      <Icon name="calendar-outline" size={20} color="#000" style={styles.icon} />
+        <Text style={styles.dateButtonText}>{formattedDate(selectedDate)}</Text>
       </TouchableOpacity>
       {/* {error && <Text style={styles.errorText}>{error}</Text>} */}
       <DateTimePickerModal
@@ -53,26 +54,32 @@ const CustomDatePicker:React.FC<CustomDatePickerProps> = ({ selectedDate, onDate
 
 const styles = StyleSheet.create({
   dateButton: {
-    borderRadius: 6,
-    borderWidth: 1,
+    // borderRadius: 6,
+    // borderWidth: 1,
+    // borderColor: '#DDDDDD',
+    // height: 60,
+    // paddingLeft: 35,
+    // backgroundColor:'#F5F5F5',
+    margin:9,
+    justifyContent:'center',
+    borderBottomWidth: 1,
     borderColor: '#DDDDDD',
     height: 60,
-    paddingLeft: 35,
-    backgroundColor:'#F5F5F5',
-    margin:9,
-    justifyContent:'center'
+    paddingLeft: 40,
+    overflow: 'hidden',
+    
 
   },
   dateButtonText: {
-   marginLeft:5,
+    marginLeft:5,
     fontSize: 16,   
+    fontWeight:'500',
+    color:'#000'
   },
   icon: {
     position: 'absolute',
     top: 19,
     start: 10,
-    width:20,
-    height:20,
   },
   errorText: {
     color: 'red',

@@ -26,11 +26,11 @@ const ListStory = () => {
   const [index,setIndex] = useState(0);
   const flatRef = useRef<FlatList>(null)
   const {width,height} = Dimensions.get('screen');
-console.log(index);
+// console.log(index);
 
   useEffect(()=>{
     flatRef.current?.scrollToIndex({index,animated:true,viewPosition:0})
-    console.log("dfdf");
+    // console.log("dfdf");
     
   },[index])
 

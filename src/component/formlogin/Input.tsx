@@ -85,7 +85,7 @@ const InputLogin = (props: props) => {
         
         <View  style={[invalid && {margin:0},{margin:9}]}>
             <Text  style={[styles.label]}>{label} {requireField && <Text style={{color:"#C30052"}}>*</Text>}</Text>
-            <TextInput  onFocus={handleFocus} onBlur={handleBlur} ref={ref} placeholder={"Enter"+" "+label} style={[styles.input,showInvalid && styles.validation]} secureTextEntry={hidePassword} value={value} onChangeText={onchantext} />
+            <TextInput  onFocus={handleFocus} onBlur={handleBlur} ref={ref} placeholder={" "+label} style={[styles.input,showInvalid && styles.validation]} secureTextEntry={hidePassword} value={value} onChangeText={onchantext} />
             {iconE && <Image style={styles.iconMail} source={require('../../media/icon/Mail.png')} />}
             {iconPass && <Image style={styles.iconMail} source={require('../../media/icon/Password.png')} />}
             {iconP && <Image style={{
@@ -119,7 +119,7 @@ const styles = StyleSheet.create({
 
     },
     label: {
-        width: 80,
+        width: 200,
         height: 21,
         fontFamily: "poppins",
         fontWeight: "400",

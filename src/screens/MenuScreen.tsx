@@ -3,10 +3,14 @@ import React, { useEffect, useState } from 'react'
 import { useIsFocused, useNavigation } from '@react-navigation/native';
 import ProfileUser from '../component/menu/ProfileUser';
 import OptionProfile from '../component/menu/OptionProfile';
+import { ProfileRootStackEnum } from '../component/stack/ProfileRootStackParams';
+import EditProfileScreen from './EditProfileScreen';
+import { useMyContext } from '../component/navigation/UserContext';
 
 const MenuScreen = () => {
     const navigation = useNavigation()
     const isFocus= useIsFocused()
+    const {user} = useMyContext()
     useEffect(() => {
 
         if(isFocus){
@@ -25,14 +29,17 @@ const MenuScreen = () => {
     }, [isFocus]);
 
     function updateOnPressHandle() {
+    }
 
+    const handleEditProfile = async () => {
+        navigation.navigate(ProfileRootStackEnum.EditProfileScreen);
     }
     return (
         <ScrollView>
             <View style={styles.container}>
                 <View style={styles.headingContainer}>
                     <Text style={styles.heading}>Thông tin cá nhân</Text>
-                    <TouchableOpacity>
+                    <TouchableOpacity onPress={handleEditProfile}>
                         <Text style={styles.edit}>Chỉnh sửa</Text>
                     </TouchableOpacity>
                 </View>
