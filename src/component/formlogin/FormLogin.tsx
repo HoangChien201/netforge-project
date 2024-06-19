@@ -59,12 +59,12 @@ const FormLogin = ({ setModal, setStatus, setIsLoading }: { setModal: (value: bo
         setIsLoading(false);
         
         if (result) {
-            setUser(result);
+            setUser(result.data);
 
           }
           
           console.log(result);
-          await AsyncStorage.setItem('userToken', result.data.token);
+          await AsyncStorage.setItem('userToken', result?.data.token);
           handleLoginResult(result);
           setIsLoading(false);
           
@@ -125,15 +125,15 @@ const FormLogin = ({ setModal, setStatus, setIsLoading }: { setModal: (value: bo
   return (
     <View>
       <InputLogin invalid={!valid.email} label="Email" value={valueF.email} onchangText={onChangText.bind(this, 'email')} iconE />
-      <InputLogin invalid={!valid.password} label="Password" value={valueF.password} onchangText={onChangText.bind(this, 'password')} iconPass password={true} />
-      <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}>
+      <InputLogin invalid={!valid.password} label="Mật khẩu" value={valueF.password} onchangText={onChangText.bind(this, 'password')} iconPass password={true} />
+      <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center",paddingHorizontal:12 }}>
         <Remember />
         <TouchableOpacity>
           <Text>Quên mật khẩu?</Text>
         </TouchableOpacity>
 
       </View>
-      <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
+      <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between',paddingHorizontal:14 }}>
         <ButtonLogin textLogin chilren='Đăng nhập' textColor='#fff' onPress={submit} />
         <TouchId onAuthSuccess={handleAuthSuccess} />
       </View>

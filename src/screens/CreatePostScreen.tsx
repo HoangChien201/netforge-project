@@ -9,6 +9,7 @@ import ModalFail from '../component/Modal/ModalFail'
 import { useMyContext } from '../component/navigation/UserContext';
 import { fileType } from '../component/create-post-screen/Options'
 import Loading from '../component/Modal/Loading'
+import NetworkBottomTab from '../component/bottom-stack/NetworkBottomTab'
 
 const CreatePostScreen = () => {
   const [status, setStatus] = useState('');
@@ -16,7 +17,8 @@ const CreatePostScreen = () => {
   const [isError, setIsError] = useState(false);
   const { user} = useMyContext();
   const [friends, setFriends] = useState([]);
-  const [content, setContent] = useState('');
+  const [content, setContent] = useState('chào anh bé an khờ');
+  // const [tags, setTags] = useState([]);
   const [media, setMedia] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const type = 1;

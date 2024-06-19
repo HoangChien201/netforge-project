@@ -23,7 +23,7 @@ const ManageNavigation: React.FC = () => {
     const handleAutoLogin = async () => {
         try {
             const keepLoggedIn = await AsyncStorage.getItem('keep');
-            if (keepLoggedIn == 'true') {
+            if (keepLoggedIn === 'true') {
 
                 const stEmail = await AsyncStorage.getItem('email');
                 const stPassword = await AsyncStorage.getItem('password');
