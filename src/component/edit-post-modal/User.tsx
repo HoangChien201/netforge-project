@@ -100,12 +100,13 @@ const styles = StyleSheet.create({
     },
     dropdownButton: {
         padding: 10,
-        backgroundColor: COLOR.PrimaryColor,
+        backgroundColor: '#FF6600',
         borderRadius: 5,
     },
     buttonText: {
         color: '#FFF',
         textAlign: 'center',
+        fontWeight:'400'
     },
     buttonType: {
         flexDirection: 'row',

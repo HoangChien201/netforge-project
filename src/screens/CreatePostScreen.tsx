@@ -1,4 +1,4 @@
-import { Image, Platform, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import { Image, KeyboardAvoidingView, Platform, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import React, { useState } from 'react'
 import { COLOR } from '../constant/color'
 import BODY from '../component/create-post-screen/Body'
@@ -15,7 +15,7 @@ const CreatePostScreen = () => {
   const [status, setStatus] = useState('');
   const [showPopup, setShowPopup] = useState(false);
   const [isError, setIsError] = useState(false);
-  const { user, setUser } = useMyContext();
+  const { user} = useMyContext();
   const [friends, setFriends] = useState([]);
   const [content, setContent] = useState('chào anh bé an khờ');
   // const [tags, setTags] = useState([]);
@@ -28,19 +28,16 @@ const CreatePostScreen = () => {
     setMedia([]);
     setPermission(1);
   };
-  const tags = [
-    { "user": "1" },
-    { "user": "2" }
-  ];
+  const tags = friends.map(id => ({ user: String(id) }));
   const uploadPost = async () => {
     try {
       setIsLoading(true);
-      if (media && media.length>0 && content.length > 0) {
+      if (media && media.length > 0 && content.length > 0) {
         const formData = new FormData();
         media.forEach((file: fileType, index) => {
           formData.append('files', {
             uri: Platform.OS === 'android' ? file.uri : file.uri.replace('file://', ''),
-            type: file.type || 'image/jpeg', 
+            type: file.type || 'image/jpeg',
             name: file.fileName || `image-${index}.jpg`,
           });
         });
@@ -70,8 +67,8 @@ const CreatePostScreen = () => {
             setShowPopup(false);
             setIsError(true);
           }, 1500);
+          clear();
         }, 1000);
-        clear();
       } else if (content.length > 0) {
         // upload post withought media
         console.log('here: ' + JSON.stringify(media));
@@ -86,6 +83,7 @@ const CreatePostScreen = () => {
             setStatus('');
             setShowPopup(false);
           }, 1500);
+          clear();
         }, 1000);
       } else {
         setTimeout(() => {
@@ -99,7 +97,7 @@ const CreatePostScreen = () => {
           }, 1500);
         }, 1000);
       }
-      clear();
+      
     } catch (error) {
       console.error('Lỗi khi tạo bài viết:', error);
       setTimeout(() => {
@@ -116,7 +114,7 @@ const CreatePostScreen = () => {
   };
 
   const log = () => {
-    //const tags = friends.map(friendId => ({ friendId: String(friendId) }));
+
     console.log(content, media, type, permission, tags);
 
   }
@@ -124,10 +122,9 @@ const CreatePostScreen = () => {
   const uries = media.map((file: fileType) => file.uri)
 
   return (
-    <View style={styles.container}>
+    <KeyboardAvoidingView style={styles.container}>
       <Loading isLoading={isLoading} />
       <View style={styles.header} >
-        <Text></Text>
         <Text style={styles.headerText}>Tạo bài viết</Text>
         <TouchableOpacity onPress={uploadPost} >
           <Text style={styles.headerPostText} >Lưu</Text>
@@ -152,7 +149,7 @@ const CreatePostScreen = () => {
           <ModalPoup text={status} visible={showPopup} />
         )
       ) : null}
-    </View>
+    </KeyboardAvoidingView>
   )
 }
 
@@ -165,7 +162,7 @@ const styles = StyleSheet.create({
     width: '100%'
   },
   header: {
-    height: '10%',
+    height: 60,
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
@@ -174,12 +171,12 @@ const styles = StyleSheet.create({
   headerText: {
     color: 'white',
     fontWeight: '600',
-    fontSize: 24,
+    fontSize: 23,
 
   },
   headerPostText: {
     color: 'white',
-    fontWeight: '300',
+    fontWeight: '400',
     fontSize: 24
 
   },

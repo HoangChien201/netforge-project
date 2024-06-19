@@ -1,14 +1,22 @@
-import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import { Image, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { sendRequest } from '../../http/QuyetHTTP'
-const SuggestList = ({ dataSuggest, setDataSuggest, setReload }) => {
+type Suggest = {
+    data: any,
+    setData: () => void,
+    setReload: any
+}
+const SuggestList:React.FC<Suggest> = ({ data, setData, setReload }) => {
     const [result, setResult] = useState('');
     const [textReqState, setTextReqState] = useState({});
     // gửi yêu cầu kết bạn
     const status = 1;
-    const sendRequestFriend = async (id,status) => {
+    const sendRequestFriend = async (id: number, status: number) => {
         try {
+            
             const result = await sendRequest(id, status);
+            console.log('đã gửi lời mời');
+            
             if (result) {
                 setTextReqState((prevState) => ({
                     ...prevState,
@@ -20,25 +28,30 @@ const SuggestList = ({ dataSuggest, setDataSuggest, setReload }) => {
         }
     }
 
-    if (!dataSuggest || dataSuggest.length === 0) {
+    if (!data || data.length === 0) {
         return <Text style={styles.headerText}>Không có gợi ý bạn bè</Text>;
     }
+    useEffect(()=>{
+        //console.log(data);
+        
+    },[]);
     return (
-        <View style={styles.container}>
+        <ScrollView style={styles.container}>
             <Text style={styles.headerText}>Gợi ý cho bạn</Text>
-            {dataSuggest.map(friend => (
-                <View key={friend.user.id}>
+            {data.map((friend: { user: { id: string | number; avatar: any; fullname: string | number | boolean | React.ReactElement<any, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | React.ReactPortal | null | undefined } }) => (
+                <View key={friend.id.toString()}>
                     <View style={styles.itemWA}>
                         <View style={styles.user}>
-                            {friend.user.avatar ? <Image source={{ uri: friend.user.avatar }} style={styles.avatarne} /> :
+                            {friend.avatar ? <Image source={{ uri: friend.avatar }} style={styles.avatarne} /> :
                                 <View style={{ height: 48, width: 48, borderRadius: 50, borderWidth: 1, borderColor: 'gray', backgroundColor: '#DDDDDD', }} />
                             }
-                            <Text style={styles.userName}>{friend.user.fullname}</Text>
+                            <Text style={styles.userName}>{friend.fullname}</Text>
                         </View>
                         <View style={styles.button}>
-                            <TouchableOpacity style={styles.buttonReject} onPress={() => { sendRequestFriend(friend.user.id, status) }} disabled={textReqState[friend.user.id] === 'Đã gửi'} >
-                                <Text style={styles.textAccept}>
-                                    kết bạn
+                            <TouchableOpacity style={textReqState[friend.id] === 'Đã gửi' ? styles.buttonAccept : styles.buttonReject}
+                            onPress={() => { sendRequestFriend(friend.id, status) }} disabled={textReqState[friend.id] === 'Đã gửi'} >
+                                <Text style={textReqState[friend.id] === 'Đã gửi' ? styles.textAccept1 : styles.textAccept}>
+                                {textReqState[friend.id] === 'Đã gửi' ? 'Đã gửi' : 'kết bạn'}
                                 </Text>
                             </TouchableOpacity>
                         </View>
@@ -47,7 +60,7 @@ const SuggestList = ({ dataSuggest, setDataSuggest, setReload }) => {
                 </View>
             ))}
 
-        </View>
+        </ScrollView>
     )
 }
 
@@ -105,7 +118,6 @@ const styles = StyleSheet.create({
     buttonAccept: {
         height: 30,
         width: 80,
-        backgroundColor: 'blue',
         alignItems: 'center',
         justifyContent: 'center',
         borderRadius: 5,
@@ -114,20 +126,30 @@ const styles = StyleSheet.create({
     buttonReject: {
         height: 30,
         width: 80,
-        backgroundColor: 'blue',
         alignItems: 'center',
         justifyContent: 'center',
         borderRadius: 5
     },
     textAccept: {
         fontSize: 14,
-        color: 'white',
-        fontWeight: '400'
+        color: 'blue',
+        fontWeight: 'bold',
+        fontStyle:'normal',
+        textTransform:'capitalize'
+        
     },
     avatarne: {
         height: 48,
         width: 48,
         borderRadius: 50,
 
-    }
+    },
+    textAccept1: {
+        fontSize: 14,
+        color: 'green',
+        fontWeight: 'bold',
+        fontStyle:'normal',
+        textTransform:'capitalize'
+        
+    },
 })
