@@ -1,19 +1,22 @@
 import { StyleSheet, Text, View, Modal, TouchableOpacity, Image, FlatList, ScrollView } from 'react-native'
 import React, { useState, useEffect } from 'react'
+import SwiperFlatList from 'react-native-swiper-flatlist'
+import Icon from 'react-native-vector-icons/Feather';
+import Video from 'react-native-video'
+
 import { COLOR } from '../../constant/color'
 import USER from './User'
 import OPTIONS from './Options'
 import EMOJILIST from './EmojiList'
 import TEXTAREA from './TextArea'
 import { upLoadMedia, updatePost, getPostById, } from '../../http/QuyetHTTP'
-import SwiperFlatList from 'react-native-swiper-flatlist'
-import Icon from 'react-native-vector-icons/Feather';
-import Video from 'react-native-video'
 import renderMedia from './Media'
 import MediaModal from './MediaModal'
 import { useMyContext } from '../navigation/UserContext';
 import ModalFail from '../Modal/ModalFail'
 import ModalPoup from '../Modal/ModalPoup'
+import Loading from '../Modal/Loading';
+
 interface BodyProps {
     showModalEdit: boolean;
     setShowModalEdit: (value: boolean) => void;
@@ -23,18 +26,18 @@ export type imageType={
     type:string
 }
 const Body: React.FunctionComponent<BodyProps> = ({ showModalEdit, setShowModalEdit }) => {
-    const [content, setContent] = useState('');
-    const [newMedia, setNewMedia] = useState([]);
+    const [content, setContent] = useState<string>('');
+    const [newMedia, setNewMedia] = useState<any[]>([]);
     const [media, setMedia] = useState([]);
     const [permission, setPermission] = useState(1);
     const [showModal, setShowModal] = useState(false);
-    const { user, setUser } = useMyContext();
-    const postId = 46;
+    const postId = 51;
     const [status, setStatus] = useState('');
     const [showPopup, setShowPopup] = useState(false);
     const [isError, setIsError] = useState(false);
-    const [tags, setTags] = useState([]);
-    const [images, setImages] = useState([]);
+    const [images, setImages] = useState<any[]>([]);
+    const [friends,setFriends] = useState([])
+    const [isloading, setIsLoading] = useState(false)
     const ShowModalMedia = () => {
         setShowModal(true);
     }
@@ -63,9 +66,8 @@ const Body: React.FunctionComponent<BodyProps> = ({ showModalEdit, setShowModalE
     };
     useEffect(() => {
         getOnePost();
-        //console.log(friends);
-
     }, []);
+    
     const handleEmojiSelect = (emoji: any) => {
         setContent(content + emoji);
     };
@@ -78,7 +80,7 @@ const Body: React.FunctionComponent<BodyProps> = ({ showModalEdit, setShowModalE
         //console.log('media sau upload' + media);
 
     }, [newMedia]);
-    //const tags = friends.map(friendId => ({ friendId: String(friendId) }));  
+    const tags = friends.map(id => ({ user: String(id) }));  
     const log = () => {
         console.log(`
             tags: ${tags}
@@ -91,10 +93,13 @@ const Body: React.FunctionComponent<BodyProps> = ({ showModalEdit, setShowModalE
     // update bài viết
     const uploadMediaPost = async () => {
         let medias = images;
+        const tags = friends.map(id => ({ user: String(id) }));
         try {
+            setIsLoading(true);
             if (images && images.length > 0) {
                 const newPost = await updatePost(postId, { permission, content, tags, medias });
                 console.log('Bài viết đã được cập nhật:', newPost);
+                setIsLoading(false);
                 setTimeout(() => {
                     setStatus('Cập nhật thành công');
                     setShowPopup(true);
@@ -106,12 +111,11 @@ const Body: React.FunctionComponent<BodyProps> = ({ showModalEdit, setShowModalE
                         setShowModalEdit(false);
                     }, 1100);
                 }, 1100);
-
-
             } else {
                 try {
                     const newPost = await updatePost(postId, { permission, tags, content ,medias});
                     console.log('Bài viết đã được cập nhật:', newPost);
+                    setIsLoading(false);
                     setTimeout(() => {
                         setStatus('Cập nhật thành công');
                         setShowPopup(true);
@@ -127,6 +131,7 @@ const Body: React.FunctionComponent<BodyProps> = ({ showModalEdit, setShowModalE
 
                 } catch (error) {
                     console.error('Lỗi khi cập nhật bài viết:', error);
+                    setIsLoading(false);
                     setTimeout(() => {
                         setStatus('Cập nhật không thành công');
                         setShowPopup(true);
@@ -142,6 +147,7 @@ const Body: React.FunctionComponent<BodyProps> = ({ showModalEdit, setShowModalE
             }
         } catch (error) {
             console.error('Lỗi khi cập nhật bài viết:', error);
+            setIsLoading(false);
             setTimeout(() => {
                 setStatus('Cập nhật không thành công');
                 setShowPopup(true);
@@ -157,6 +163,7 @@ const Body: React.FunctionComponent<BodyProps> = ({ showModalEdit, setShowModalE
 
     return (
         <Modal visible={showModalEdit} animationType="slide" style={styles.container}>
+            <Loading isLoading/>
             <View style={styles.header}>
                 <TouchableOpacity onPress={() => setShowModalEdit(false)} style={styles.closeButton}>
                     <Image style={styles.closeImage} source={require('../../media/quyet_icon/x_w.png')} />
@@ -173,7 +180,7 @@ const Body: React.FunctionComponent<BodyProps> = ({ showModalEdit, setShowModalE
             {/* Đây là view sử dụng modal -----------------------------------*/}
             <View>
                 {media.length>0 ? <TouchableOpacity onPress={() => { setShowModal(true) }}
-                    style={{ zIndex: 99, height: 28, width: 80, backgroundColor: COLOR.PrimaryColor, position: 'absolute', start: 10, top: 10, flexDirection: 'row', padding: 3, borderRadius: 4, alignItems: 'center' }} >
+                    style={{ zIndex: 99, height: 28, width: 80, backgroundColor: '#FF6600', position: 'absolute', start: 10, top: 10, flexDirection: 'row', padding: 3, borderRadius: 4, alignItems: 'center' }} >
                     <Icon name='edit' size={20} color={'white'} />
                     <Text style={{ fontSize: 12, color: 'white' }}>Chỉnh sửa</Text>
                 </TouchableOpacity> : null}
@@ -181,7 +188,7 @@ const Body: React.FunctionComponent<BodyProps> = ({ showModalEdit, setShowModalE
                 {renderMedia({ media,images, setMedia, setShowModal })}
             </View>
             <MediaModal showModal={showModal} setShowModal={setShowModal} media={media} setMedia={setMedia} setImages={setImages} images={images}/>
-            <TEXTAREA content={content} setContent={setContent} setTags={setTags} />
+            <TEXTAREA content={content} setContent={setContent} setFriends={setFriends} friends={friends}/>
             <OPTIONS onSelectEmoji={handleEmojiSelect} onSelectNewMedia={newMediaSelected} setShowModal={setShowModal}/>
             {showPopup ? (
                 isError ? (
@@ -221,7 +228,7 @@ const styles = StyleSheet.create({
     },
     saveText: {
         color: 'white',
-        fontWeight: '300',
+        fontWeight: '400',
         fontSize: 24
     },
     imagee: {

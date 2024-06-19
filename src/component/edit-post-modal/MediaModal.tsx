@@ -21,10 +21,10 @@ export type fortmat = {
 interface MediaModal {
     showModal: boolean;
     setShowModal: (Permission: boolean) => void;
-    media: string;
+    media: any[];
     setMedia: (Permission: any) => void;
     setImages: (Permission: any) => void;
-    images: string;
+    images: any[];
 }
 const MediaModal: React.FC<MediaModal> = ({ showModal, setShowModal, media, setMedia, setImages, images }) => {
     const [playingVideo, setPlayingVideo] = useState(null);
@@ -40,13 +40,17 @@ const MediaModal: React.FC<MediaModal> = ({ showModal, setShowModal, media, setM
         // console.log('Media: ' + media);
         // console.log('MediaUpload: ' + JSON.stringify(mediaUpload));
         // console.log('Total: ' + JSON.stringify(totalMedia));
-    }, [totalMedia, images, mediaUpload]);
+        setTotalMedia([...images]);
+        
+    }, [media]);
 
     const onDeleteOldMedia = (uri) => {
         const updatedMedia = totalMedia.filter(media => media !== uri);
         const updatedMediaUpload = mediaUpload.filter(media => media.uri !== uri.url);
+        const imageUpdate = images.filter(media => media !== uri);
         setMediaUpload(updatedMediaUpload);
         setTotalMedia(updatedMedia);
+        setImages(imageUpdate);
     };
 
     const togglePlayVideo = (media) => {

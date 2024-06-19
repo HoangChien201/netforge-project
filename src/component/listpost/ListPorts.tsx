@@ -13,7 +13,7 @@ const ListPorts = () => {
     const getAllPost = async () => {
       try {
         const response:AxiosResponse<any, any> = await getAll();
-        console.log("res",response);
+        //console.log("res",response);
         if(response){
           const filteredPosts = response.filter(post => post.type === 1);
           setData([...response]);
