@@ -14,6 +14,9 @@ export const searchUser = async(keyword:string,) => {
           }
         }
       )
+      
+     
+      
       return result
     } catch (error) {
       console.log('searchUser', error)
@@ -21,14 +24,14 @@ export const searchUser = async(keyword:string,) => {
     }
 }
 // lấy danh sách bình luận
-export const getComments = async() => {
+export const getComments = async () => {
   try {
     const token = await AsyncStorage.getItem('token')
     const axios = await AxiosInstance();
     const url = '/comment/get-by-posts/29'
     const result = axios.get(url,
       {
-        headers:{
+        headers: {
           Authorization: `Bearer ${token}`
         }
       }
@@ -40,11 +43,13 @@ export const getComments = async() => {
   }
 }
 // thêm bình luận
-export const addComments = async(posts:number, content:string, image:string, parent:number)=> {
+export const addComments = async (posts: number, content: string, image: string, parent: number) => {
   try {
     const token = await AsyncStorage.getItem('token')
-    const axioss =await AxiosInstance();
+    const axioss = await AxiosInstance();
     const url = '/comment/'
+    
+    
     const body = {
       posts: posts,
       content: content,
@@ -53,32 +58,33 @@ export const addComments = async(posts:number, content:string, image:string, par
     }
     const result = axioss.post(url, body,
       {
-        headers:{
+        headers: {
           Authorization: `Bearer ${token}`
         }
       }
-      
+
     );
-    console.log("tokenne",token);
+    console.log("tokenne", token);
     return result
-    
-    
+
+
   } catch (error) {
     console.log('addComments', error); // Xuất lỗi
     throw error;
+    
   }
 }
 // upload image
 export const uploadImage = async (files) => {
   try {
-      const axiosInstance = AxiosInstance("multipart/form-data");
-      const url = '/image/uploads';
-      const result = await axiosInstance.post(url, files, 
-      );
-      return result;
+    const axiosInstance = AxiosInstance("multipart/form-data");
+    const url = '/image/uploads';
+    const result = await axiosInstance.post(url, files,
+    );
+    return result;
   } catch (error) {
-      console.log('>>>>>upload Image: ', error);
-      throw error 
+    console.log('>>>>>upload Image: ', error);
+    throw error
   }
 }
 // lấy danh sách trả lời bình luận
