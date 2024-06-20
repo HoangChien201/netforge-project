@@ -94,7 +94,7 @@ const styles = StyleSheet.create({
     },
     buttonReject: {
         height: 30,
-        width: 80,
+        width: 70,
         backgroundColor: 'red',
         alignItems: 'center',
         justifyContent: 'center',
@@ -103,7 +103,7 @@ const styles = StyleSheet.create({
     textAccept: {
         fontSize: 14,
         color: 'white',
-        fontWeight: '400'
+        fontWeight: '500'
     },
     avatarne:{
         height:48,

@@ -15,10 +15,11 @@ const Body = ({ showModalFriend, setShowModalFriend, setDot, setReload }) => {
     const [dataRequest, setDataRequest] = useState([]);
     const [dataWaitAccept, setDataWaitAccept] = useState([]);
     const [dataSuggest, setDataSuggest] = useState([]);
+    const [data,setData]=useState([]);
     const status1 = 1;
     const status2 = 2;
     const slideAnim = useRef(new Animated.Value(-500)).current; // Initial position off screen
-
+    const slideAnim1 = useRef(new Animated.Value(-100)).current;
     useEffect(() => {
         getFriendList(status2);
         getRequestList(status1);
@@ -29,6 +30,18 @@ const Body = ({ showModalFriend, setShowModalFriend, setDot, setReload }) => {
     useEffect(() => {
         const total = dataRequest.length + dataWaitAccept.length;
         setDot(total);
+        
+        //
+        const requestIds = new Set(dataRequest.map(request => request.user.id));
+        const acceptIds = new Set(dataWaitAccept.map(accept => accept.user.id));
+
+        const filteredData = dataSuggest.filter(suggest =>
+            !requestIds.has(suggest.id) && !acceptIds.has(suggest.id)
+        );
+
+        setData(filteredData);
+        //console.log('dữ liệu nè: ' +JSON.stringify(filteredData));
+        
     }, [dataFriends, dataRequest, dataWaitAccept]);
 
     useEffect(() => {
@@ -54,6 +67,7 @@ const Body = ({ showModalFriend, setShowModalFriend, setDot, setReload }) => {
             const result = await getSuggest();
             //console.log('danh sách gợi ý: ' + JSON.stringify(result));
             setDataSuggest(result);
+            //console.log('suggest: ' + JSON.stringify(result));
         } catch (error) {
             console.log(error);
         }
@@ -64,6 +78,7 @@ const Body = ({ showModalFriend, setShowModalFriend, setDot, setReload }) => {
             const result = await getFriends(num);
             //console.log('danh sách bạn bè 1: ' + JSON.stringify(result));
             setDataRequest(result);
+            //console.log('request: ' + JSON.stringify(result));
         } catch (error) {
             console.log(error);
         }
@@ -74,6 +89,7 @@ const Body = ({ showModalFriend, setShowModalFriend, setDot, setReload }) => {
             const result = await getRequest();
             //console.log('danh sách bạn bè chờ chấp nhận: ' + JSON.stringify(result));
             setDataWaitAccept(result);
+            //console.log('Accept: ' + result);
         } catch (error) {
             console.log(error);
         }
@@ -94,14 +110,22 @@ const Body = ({ showModalFriend, setShowModalFriend, setDot, setReload }) => {
             useNativeDriver: true,
         }).start();
     };
-
+    useEffect(() => {
+        // Cập nhật giá trị của slideAnim mỗi khi showRA thay đổi
+        Animated.timing(slideAnim, {
+            toValue: showRA ? 0 : 0, // Chuyển về 0 nếu showRA là true, ngược lại về -100
+            duration: 300,
+            useNativeDriver: true,
+        }).start();
+    }, [showRA]);
     const OpenCloseRA = () => {
+        setShowRA(!showRA);
         if (showRA) {
-            setShowRA(false);
+           // setShowRA(false);
             setTextHeader('Yêu cầu đã gửi');
             setTextShowRA('Lời mời');
         } else {
-            setShowRA(true);
+           // setShowRA(true);
             setTextHeader('Lời mời kết bạn');
             setTextShowRA('Yêu cầu');
         }
@@ -135,17 +159,17 @@ const Body = ({ showModalFriend, setShowModalFriend, setDot, setReload }) => {
                     </TouchableOpacity>
                 </View>
                 <ScrollView>
-                    {showRA ?
-                        <View style={[styles.listRA, { height: calculateHeight(dataWaitAccept) }]}>
+                {showRA ?
+                        <Animated.View style={[styles.listRA, { height: calculateHeight(dataWaitAccept), opacity: slideAnim1.interpolate({ inputRange: [0, 100], outputRange: [1, 0] }) }]}>
                             <WaitAcceptList dataWaitAccept={dataWaitAccept} setDataWaitAccept={setDataWaitAccept} setReload={setReload} />
-                        </View>
+                        </Animated.View>
                         :
-                        <View style={[styles.listRA, { height: calculateHeight(dataRequest) }]}>
+                        <Animated.View style={[styles.listRA, { height: calculateHeight(dataRequest), opacity: slideAnim1.interpolate({ inputRange: [0, 100], outputRange: [1, 0] }) }]}>
                             <RequestList dataRequest={dataRequest} setDataRequest={setDataRequest} setReload={setReload} />
-                        </View>
+                        </Animated.View>
                     }
-                    <View style={[{ height: calculateHeight(dataFriends) }]}>
-                        <SuggestList dataSuggest={dataSuggest} setDataSuggest={setDataSuggest} setReload={setReload} />
+                    <View style={[{ height: calculateHeight(dataFriends), marginTop:15 }]}>
+                        <SuggestList data={data} setData={setData} setReload={setReload} />
                     </View>
                 </ScrollView>
             </Animated.View>
@@ -180,13 +204,13 @@ const styles = StyleSheet.create({
     textHeader: {
         fontSize: 20,
         color: COLOR.primary300,
-        fontWeight: '400',
+        fontWeight: '500',
         marginStart: -80,
     },
     textShowRA: {
         fontSize: 18,
         color: COLOR.primary300,
-        fontWeight: '400',
+        fontWeight: '500',
     },
     buttonShowRA: {
         marginEnd: 10,

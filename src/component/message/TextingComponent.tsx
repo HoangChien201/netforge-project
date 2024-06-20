@@ -1,60 +1,44 @@
 import { Pressable, StyleSheet, Text, TextInput, View } from 'react-native'
 import React, { useState } from 'react'
-import MCIcon from 'react-native-vector-icons/MaterialCommunityIcons'
 import { TouchableOpacity } from 'react-native-gesture-handler';
+import MCIcon from 'react-native-vector-icons/MaterialCommunityIcons'
+
 import { COLOR } from '../../constant/color';
-import { user } from '../../screens/message/MessageScreen';
+import UseMedia from './UseMedia';
+import { useMyContext } from '../navigation/UserContext';
 
 const TextingComponent = ({addMessage}:{addMessage:any}) => {
     const [valueInput, setValueInput] = useState<string>()
-
-    function onSubmit() {
+    const [media,setMedia] = useState<string>()
+    const {user} = useMyContext()
+    function onSubmit(messageArg?:any | null) {
         const message={
-            "id": new Date().getTime(),
+            "id": Math.floor(Math.random()*100),
             "create_at": new Date().toISOString(),
             "update_at": new Date().toISOString(),
-            "state": 1,
+            "state": 0,
             "type": "text",
             "message": valueInput,
             "sender": user.id,
             "reactions": []
           }
-          addMessage(message)
+          
+          addMessage(messageArg.id ? messageArg : message)
           setValueInput('')
     }
 
-    function CameraPress() {
 
-        console.log('video');
-
-    }
 
     function OnChangeText(text:string){
         setValueInput(text)
     }
-    function IconButton({ name, size, color, type }: { name: string, size: number, color: string, onPress?: any, type: string }) {
-
-        function OnPress(){
-            if(type==='camera'){
-                CameraPress()
-                return
-            }
-            onSubmit()
-        }
-
-        return (
-            <TouchableOpacity onPress={OnPress} style={styles.icon}>
-                <MCIcon name={name} size={size} color={color} />
-            </TouchableOpacity>
-        )
-    }
+    
 
     
+
     return (
         <View style={styles.container}>
-            <View style={styles.camera}>
-                <IconButton name='camera-outline' size={30} color='#000' type='camera' />
-            </View>
+            <UseMedia onSubmit={onSubmit}/>
             <View style={styles.inputWrapper}>
                 <TextInput
                     placeholder='Nhập'
@@ -64,7 +48,7 @@ const TextingComponent = ({addMessage}:{addMessage:any}) => {
                 />
             </View>
             <View style={styles.submitWrapper}>
-                <IconButton name='send' size={30} color={COLOR.PrimaryColor} type='submit' />
+                <MCIcon name='send' size={30} color={COLOR.PrimaryColor} onPress={onSubmit}/>
             </View>
         </View>
     )
@@ -82,7 +66,7 @@ const styles = StyleSheet.create({
         paddingHorizontal: 8,
     },
     inputWrapper: {
-        flex: 0.8,
+        flex: 0.7,
         borderColor: '#000',
         borderRadius: 20,
         borderWidth: 1,

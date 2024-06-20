@@ -1,8 +1,11 @@
 import { Image, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import React, { useState } from 'react'
+import Icon from 'react-native-vector-icons/AntDesign'
+
 import { COLOR } from '../../constant/color'
 import { cancelWaitAccept, acceptRequest } from '../../http/QuyetHTTP'
 import EmptyWA from './EmptyWA'
+
 const WaitAcceptList = ({ dataWaitAccept, setDataWaitAccept, setReload }) => {
     const cancelReq = async (friendId) => {
         try {
@@ -24,7 +27,7 @@ const WaitAcceptList = ({ dataWaitAccept, setDataWaitAccept, setReload }) => {
     };
 
     if (!dataWaitAccept || dataWaitAccept.length === 0) {
-        return <EmptyWA />;
+        return <EmptyWA ></EmptyWA>;
     }
 
     return (
@@ -38,16 +41,18 @@ const WaitAcceptList = ({ dataWaitAccept, setDataWaitAccept, setReload }) => {
                         <Text style={styles.userName}>{friend.user.fullname}</Text>
                     </View>
                     <View style={styles.button}>
-                        <TouchableOpacity style={styles.buttonReject} onPress={() => {
-                            cancelReq(friend.user.id)
-                        }}>
-                            <Text style={styles.textAccept}>Từ chối</Text>
-                        </TouchableOpacity>
-                        <View style={{ width: 10 }}></View>
                         <TouchableOpacity style={styles.buttonAccept}onPress={() => {
                             acceptReq(friend.user.id)
                         }}>
-                            <Text style={styles.textAccept}>Chấp nhận</Text>
+                            <Icon name='down' size={22} color={'white'}/>
+                            {/* <Text style={styles.textAccept}>Chấp nhận</Text> */}
+                        </TouchableOpacity>
+                        <View style={{ width: 10 }}></View>
+                        <TouchableOpacity style={styles.buttonReject} onPress={() => {
+                            cancelReq(friend.user.id)
+                        }}>
+                            <Icon name='close' size={22} color={'white'}/>
+                            {/* <Text style={styles.textAccept}>Từ chối</Text> */}
                         </TouchableOpacity>
                     </View>
                 </View>
@@ -98,21 +103,22 @@ const styles = StyleSheet.create({
         marginEnd: 5
     },
     buttonAccept: {
-        height: 30,
-        width: 80,
+        height: 32,
+        width: 32,
         backgroundColor: 'blue',
         alignItems: 'center',
         justifyContent: 'center',
-        borderRadius: 5,
+        borderRadius: 32,
+
 
     },
     buttonReject: {
-        height: 30,
-        width: 80,
+        height: 32,
+        width: 32,
         backgroundColor: 'red',
         alignItems: 'center',
         justifyContent: 'center',
-        borderRadius: 5
+        borderRadius: 32
     },
     textAccept: {
         fontSize: 14,

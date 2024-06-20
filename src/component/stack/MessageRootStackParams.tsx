@@ -6,7 +6,7 @@ import MessageScreen from "../../screens/message/MessageScreen";
 enum MessageRootStackEnum {
     MessageScreen='MessageScreen',
     ListMessageScreen='ListMessageScreen',
-    CallManament='CallManament',
+    CallManagement='CallManagement',
 
 
 }
@@ -14,7 +14,7 @@ enum MessageRootStackEnum {
 export type MessageRootStackParams = {
     MessageScreen:undefined;
     ListMessageScreen:undefined;
-    CallManament:undefined;
+    CallManagement:undefined;
 }
 
 export const MessageRootStackScreens = [
@@ -39,7 +39,7 @@ export const MessageRootStackScreens = [
     },
     {
         id: Math.random() + "" + Date,
-        name: MessageRootStackEnum.CallManament,
+        name: MessageRootStackEnum.CallManagement,
         component: CallManagement,
         options: {
             headerShown: false

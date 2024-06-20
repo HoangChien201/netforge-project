@@ -23,7 +23,7 @@ const ManageNavigation: React.FC = () => {
     const handleAutoLogin = async () => {
         try {
             const keepLoggedIn = await AsyncStorage.getItem('keep');
-            if (keepLoggedIn == 'true') {
+            if (keepLoggedIn === 'true') {
 
                 const stEmail = await AsyncStorage.getItem('email');
                 const stPassword = await AsyncStorage.getItem('password');
@@ -53,7 +53,7 @@ const ManageNavigation: React.FC = () => {
     useEffect(() => {
         const timer = setTimeout(() => {
             setShowSplash(false);
-        }, 1000);
+        }, 1500);
 
         return () => clearTimeout(timer); 
     }, []);
