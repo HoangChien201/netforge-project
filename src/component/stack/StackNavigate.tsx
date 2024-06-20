@@ -1,22 +1,22 @@
-import ExploreScreen from "../../screens/ExploreScreen";
+import FriendScreen from "../../screens/profile/FriendScreen"
 import CommentsScreen from "../../screens/CommentsScreen";
 
 
 export enum NavigateRootStackEnum{
-    ExploreScreen='ExploreScreen',
+    FriendScreen='FriendScreen',
     CommentsScreen ='CommentsScreen'
 }
 
 export type NavigateRootStackParams={
-    ExploreScreen : undefined;
+    FriendScreen : undefined;
     CommentsScreen : undefined;
 }
 
 export const NavigateRootStackScreens=[
     {
         id: Math.random() + "" + Date,
-        name: NavigateRootStackEnum.ExploreScreen,
-        component: ExploreScreen,
+        name: NavigateRootStackEnum.FriendScreen,
+        component: FriendScreen,
         options: {
             headerShown: false
         }

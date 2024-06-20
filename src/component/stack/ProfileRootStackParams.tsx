@@ -9,6 +9,7 @@ import HistoryActivityScreen from "../../screens/profile/HistoryActivityScreen";
 import HelpScreen from "../../screens/profile/HelpScreen";
 import FriendScreen from "../../screens/profile/FriendScreen";
 import MenuScreen from "../../screens/MenuScreen";
+import NaviStack from "../../component/stack/NaviStack"
 
 export enum ProfileRootStackEnum {
     ProfileScreen = 'ProfileScreen',
@@ -18,7 +19,7 @@ export enum ProfileRootStackEnum {
     SettingScreen = 'SettingScreen',
     HistoryActivityScreen = 'HistoryActivityScreen',
     HelpScreen = 'HelpScreen',
-    FriendScreen = 'FriendScreen',
+    NaviStack = 'NaviStack',
     MenuScreen = 'MenuScreen',
 
 
@@ -31,7 +32,7 @@ export type ProfileRootStackParams={
     SettingScreen : undefined;
     HistoryActivityScreen : undefined;
     HelpScreen : undefined;
-    FriendScreen :undefined,
+    NaviStack :undefined,
     MenuScreen:undefined;
 }
 
@@ -94,8 +95,8 @@ export const ProfileRootStackScreens=[
     },
     {
         id: Math.random() + "" + Date,
-        name: ProfileRootStackEnum.FriendScreen,
-        component: FriendScreen,
+        name: ProfileRootStackEnum.NaviStack,
+        component: NaviStack,
         options: {
             title:"Bạn bè",
             headerTitleAlign:'center'

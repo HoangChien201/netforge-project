@@ -1,8 +1,6 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import AxiosInstance from "./AxiosInstance";
 import { login } from "./userHttp/user";
-
-
 // tìm kiếm
 export const searchUser = async(keyword:string,) => {
     try {
@@ -16,9 +14,6 @@ export const searchUser = async(keyword:string,) => {
           }
         }
       )
-      
-     
-      
       return result
     } catch (error) {
       console.log('searchUser', error)
@@ -44,15 +39,12 @@ export const getComments = async() => {
     throw error;
   }
 }
-
 // thêm bình luận
 export const addComments = async(posts:number, content:string, image:string, parent:number)=> {
   try {
     const token = await AsyncStorage.getItem('token')
     const axioss =await AxiosInstance();
     const url = '/comment/'
-    
-    
     const body = {
       posts: posts,
       content: content,
@@ -74,9 +66,7 @@ export const addComments = async(posts:number, content:string, image:string, par
   } catch (error) {
     console.log('addComments', error); // Xuất lỗi
     throw error;
-    
   }
-
 }
 // upload image
 export const uploadImage = async (files) => {
@@ -89,5 +79,37 @@ export const uploadImage = async (files) => {
   } catch (error) {
       console.log('>>>>>upload Image: ', error);
       throw error 
+  }
+}
+// lấy danh sách trả lời bình luận
+export const getReplyComments = async(parent: number) => {
+  try {
+    const token = await AsyncStorage.getItem('token')
+    const axios = await AxiosInstance();
+    const url = `/comment/get-by-comment/${parent}`
+    const result = axios.get(url,
+      {
+        headers:{
+          Authorization: `Bearer ${token}`
+        }
+      }
+    )
+    return result;
+  } catch (error) {
+    console.log('comments', error)
+    throw error;
+  }
+}
+// delete comment nè
+export const deleteComments = async(id: number) => {
+  try {
+    const token = await AsyncStorage.getItem('token')
+    const axios = await AxiosInstance();
+    const url = `/comment/delete/${id}`
+    const result = axios.delete(url)
+    return result;
+  } catch (error) {
+    console.log('delete-comments', error)
+    throw error;
   }
 }
