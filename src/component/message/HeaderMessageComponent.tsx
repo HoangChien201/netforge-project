@@ -2,14 +2,17 @@ import React from 'react'
 import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons'
 import { COLOR } from '../../constant/color'
+import { useNavigation } from '@react-navigation/native'
 
 const HeaderMessageComponent = ({ partner }: { partner: any }) => {
-    function IconButton({ name, size, color,type }: { name: string, size: number, color: string, onPress?: any,type:string }) {
-        
-        function OptionOnPress(){
+    const navigation = useNavigation()
+    function IconButton({ name, size, color, type }: { name: string, size: number, color: string, onPress?: any, type: string }) {
+
+        function OptionOnPress() {
             //handle call
-            if(type === 'call'){
+            if (type === 'call') {
                 console.log('call');
+                navigation.navigate("CallManagement")
                 return
             }
 
@@ -17,7 +20,7 @@ const HeaderMessageComponent = ({ partner }: { partner: any }) => {
             console.log('video');
 
         }
-        
+
         return (
             <TouchableOpacity onPress={OptionOnPress} style={styles.option}>
                 <MaterialIcon name={name} size={size} color={color} />
@@ -25,17 +28,21 @@ const HeaderMessageComponent = ({ partner }: { partner: any }) => {
         )
     }
 
-    
+
     return (
         <View style={styles.container}>
             <View style={{
                 flexDirection: "row",
                 alignItems: 'center',
-                justifyContent:"space-between"
+                justifyContent: "space-between"
             }}>
                 <View style={styles.userContainer} >
                     <View style={styles.avatarContainer}>
-                        <Image style={styles.avatar} source={{ uri: partner.avatar }} />
+                        {
+                            partner.avatar &&
+                            <Image style={styles.avatar} source={{ uri: partner.avatar }} />
+                        }
+
                     </View>
                     <View style={styles.content}>
                         <Text style={styles.name}>{partner.fullname}</Text>
@@ -43,8 +50,8 @@ const HeaderMessageComponent = ({ partner }: { partner: any }) => {
                 </View>
 
                 <View style={styles.options}>
-                    <IconButton name='phone-in-talk' size={20} color='#fff' type='call'/>
-                    <IconButton name='video-call' size={20} color='#fff' type='video'/>
+                    <IconButton name='phone-in-talk' size={20} color='#fff' type='call' />
+                    <IconButton name='video-call' size={20} color='#fff' type='video' />
 
                 </View>
             </View>
@@ -94,8 +101,8 @@ const styles = StyleSheet.create({
     },
     container: {
         height: 130,
-        justifyContent:"flex-end",
+        justifyContent: "flex-end",
         paddingHorizontal: 20,
-        paddingBottom:10
+        paddingBottom: 10
     }
 })

@@ -4,6 +4,7 @@ import { messageType } from './MessageItem';
 import MessageText from './MessageText';
 import Video, { VideoRef } from 'react-native-video';
 import { EmojiReaction } from '../../constant/emoji';
+import MessageCall from './MessageCall';
 
 const MessageItemContent = ({message,sender}:{message:messageType,sender:boolean}) => {
     const videoRef = useRef<VideoRef>(null);
@@ -18,20 +19,7 @@ const MessageItemContent = ({message,sender}:{message:messageType,sender:boolean
     }
 
     switch (message.type) {
-        case "text":
-            return <MessageText text={message.message} sender={sender} />
-
-        case "image": {
-            return (
-                <View style={styles.messageImage}>
-                    {
-                        message.message &&
-                        <Image style={{ width: '100%', height: '100%', borderRadius: 20 }} source={{ uri: message.message }} />
-                    }
-                </View>
-            )
-        }
-        default:
+        case "video":
             return (
                 <Video
                     // Can be a URL or a local file.
@@ -45,6 +33,28 @@ const MessageItemContent = ({message,sender}:{message:messageType,sender:boolean
                     style={styles.messageImage}
                 />
             )
+
+        case "image": {
+            return (
+                <View style={styles.messageImage}>
+                    {
+                        message.message &&
+                        <Image style={{ width: '100%', height: '100%', borderRadius: 20 }} source={{ uri: message.message }} />
+                    }
+                </View>
+            )
+        }
+
+        case "audiocall":{
+            return <MessageCall type='audio' sender={sender}/>
+        }
+
+        case "videocall":{
+            return <MessageCall type='video' sender={sender}/>
+        }
+        default:
+            
+            return <MessageText text={message.message} sender={sender} />
     }
 }
 

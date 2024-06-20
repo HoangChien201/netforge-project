@@ -5,9 +5,12 @@ import HeaderMessageComponent from '../../component/message/HeaderMessageCompone
 import { COLOR } from '../../constant/color'
 import { FlatList } from 'react-native-gesture-handler'
 import TextingComponent from '../../component/message/TextingComponent'
-import { useNavigation } from '@react-navigation/native'
+import { useNavigation, useRoute } from '@react-navigation/native'
+import MessageCall from '../../component/message/MessageCall'
+import { getMessageByGroupAPI } from '../../http/ChienHTTP'
+import { useMyContext } from '../../component/navigation/UserContext'
 
-const MESSAGES_DEFAULT: Array<messageType> = [
+export const MESSAGES_DEFAULT: Array<messageType> = [
   {
     "id": 1,
     "create_at": "2024-05-31T09:12:47.456Z",
@@ -22,6 +25,7 @@ const MESSAGES_DEFAULT: Array<messageType> = [
     },
     "reactions": [
       {
+        "user":2,
         "reaction": 3
       }
     ]
@@ -40,9 +44,11 @@ const MESSAGES_DEFAULT: Array<messageType> = [
     },
     "reactions": [
       {
+        "user":1,
         "reaction": 2
       },
       {
+        "user":2,
         "reaction": 0
       }
     ]
@@ -52,8 +58,36 @@ const MESSAGES_DEFAULT: Array<messageType> = [
     "create_at": "2024-05-31T09:12:47.456Z",
     "update_at": "2024-06-12T10:57:38.809Z",
     "state": 1,
-    "type": "video",
-    "message": "https://res.cloudinary.com/delivery-food/video/upload/v1718214172/kqomdj0lkwxgglhvtni5.mp4",
+    "type": "image",
+    "message": "file:///data/user/0/com.eventproject/cache/rn_image_picker_lib_temp_a5e9e753-6e98-4f9d-ad7e-f1b9ab5c12f2.jpg",
+    "sender": {
+      "id": 2,
+      "fullname": "Le Hoang lan",
+      "avatar": "https://res.cloudinary.com/delivery-food/image/upload/v1717925230/btywul9nnqtzlzjaawrx.jpg"
+    },
+    "reactions": []
+  },
+  {
+    "id": 4,
+    "create_at": "2024-05-31T09:12:47.456Z",
+    "update_at": "2024-06-12T10:57:38.809Z",
+    "state": 1,
+    "type": "audiocall",
+    "message": "",
+    "sender": {
+      "id": 1,
+      "fullname": "Le Hoang lan",
+      "avatar": "https://res.cloudinary.com/delivery-food/image/upload/v1717925230/btywul9nnqtzlzjaawrx.jpg"
+    },
+    "reactions": []
+  },
+  {
+    "id": 5,
+    "create_at": "2024-05-31T09:12:47.456Z",
+    "update_at": "2024-06-12T10:57:38.809Z",
+    "state": 1,
+    "type": "videocall",
+    "message": "",
     "sender": {
       "id": 2,
       "fullname": "Le Hoang lan",
@@ -62,29 +96,48 @@ const MESSAGES_DEFAULT: Array<messageType> = [
     "reactions": []
   }
 ]
-export const user={
-  id:1
-}
 const MessageScreen = () => {
-  const [messages,setMessages]=useState<Array<messageType>>(MESSAGES_DEFAULT)
+  const [messages,setMessages]=useState<Array<messageType>>([])
+  const [partner,setPartner]=useState({
+    name:'',
+    avatar:'',
+    group_id:null
+  })
+
   const flatListRef=useRef()
   const navigation=useNavigation()
-  useEffect(() => {
-        
-    // navigation.getParent()?.setOptions({ tabBarStyle: {display:'none'}});
-    
-}, []);
-  const partner = {
-    avatar: 'https://res.cloudinary.com/delivery-food/image/upload/v1717925230/btywul9nnqtzlzjaawrx.jpg',
-    fullname: "Hoàng Chiến",
+  const route=useRoute()
+  const {user} = useMyContext()
+
+  async function getMessages(group_id:number){
+    const respone=await getMessageByGroupAPI(group_id)
+    setMessages(respone)
   }
 
+
+  useEffect(() => {
+    if (route.params?.group_id) {
+      const {name,avatar} = route.params
+      const group_id=route.params?.group_id
+      // Post updated, do something with `route.params.post`
+      // For example, send the post to the server
+      getMessages(group_id)
+      setPartner(prevValue=>{return {...prevValue,fullname:name,avatar,group_id}})
+      
+    }
+  }, [route.params?.group_id]);
+  useEffect(() => {
+        
+    navigation.getParent()?.setOptions({ tabBarStyle: {display:'none'}});
+    
+}, []);
+
+
   function addMessage(message:messageType){
-    console.log(message);
     
     setMessages(
       (prevValue)=>{
-        return [...prevValue,message]
+        return [message,...prevValue]
       }
     )
   }
@@ -95,18 +148,19 @@ const MessageScreen = () => {
       <View style={styles.content}>
         <FlatList
           inverted
-          data={[...messages].reverse()}
+          data={messages}
           renderItem={({ item }) => {
             const sender= typeof (item.sender) === 'object' ? item.sender.id : item.sender
             
             return (
-              <MessageItem messsage={item} sender={user.id === sender} />
+              <MessageItem messsage={item} sender={user.id === sender} group_id={partner.group_id}/>
             )
           }}
           keyExtractor={(item)=>item.id.toString()}
           showsVerticalScrollIndicator={false}
         />
       </View>
+      
       <TextingComponent addMessage={addMessage}/>
     </View>
   )

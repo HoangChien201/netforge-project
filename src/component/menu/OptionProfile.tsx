@@ -2,10 +2,11 @@ import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import React from 'react'
 import { navigationType } from '../../navigation/ManageNavigation'
 import { useNavigation } from '@react-navigation/native'
+import { useMyContext } from '../navigation/UserContext'
 
 const OptionProfile = () => {
     const navigation=useNavigation()
-
+    const { setUser} = useMyContext();
     function OptionHorizontalItem({ image, text,onPress }: { image: any, text: string,onPress?:any }) {
         return (
             <TouchableOpacity style={styles.optionHorizontalItem} onPress={onPress}>
@@ -37,7 +38,7 @@ const OptionProfile = () => {
     }
     
     function LogoutHandle(){
-
+        setUser(null)
     }
     return (
         <View style={styles.container}>

@@ -1,5 +1,5 @@
 import { FlatList, Image, Modal, Pressable, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
-import React, { useRef, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import Video, { VideoRef } from 'react-native-video';
 
 import MessageText from './MessageText'
@@ -9,6 +9,8 @@ import { EmojiReaction } from '../../constant/emoji'
 import ReactionOptionComponent from './ReactionOptionComponent'
 import ReactionsComponent from './ReactionsComponent'
 import MessageItemContent from './MessageItemContent';
+import { user } from '../../screens/message/MessageScreen';
+import { addMessageAPI } from '../../http/ChienHTTP';
 
 export type messageType = {
   id: number,
@@ -22,15 +24,33 @@ export type messageType = {
     fullname: string,
     avatar: string
   },
-  reactions: Array<any>
+  reactions: Array<reactionType>
 }
 
-const MessageItem = ({ messsage, sender }: { messsage: messageType, sender: boolean}) => {
+export type reactionType = {
+  user: number,
+  reaction: number
+}
+
+const MessageItem = ({ messsage, sender,group_id }: { messsage: messageType, sender: boolean,group_id:number }) => {
   const [showReaction, setShowReaction] = useState(false);
-  const [reactions,setReactions]
-  =useState(
-    messsage.reactions.map(r => r.reaction)
-  )
+  const [reactions, setReactions]
+    = useState(
+      messsage.reactions
+    )
+  useEffect(()=>{
+    if(messsage.state === 0){
+      
+      addMessage()
+    }
+  },[messsage.state])
+
+  async function addMessage(){
+    messsage.state=1;
+    messsage['group']=group_id
+    const result = await addMessageAPI(messsage)
+    
+  }
 
   function ContentOnPress() {
     console.log('ContentOnPress');
@@ -46,9 +66,34 @@ const MessageItem = ({ messsage, sender }: { messsage: messageType, sender: bool
   }
 
 
-  function OptionReactionOnSubmit(reaction: number) {
-    console.log(reaction);
-    setReactions(prevValue=>[...prevValue,reaction])
+  function OptionReactionOnSubmit({ status, reactionCurrent }: { status: number, reactionCurrent: reactionType }) {
+    switch (status) {
+      //add reaction
+      case 1:
+        setReactions(prevValue=>{
+          return [...prevValue,reactionCurrent]
+        })
+        break;
+      //change reaction
+      case 2:
+        setReactions(prevValue=>{
+          return prevValue.map(rct=>{
+            if(parseInt(rct.user.toString()) === parseInt(reactionCurrent.user.toString())){
+              return {...rct,...reactionCurrent}
+            }
+            return rct;
+          })
+        })
+        break;
+      //remove reaction
+      case 3:
+        setReactions(prevValue=>{
+          return prevValue.filter(rct=>parseInt(rct.user.toString()) !== parseInt(reactionCurrent.user.toString()) )
+        })
+        break;
+      default:
+        break;
+    }
     //close component option reaction
     setShowReaction(false)
   }
@@ -71,15 +116,15 @@ const MessageItem = ({ messsage, sender }: { messsage: messageType, sender: bool
       <View style={{ paddingHorizontal: 10 }}>
 
 
-        <ReactionOptionComponent show={showReaction} ontionOnpress={OptionReactionOnSubmit} />
+        <ReactionOptionComponent show={showReaction} ontionOnpress={OptionReactionOnSubmit} reactionOfMsg={messsage.reactions} />
         <Pressable
           style={styles.content}
           onPress={ContentOnPress}
           onLongPress={ContentOnLongPress}
         >
-          <MessageItemContent message={messsage} sender={sender}/>
+          <MessageItemContent message={messsage} sender={sender} />
           {
-            reactions.length > 0 &&
+            reactions && reactions.length > 0 &&
             <ReactionsComponent reactions={reactions} />
 
           }
@@ -98,7 +143,8 @@ export default MessageItem
 const styles = StyleSheet.create({
 
   content: {
-    width: 210,
+    minWidth: 0,
+    maxWidth:210
   },
   createTime: {
     color: '#D9D9D8',
@@ -119,6 +165,7 @@ const styles = StyleSheet.create({
     minHeight: 80,
     width: '100%',
     marginVertical: 10,
+    flexDirection: 'row',
   },
 
 
