@@ -1,5 +1,5 @@
 import { FlatList, Image, Modal, Pressable, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
-import React, { useRef, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import Video, { VideoRef } from 'react-native-video';
 
 import MessageText from './MessageText'
@@ -10,6 +10,7 @@ import ReactionOptionComponent from './ReactionOptionComponent'
 import ReactionsComponent from './ReactionsComponent'
 import MessageItemContent from './MessageItemContent';
 import { user } from '../../screens/message/MessageScreen';
+import { addMessageAPI } from '../../http/ChienHTTP';
 
 export type messageType = {
   id: number,
@@ -31,13 +32,25 @@ export type reactionType = {
   reaction: number
 }
 
-const MessageItem = ({ messsage, sender }: { messsage: messageType, sender: boolean }) => {
+const MessageItem = ({ messsage, sender,group_id }: { messsage: messageType, sender: boolean,group_id:number }) => {
   const [showReaction, setShowReaction] = useState(false);
   const [reactions, setReactions]
     = useState(
       messsage.reactions
     )
+  useEffect(()=>{
+    if(messsage.state === 0){
+      
+      addMessage()
+    }
+  },[messsage.state])
 
+  async function addMessage(){
+    messsage.state=1;
+    messsage['group']=group_id
+    const result = await addMessageAPI(messsage)
+    
+  }
 
   function ContentOnPress() {
     console.log('ContentOnPress');

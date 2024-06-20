@@ -5,16 +5,16 @@ import { CameraOptions, ImageLibraryOptions, launchCamera, launchImageLibrary } 
 import { fileType } from '../create-post-screen/Options';
 import MCIcon from 'react-native-vector-icons/MaterialCommunityIcons'
 import { PermissionCamera } from './Permission';
-import { user } from '../../screens/message/MessageScreen';
+import { useMyContext } from '../navigation/UserContext';
 
 const UseMedia = ({onSubmit}:{onSubmit:any}) => {
-    
+    const {user} = useMyContext()
     function NewMessage(messsage:string){
         let message={
-            "id":new Date().getTime().toString(),
+            "id":Math.floor(Math.random()*100),
             "create_at": new Date().toISOString(),
             "update_at": new Date().toISOString(),
-            "state": 1,
+            "state": 0,
             "type": "image",
             "message": messsage,
             "sender": user.id,

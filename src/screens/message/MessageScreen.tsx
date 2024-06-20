@@ -5,8 +5,10 @@ import HeaderMessageComponent from '../../component/message/HeaderMessageCompone
 import { COLOR } from '../../constant/color'
 import { FlatList } from 'react-native-gesture-handler'
 import TextingComponent from '../../component/message/TextingComponent'
-import { useNavigation } from '@react-navigation/native'
+import { useNavigation, useRoute } from '@react-navigation/native'
 import MessageCall from '../../component/message/MessageCall'
+import { getMessageByGroupAPI } from '../../http/ChienHTTP'
+import { useMyContext } from '../../component/navigation/UserContext'
 
 export const MESSAGES_DEFAULT: Array<messageType> = [
   {
@@ -94,29 +96,48 @@ export const MESSAGES_DEFAULT: Array<messageType> = [
     "reactions": []
   }
 ]
-export const user={
-  id:1
-}
 const MessageScreen = () => {
-  const [messages,setMessages]=useState<Array<messageType>>(MESSAGES_DEFAULT)
+  const [messages,setMessages]=useState<Array<messageType>>([])
+  const [partner,setPartner]=useState({
+    name:'',
+    avatar:'',
+    group_id:null
+  })
+
   const flatListRef=useRef()
   const navigation=useNavigation()
+  const route=useRoute()
+  const {user} = useMyContext()
+
+  async function getMessages(group_id:number){
+    const respone=await getMessageByGroupAPI(group_id)
+    setMessages(respone)
+  }
+
+
+  useEffect(() => {
+    if (route.params?.group_id) {
+      const {name,avatar} = route.params
+      const group_id=route.params?.group_id
+      // Post updated, do something with `route.params.post`
+      // For example, send the post to the server
+      getMessages(group_id)
+      setPartner(prevValue=>{return {...prevValue,fullname:name,avatar,group_id}})
+      
+    }
+  }, [route.params?.group_id]);
   useEffect(() => {
         
     navigation.getParent()?.setOptions({ tabBarStyle: {display:'none'}});
     
 }, []);
-  const partner = {
-    avatar: 'https://res.cloudinary.com/delivery-food/image/upload/v1717925230/btywul9nnqtzlzjaawrx.jpg',
-    fullname: "Hoàng Chiến",
-  }
+
 
   function addMessage(message:messageType){
-    console.log(message);
     
     setMessages(
       (prevValue)=>{
-        return [...prevValue,message]
+        return [message,...prevValue]
       }
     )
   }
@@ -127,12 +148,12 @@ const MessageScreen = () => {
       <View style={styles.content}>
         <FlatList
           inverted
-          data={[...messages].reverse()}
+          data={messages}
           renderItem={({ item }) => {
             const sender= typeof (item.sender) === 'object' ? item.sender.id : item.sender
             
             return (
-              <MessageItem messsage={item} sender={user.id === sender} />
+              <MessageItem messsage={item} sender={user.id === sender} group_id={partner.group_id}/>
             )
           }}
           keyExtractor={(item)=>item.id.toString()}

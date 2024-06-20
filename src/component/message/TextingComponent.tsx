@@ -4,26 +4,26 @@ import { TouchableOpacity } from 'react-native-gesture-handler';
 import MCIcon from 'react-native-vector-icons/MaterialCommunityIcons'
 
 import { COLOR } from '../../constant/color';
-import { user } from '../../screens/message/MessageScreen';
 import UseMedia from './UseMedia';
+import { useMyContext } from '../navigation/UserContext';
 
 const TextingComponent = ({addMessage}:{addMessage:any}) => {
     const [valueInput, setValueInput] = useState<string>()
     const [media,setMedia] = useState<string>()
+    const {user} = useMyContext()
     function onSubmit(messageArg?:any | null) {
         const message={
-            "id": new Date().getTime(),
+            "id": Math.floor(Math.random()*100),
             "create_at": new Date().toISOString(),
             "update_at": new Date().toISOString(),
-            "state": 1,
+            "state": 0,
             "type": "text",
             "message": valueInput,
             "sender": user.id,
             "reactions": []
           }
-          console.log('messageadd',messageArg);
           
-          addMessage(messageArg ? messageArg : message)
+          addMessage(messageArg.id ? messageArg : message)
           setValueInput('')
     }
 
