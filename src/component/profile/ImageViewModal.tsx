@@ -1,6 +1,6 @@
 import React from 'react';
 import { Modal, View, Image, StyleSheet, TouchableOpacity } from 'react-native';
-import Icon from 'react-native-vector-icons/FontAwesome';
+import Icon from 'react-native-vector-icons/AntDesign';
 
 interface ImageViewerModalProps {
   visible: boolean;
@@ -13,9 +13,11 @@ const ImageViewerModal: React.FC<ImageViewerModalProps> = ({ visible, onClose, i
     <Modal visible={visible} transparent={true} animationType="slide">
       <View style={styles.modalContainer}>
         <TouchableOpacity style={styles.closeButton} onPress={onClose}>
-          <Icon name="close" size={30} color="#fff" />
+          <Icon name="close" size={24} color="#fff" />
         </TouchableOpacity>
-        <Image source={imageUri} style={styles.image} resizeMode="contain" />
+        {imageUri ? (
+          <Image source={{ uri: imageUri }} style={styles.image} resizeMode="contain" />
+        ) : null}
       </View>
     </Modal>
   );

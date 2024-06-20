@@ -12,10 +12,9 @@ const images: Medias[] = [
   { url: "https://res.cloudinary.com/dyjxyz2jc/video/upload/v1717001460/demo1/ejpinaoiwxunfk8t5mfk.mp4", resource_type: "video" },
 ];
 
+
 const ItemImg = ({ image }: { image: Medias[] }) => {
   const [img, setImg] = useState<Medias[]>([...image]);
-  
-
   return (
     <View style={{ flexDirection: "row", height: 225, justifyContent: 'center', padding: 8 }}>
       {

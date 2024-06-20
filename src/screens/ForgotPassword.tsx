@@ -19,6 +19,7 @@ import { NavigationProp, ParamListBase, useNavigation } from '@react-navigation/
 import ModalPoup from '../component/Modal/ModalPoup';
 import ModalFail from '../component/Modal/ModalFail';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import Icon from 'react-native-vector-icons/Ionicons';
 
 interface user {
     email: string,
@@ -64,14 +65,14 @@ const ForgotPassword:React.FC = () => {
                 const response= await sendMail(email);
                 console.log(response.token);
                 const token = response.token; 
-         await AsyncStorage.setItem('TokenForgot',token)
+                await AsyncStorage.setItem('TokenForgot',token)
                 if (response) {
                     setShowModal(true);
                     setStatus(true);
                     setIsLoading(false);
                     setTimeout(() => {
                         setShowModal(false);
-                        navigation.navigate(UserRootStackEnum.OtpScreen);
+                        navigation.navigate(UserRootStackEnum.OtpScreen, { email: trimmedEmail });
                     }, 2000);
                 }
             } catch (error: any) {
@@ -88,9 +89,8 @@ const ForgotPassword:React.FC = () => {
     return (
         <View style={styles.container}>
             <View  style={styles.viewToolbar}>
-                <TouchableOpacity onPress={()=>navigation.goBack()} style={{flexDirection:"row",alignItems:"center"}}>
-                    <Image  source={require("../media/Dicons/back.png")} style={styles.image} />
-                        <Text style={{ color: "white" }}>Back</Text>
+                <TouchableOpacity onPress={()=>navigation.goBack()} style={{alignItems:"center"}}>
+                    <Icon name="arrow-back" size={24} color="#fff"  />
                 </TouchableOpacity>
             </View>
         <View style={{ flexDirection: "row", paddingVertical: 75 }}>
@@ -104,10 +104,11 @@ const ForgotPassword:React.FC = () => {
         <KeyboardAvoidingView style={styles.viewContent}>
             <Loading isLoading= {isLoading}/> 
             <View>
-                <View style={{ marginTop: 16 }}>
+                <View style={{ marginTop: 16,paddingHorizontal:20 }}>
                     <Text style={styles.txt2}>
-                        Vui lòng nhập địa chỉ email của bạn để thiết lập lại mật khẩu.</Text>
+                        Nhập địa chỉ email của bạn để thiết lập lại mật khẩu.</Text>
                 </View>
+                <View style={{flexDirection:'column',justifyContent:'space-between',paddingVertical:15}}></View>
                 <InputLogin invalid={!valid.email} label="Email" value={valueF.email} 
                     onchangText={onChangText.bind(this, 'email')} 
                     iconE />
@@ -115,7 +116,7 @@ const ForgotPassword:React.FC = () => {
             <View style={{flexDirection:'column',justifyContent:'space-between',paddingVertical:20}}>
             </View>
             <View style={styles.btnSendMail}>
-                <ButtonLogin textLogin children='Gửi email' textColor='#fff' onPress={handelSendMail} />
+                <ButtonLogin textLogin chilren='Gửi email' textColor='#fff' onPress={handelSendMail} />
             </View>
         </KeyboardAvoidingView>
         {status ? (
@@ -159,19 +160,20 @@ const styles = StyleSheet.create({
         letterSpacing: 0.12,
         color: '#4e4b66'
     },
-    image: {
-        width: 20,
-        height: 15,
-        tintColor: "white"
+    iconBack: {
+        // width: 20,
+        // height: 15,
+        backgroundColor:'transparent',
     },
     viewToolbar: {
         flexDirection: "row",
         alignItems: "center",
         paddingLeft: 20,
         paddingTop:20,
+        backgroundColor:'transparent',
     },
     btnSendMail: {
-        
+        alignItems:'center'
     }
     
 })

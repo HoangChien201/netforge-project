@@ -27,11 +27,8 @@ const ListStory = () => {
   const flatRef = useRef<FlatList>(null)
   const {width,height} = Dimensions.get('screen');
 
-
   useEffect(()=>{
     flatRef.current?.scrollToIndex({index,animated:true,viewPosition:0})
-   
-    
   },[index])
 
   return (

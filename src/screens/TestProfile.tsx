@@ -1,305 +1,205 @@
 import React, { useEffect, useRef, useState } from 'react';
-import {
-  Animated,
-  Image,
-  ImageBackground,
-  ScrollView,
-  StyleSheet,
-  TouchableOpacity,
-  Text,
-  View,
-} from 'react-native';
-import {
-  useSafeAreaInsets,
-} from 'react-native-safe-area-context';
-import Feather from 'react-native-vector-icons/Feather';
-import { BlurView } from "@react-native-community/blur";
+import { Animated, NativeScrollEvent, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import ListPorts from '../component/listpost/ListPorts';
+import UpLoadAvatar from '../component/profile/UploadAvatar';
 import { useMyContext } from '../component/navigation/UserContext';
-import { NavigationProp, ParamListBase, useNavigation } from '@react-navigation/native';
+import { formattedDate } from '../format/FormatDate';
+import Icon from 'react-native-vector-icons/MaterialIcons';
 import { ProfileRootStackEnum } from '../component/stack/ProfileRootStackParams';
-import { getUSerByID } from '../http/PhuHTTP';
-import { useFocusEffect } from '@react-navigation/native';
-import ImageViewModal from '../component/profile/ImageViewModal';
-import { FormatDate } from '../format/FormatDate';
+import { useNavigation } from '@react-navigation/native';
 
+const DATA = [
+  { id: 1 },
+  { id: 2 },
+  { id: 3 },
+  { id: 4 },
+  { id: 5 },
+  { id: 6 },
+  { id: 7 },
+  { id: 8 },
+  { id: 9 },
+  { id: 10 },
+];
 
-const HEADER_HEIGHT_EXPANDED = 35;
-const HEADER_HEIGHT_NARROWED = 70;
+const Header_Max_Height = 160;
+const Header_Min_Height = 80;
+const Scroll_Distance = Header_Max_Height - Header_Min_Height;
 
-const PROFILE_PICTURE_URI =
-  'https://pbs.twimg.com/profile_images/975388677642715136/7Hw2MgQ2_400x400.jpg';
+const HeaderBanner = ({ value}: any) => {
+  const [avatarPath, setAvatarPath] = useState<string>('');
 
-const PROFILE_BANNER_URI =
-  'https://tse4.mm.bing.net/th?id=OIP.BMCzMzN0sAijRZmw-dXr6gHaCe&pid=Api&P=0&h=220';
+  const handleImageSelect = (imagePath: string) => {
+    setAvatarPath(imagePath);
+  };
 
-const AnimatedImageBackground = Animated.createAnimatedComponent(
-  ImageBackground
-);
+  const animatedHeaderHeight = value.interpolate({
+    inputRange: [0, Scroll_Distance],
+    outputRange: [Header_Max_Height, Header_Min_Height],
+    extrapolate: 'clamp',
+  });
 
-const AnimatedBlurView = Animated.createAnimatedComponent(BlurView);
+  const animatedHeaderColor = value.interpolate({
+    inputRange: [0, Scroll_Distance],
+    outputRange: ['#181D31', '#678983'],
+    extrapolate: 'clamp',
+  });
 
-export const TestProfile = () => {
-  const [isImageViewerVisible, setIsImageViewerVisible] = useState(false);
-  const {user} = useMyContext();
-  const [userData, setUserData] = useState<any>(null);
-  console.log(user.data.fullname);
-  const userID = user.data.id;
-  const token = user.data.token;
-  const PROFILE_AVATAR_URI = user.data.avatar;
+  const avatarTop = animatedHeaderHeight.interpolate({
+    inputRange: [Header_Min_Height, Header_Max_Height],
+    outputRange: [-200, Header_Min_Height],
+    extrapolate: 'clamp',
+  });
 
-  useFocusEffect(
-    React.useCallback(() => {
-      const fetchUserData = async () => {
-        try {
-          
-            const response = await getUSerByID(userID, token);
-            setUserData(response);
-            console.log("response nè: ",response);
-            console.log("userData: ", userData);
-            console.log(response.id);
-            
-        } catch (error) {
-          console.log(error);
-        }
-      };
-      fetchUserData();
-    }, [user])
+  return (
+    <Animated.View
+      style={[
+        styles.header,
+        {
+          height: animatedHeaderHeight,
+          backgroundColor: animatedHeaderColor,
+        },
+      ]}
+    >
+      
+      <Animated.View style={[styles.avatar, {
+        top: avatarTop,
+        zIndex: 1,
+        backgroundColor: 'transparent',
+      },]}>
+        {/* {showHeaderTitle && <Text style={styles.title}>hehe</Text>} */}
+        <UpLoadAvatar initialImage={avatarPath} onImageSelect={handleImageSelect} />
+      </Animated.View>
+    </Animated.View>
   );
+};
 
+const TestProfile = () => {
+  const navigation = useNavigation();
+  useEffect(() => {
+    navigation.getParent()?.setOptions({ tabBarStyle: {display:'none'}});
+  }, []);
+  const { user } = useMyContext();
+  const scrollOffsetY = useRef(new Animated.Value(0)).current;
 
-  const navigation:NavigationProp<ParamListBase> = useNavigation();
-  const insets = useSafeAreaInsets();
-  const scrollY = useRef(new Animated.Value(0)).current;
-
-
-  const handleEditProfile = async () => {
-    console.log("edit nè")
-    navigation.navigate(ProfileRootStackEnum.EditProfileScreen, { user: userData } );
-  }
-
-  const handleToLiveStream = async () => {
-    console.log("live chim nè")
-    navigation.navigate(ProfileRootStackEnum.Live);
+  const handleToCreatStory = () => {
   }
 
   return (
-    <View style={[styles.container]}>
-      {/* fullname + post count */}
-      <Animated.View
-        style={{
-          zIndex: 2,
-          position: 'absolute',
-          top: insets.top + 6,
-          left: 0,
-          right: 0,
-          alignItems: 'center',
-          opacity: scrollY.interpolate({
-            inputRange: [90, 110],
-            outputRange: [0, 1],
-          }),
-          transform: [
-            {
-              translateY: scrollY.interpolate({
-                inputRange: [90, 120],
-                outputRange: [30, 0],
-                extrapolate: 'clamp',
-              }),
-            },
-          ],
-        }}
-      >
-        {userData && (
-          <Text style={[styles.usernameTop]}>{userData.fullname}</Text>
-        )}
-        <Text style={[styles.postsCount]}>379 tweets</Text>
-      </Animated.View>
-
-      {/* Banner */}
-      <AnimatedImageBackground
-        source={{
-          uri: PROFILE_BANNER_URI,
-        }}
-        style={{
-          position: 'absolute',
-          left: 0,
-          right: 0,
-          height: HEADER_HEIGHT_EXPANDED + HEADER_HEIGHT_NARROWED,
-          transform: [
-            {
-              scale: scrollY.interpolate({
-                inputRange: [-200, 0],
-                outputRange: [5, 1],
-                extrapolateLeft: 'extend',
-                extrapolateRight: 'clamp',
-              }),
-            },
-          ],
-        }}
-      >
-        <AnimatedBlurView
-          tint = "dark"
-          intensity={96}
-          style={{
-            ...StyleSheet.absoluteFillObject,
-            zIndex: 2,
-            opacity: scrollY.interpolate({
-              inputRange: [-50, 0, 50, 100],
-              outputRange: [1, 0, 0, 1],
-            }),
-          }}
-        />
-      </AnimatedImageBackground>
-
-      {/* profile */}
-      <Animated.ScrollView
+    <View style={styles.container}>
+      <HeaderBanner value={scrollOffsetY} />
+      <ScrollView
+        style={styles.scrollView}
+        contentContainerStyle={styles.scrollViewContent}
+        scrollEventThrottle={16}
         showsVerticalScrollIndicator={false}
         onScroll={Animated.event(
-          [{
-            nativeEvent: {
-              contentOffset: { y: scrollY },
-            },
-          }],
-          { useNativeDriver: true }
+          [{ nativeEvent: { contentOffset: { y: scrollOffsetY } } }],
+          { useNativeDriver: false}
         )}
-        style={{
-          zIndex: 3,
-          marginTop: HEADER_HEIGHT_NARROWED,
-          paddingTop: HEADER_HEIGHT_EXPANDED,
-        }}
       >
-        <View style={[styles.container, { backgroundColor: '#FFF' }]}>
-          <View style={[styles.container, {paddingHorizontal: 20,}]}>
-            <View style={{flexDirection: 'row', justifyContent:'space-between'}}>
-            <TouchableOpacity onPress={() => setIsImageViewerVisible(true)}>
-              <Animated.Image
-                source={user && user.data.avatar ? { uri: PROFILE_AVATAR_URI  } : require('../media/icon/avatar.png')}
-                //source={require('../media/icon/phuking.jpg')}
-                style={{
-                  width: 75,
-                  height: 75,
-                  borderRadius: 40,
-                  borderWidth: 4,
-                  borderColor: 'black',
-                  marginTop: 10,
-                  zIndex:4,
-                  transform: [
-                    {
-                      scale: scrollY.interpolate({
-                        inputRange: [0, HEADER_HEIGHT_EXPANDED],
-                        outputRange: [1, 0.5],
-                        extrapolate: 'clamp',
-                      }),
-                    },
-                    {
-                      translateY: scrollY.interpolate({
-                        inputRange: [0, HEADER_HEIGHT_EXPANDED],
-                        outputRange: [0, 16],
-                        extrapolate: 'clamp',
-                      }),
-                    },
-                  ],
-                }}/>
-              </TouchableOpacity>
-              <TouchableOpacity style={styles.btnEditProfile} onPress={handleEditProfile} >
-                <Text style={styles.buttonText}>Chỉnh sửa hồ sơ</Text>
-              </TouchableOpacity>
-            </View>
-
-            {userData && (
-              <Text style={[styles.txtName,]}>{userData.fullname}</Text>
-            )}
-
-            <TouchableOpacity style={styles.btnEditProfile} onPress={handleToLiveStream} >
-                <Text style={styles.buttonText}>Phát trực tiếp</Text>
-            </TouchableOpacity>
-
-            <Text style={[{fontSize: 16, color: 'gray', marginBottom: 10,}]}>
-              @eveningkid
-            </Text>
-
-            {userData && (
-              <Text style={[styles.txtBirthDay,]}>Ngày sinh {FormatDate(userData.dateOfBirth)}</Text>
-            )}
-
-
-            {/* follow count */}
-            <View style={{flexDirection: 'row', marginBottom: 15,}}>
-              <Text style={[styles.txtFollowCount]}> 70{' '}
-                <Text style={{color: 'gray', fontSize:16}}>Đang theo dõi</Text>
-              </Text>
-
-              <Text style={[styles.txtFollowCount]}>106{' '}
-                <Text style={{color: 'gray', fontSize:16}}>Người theo dõi</Text>
-              </Text>
-            </View>
-          </View>
-
-          <View style={{ height: 1,backgroundColor: '#e0e0e0',marginVertical: 5,marginHorizontal:20}} />
-
-          <View style={styles.container}>
-            {/* <ListPorts/> */}
-          </View>
+        <View style={[styles.inForContainer]}>
+          <Text style={[styles.txtName,]}>{user.fullname}</Text>
+          <Text style={[styles.txtBirthDay,]}>Ngày sinh {formattedDate(user.dateOfBirth)}</Text>
+          <TouchableOpacity style={styles.btnToStory} onPress={handleToCreatStory}>
+              <Text style={{color:"#fff",fontSize:18,fontWeight:'700'}}>Thêm vào tin</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.btnToEdit} onPress={() => navigation.navigate('EditProfileScreen')}>
+              <Icon name="edit" size={24} color="#000" style={{marginRight:10}}/>
+              <Text style={{color:"#000",fontSize:18,fontWeight:'700'}}>Chỉnh sửa trang cá nhân</Text>
+          </TouchableOpacity>
         </View>
-      </Animated.ScrollView>
-      <ImageViewModal
-        visible={isImageViewerVisible}
-        onClose={() => setIsImageViewerVisible(false)}
-        imageUri={require('../media/icon/phuking.jpg')}
-      />
+        
+        <View style={{flex:1, borderWidth:2, width:'100%', borderColor:'#C0C0C0', marginTop:15}}></View>
+        {/* {DATA.map(val => {
+          return (
+            <View style={styles.card}>
+              <Text style={styles.subtitle}>({val.id})</Text>
+            </View>
+          );
+        })} */}
+        <ListPorts />
+      </ScrollView>
     </View>
-
   );
-}
+};
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
-  text: {
-    color: 'gray',
+  header: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    paddingTop: 25,
+    zIndex: 1,
   },
-  usernameTop: {
-    fontSize: 18,
+  avatar: {
+    position: 'absolute',
+    left: 20,
+    zIndex: 2,
+    backgroundColor: 'transparent'
+  },
+  title: {
+    color: '#ffffff',
     fontWeight: 'bold',
-    marginBottom: -3,
-    color:'gray',
+    fontSize: 20,
+  },
+  scrollView: {
+    flex: 1,
+    backgroundColor: '#fff',
+  },
+  scrollViewContent: {
+    paddingTop: Header_Max_Height,
+  },
+  card: {
+    height: 100,
+    backgroundColor: '#E6DDC4',
+    marginTop: 10,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginHorizontal: 10,
+  },
+  subtitle: {
+    color: '#181D31',
+    fontWeight: 'bold',
+  },
+  inForContainer:{
+    marginTop: 60,
+    paddingHorizontal: 20,
   },
   txtName: {
     color: '#000',
     fontSize: 24,
     fontWeight: 'bold',
-    marginTop: 10,
-  },
-  postsCount: {
-    fontSize: 13,
-    color: 'gray',
   },
   txtBirthDay: {
-    marginBottom: 10, 
+    marginVertical:8,
     fontSize: 16,
     color: 'gray',
   },
-  txtFollowCount: {
-    fontWeight: 'bold',
-    marginRight: 20,
-    color:'#000',
-    fontSize:16,
-  },
-  btnEditProfile: {
-    borderWidth:2,
-    width:'auto',
+  btnToStory: {
+    borderRadius:10,
+    backgroundColor:'#6A5ACD',
     height:40,
-    borderColor:'gray',
-    paddingVertical: 5,
-    paddingHorizontal: 20,
-    borderRadius: 30,
-    alignItems: 'center',
-    marginTop: 30,
-    backgroundColor: '#FFA07A',
+    width:'100%',
+    alignItems:'center',
+    justifyContent:'center',
+    marginTop:10,
   },
-  buttonText: {
-    color: '#000',
-    fontSize: 16,
-    fontWeight: 'bold',
-  },
+  btnToEdit: {
+    borderRadius:10,
+    backgroundColor:'#C0C0C0',
+    height:40,
+    width:'100%',
+    alignItems:'center',
+    justifyContent:'center',
+    marginTop:10,
+    flexDirection:'row',
+  }
+
 });
+
+export default TestProfile;

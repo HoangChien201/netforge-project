@@ -1,11 +1,12 @@
 import React, {useState, useEffect, useCallback, useContext, useRef} from 'react';
-import {View, Text, TextInput, Button, StyleSheet, Image, KeyboardAvoidingView, TouchableOpacity} from 'react-native';
+import {View, Text, TextInput, Button, StyleSheet, Image, KeyboardAvoidingView, TouchableOpacity, Alert} from 'react-native';
+import isEqual from 'lodash/isEqual';
 import ModalPoup from '../component/Modal/ModalPoup';
 import ModalFail from '../component/Modal/ModalFail';
 import Loading from '../component/Modal/Loading';
 import { emailPattern, fullNamePattern, phoneNumberPattern } from '../constant/valid';
-import { updateProfile } from '../http/PhuHTTP';
-import { NavigationProp, ParamListBase, useNavigation, useRoute } from '@react-navigation/native';
+import { getUSerByID, updateProfile } from '../http/PhuHTTP';
+import { NavigationProp, ParamListBase, useFocusEffect, useNavigation, useRoute } from '@react-navigation/native';
 import { ProfileRootStackEnum } from '../component/stack/ProfileRootStackParams';
 import CustomDatePicker from '../component/profile/CustomDatePicker';
 import CustomHeaderBar from '../component/profile/CustomHeaderBar';
@@ -15,6 +16,10 @@ import GenderPicker from '../component/profile/GenderPicker';
 import * as yup from 'yup';
 import InputField from '../component/profile/InputField';
 import AddressModal from '../component/profile/AddressModal';
+import Icon from 'react-native-vector-icons/Ionicons';
+import UpLoadAvatar from '../component/profile/UploadAvatar';
+import { useMyContext } from '../component/navigation/UserContext';
+import { ScrollView } from 'react-native-gesture-handler';
 
 interface user {
   email: string;
@@ -40,15 +45,19 @@ const validationSchema = yup.object().shape({
 });
 
   const EditProfileScreen:React.FC = () => {
-  const navigation:NavigationProp<ParamListBase> = useNavigation();
-  const route = useRoute();
-  const { user } = route.params;
-  const dateOfBirth = user.dateOfBirth;
-  console.log("dateOfBirth",dateOfBirth);
-  console.log("fullname: ",user.fullname);
-  console.log("email nè: ", user.email);
-  console.log("phone nè: ", user.phone);
+  // const navigation:NavigationProp<ParamListBase> = useNavigation();
+  const navigation=useNavigation()
+  useEffect(() => {
+    navigation.getParent()?.setOptions({ tabBarStyle: {display:'none'}});
+  }, []);
 
+  const {user} = useMyContext();
+  const [userData, setUserData] = useState<any>(null);
+  const dateOfBirth = user.dateOfBirth;
+  const [isEditable, setIsEditable] = useState(false); // Trạng thái chỉnh sửa của InputField
+
+
+  const [avatarPath, setAvatarPath] = useState<string>('');
   const [startDate, setStartDate] = useState(dateOfBirth);
   const [dateError, setDateError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -59,12 +68,49 @@ const validationSchema = yup.object().shape({
   // address
   const [selectedAddress, setSelectedAddress] = useState<string|null>('');
   const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
-  const handleCloseModal = () => {
-    setIsModalVisible(false);
+
+  const [initialAddress, setInitialAddress] = useState('');
+  const [initialAvatar, setInitialAvatar] = useState<string>('');
+
+
+  useFocusEffect(
+    React.useCallback(() => {
+      const fetchUserData = async () => {
+        try {
+          
+            const response = await getUSerByID(user.id, user.token);
+            setUserData(response);
+            console.log("response nè: ",response);
+            setAvatarPath(response.avatar);
+        } catch (error) {
+          console.log(error);
+      };
+      fetchUserData();
+           }
+ }, [user])
+  );
+
+  
+
+  console.log("initialAvatar: ", initialAvatar);
+
+  useEffect(() => {
+    if (user && user.address ) {
+      setInitialAddress(user.address);
+    }
+  }, [user]);
+
+  // avatar
+  useEffect(() => {
+    if (user && user.avatar ) {
+      setInitialAddress(user.avatar);
+    }
+  }, [user]);
+  const handleImageSelect = (imagePath: string) => {
+    setAvatarPath(imagePath);
   };
-  const handleSelectAddress = (address: string) => {
-    setSelectedAddress(address);
-  };
+
+  console.log("avatarPath nè: ", avatarPath);
 
   const [initialDate, setInitialDate] = useState(user.dateOfBirth);
 
@@ -82,13 +128,11 @@ const initialValues = {
   fullname: user.fullname,
   dateOfBirth: user.dateOfBirth || null,
   phone: user.phone || null,
-  address: user.address,
+  address: user.address || null,
   gender: user.gender
 };
 
-
 const handleUpdateProfile = async (values: user) => {
-      console.log('lỗi nừ');
     setIsLoading(true);
     const currentDate = new Date();
     if (startDate > currentDate) {
@@ -98,13 +142,11 @@ const handleUpdateProfile = async (values: user) => {
     } else {
         setDateError(null); 
     }
-   
+
     try {
       const { email, fullname, phone, gender,address} = values;
-        // Kiểm tra và thay thế các giá trị null
-    //const updatedPhone = phone ?? ''; 
     const updatedGender = gender ?? ''; 
-    const updatedAddress = selectedAddress || address || ''; 
+    const updatedAddress = selectedAddress || user.address || ''; 
     
     const response = await updateProfile(
       user.id,
@@ -115,7 +157,7 @@ const handleUpdateProfile = async (values: user) => {
       updatedAddress,
       updatedGender
     );
-      //const response = await updateProfile(user.id, email, fullname, startDate, phone ?? null, selectedAddress ?? null ,gender ?? null);
+
       console.log(response)
       if (response) {
           setShowModal(true);
@@ -123,7 +165,7 @@ const handleUpdateProfile = async (values: user) => {
           setIsLoading(false);
           setTimeout(() => {
               setShowModal(false);
-              navigation.navigate(ProfileRootStackEnum.ProfileScreen);
+              navigation.navigate(ProfileRootStackEnum.MenuScreen);
           }, 2000);
       }
     } catch (error: any) {
@@ -136,19 +178,45 @@ const handleUpdateProfile = async (values: user) => {
     }
   };
 
+const handleBackPress = () => {
+  if (!formikRef.current) return;
+  const formikProps = formikRef.current;
+  // Kiểm tra sự thay đổi giữa giá trị hiện tại và giá trị ban đầu
+  const formChanged = !isEqual(formikProps.values, initialValues);
 
-  const handleBackPress = () => {
-    navigation.navigate(ProfileRootStackEnum.ProfileScreen);
-    setStartDate(initialDate);
-    setDateError(null);
-    formikRef.current?.resetForm();
+  if (formChanged) {
+    Alert.alert(
+      'Xác nhận',
+      'Bạn có muốn hủy bỏ thay đổi?',
+      [
+        {
+          text: 'Không',
+          style: 'cancel',
+        },
+        {
+          text: 'Có',
+          onPress: () => {
+            navigation.navigate(ProfileRootStackEnum.MenuScreen);
+            setStartDate(initialDate);
+            setDateError(null);
+            formikProps.resetForm();
+            
+          },
+        },
+      ],
+      { cancelable: true }
+    );
+  } else {
+    navigation.navigate(ProfileRootStackEnum.MenuScreen);
+  }
 };
 
-
   return (
-    <View style={styles.container}>
+    <ScrollView style={styles.container}>
       <CustomHeaderBar onBackPress={handleBackPress} 
-        onSavePress={() => formikRef.current?.handleSubmit()}  title='Chỉnh sửa hồ sơ'/>
+        onSavePress={() => formikRef.current?.handleSubmit()}  title='Chỉnh sửa trang cá nhân'/>
+
+      <UpLoadAvatar initialImage={avatarPath} onImageSelect={handleImageSelect} />
 
     <Formik
       innerRef={formikRef}
@@ -161,14 +229,15 @@ const handleUpdateProfile = async (values: user) => {
         return (
         <KeyboardAvoidingView style={styles.viewContent}>
             <Loading isLoading={isLoading} />
-            
             <InputField
               label="Họ tên"
               value={formikProps.values.fullname}
               onChangeText={formikProps.handleChange('fullname')}
               onBlur={formikProps.handleBlur('fullname')}
               invalid={formikProps.touched.fullname && !!formikProps.errors.fullname}
-              imageSource={require('../media/Dicons/user.png')}/>
+              // imageSource={require('../media/Dicons/user.png')}
+              iconName='person-outline'
+              placeholder='Nhập họ tên'/>
 
             <InputField
               label="Email"
@@ -176,7 +245,9 @@ const handleUpdateProfile = async (values: user) => {
               onChangeText={formikProps.handleChange('email')}
               onBlur={formikProps.handleBlur('email')}
               invalid={formikProps.touched.email && !!formikProps.errors.email}
-              imageSource={require('../media/icon/Mail.png')}/>
+              editable={isEditable}
+              iconName='mail-outline'
+              placeholder='Nhập email'/>
 
             <InputField
               label="Số điện thoại"
@@ -185,20 +256,27 @@ const handleUpdateProfile = async (values: user) => {
               onBlur={formikProps.handleBlur('phone')}
               keyboardType="phone-pad"
               invalid={formikProps.touched.phone && !!formikProps.errors.phone}
-              imageSource={require('../media/icon/Mail.png')}/>
+              // imageSource={require('../media/icon/Mail.png')}
+              iconName='phone-portrait-outline'
+              placeholder='Nhập số điện thoại'/>
+              
 
-            <View style={styles.addressContainer}>
-              <TouchableOpacity onPress={() => setIsModalVisible(true)}>
-                <Text>Chọn địa chỉ...</Text>
-              </TouchableOpacity>
-              <Text>Địa chỉ đã chọn: {selectedAddress}</Text>
-              <AddressModal
-                isVisible={isModalVisible}
-                onSelectAddress={handleSelectAddress}
-                onCloseModal={handleCloseModal}
-                selectedAddress=''/>
-            </View>
+            
+      <View style={styles.addressContainer}>
+        <TouchableOpacity onPress={() => setIsModalVisible(true)} style={{flexDirection:'row', alignItems:'center', maxWidth: '85%',  minHeight:60,}}>
+          <Icon name="location-outline" size={20} color="#000" style={styles.iconAddress} />
+          <Text  style={[styles.input, ]} >{formikProps.values.address}</Text>
+        </TouchableOpacity>
 
+        <AddressModal
+          isVisible={isModalVisible}
+          onSelectAddress={(address) => {
+            formikProps.setFieldValue('address', address);
+          }}
+          onCloseModal={() => setIsModalVisible(false)}
+          selectedAddress={formikProps.values.address}
+        />
+      </View>
             <GenderPicker
               value={formikProps.values.gender}
               onValueChange={formikProps.handleChange('gender')}
@@ -223,7 +301,7 @@ const handleUpdateProfile = async (values: user) => {
           );
         }}
     </Formik>
-    </View>
+    </ScrollView>
   );
 };
 
@@ -232,6 +310,7 @@ const styles = StyleSheet.create({
     flex: 1,
     width: '100%',
     height: '100%',
+    backgroundColor:'#fff'
   },
   viewAll: {
     flex: 1,
@@ -266,14 +345,48 @@ const styles = StyleSheet.create({
     paddingTop: 20,
   },
   addressContainer: {
-    padding: 16,
-    backgroundColor: '#fff',
+    margin:9,
+    justifyContent:'center',
+    borderBottomWidth: 1,
+    borderColor: '#DDDDDD',
+    height: 60,
+    overflow: 'hidden',
   },
   errorText: {
     color: 'red',
     marginTop: 5,
     marginLeft: 35,
-  }
+  },
+  editAvatar: {
+    width: 90,
+    height: 90,
+    borderRadius: 45,
+    borderWidth: 4,
+    marginTop: 10,
+    borderColor:'#fff'
+  },
+  iconCamera: {
+    width:28,
+    height:28,
+    position: 'absolute',
+    bottom: 5,
+    left: 60,
+    backgroundColor:'#ddd',
+    borderRadius: 14,
+    justifyContent:'center',
+    alignItems:'center',
+    
+  },
+  input: {
+    fontSize: 16,
+    color: '#333',
+    paddingVertical: 12,
+    fontWeight:'500',
+    
+  },
+  iconAddress: {
+    marginHorizontal:10
+  },
 });
 
 export default EditProfileScreen;

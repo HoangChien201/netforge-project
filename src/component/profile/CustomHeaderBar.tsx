@@ -1,5 +1,6 @@
 import React from 'react';
 import { View, TouchableOpacity, Text, StyleSheet, Image } from 'react-native';
+import Icon from 'react-native-vector-icons/Ionicons';
 
 interface CustomHeaderBarProps {
   onBackPress?: () => void;
@@ -24,7 +25,7 @@ const CustomHeaderBar: React.FC<CustomHeaderBarProps> = ({ onBackPress, onSavePr
   return (
     <View style={styles.headerContainer}>
       <TouchableOpacity onPress={handleBackPress}>
-        <Image source={require('../../media/icon/Back.png')} style={styles.image} />
+      <Icon name="arrow-back" size={24} color="#000" style={styles.icon} />
       </TouchableOpacity>
       <Text style={styles.title}>{title}</Text>
       <TouchableOpacity onPress={handleSavePress}>
@@ -46,14 +47,11 @@ const styles = StyleSheet.create({
     height: 60,
     backgroundColor: '#fff',
   },
-  image: {
-    width: 20,
-    height: 15,
-    tintColor: '#000',
+  icon: {
     marginLeft: 8,
   },
   title: {
-    fontSize: 22,
+    fontSize: 20,
     fontWeight: '500',
     color:'black',
   },

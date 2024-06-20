@@ -33,15 +33,12 @@ export const checkOTP = async (code: number, token:string|null ) => {
 }
 
 // reset pass
-export const resetPassword = async (password: string,token:string|null) => {
+export const resetPassword = async (password: string, email:string ) => {
     try {
         
         const url = `/password/reset-password`;
-        const body = {password};
+        const body = {password, email};
         return await AxiosInstance().post(url, body,{
-            headers: {
-                Authorization: `Bearer ${token}`,
-            },
     });
     } catch (error) {
         console.log(error);
@@ -74,6 +71,19 @@ export const getUSerByID = async (id:number, token:string) => {
                     Authorization: `Bearer ${token}`
                 }
             });
+    } catch (error) {
+        console.log(error);
+        throw error;
+    }
+}
+
+
+//update avatar
+export const updateAvatar = async (id:number, avatar: string) => {
+    try {
+        const url = `/user/update/${id}`;
+        const body = { avatar};
+        return await AxiosInstance().patch(url, body);
     } catch (error) {
         console.log(error);
         throw error;
