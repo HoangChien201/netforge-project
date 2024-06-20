@@ -14,7 +14,7 @@ const SignupScreen: React.FC = () => {
     
     return (
         <>
-            <StatusBar barStyle="light-content" backgroundColor={COLOR.primary200} />
+            <StatusBar barStyle="light-content" backgroundColor={COLOR.PrimaryColor}/>
             <View style={styles.container}>
                 <View style={{ flexDirection: "row", padding: 20 }}>
                     <View  style={[styles.viewToolbar, styles.viewAll]}>
@@ -37,12 +37,12 @@ const SignupScreen: React.FC = () => {
                     <Form setModal={setModal} />
                     <View style={styles.text}>
                         <Text style={{ color: "black" }}>Already have an account?</Text>
-                        <Text style={{ fontSize: 15, color: COLOR.primary200, fontWeight: "bold" }}>Sign in</Text>
+                        <Text style={{ fontSize: 15, color: COLOR.PrimaryColor, fontWeight: "bold" }}>Sign in</Text>
                     </View>
                     <View style={{ flex: 1,alignItems:"center",justifyContent:"center" }}>
                         <View style={{position:"absolute",bottom:30}}>
                             <Text style={{ textAlign: "center",color:"black" }}>By creating an account, you agree to our</Text>
-                            <Text style={{color:"black"}}><Text style={{color:COLOR.primary200}}>Terms & Condistions</Text> and agree to <Text style={{color:COLOR.primary200}}>Privacy Policy</Text></Text>
+                            <Text style={{color:"black"}}><Text style={{color:COLOR.PrimaryColor}}>Terms & Condistions</Text> and agree to <Text style={{color:COLOR.PrimaryColor}}>Privacy Policy</Text></Text>
                         </View>
                     </View>
                     
@@ -58,7 +58,7 @@ export default SignupScreen
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: COLOR.primary200,
+        backgroundColor: COLOR.PrimaryColor,
 
     },
     image: {
