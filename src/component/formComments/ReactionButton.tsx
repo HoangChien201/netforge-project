@@ -3,10 +3,7 @@ import React, {useState} from 'react'
 import { EmojiData } from '../../constant/emoji'
 
 const ReactionButton = ({isVisible, onClose }) => {
-   
     const [selectedReaction, setSelectedReaction] = useState(null);
-
-
     const handleReaction = (reaction) => {
         switch (reaction) {
             case 1:
@@ -17,7 +14,7 @@ const ReactionButton = ({isVisible, onClose }) => {
                 return console.log('wow');
             case 4:
                 return console.log('haha');
-            case 4:
+            case 5:
                 return console.log('Phẫn mộ');
             default:
                 return console.log('Phẫn mộ');
@@ -33,26 +30,24 @@ const ReactionButton = ({isVisible, onClose }) => {
                 animationType="fade"
                 onRequestClose={onClose}
             >
-                <TouchableOpacity style={styles.modalBackground} onPress={toggleModal}>
+                <TouchableOpacity style={styles.modalBackground}>
                     <View style={styles.reactionContainer}>
-                        <TouchableOpacity onPress={() => handleReaction('like')}>
-                            <Text>hiih</Text>
+                        <TouchableOpacity onPress={() => handleReaction(1)} >
+                            <Text>Like</Text>
                         </TouchableOpacity>
-                        <TouchableOpacity onPress={() => handleReaction('love')}>
-                            
+                        <TouchableOpacity onPress={() => handleReaction(2)}>
+                        <Text>Like</Text>
                         </TouchableOpacity>
-                        <TouchableOpacity onPress={() => handleReaction('smile')}>
-                            
+                        <TouchableOpacity onPress={() => handleReaction(3)}>
+                        <Text>Like</Text>
                         </TouchableOpacity>
-                        <TouchableOpacity onPress={() => handleReaction('surprise')}>
-                            
+                        <TouchableOpacity onPress={() => handleReaction(4)}>
+                        <Text>Like</Text>
                         </TouchableOpacity>
-                        <TouchableOpacity onPress={() => handleReaction('sad')}>
-                           
+                        <TouchableOpacity onPress={() => handleReaction(5)}>
+                        <Text>Like</Text>
                         </TouchableOpacity>
-                        <TouchableOpacity onPress={() => handleReaction('angry')}>
-                            
-                        </TouchableOpacity>
+                       
                     </View>
                 </TouchableOpacity>
             </Modal>

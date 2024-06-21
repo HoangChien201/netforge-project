@@ -4,7 +4,7 @@ import ActionBar from './ActionBar';
 import { DateOfTimePost } from '../../format/DateOfTimePost';
 import ItemImg from './ItemImg';
 
-const ItemPost =  memo(({ index, data,onrefresh }) => {
+const ItemPost =  memo(({ index, data, onrefresh }) => {
     const [checkLike,setCheckLike] = useState<boolean>(false)
     const { creater, share_count, reaction, content, media, comment_count, create_at, id,like_count } = data;
 

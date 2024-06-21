@@ -6,7 +6,6 @@ import { DateOfTimePost } from '../../format/DateOfTimePost';
 import ModalImage from './ModalImage';
 import ModalDeleteComments from './ModalDeleteComments';
 import ReactionButton from './ReactionButton';
-import { tr } from 'date-fns/locale';
 const CommentItem = ({ comment, onReply, depth = 0, render }) => {
     const [modalReactionVisible, setModaReactionlVisible] = useState(false);
     const [replies, setReplies] = useState([]);
@@ -38,20 +37,17 @@ const CommentItem = ({ comment, onReply, depth = 0, render }) => {
             console.log('Lỗi', 'Không thể xóa bình luận. Vui lòng thử lại.');
         }
     };
-  
-        
-    
-
-
     const fetchReplies = async (commentId: any) => {
+        
         try {
             const response: any = await getReplyComments(commentId);
+            //1
             setReplies(response);
-
         } catch (error) {
             console.error('Lỗi khi lấy danh sách trả lời bình luận', error);
         }
     };
+
     useEffect(() => {
         if (comment.id && depth < 1) { // Lòng bình luận 2 cấp
             fetchReplies(comment.id);
@@ -140,7 +136,7 @@ const CommentItem = ({ comment, onReply, depth = 0, render }) => {
                 onCancel={() => setIsDleteVisible(false)} />
             <ReactionButton
             isVisible={modalReactionVisible}
-            onClose={(setModaReactionlVisible(false))}/>
+            onClose={()=>setModaReactionlVisible(false)}/>
                 
         </View>
     );
@@ -163,7 +159,7 @@ const styles = StyleSheet.create({
     BackgroundComment: {
         marginLeft: 5,
         borderRadius: 10,
-        backgroundColor: "pink",
+        backgroundColor: "#E6E6FA",
         justifyContent: "center",
         alignItems: "center"
     }
