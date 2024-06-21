@@ -1,157 +1,148 @@
 import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import React, { useState, useRef } from 'react';
+import { useNavigation } from '@react-navigation/native';
+import AntDesignIcon from 'react-native-vector-icons/AntDesign';
 import { reaction } from '../../constant/emoji';
 import * as Animatable from 'react-native-animatable';
+import { deleteLikePost, likePost, updateLikePost } from '../../http/userHttp/getpost';
+import { useMyContext } from '../navigation/UserContext';
 
-const ActionBar = ({type}:{type:number}) => {
-    const [islike, setIsLike] = useState<boolean>(false);
+const ActionBar = ({   setIsLike , isLike,type, postId, comment_count, share_count,index1,active,setActive }: {setActive:(value:number)=>void,index1:number,active:number|null,setIsLike:(value:boolean)=>void ,isLike:boolean,type: number, postId: number, comment_count: number, share_count: number }) => {
+    const navigation = useNavigation();
+    const {user}= useMyContext()
     const [nameReaction, setNameReaction] = useState(null);
     const [numberLike, setNumberLike] = useState<number>(1000);
-    const [number, setNumber] = useState<number>(type);
+    const [number, setNumber] = useState<number | null>(type);
     const animationRef = useRef(null);
+    
+    
+    function navigationScreen(screen: string) {
+        navigation.navigate(`${screen}`)
+      }
+
+    const deleteLike = async (idPost: number) => {
+        try {
+            console.log("user_idde",user.id);
+            console.log("ahihi", idPost);
+            const result:any = await deleteLikePost(idPost, user.id);
+            if (result) {
+                console.log("ahihi", idPost);
+            }
+        } catch (error) {
+            console.log("lỗi like post", error);
+            throw error;
+        }
+    };
+    const likepost = async (idPost: number, type: number) => {
+        try {
+            const result = await likePost(idPost, type);
+            if (result) {
+                console.log("ahihi", idPost);
+            }
+        } catch (error) {
+            console.log("lỗi like post", error);
+            throw error;
+        }
+    };
 
     function format(like: number) {
-        if (like === 1000) {
-            return 1 + 'K';
-        } else if (like === 10000) {
-            return 10 + 'k';
+        if (like >= 1000) {
+            return (like / 1000).toFixed(1) + 'K';
         } else {
-            return like;
+            return like.toString();
         }
     }
 
     const OnPressIcon = () => {
-        if (islike) {
-
+        if (isLike) {
             animationRef.current?.fadeOutDown(500).then(() => {
                 setIsLike(false);
+                
             });
         } else {
+            setActive(index1)
             setIsLike(true);
         }
     };
-    const ViewReaction = (type: number) => {
-        switch (type) {
-            case 1:
-                return (
-                    <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', marginRight: 10 }}>
-                        <TouchableOpacity onLongPress={OnPressIcon} onPress={() => { setNameReaction(null) }}>
-                            <Image source={reaction[0].Emoji} style={{ width: 20, height: 20 }} />
-                        </TouchableOpacity>
-                    </View>
-                )
-                break;
-            case 2:
-                return (
-                    <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', marginRight: 10 }}>
-                        <TouchableOpacity onLongPress={OnPressIcon} onPress={() => { setNameReaction(null) }}>
-                            <Image source={reaction[1].Emoji} style={{ width: 20, height: 20 }} />
-                        </TouchableOpacity>
-                    </View>
-                )
-                break;
-            case 3:
-                return (
-                    <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', marginRight: 10 }}>
-                        <TouchableOpacity onLongPress={OnPressIcon} onPress={() => { setNameReaction(null) }}>
-                            <Image source={reaction[2].Emoji} style={{ width: 20, height: 20 }} />
-                        </TouchableOpacity>
-                    </View>
-                )
-                break;
-            case 4:
-                return (
-                    <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', marginRight: 10 }}>
-                        <TouchableOpacity onLongPress={OnPressIcon} onPress={() => { setNameReaction(null) }}>
-                            <Image source={reaction[3].Emoji} style={{ width: 20, height: 20 }} />
-                        </TouchableOpacity>
-                    </View>
-                )
-                break;
-            case 5:
-                return (
-                    <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', marginRight: 10 }}>
-                        <TouchableOpacity onLongPress={OnPressIcon} onPress={() => { setNameReaction(null) }}>
-                            <Image source={reaction[4].Emoji} style={{ width: 20, height: 20 }} />
-                        </TouchableOpacity>
-                    </View>
-                )
-                break;
-            case 6:
-                return (
-                    <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', marginRight: 10 }}>
-                        <TouchableOpacity onLongPress={OnPressIcon} onPress={() => { setNameReaction(null) }}>
-                            <Image source={reaction[5].Emoji} style={{ width: 20, height: 20 }} />
-                        </TouchableOpacity>
-                    </View>
-                )
-                break;
 
-            default: null
-                break;
+    const ViewReaction = (type: number,postId:number,user_id:any) => {
+        const reactionMap = reaction.find(item => item.type === type);
+        if (reactionMap) {
+            return (
+                <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', marginRight: 10 }}>
+                    <TouchableOpacity onLongPress={OnPressIcon} onPress={() => {
+                          deleteLike(postId,user_id)
+                          setNumber(null)
+                    }
+                      }>
+                        <Image source={reactionMap.Emoji} style={{ width: 24, height: 24 }} />
+                    </TouchableOpacity>
+                </View>
+            );
         }
-    }
+        return null;
+    };
 
     return (
         <View style={styles.container}>
-            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+            <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-around' }}>
                 <View style={{ flexDirection: 'row', alignItems: 'center', width: 50, marginRight: 5 }}>
                     {number === null ?
                         <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', marginRight: 10 }}>
                             <TouchableOpacity onLongPress={OnPressIcon} onPress={() => {
-                                setNameReaction(require('../../media/Dicons/thumb-up.png'))
-                                setNumber(1)
+                                
+                                setNumber(1);
+                                likepost(postId, 1);
                             }}>
-                                <Image source={require('../../media/Dicons/like.png')} style={{ width: 20, height: 20 }} />
+                                <AntDesignIcon name='like2' size={24} color='#000' />
                             </TouchableOpacity>
-                        </View> : ViewReaction(number) 
-
+                        </View> :
+                        <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}>
+                            {ViewReaction(number,postId,user.id)}
+                        </View>
                     }
                     <Text style={styles.text}>{format(numberLike)}</Text>
                 </View>
+                <TouchableOpacity onPress={()=> navigation.navigate('CommentsScreen',{postId})} style={{ flexDirection: 'row', alignItems: 'center', marginHorizontal: 20 }}>
+                    <AntDesignIcon name='message1' size={24} color='#000' style={styles.comment} />
+                    <Text style={styles.text}>{comment_count ? comment_count : 0}</Text>
+                </TouchableOpacity>
                 <View style={{ flexDirection: 'row', alignItems: 'center', marginHorizontal: 5 }}>
-                    <Image source={require('../../media/Dicons/chat-bubble.png')} style={styles.comment} />
-                    <Text style={styles.text}>100</Text>
-                </View>
-                <View style={{ flexDirection: 'row', alignItems: 'center', marginHorizontal: 5 }}>
-                    <Image source={require('../../media/Dicons/send.png')} style={styles.comment} />
-                    <Text style={styles.text}>100</Text>
+                    <AntDesignIcon name='sharealt' size={24} color='#000' style={styles.comment} />
+                    <Text style={styles.text}>{share_count ? share_count : 0}</Text>
                 </View>
             </View>
-            {
-                islike &&
+            {isLike && index1===active &&
                 <Animatable.View
                     ref={animationRef}
                     animation="fadeInUp"
-                    duration={500}
-                    style={{ flexDirection: "row", position: 'absolute', bottom: 40, width: "84%", backgroundColor: '#fff', padding: 7, borderRadius: 20 }}
+                    duration={100}
+                    style={{ flexDirection: "row", position: 'absolute', bottom: 40, width: "74%", backgroundColor: '#fff', padding: 7, borderRadius: 20 }}
                 >
-                    {
-                        reaction.map((item, index) => {
-                            return (
-                                <TouchableOpacity key={index} style={{ paddingHorizontal: 8 }} onPress={() => {
-                                    setNumber(item.type)
-                                    setNameReaction(item.Emoji);
-                                    setIsLike(false);
-                                }}>
-                                    <Image source={item.Emoji} style={{ width: 25, height: 25, marginVertical: 6 }} />
-                                    <Text>{item.name}</Text>
-                                </TouchableOpacity>
-                            );
-                        })
-                    }
+                    {reaction.map((item, index) => (
+                        <TouchableOpacity key={index} style={{ paddingHorizontal: 8 }} onPress={() => {
+                            setNumber(item.type);
+                            setNameReaction(item.Emoji);
+                            setIsLike(false);
+                            item.Emoji === null ? likepost(postId, item.type):updateLikePost(postId,user.id,item.type)
+                        }}>
+                            <Image source={item.Emoji} style={{ width: 25, height: 25, marginVertical: 6 }} />
+
+                        </TouchableOpacity>
+                    ))}
                 </Animatable.View>
             }
         </View>
     );
-}
+};
 
 export default ActionBar;
 
 const styles = StyleSheet.create({
     container: {
-        borderBottomWidth: 1,
+       
         marginHorizontal: 20,
+        marginVertical: 15,
         height: 40,
     },
     icon: {

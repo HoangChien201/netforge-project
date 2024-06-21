@@ -20,6 +20,7 @@ const styles = StyleSheet.create({
         opacity:0.6
     },
     container:{
+        
         flexDirection:"row",
         alignItems:"center",
         justifyContent:'center'
@@ -36,7 +37,7 @@ const styles = StyleSheet.create({
 
     },
     image:{
-        width:40,
-        height:40,
+        width:30,
+        height:30,
     }
 })

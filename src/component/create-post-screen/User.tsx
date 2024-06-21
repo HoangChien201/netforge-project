@@ -90,7 +90,7 @@ const styles = StyleSheet.create({
     },
     dropdownButton: {
         padding: 10,
-        backgroundColor: COLOR.PrimaryColor,
+        backgroundColor: '#FF6633',
         borderRadius: 5,
     },
     buttonText: {

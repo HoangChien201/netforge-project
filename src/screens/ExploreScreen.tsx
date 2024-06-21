@@ -1,58 +1,68 @@
-import { StyleSheet, Text, View } from 'react-native'
-import React from 'react'
-import MODALBODY from '../component/edit-post-modal/Body'
+import { StyleSheet, Text, View, TextInput, Image, TouchableOpacity, ImageProps, FlatList, ScrollView, Modal, ActivityIndicator } from 'react-native'
+import React, { useState, useEffect, useId, useRef, useMemo } from 'react'
+import { COLOR } from '../constant/color'
+import { BottomSheetModalProvider, BottomSheetModal, BottomSheetView, } from '@gorhom/bottom-sheet';
+import { NavigationProp, ParamListBase, useNavigation } from '@react-navigation/native'
+import { searchUser } from '../http/TuongHttp';
+import { NavigateRootStackEnum, NavigateRootStackParams } from '../component/stack/StackNavigate'
+import { useIsFocused } from '@react-navigation/native';
+export type RecentItem = {
+  id: number,
+  fullname: string,
+  avatar: ImageProps,
+}
+interface ItemRender {
+  id?: number,
+  image?: ImageProps,
+  name: string
+}
+const DATA: Array<RecentItem> = [
+  {
+    id: 1,
+    fullname: 'Lê Thanh Tường',
+    avatar: require('../../media/icon/avt_1_icon.png'),
+  },
+]
 const ExploreScreen = () => {
-  const navigation:NavigationProp<ParamListBase> = useNavigation();
-  const Open = () => {
-    navigation.navigate(NavigateRootStackEnum.CommentsScreen);
-  }
+  const navigation = useNavigation()
   // modal comments
   const [keyword, setKeyword] = useState('');
-
-  const onSearch = async text =>{
-    if(text.trim() === ''){
-      setUser([]);
-      setIsSearching(true)
-      return;
-    }
-    try {
-      const result = await searchUser(text)
-      setUser(result);
-      setIsSearching(false)
-    } catch (error) {
-      console.log(error);
-    }
-   
-  }
   const [isSearching, setIsSearching] = useState(true);
   const [users, setUser] = useState([]);
   const [modalVisible, setModalVisibal] = useState(false);
-  const [items, setItems] = useState<Array<RecentItem>>(DATA);
-  const DeleteItem = (id: number) => {
-    const newData = items.filter(item => item.id !== id)
-    setItems(newData);
+  useEffect(() => {
+    navigation.getParent()?.getParent()?.setOptions({ tabBarStyle: { display: 'none' } });
+
+  }, []);
+  const onSearch = async text => {
+    try {
+      const result: any = await searchUser(text)
+      setUser(result);
+      setIsSearching(false)
+      
+      if (text.trim() === '' && text.length === 0) {
+        setUser([]);
+        setIsSearching(true)
+        return;
+      }
+      return
+    } catch (error) {
+      console.log(error);
+    }
 
   }
-  const addItem = (item: RecentItem) => {
-    if (!items.some(existingItem => existingItem.id === item.id)) {
-      setItems(prevItems => [...prevItems, item]);
-    }
-  };
-
-  const RenderItem = ({item, onPress = () => {}}) => {
-    const {id, fullname, avatar} = item
-    return(
+  const RenderItem = ({ item }) => {
+    const { id, fullname, avatar } = item
+    return (
       <View style={styles.itemRecentContai}>
-             <TouchableOpacity style={styles.itemRecent}  onPress={() => onPress(item)}>
-               <Image source={require('../media/icon_tuong/imagecuatoi.jpg')} style={styles.imageItem} />
-
-               <Text style={styles.nameItem}>{fullname}</Text>
-               <TouchableOpacity onPress={() => DeleteItem(item.id)} style = {{marginRight:10}}>
-                 <Image source={require('../media/icon_tuong/option.png')} style={{ width: 25, height: 25 }} />
-               </TouchableOpacity>
-
-             </TouchableOpacity>
-           </View>
+        <TouchableOpacity style={styles.itemRecent}>
+          <Image source={{ uri: avatar }} style={styles.imageItem} />
+          <Text style={styles.nameItem}>{fullname}</Text>
+          <TouchableOpacity style={{ marginRight: 10 }}>
+            <Image source={require('../../media/icon_tuong/option.png')} style={{ width: 25, height: 25 }} />
+          </TouchableOpacity>
+        </TouchableOpacity>
+      </View>
     );
   }
 
@@ -60,55 +70,51 @@ const ExploreScreen = () => {
 
 
   return (
-    
+
     <BottomSheetModalProvider>
       <View style={styles.container}>
         <View style={{ alignItems: 'center' }}>
           <View style={styles.SearchContai}>
             <TouchableOpacity>
-              <Image source={require('../media/icon_tuong/search.png')} style={styles.iconSearch} />
+              <Image source={require('../../media/icon_tuong/search.png')} style={styles.iconSearch} />
             </TouchableOpacity>
             <TextInput style={styles.SearchInputn} onChangeText={text => {
               setKeyword(text)
               onSearch(text)
-            }} value={keyword} onFocus={()=> setIsSearching(false)}>
+            }} value={keyword} onFocus={() => setIsSearching(false)}>
             </TextInput>
             <TouchableOpacity>
-              <Image source={require('../media/icon_tuong/mic.png')} style={styles.iconMic} />
+              <Image source={require('../../media/icon_tuong/mic.png')} style={styles.iconMic} />
             </TouchableOpacity>
           </View>
         </View>
         {users.length > 0 ? (
           <ScrollView showsVerticalScrollIndicator={false}>
-          {users.map(item => {
-              return(
-                <View key={item.id}>
-                  <RenderItem item={item}/>
-                </View>
-              )
-            })}
+            {users.map(item => (
+              <View key={item.id}>
+                <RenderItem item={item} />
+              </View>
+            ))}
           </ScrollView>
-        ) :(keyword.trim() !== '' &&(
-            <View style ={styles.ViewNull}>
-            <Text style= {styles.textNull}>Không có kết quả</Text>
+        ) : (
+          keyword.trim() !== '' && (
+            <View style={styles.spinnerContainer}>
+              <ActivityIndicator size="large" color={COLOR.PrimaryColor} />
+            </View>
+          )
+        )}
+        {isSearching && users.length === 0 && (
+          <View>
+            <View style={styles.RecentContai}>
+              <Text style={styles.Recent}>Gần đây</Text>
+              <TouchableOpacity onPress={() => setModalVisibal(true)}>
+                <Text style={styles.ClearAll}>Xóa tất cả</Text>
+              </TouchableOpacity>
+            </View>
+            <ScrollView showsVerticalScrollIndicator={false}>
+            </ScrollView>
           </View>
-          
-        ))}
-       {isSearching && users.length === 0  && (
-         <View>
-         <View style={styles.RecentContai}>
-           <Text style={styles.Recent}>Gần đây</Text>
-           <TouchableOpacity onPress={() => setModalVisibal(true)}>
-             <Text style={styles.ClearAll}>Xóa tất cả</Text>
-           </TouchableOpacity>
-         </View>
-        <ScrollView showsVerticalScrollIndicator={false}>
-
-        </ScrollView>
-
-
-       </View>
-       )}
+        )}
         <Modal
           animationType='fade'
           transparent={true}
@@ -126,12 +132,8 @@ const ExploreScreen = () => {
           </View>
 
         </Modal>
-
-        <TouchableOpacity onPress={() => Open()} >
-          <Text>Open Moddal</Text>
-        </TouchableOpacity>
-       </View>
-       </BottomSheetModalProvider>
+      </View>
+    </BottomSheetModalProvider>
 
   )
 }
@@ -139,12 +141,17 @@ const ExploreScreen = () => {
 export default ExploreScreen
 
 const styles = StyleSheet.create({
-  textNull:{
+  spinnerContainer: {
+    height: 100,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  textNull: {
     fontSize: 18,
     fontWeight: '700',
     color: 'black'
   },
-  ViewNull:{
+  ViewNull: {
     marginTop: 50,
     justifyContent: 'center',
     alignItems: 'center'
@@ -213,7 +220,7 @@ const styles = StyleSheet.create({
     color: '#000'
   },
   imageItem: {
-    marginStart:10,  
+    marginStart: 10,
     borderRadius: 100,
     width: 38,
     height: 38
@@ -268,6 +275,5 @@ const styles = StyleSheet.create({
     color: COLOR.PrimaryColor
 
   },
-
 
 })

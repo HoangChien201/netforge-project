@@ -1,58 +1,59 @@
-import { FlatList, Image, ScrollView, StyleSheet, Text, View } from 'react-native';
-import React from 'react';
+import { FlatList, Image, Modal, Pressable, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import React, { useEffect, useState } from 'react';
 import Icon from 'react-native-vector-icons/AntDesign';
 import { GetTimeComment } from '../../format/FormatDate'
 import { useMyContext } from '../navigation/UserContext'
-const CommentHistories = ({ dataComment }) => {
-    const renderItem = ({ item }) => {
-        return (
-            <View style={styles.itemContainer}>
-                <View style={styles.infor}>
-                    <Image source={require('../../media/quyet_icon/smile_p.png')} style={styles.avatar} />
-                    <Icon name='aliwangwang' size={18} color={'blue'} style={styles.icon} />
-                </View>
-                <View style={styles.contain}>
-                    <View style={{ flexDirection: 'column' }}>
-                        <Text>
-                            <Text>Bạn đã bình luận về </Text>
-                            <Text style={styles.text}>bài viết</Text>
-                        </Text>
-                        <Text>{item.content}</Text>
-                    </View>
-                </View>
-            </View>
-        );
-    };
-    const { user, setUser } = useMyContext();
+
+type Comment = {
+    dataComment: any
+}
+const CommentHistories: React.FC<Comment> = ({ dataComment }) => {
+    const [sortedData, setSortedData] = useState<any[]>([]);
+    const [showModal, setShowModal] = useState(false)
+    useEffect(() => {
+        const sorted = [...dataComment].sort((a: { create_at: any | Date; }, b: { create_at: any | Date; }) => new Date(b.create_at) - new Date(a.create_at));
+        setSortedData(sorted);
+        //console.log(sorted);
+    }, [dataComment]);
+    const { user } = useMyContext();
+    const showPostModal = () => {
+        setShowModal(true);
+        console.log('click');
+        
+    }
     return (
         <View style={styles.container}>
-            {dataComment.length > 0 ? (
+            {sortedData.length > 0 ? (
                 <View style={styles.listContainer}>
-                    {dataComment.map((item, index) => (
+                    {sortedData.map((item: { content: any; create_at: any; }, index: { toString: () => React.Key | null | undefined; }) => (
                         <View key={index.toString()} style={styles.itemContainer}>
                             <View style={styles.infor}>
                                 {user.avatar ?
                                     <Image source={{ uri: user.avatar }} style={styles.avatar} />
                                     :
-                                    <View style={[styles.avatar,{backgroundColor:'gray'}]} ></View>
+                                    <View style={[styles.avatar, { backgroundColor: 'gray' }]} ></View>
                                 }
-                                <Icon name='aliwangwang' size={18} color={'blue'} style={styles.icon} />
+                                <Icon name='aliwangwang' size={18} color={'#0099FF'} style={styles.icon} />
                             </View>
                             <View style={styles.contain}>
-                                <View style={{ flexDirection: 'column' }}>
-                                    <Text>
-                                        <Text>Bạn đã bình luận về </Text>
-                                        <Text style={styles.text}>bài viết</Text>
-                                    </Text>
-                                    <Text>" {item.content} "</Text>
-                                </View>
+                                <Text style={styles.text1} >Bạn đã bình luận về </Text>
+                                <Pressable>
+                                    <Text style={styles.text} onPress={showPostModal }>bài viết</Text>
+                                </Pressable>
+                                <Text style={styles.text1}> của </Text>
+                                <Text style={styles.text1}> {item.posts.creater.fullname}</Text>
+                                <Text style={styles.text1}>: " {item.content} "</Text>
                             </View>
                             <View style={{ width: 60, height: '100%', alignItems: 'flex-end' }}>
                                 <Text style={{ color: 'gray', fontSize: 12, marginTop: 30 }}>{GetTimeComment(item.create_at)} trước</Text>
                             </View>
                         </View>
                     ))}
-
+                    <Modal visible={showModal} style={{ alignItems: 'center', justifyContent: 'center' }}>
+                        <TouchableOpacity onPress={() => { setShowModal(false) }} style={{ backgroundColor: 'red', height: 40, width: 80 }}>
+                            <Text>close modal</Text>
+                        </TouchableOpacity>
+                    </Modal>
                 </View>
             ) : (
                 <View>
@@ -96,11 +97,15 @@ const styles = StyleSheet.create({
     },
     icon: {
         position: 'absolute',
-        right: 0,
-        bottom: 0,
+        right: -4,
+        bottom: -3,
     },
     contain: {
         flex: 1,
+        height: 40,
+        flexDirection: 'row',
+        flexWrap:'wrap'
+
     },
     listContainer: {
         paddingBottom: 40,
@@ -109,10 +114,15 @@ const styles = StyleSheet.create({
     text: {
         fontSize: 16,
         color: 'black',
+        fontWeight:'bold'
     },
     textEmpty: {
         fontSize: 16,
         color: 'black',
         fontWeight: '400',
+    },
+    text1: {
+        fontSize: 16,
+        color: 'black',
     },
 });

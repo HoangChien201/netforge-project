@@ -26,30 +26,29 @@ const LoginScreen = () => {
         <>
             <StatusBar barStyle="light-content" backgroundColor={COLOR.primary200} />
             <View style={styles.container}>
-                <View style={{ flexDirection: "row", paddingVertical: 75 }}>
-                    <View style={{ position: "absolute", right: 0, top: 0 }}>
+                <View style={{ flexDirection: "row", paddingVertical: 75,width:'100%' }}>
+                    <View style={{ position: "absolute", right: 0, top: 0,flex:0.5 }}>
                         <Image source={require('../media/Dicons/Ellipse.png')} />
                     </View>
                     <View style={[styles.viewAll]}>
-                        <Text style={styles.labelLogin}>Login</Text>
+                        <Text style={styles.labelLogin}>Đăng nhập</Text>
                     </View>
-                    <View style={styles.viewAll}></View>
+                  
                 </View>
                 <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'null'} style={styles.viewContent}>
                     <Loading isLoading={isLoading} />
                     <FormLogin setIsLoading={setIsLoading} setStatus={setStatus} setModal={setShowModal} />
                     <View style={{ alignItems: "center", padding: 10 }}>
-                        <Text>Don't have an account yet ? Register <Text onPress={hanlerRegiter} style={{ color: COLOR.primary200 }}>Here</Text></Text>
+                        <Text>Nếu bạn chưa có tài khoản ?<Text onPress={hanlerRegiter} style={{ color: COLOR.primary200 }}> Đăng kí</Text></Text>
                     </View>
                     <View style={{ flexDirection: "row", justifyContent: 'center', alignItems: 'center', padding: 15 }}>
                         <View style={{ height: 0.2, backgroundColor: "black", width: "36%" }}></View>
                         <View style={{ width: "29%" }}>
-                            <Text style={{ textAlign: 'center', paddingHorizontal: 2 }}>Or login with</Text>
+                            <Text style={{ textAlign: 'center', paddingHorizontal: 2 }}>hoặc</Text>
                         </View>
                         <View style={{ height: 0.2, backgroundColor: "black", width: "36%" }}></View>
                     </View>
-                    <View style={{ flexDirection: 'row', justifyContent: 'space-between', paddingVertical: 20 }}>
-                        <ButtonImage children='Facebook' source={require('../media/icon/Facebook.png')} style={styles.buttonImage} />
+                    <View style={{ justifyContent: 'center', paddingVertical: 20,paddingHorizontal:110}}>
                         <ButtonImage children='Google' source={require('../media/icon/Google.png')} style={styles.buttonImage} />
                     </View>
                 </KeyboardAvoidingView>
@@ -82,12 +81,16 @@ const styles = StyleSheet.create({
     },
     viewAll: {
         flex: 1,
+        bottom:0,
+        
+     
     },
     labelLogin: {
         color: "#fff",
         fontWeight: "bold",
         fontSize: 40,
-        paddingLeft: 30
+        paddingLeft: 30,
+      
     },
     viewContent: {
         backgroundColor: "#ffff", flex: 1, marginTop: 15, borderTopEndRadius: 30, borderTopStartRadius: 30, padding: 18
@@ -104,7 +107,9 @@ const styles = StyleSheet.create({
         paddingVertical: 12,
         borderRadius: 6,
         height: 50,
-        backgroundColor: COLOR.primary350,
-        width: 174
+        backgroundColor: 'rgba(225,225,225,0.1)',
+        width: '100%',
+        
+        
     }
 })

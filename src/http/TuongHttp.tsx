@@ -14,9 +14,6 @@ export const searchUser = async(keyword:string,) => {
           }
         }
       )
-      
-     
-      
       return result
     } catch (error) {
       console.log('searchUser', error)
@@ -24,11 +21,11 @@ export const searchUser = async(keyword:string,) => {
     }
 }
 // lấy danh sách bình luận
-export const getComments = async () => {
+export const getComments = async (id:number) => {
   try {
     const token = await AsyncStorage.getItem('token')
     const axios = await AxiosInstance();
-    const url = '/comment/get-by-posts/29'
+    const url = `/comment/get-by-posts/${id}`
     const result = axios.get(url,
       {
         headers: {
@@ -117,5 +114,46 @@ export const deleteComments = async(id: number) => {
   } catch (error) {
     console.log('delete-comments', error)
     throw error;
+  }
+}
+// lấy danh sách bài viết chi tiết 
+export const getPostById = async(id: number) => {
+  try {
+    const token = await AsyncStorage.getItem('token')
+    const axios = await AxiosInstance();
+    const url = `/posts/get-by-user/${id}`
+    const result = axios.get(url)
+    return result;
+  } catch (error) {
+    console.log('get-post-byId', error)
+    throw error;
+  }
+}
+// like comments
+export const addLikeComments = async (comment: number, reaction: number) => {
+  try {
+    const token = await AsyncStorage.getItem('token')
+    const axioss = await AxiosInstance();
+    const url = '/like-comment'
+    const body = {
+      comment: comment,
+      reaction: reaction,
+    }
+    const result = axioss.post(url, body,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      }
+
+    );
+    console.log("tokenne", token);
+    return result
+
+
+  } catch (error) {
+    console.log('addComments', error); // Xuất lỗi
+    throw error;
+    
   }
 }

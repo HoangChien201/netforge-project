@@ -1,22 +1,23 @@
-import FriendScreen from "../../screens/profile/FriendScreen"
+import HomeScreen from "../../screens/HomeScreen"
 import CommentsScreen from "../../screens/CommentsScreen";
+import ActionBar from "../listpost/ActionBar";
 
 
 export enum NavigateRootStackEnum{
-    FriendScreen='FriendScreen',
+    ActionBar='ActionBar',
     CommentsScreen ='CommentsScreen'
 }
 
 export type NavigateRootStackParams={
-    FriendScreen : undefined;
+    ActionBar : undefined;
     CommentsScreen : undefined;
 }
 
 export const NavigateRootStackScreens=[
     {
         id: Math.random() + "" + Date,
-        name: NavigateRootStackEnum.FriendScreen,
-        component: FriendScreen,
+        name: NavigateRootStackEnum.ActionBar,
+        component: ActionBar,
         options: {
             headerShown: false
         }

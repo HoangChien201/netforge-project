@@ -8,6 +8,8 @@ import { useNavigation } from '@react-navigation/native'
 import { navigationType } from '../component/stack/UserStack'
 import Video from 'react-native-video';
 import { DateOfTimePost } from '../format/DateOfTimePost';
+import { number } from 'yup';
+import { useRoute } from '@react-navigation/native';
 
 
 const CommentsScreen = () => {
@@ -17,11 +19,13 @@ const CommentsScreen = () => {
     const [imagePath, setImagePath] = useState(null);
     const [commentCount, setCommentCount] = useState(0);
     const scrollViewRef = useRef();
-
+    const route = useRoute();
+    const { postId } = route.params;
+    console.log(postId);
 // hàm lấy danh sách comments
     const fetchComments = async () => {
         try {
-            const response = await getComments();
+            const response = await getComments(postId);
             setComments(response.reverse());
             setCommentCount(response.length);
         } catch (error) {
@@ -106,9 +110,19 @@ const CommentsScreen = () => {
             <View style={{ height: "85%"}}>
 
                 <ScrollView ref={scrollViewRef} showsVerticalScrollIndicator={false} >
-                     {   comment.map(comment => (
-                            <CommentItem key={comment.id} comment={comment} onReply={handleReply} render = {fetchComments}/>
+                     {  comment.length ===0 ?(
+                        <View style = {styles.ViewNoComment}>
+                            <View style = {{justifyContent: 'center', alignItems: 'center'}}>
+                            <Image style = {{width: 200, height: 200, marginBottom: 20}} source={require('../media/icon_tuong/chat.png')}/>
+                            <Text style = {styles.textNoComment1}>Chưa có bình luận nào</Text>
+                            <Text style = {styles.textNoComment2}>Hãy là người đầu tiên bình luận.</Text>
+                            </View>
+                        </View>
+                     ) : (
+                        comment.map(comment => (
+                            <CommentItem key={comment.id} comment={comment} onReply={handleReply} render = {fetchComments} />
                         ))
+                     )
                     }
                 </ScrollView>
             </View>
@@ -117,6 +131,7 @@ const CommentsScreen = () => {
                 fetchComments={fetchComments}
                 parent={replyTo} // Truyền ID bình luận cha khi trả lời
                 onMediaSelected={handleMediaSelected} // Xử lý khi người dùng chọn hình ảnh hoặc video
+                postId ={postId}
                 onCommentAdded={() => {
                     fetchComments(); // Gọi lại danh sách bình luận sau khi thêm bình luận
                     setReplyTo(null) // Đặt lại trạng thái trả lời
@@ -133,6 +148,19 @@ const CommentsScreen = () => {
 export default CommentsScreen
 
 const styles = StyleSheet.create({
+    textNoComment2:{
+        fontSize: 16,
+        fontWeight: '500'
+    },
+    textNoComment1:{
+        fontWeight: 'bold',
+        fontSize: 20
+    },
+    ViewNoComment:{
+        justifyContent: 'center',
+        alignItems: 'center',
+        height: 500
+    },
     itemRecentContai:{
         backgroundColor: '#f2f2f2'
     },

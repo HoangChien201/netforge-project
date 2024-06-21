@@ -1,78 +1,96 @@
 import React, { useState, useEffect } from 'react';
-import { FlatList, Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import Icon from 'react-native-vector-icons/AntDesign';
-
-
-
-
-const LikeHistories = ({ dataLikeC, dataLikeP }) => {
+import { Image, StyleSheet, Text, View } from 'react-native';
+import { useMyContext } from '../navigation/UserContext';
+import { GetTimeComment } from '../../format/FormatDate';
+type Like = {
+    data: {
+        likePosts?: any[],
+        likeComments?: any[]
+    }
+}
+const LikeHistories: React.FC<Like> = ({ data }) => {
     const [totalData, setTotalData] = useState([]);
-
+    const { user } = useMyContext();
+    const [sortedData, setSortedData] = useState<any[]>([]);
+    const [dataLikeP, setDataLikeP] = useState<any[]>([]);
+    const [dataLikeC, setDataLikeC] = useState<any[]>([]);
     useEffect(() => {
-
-        setTotalData([...dataLikeC, ...dataLikeP]);
-
+        if (data) {
+            const likePosts = data.likePosts || [];
+            const likeComments = data.likeComments || [];
+            const total = [...likeComments, ...likePosts];
+            const sorted = total.sort((a, b) => new Date(b.create_at) - new Date(a.create_at));
+            setSortedData(sorted);
+        }
+        renderItem;
+        console.log('data ben like: ' + data);
+        // console.log('like: ' + dataLikeC);
+        // console.log('LikeP: ' + dataLikeP);
     }, []);
-    const getReactionDetails = (reaction) => {
+    useEffect(()=>{
+        renderItem
+    },[data,sortedData ])
+
+    const getReactionDetails = (reaction: any) => {
         switch (reaction) {
             case 1:
-                return { text: "Thích ", iconName: "like1", iconColor: '#0000FF' };
+                return { text: "Thích ", iconName: "like1", iconColor: '#0000FF', linkImage: require("../../media/Dicons/thumb-up.png") };
             case 2:
-                return { text: "Yêu mến ", iconName: "heart", iconColor: '#FF0000' };
+                return { text: "Ha ha ", iconName: "heart", iconColor: '#FF0000', linkImage: require("../../media/Dicons/happy-face.png") };
             case 3:
-                return { text: "Phẫn nộ ", iconName: "meho", iconColor: '#FFFF00' };
+                return { text: "Thương thương ", iconName: "meho", iconColor: '#FFFF00', linkImage: require("../../media/Dicons/smile.png") };
             case 4:
-                return { text: "Không thích ", iconName: "dislike1", iconColor: '#FF7F00' };
+                return { text: "Yêu thích ", iconName: "dislike1", iconColor: '#FF7F00', linkImage: require("../../media/Dicons/heartF.png") };
+            case 5:
+                return { text: "Tức giận ", iconName: "question", iconColor: 'blue', linkImage: require("../../media/Dicons/wow.png") };
             default:
-                return { text: "Không rõ ", iconName: "question", iconColor: 'blue' };
+                return { text: "Tức giận ", iconName: "question", iconColor: 'blue', linkImage: require("../../media/Dicons/angry.png") };
         }
     };
-    const renderItem = ({ item }) => {
-        const { text, iconName, iconColor } = getReactionDetails(item.reaction);
+
+    const renderItem = (item: { reaction: any; posts: { creater: { fullname: string | any; }; }; fullname: string | any; } , index: { toString: () => React.Key | null | undefined; }) => {
+        const { text, iconName, iconColor, linkImage } = getReactionDetails(item.reaction);
         return (
-            <View style={styles.itemContainer}>
+            <View style={styles.itemContainer} key={index.toString()}>
                 <View style={styles.infor}>
-                    <Image source={require('../../media/quyet_icon/smile_p.png')} style={styles.avatar} />
-                    <Icon name={iconName} size={18} color={iconColor} style={styles.icon} />
+                    <Image source={{ uri: user.avatar }} style={styles.avatar} />
+                    <Image source={linkImage} style={styles.icon} />
                 </View>
                 <View style={styles.contain}>
-                    {item.type === 'post' ? (
-                        <Text >
-                            <Text>Bạn đã </Text>
-                            <Text>{text}</Text>
-                            <Text style={styles.text}>Bài viết</Text>
-                            <Text> của </Text>
-                            <Text style={styles.text}>{item.posts.creater.fullname}</Text>
+                    {item.posts ? (
+                        <Text>
+                            <Text style={styles.text}>Bạn đã bày tỏ </Text>
+                            <Text style={styles.text}>{text}</Text>
+                            <Text style={styles.text1}>Bài viết</Text>
+                            <Text style={styles.text}> của </Text>
+                            <Text style={styles.text1}>{item.posts.creater.fullname}</Text>
                         </Text>
                     ) : (
-                        <>
-                            <Text >
-                                <Text>Bạn đã </Text>
-                                <Text>{text}</Text>
-                                <Text style={styles.text}>bình luận</Text>
-                                <Text> của </Text>
-                                <Text style={styles.text}>{item.user.fullname}</Text>
-                            </Text>
-
-                        </>
+                        <Text>
+                            <Text style={styles.text}>Bạn đã </Text>
+                            <Text style={styles.text1}>{text}</Text>
+                            <Text style={styles.text}>bình luận</Text>
+                            <Text style={styles.text}> của </Text>
+                            <Text style={styles.text1}>{item.fullname}</Text>
+                        </Text>
                     )}
                 </View>
-            </View>)
+                <View style={{ width: 60, height: '100%', alignItems: 'flex-end' }}>
+                    <Text style={{ color: 'gray', fontSize: 12, marginTop: 30 }}>{GetTimeComment(item.create_at)} trước</Text>
+                </View>
+            </View>
+        );
     };
 
     return (
         <View style={styles.container}>
-            {totalData.length > 0 ? <FlatList
-                data={totalData}
-                keyExtractor={(item, index) => index.toString()}
-                renderItem={renderItem}
-                contentContainerStyle={styles.listContainer}
-            /> :
+            {sortedData.length>0? (
+                sortedData.map(renderItem)
+            ) : (
                 <View>
                     <Text style={styles.textEmpty}>Bạn chưa có hoạt động nào</Text>
                 </View>
-            }
-
+            )}
         </View>
     );
 };
@@ -83,23 +101,15 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         padding: 10,
-    },
-    header: {
-        marginBottom: 10
-    },
-    headerText: {
-        fontSize: 20,
-        color: 'black',
-        fontWeight: '500'
+        marginBottom: 80,
     },
     itemContainer: {
         flexDirection: 'row',
         alignItems: 'center',
-        marginBottom: 10,
+        marginBottom: 7,
         padding: 10,
         backgroundColor: '#f9f9f9',
         borderRadius: 8,
-
     },
     infor: {
         alignItems: 'center',
@@ -115,20 +125,24 @@ const styles = StyleSheet.create({
         position: 'absolute',
         right: 0,
         bottom: 0,
+        height: 18,
+        width: 18,
     },
     contain: {
         flex: 1,
     },
-    listContainer: {
-        paddingBottom: 20,
-    },
     text: {
-        fontSize: 16,
+        fontSize: 14,
         color: 'black',
+    },
+    text1: {
+        fontSize: 14,
+        color: 'black',
+        fontWeight: 'bold',
     },
     textEmpty: {
         fontSize: 16,
         color: 'black',
-        fontWeight: '400'
+        fontWeight: '400',
     },
 });

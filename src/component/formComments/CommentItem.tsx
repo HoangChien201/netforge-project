@@ -5,13 +5,16 @@ import { getReplyComments, deleteComments } from "../../http/TuongHttp"
 import { DateOfTimePost } from '../../format/DateOfTimePost';
 import ModalImage from './ModalImage';
 import ModalDeleteComments from './ModalDeleteComments';
+import ReactionButton from './ReactionButton';
+import { tr } from 'date-fns/locale';
 const CommentItem = ({ comment, onReply, depth = 0, render }) => {
-
+    const [modalReactionVisible, setModaReactionlVisible] = useState(false);
     const [replies, setReplies] = useState([]);
     // phóng to image
     const [selectedMedia, setSelectedMedia] = useState(null); // Đường dẫn hình ảnh được chọn
     const [isModalVisible, setIsModalVisible] = useState(false); // Trạng thái của modal hiển thị
     const [isDleteVisible, setIsDleteVisible] = useState(false) // delete modal
+    const [isHide, setIsHide] = useState(false);
     const handleImagePress = (media) => {
         if (typeof media === 'string') {
             setSelectedMedia(media);
@@ -29,11 +32,15 @@ const CommentItem = ({ comment, onReply, depth = 0, render }) => {
         try {
             await deleteComments(comment.id);
             render();
+         
             console.log('Thành công', 'Bình luận đã được xóa.');
         } catch (error) {
             console.log('Lỗi', 'Không thể xóa bình luận. Vui lòng thử lại.');
         }
     };
+  
+        
+    
 
 
     const fetchReplies = async (commentId: any) => {
@@ -56,7 +63,6 @@ const CommentItem = ({ comment, onReply, depth = 0, render }) => {
         <View style={[styles.commentContainer, depth > 0 && { marginLeft: depth * 20 }]}>
             {/* Render comment content */}
             <View style={{ flexDirection: 'row' }}>
-                {depth > 0 && <View style={styles.line} />}
                 <View style={{ flex: 1 }}>
                     <View style={styles.userContainer}>
                         <Image source={{ uri: comment.user.avatar }} style={styles.avatar} />
@@ -83,12 +89,10 @@ const CommentItem = ({ comment, onReply, depth = 0, render }) => {
                                     ) : null}
                                 </View>
                             </View>
-
-
                         </TouchableOpacity>
                     </View>
                     <View style={{ flexDirection: "row", alignItems: 'center', marginStart: 50 }}>
-                        <Text style={{ marginRight: 5, fontWeight: 'bold' }}>{DateOfTimePost(comment.create_at)} giờ</Text>
+                        <Text style={{ marginRight: 5, fontWeight: 'bold' }}>{DateOfTimePost(comment.create_at)}</Text>
                         {
                             !comment.parent &&
                             <>
@@ -96,23 +100,34 @@ const CommentItem = ({ comment, onReply, depth = 0, render }) => {
                                 <TouchableOpacity onPress={() => onReply(comment.id)} style={styles.replyButton}>
                                     <Text style={{ fontWeight: 'bold' }}>Trả lời</Text>
                                 </TouchableOpacity>
-                               
                             </>
                         }
-                         <Text style={{ fontWeight: 'bold', fontSize: 16, color: 'black', marginLeft: 5 }}>᛫</Text>
-                        <TouchableOpacity style={styles.replyButton}>
+                        <Text style={{ fontWeight: 'bold', fontSize: 16, color: 'black', marginLeft: 5 }}>᛫</Text>
+                        <TouchableOpacity style={styles.replyButton} onLongPress={()=>setModaReactionlVisible(true)}>
                             <Text style={{ fontWeight: 'bold' }}>Thích</Text>
                         </TouchableOpacity>
                     </View>
                 </View>
             </View>
             {/* // */}
-
-            <View style={styles.repliesContainer}>
-                {replies.map(reply => (
-                    <CommentItem key={reply.id} comment={reply} onReply={onReply} depth={depth + 1} render={render} />
-                ))}
+            
+            {
+                !isHide  && !comment.parent ?
+                replies.length > 0 &&(
+                    <View style = {{left: 45, top: 2}}>
+                <TouchableOpacity onPress={() => setIsHide(true)}>
+                <Text style={{fontWeight:'500', fontSize: 14}}>Xem thêm bình luận...</Text>
+                </TouchableOpacity>
             </View>
+                )
+                    :
+                    <View style={styles.repliesContainer}>
+                        {replies.map(reply => (
+                            <CommentItem key={reply.id} comment={reply} onReply={onReply} depth={depth + 1} render={render} />
+                        ))}
+                    </View>
+                    
+            }
             {/* Modal phóng to hình ảnh khi chạm vào hình ảnh sẽ phóng to, khi chạm lần 2 hình sẽ ẩn */}
             <ModalImage
                 isVisible={isModalVisible}
@@ -123,6 +138,10 @@ const CommentItem = ({ comment, onReply, depth = 0, render }) => {
                 isVisible={isDleteVisible}
                 onConfirm={handleConfirmDelete}
                 onCancel={() => setIsDleteVisible(false)} />
+            <ReactionButton
+            isVisible={modalReactionVisible}
+            onClose={(setModaReactionlVisible(false))}/>
+                
         </View>
     );
 };

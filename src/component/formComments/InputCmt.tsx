@@ -7,7 +7,7 @@ import Video from 'react-native-video'
 import { useMyContext } from '../navigation/UserContext'
 
 
-const InputCmt = ({ fetchComments, onMediaSelected, parent = null }) => {
+const InputCmt = ({ fetchComments, onMediaSelected, parent = null ,postId}) => {
     const { user } = useMyContext();
     const [comments, setComments] = useState('')
     const [media, setMedia] = useState(null);
@@ -87,7 +87,7 @@ const InputCmt = ({ fetchComments, onMediaSelected, parent = null }) => {
 
             }
             const data = {
-                posts: 29, // lấy id từ id của bài viết
+                posts: postId, // lấy id từ id của bài viết
                 content: comments,
                 image: imagePath,
                 parent: parent
