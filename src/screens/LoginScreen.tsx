@@ -24,11 +24,11 @@ const LoginScreen = () => {
     }
     return (
         <>
-            <StatusBar barStyle="light-content" backgroundColor={COLOR.primary200} />
+            <StatusBar barStyle="light-content" backgroundColor={COLOR.PrimaryColor} />
             <View style={styles.container}>
                 <View style={{ flexDirection: "row", paddingVertical: 75,width:'100%' }}>
                     <View style={{ position: "absolute", right: 0, top: 0,flex:0.5 }}>
-                        <Image source={require('../media/Dicons/Ellipse.png')} />
+                        <Image source={require('../media/Dicons/elip.png')} />
                     </View>
                     <View style={[styles.viewAll]}>
                         <Text style={styles.labelLogin}>Đăng nhập</Text>
@@ -39,7 +39,7 @@ const LoginScreen = () => {
                     <Loading isLoading={isLoading} />
                     <FormLogin setIsLoading={setIsLoading} setStatus={setStatus} setModal={setShowModal} />
                     <View style={{ alignItems: "center", padding: 10 }}>
-                        <Text>Nếu bạn chưa có tài khoản ?<Text onPress={hanlerRegiter} style={{ color: COLOR.primary200 }}> Đăng kí</Text></Text>
+                        <Text>Nếu bạn chưa có tài khoản ?<Text onPress={hanlerRegiter} style={{ color: COLOR.PrimaryColor }}> Đăng kí</Text></Text>
                     </View>
                     <View style={{ flexDirection: "row", justifyContent: 'center', alignItems: 'center', padding: 15 }}>
                         <View style={{ height: 0.2, backgroundColor: "black", width: "36%" }}></View>
@@ -68,7 +68,7 @@ export default LoginScreen
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: COLOR.primary200,
+        backgroundColor: COLOR.PrimaryColor,
 
     },
     image: {

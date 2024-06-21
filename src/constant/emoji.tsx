@@ -140,5 +140,7 @@ export const reaction = [
         Emoji:require('../media/Dicons/angry.png'),
         type:6
     },
+ 
+  
 ]
 
