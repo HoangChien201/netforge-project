@@ -1,22 +1,23 @@
-import ExploreScreen from "../../screens/ExploreScreen";
+import HomeScreen from "../../screens/HomeScreen"
 import CommentsScreen from "../../screens/CommentsScreen";
+import ActionBar from "../listpost/ActionBar";
 
 
 export enum NavigateRootStackEnum{
-    ExploreScreen='ExploreScreen',
+    ActionBar='ActionBar',
     CommentsScreen ='CommentsScreen'
 }
 
 export type NavigateRootStackParams={
-    ExploreScreen : undefined;
+    ActionBar : undefined;
     CommentsScreen : undefined;
 }
 
 export const NavigateRootStackScreens=[
     {
         id: Math.random() + "" + Date,
-        name: NavigateRootStackEnum.ExploreScreen,
-        component: ExploreScreen,
+        name: NavigateRootStackEnum.ActionBar,
+        component: ActionBar,
         options: {
             headerShown: false
         }

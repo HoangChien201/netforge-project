@@ -54,7 +54,6 @@ console.log("data");
       </View>
     ) : null;
   };
-
   return (
     <View style={{ backgroundColor: 'rgba(155,155,155,0.2)' }}>
       <FlatList

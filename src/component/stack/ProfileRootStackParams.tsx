@@ -9,6 +9,7 @@ import HistoryActivityScreen from "../../screens/profile/HistoryActivityScreen";
 import HelpScreen from "../../screens/profile/HelpScreen";
 import FriendScreen from "../../screens/profile/FriendScreen";
 import MenuScreen from "../../screens/MenuScreen";
+import NaviStack from "../../component/stack/NaviStack"
 import ChangePassword from "../../screens/ChangePassword";
 import QRcodeScreen from "../../screens/QRcodeScreen";
 import Scanner from "../../screens/Scanner";
@@ -21,7 +22,7 @@ export enum ProfileRootStackEnum {
     SettingScreen = 'SettingScreen',
     HistoryActivityScreen = 'HistoryActivityScreen',
     HelpScreen = 'HelpScreen',
-    FriendScreen = 'FriendScreen',
+    NaviStack = 'NaviStack',
     MenuScreen = 'MenuScreen',
     ChangePassword = 'ChangePassword',
     QRcodeScreen = 'QRcodeScreen',
@@ -36,7 +37,7 @@ export type ProfileRootStackParams={
     SettingScreen : undefined;
     HistoryActivityScreen : undefined;
     HelpScreen : undefined;
-    FriendScreen :undefined,
+    NaviStack :undefined,
     MenuScreen:undefined;
     ChangePassword: undefined;
     QRcodeScreen: undefined;
@@ -105,8 +106,8 @@ export const ProfileRootStackScreens=[
     },
     {
         id: Math.random() + "" + Date,
-        name: ProfileRootStackEnum.FriendScreen,
-        component: FriendScreen,
+        name: ProfileRootStackEnum.NaviStack,
+        component: NaviStack,
         options: {
             title:"Bạn bè",
             headerTitleAlign:'center'
