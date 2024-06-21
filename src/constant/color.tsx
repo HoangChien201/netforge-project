@@ -1,5 +1,6 @@
 export const COLOR={
-    PrimaryColor:'#E65B0C',
+    PrimaryColor:'#07A3B2',
+    PrimaryColor1:"#32DEEE",//màu khi nhấn
     primary100:'#FFF4E9',
     primary150:'#FFE6CC',
     primary200:'#FF5E00',

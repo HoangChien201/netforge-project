@@ -14,18 +14,23 @@ const SettingScreen = () => {
         }
       });
     }
-
-
-
   }, [isFocus]);
 
-  function SettingItem({ title, description }: { title: string, description: string }) {
+  function SettingItem({ title, description, onPress }: { title: string, description: string, onPress?:any}) {
     return (
-      <TouchableOpacity style={styles.settingItem}>
+      <TouchableOpacity style={styles.settingItem} onPress={onPress}>
         <Text style={styles.title}>{title}</Text>
         <Text style={styles.description}>{description}</Text>
       </TouchableOpacity>
     )
+  }
+
+  function navigationScreen(screen:string){
+    navigation.navigate(`${screen}`)
+}
+
+  const handleToChangePass = () => {
+
   }
 
   return (
@@ -36,6 +41,9 @@ const SettingScreen = () => {
       <SettingItem title='Chỉnh sửa thông tin cá nhân' description='Thay đổi tên của bạn, mô tả và ảnh đại diện' />
       <SettingItem title='Cài đặt thông báo' description='Xác định thông báo mà bạn muốn hiện thị' />
       <SettingItem title='Tài khoản' description='Thay đổi hoặc xóa email tài khoản của bạn' />
+      <SettingItem title='Mã QR' description='Mã QR của bạn' onPress={navigationScreen.bind(this,'QRcodeScreen')}/> 
+      <SettingItem title='Mật khẩu' description='Thay đổi mật khẩu của bạn' onPress={navigationScreen.bind(this,'ChangePassword')}/> 
+    
 
     </View>
   )

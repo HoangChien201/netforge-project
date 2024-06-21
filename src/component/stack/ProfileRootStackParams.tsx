@@ -10,10 +10,13 @@ import HelpScreen from "../../screens/profile/HelpScreen";
 import FriendScreen from "../../screens/profile/FriendScreen";
 import MenuScreen from "../../screens/MenuScreen";
 import NaviStack from "../../component/stack/NaviStack"
+import ChangePassword from "../../screens/ChangePassword";
+import QRcodeScreen from "../../screens/QRcodeScreen";
+import Scanner from "../../screens/Scanner";
 
 export enum ProfileRootStackEnum {
     ProfileScreen = 'ProfileScreen',
-    EditProfileScreen = 'Chỉnh sửa hồ sơ',
+    EditProfileScreen = 'EditProfileScreen',
     FollowingScreen = 'FollowingScreen',
     Live = 'Live',
     SettingScreen = 'SettingScreen',
@@ -21,7 +24,9 @@ export enum ProfileRootStackEnum {
     HelpScreen = 'HelpScreen',
     NaviStack = 'NaviStack',
     MenuScreen = 'MenuScreen',
-
+    ChangePassword = 'ChangePassword',
+    QRcodeScreen = 'QRcodeScreen',
+    Scanner = 'Scanner',
 
 }
 
@@ -34,6 +39,9 @@ export type ProfileRootStackParams={
     HelpScreen : undefined;
     NaviStack :undefined,
     MenuScreen:undefined;
+    ChangePassword: undefined;
+    QRcodeScreen: undefined;
+    Scanner: undefined;
 }
 
 export const ProfileRootStackScreens=[
@@ -53,6 +61,9 @@ export const ProfileRootStackScreens=[
         options: {
             headerShown: true,
             // headerLeft: () => null,
+            title:"Trang cá nhân",
+            headerTitleAlign:'center'
+            
         }
     },
     {
@@ -102,6 +113,33 @@ export const ProfileRootStackScreens=[
             headerTitleAlign:'center'
         }
     },
+    {
+        id: Math.random() + "" + Date,
+        name: ProfileRootStackEnum.ChangePassword,
+        component: ChangePassword,
+        options: {
+            title:"Đổi mật khẩu",
+            headerTitleAlign:'center'
+        }
+    },
+    {
+        id: Math.random() + "" + Date,
+        name: ProfileRootStackEnum.QRcodeScreen,
+        component: QRcodeScreen,
+        options: {
+            title:"Mã QR của tôi",
+            headerTitleAlign:'center'
+        }
+    },
+    {
+        id: Math.random() + "" + Date,
+        name: ProfileRootStackEnum.Scanner,
+        component: Scanner,
+        options: {
+            title:"Scanner",
+            headerTitleAlign:'center'
+        }
+    }
     // {
     //     id: Math.random() + "" + Date,
     //     name: ProfileRootStackEnum.Live,

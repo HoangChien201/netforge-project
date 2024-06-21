@@ -15,12 +15,12 @@ import {emailPattern} from '../constant/valid';
 import Loading from '../component/Modal/Loading';
 import ButtonLogin from '../component/form/ButtonLogin';
 import {UserRootStackEnum} from '../component/stack/UserRootStackParams';
-import {NavigationProp, ParamListBase, useNavigation, useRoute,} from '@react-navigation/native';
+import {NavigationProp, ParamListBase, RouteProp, useNavigation, useRoute,} from '@react-navigation/native';
 import InputLogin from '../component/formlogin/Input';
 import { resetPassword } from '../http/PhuHTTP';
 import ModalPoup from '../component/Modal/ModalPoup';
 import ModalFail from '../component/Modal/ModalFail';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import Icon from 'react-native-vector-icons/Ionicons';
 
 interface resetPass {
     newPassword: string,
@@ -39,9 +39,8 @@ export const ResetPassword:React.FC = () => {
     const [valueF, setValueF] = useState<resetPass>({ newPassword: "",confirmPassword: "" });
     const [valid, setValid] = useState<valid>({ newPassword: true , confirmPassword: true});
     
-    const route = useRoute();
-    //const email = route.params.email as string;
-    // console.log(email);
+    const route: RouteProp<{ params: { email: string } }, 'params'> = useRoute();
+    const { email } = route.params;
 
     function onChangText(key: string, values: string) {
         setValueF({
@@ -60,7 +59,7 @@ export const ResetPassword:React.FC = () => {
     }
 
     const handleChangePassword = async() => {
-        const token = await AsyncStorage.getItem('TokenForgot');
+        //const token = await AsyncStorage.getItem('TokenForgot');
         const { newPassword, confirmPassword} = { ...valueF };
         let isValidNewPass = newPassword.trim().length > 0;
         let isValidConfirmPass = confirmPassword.trim() === newPassword.trim();
@@ -72,7 +71,7 @@ export const ResetPassword:React.FC = () => {
 
         if (isValidNewPass && isValidConfirmPass) {
             try {
-                const response = await resetPassword(confirmPassword, token);
+                const response = await resetPassword(confirmPassword, email);
                 setIsLoading(true);
                 if (response) {
                     setShowModal(true);
@@ -94,15 +93,10 @@ export const ResetPassword:React.FC = () => {
 
     return (
     <View style={styles.container}>
-        <View style={styles.viewToolbar}>
-        <TouchableOpacity
-            onPress={() => navigation.goBack()}
-            style={{flexDirection: 'row', alignItems: 'center'}}>
-            <Image
-            source={require('../media/Dicons/back.png')}
-            style={styles.image}/>
-            <Text style={{color: 'white'}}>Back</Text>
-        </TouchableOpacity>
+        <View  style={styles.viewToolbar}>
+                <TouchableOpacity onPress={()=>navigation.goBack()} style={{alignItems:"center"}}>
+                    <Icon name="arrow-back" size={24} color="#fff"  />
+                </TouchableOpacity>
         </View>
         <View style={{flexDirection: 'row', paddingVertical: 75}}>    
         <View style={{position: 'absolute', right: 0, top: 0}}>
@@ -132,7 +126,7 @@ export const ResetPassword:React.FC = () => {
         <View style={styles.btnResetPass}>
           <ButtonLogin
             textLogin
-            children="Cập nhập"
+            chilren="Cập nhập"
             textColor="#fff"
             onPress={handleChangePassword}
           />
@@ -189,5 +183,6 @@ const styles = StyleSheet.create({
         paddingTop:20,
     },
     btnResetPass: {
+        alignItems:'center'
     }
 });

@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, TouchableOpacity, FlatList, StyleSheet, TextInput, Image } from 'react-native';
 import Modal from 'react-native-modal';
+import { COLOR } from '../../constant/color';
+import Icon from 'react-native-vector-icons/AntDesign';
 
 interface Suggestion {
   display_name: string;
@@ -21,16 +23,12 @@ const AddressModal: React.FC<AddressModalProps> = ({ isVisible, selectedAddress,
   const [textInputValue, setTextInputValue] = useState<string>('');
   const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
 
-  useEffect(() => {
-    if (!isVisible) {
-      setQuery('');
-    }
-  }, [isVisible]);
 
   useEffect(() => {
     if (isVisible && query.length > 2) {
       setIsSearch(true);
-      fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${query}&addressdetails=1&limit=5&countrycodes=vn`)
+      // fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${query}&addressdetails=1&limit=5&countrycodes=vn`)
+      fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${query}&addressdetails=1&limit=5&countrycodes=vn&state&county&city&country`)
         .then(response => response.json())
         .then(data => {
           console.log('địa chỉ nè:', data);
@@ -42,6 +40,14 @@ const AddressModal: React.FC<AddressModalProps> = ({ isVisible, selectedAddress,
       setSuggestions([]);
     }
   }, [isVisible, query]);
+
+  useEffect(() => {
+    if (isVisible) {
+      setQuery('');
+      setTextInputValue(selectedAddress || '');
+    }
+  }, [isVisible, selectedAddress]);
+
 
   const handleSelectAddressItem = (address: string) => {
     setChosenAddress(address);
@@ -56,19 +62,13 @@ const AddressModal: React.FC<AddressModalProps> = ({ isVisible, selectedAddress,
   };
 
   const handleSave = () => {
-    if (chosenAddress) {
-        onCloseModal();
-      //console.log('Đã lưu địa chỉ:', chosenAddress);
-    } else {
-    handleClearSelectedAddress();
+    onSelectAddress(textInputValue);
     onCloseModal();
-    }
   };
 
   const handleCloseModal = () => {
     onCloseModal();
   };
-
 
   return (
     <Modal isVisible={isVisible} >
@@ -98,7 +98,7 @@ const AddressModal: React.FC<AddressModalProps> = ({ isVisible, selectedAddress,
         />
         {textInputValue ? ( // Nếu có giá trị trong TextInput, hiển thị nút Xóa
           <TouchableOpacity style={styles.clearButton} onPress={handleClearSelectedAddress}>
-            <Text style={styles.clearButtonText}>Xóa</Text>
+            <Icon name="close" size={20} color="#000"/>
           </TouchableOpacity>
         ) : null}
         
@@ -139,12 +139,13 @@ const styles = StyleSheet.create({
     color: '#777',
   },
   input: {
-    height: 40,
+    height: 60,
     borderColor: '#ddd',
     borderWidth: 1,
     borderRadius: 6,
     paddingHorizontal: 10,
     marginBottom: 10,
+    fontSize:16,
   },
   addressItem: {
     padding: 10,
@@ -160,6 +161,7 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     textAlign: 'center',
     fontStyle: 'italic',
+    fontSize:16,
   },
   footer: {
     flexDirection: 'row',
@@ -168,7 +170,7 @@ const styles = StyleSheet.create({
   },
   button: {
     padding: 10,
-    backgroundColor: '#3498db',
+    backgroundColor: COLOR.PrimaryColor,
     borderRadius: 6,
     marginLeft: 10,
   },
@@ -178,12 +180,8 @@ const styles = StyleSheet.create({
   },
   clearButton: {
     position: 'absolute',
-    right: 15,
-    top: 12,
-  },
-  clearButtonText: {
-    color: 'red',
-    fontSize: 16,
+    right: 25,
+    top: 30,
   },
 });
 

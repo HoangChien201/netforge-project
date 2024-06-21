@@ -1,26 +1,27 @@
 import { Pressable, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import React from 'react'
 import { EmojiReaction } from '../../constant/emoji'
+import { reactionType } from './MessageItem'
 
-const ReactionsComponent = ({ reactions }: { reactions: Array<number> }) => {
+const ReactionsComponent = ({ reactions }: { reactions: Array<reactionType> }) => {
+  //lọc lấy reaction bằng number
+  const reactionFiller= [...new Set(reactions.map(rct=>rct.reaction))]
 
-  const reactionsFilter= [...new Set(reactions)]
-
-  function OnPress(){
+  function OnPress() {
     console.log('reactionsonpress');
-    
+
   }
   return (
     <Pressable style={styles.container} onPress={OnPress}>
       {
-        reactionsFilter.map((reaction, index) => {
+        reactionFiller.map((reaction, index) => {
           return (
-            <Text key={index}>{EmojiReaction[reaction]}</Text>
+              <Text key={index}>{EmojiReaction[reaction]}</Text>
           )
         })
       }
       {
-        reactions.length > 1 && 
+        reactions.length > 1 &&
         <Text style={styles.quantityReaction}>{reactions.length}</Text>
       }
 
@@ -32,14 +33,14 @@ export default ReactionsComponent
 
 const styles = StyleSheet.create({
   quantityReaction: {
-    color:'#fff',
-    fontWeight:'400',
-    marginStart:5
+    color: '#fff',
+    fontWeight: '400',
+    marginStart: 5
   },
   container: {
     minWidth: 40,
     height: 25,
-    backgroundColor: 'rgba(50,50,50,1)',
+    backgroundColor: 'rgba(100,100,100,1)',
     position: 'absolute',
     borderRadius: 15,
     bottom: -10,
@@ -47,6 +48,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: "space-evenly",
     alignItems: 'center',
-    paddingHorizontal:10
+    paddingHorizontal: 10
   }
 })

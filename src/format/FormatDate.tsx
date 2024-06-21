@@ -1,3 +1,5 @@
+import { format } from "date-fns"
+
 export function GetTimeComment(date){
     let time=(new Date()-new Date(date))/1000 //đổi từ milisecond sang second
     let timeUnit='s'
@@ -31,6 +33,11 @@ export function FormatDate(date_param:Date){
     return `${date}-${month}-${year}`
 }
 
+export function formattedDate(date_param:any) {
+    const formattedDate = format(new Date(date_param), 'dd/MM/yyyy');
+    return formattedDate;
+}
+
 export function FormatTime(date:Date){
     const setDate=new Date(date)
     const minute=setDate.getMinutes() > 9 ? setDate.getMinutes() : setDate.getMinutes()+'0'
@@ -38,3 +45,9 @@ export function FormatTime(date:Date){
 
     return `${hour}:${minute}`
 }
+
+export function formatTime (time: number){
+    const minutes = Math.floor(time / 60);
+    const seconds = time % 60;
+    return `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+  };

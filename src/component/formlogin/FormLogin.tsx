@@ -11,6 +11,8 @@ import Remember from './Remember'
 import { useMyContext } from '../navigation/UserContext'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { login } from '../../http/userHttp/user'
+import { NavigationProp, ParamListBase, useNavigation } from '@react-navigation/native'
+import { UserRootStackEnum } from '../stack/UserRootStackParams'
 
 
 interface user {
@@ -23,7 +25,9 @@ export type valid = {
   password: boolean,
 }
 
+
 const FormLogin = ({ setModal, setStatus, setIsLoading }: { setModal: (value: boolean) => void, setStatus: (value: boolean) => void, setIsLoading: (value: boolean) => void }) => {
+  const navigation:NavigationProp<ParamListBase> = useNavigation();
   const [valueF, setValueF] = useState<user>({ email: "tquyet2000@gmail.com", password: "12345" })
   const [valid, setValid] = useState<valid>({ email: true, password: true })
 
@@ -35,6 +39,10 @@ const FormLogin = ({ setModal, setStatus, setIsLoading }: { setModal: (value: bo
       [key]: values
     })
 
+  }
+
+  const handleForgotPassword = ()=>{
+    navigation.navigate(UserRootStackEnum.ForgotPassword);
   }
 
   const submit = async () => {
@@ -121,6 +129,8 @@ const FormLogin = ({ setModal, setStatus, setIsLoading }: { setModal: (value: bo
         }
       }
 
+      
+
   };
   return (
     <View>
@@ -129,7 +139,7 @@ const FormLogin = ({ setModal, setStatus, setIsLoading }: { setModal: (value: bo
       <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center",paddingHorizontal:12 }}>
         <Remember />
         <TouchableOpacity>
-          <Text>Quên mật khẩu?</Text>
+          <Text onPress={handleForgotPassword}>Quên mật khẩu?</Text>
         </TouchableOpacity>
 
       </View>

@@ -1,26 +1,83 @@
-import { View, Text, StyleSheet, Image } from 'react-native'
+import { View, Text, StyleSheet, Image, TouchableOpacity } from 'react-native'
 import React, { useEffect, useState } from 'react'
+import { useMyContext } from '../navigation/UserContext';
+import { NavigationProp, ParamListBase, useFocusEffect, useNavigation } from '@react-navigation/native';
+import { getUSerByID } from '../../http/PhuHTTP';
+import { ProfileRootStackEnum } from '../stack/ProfileRootStackParams';
+
+interface user {
+    email: string;
+    fullname: string;
+    dateOfBirth: any | null;
+    phone: null | number;
+    address:null | string;
+    avatar: string | null;
+    gender:string | null;
+  }
+
+const user={
+    avatar:'https://res.cloudinary.com/delivery-food/image/upload/v1717925230/btywul9nnqtzlzjaawrx.jpg',
+    fullname:'Khách Hàng Tuyệt Vời',
+    email:'test@gmail.com',
+    phone:'012334234535',
+    address:'105/45/14 đường số 59, phường 14, Gò Vấp'
+}
 
 const ProfileUser = () => {
-    const user={
-        avatar:'https://res.cloudinary.com/delivery-food/image/upload/v1717925230/btywul9nnqtzlzjaawrx.jpg',
-        fullname:'Khách Hàng Tuyệt Vời',
-        email:'test@gmail.com',
-        phone:'012334234535',
-        address:'105/45/14 đường số 59, phường 14, Gò Vấp'
+    const navigation:NavigationProp<ParamListBase> = useNavigation();
+    const {user} = useMyContext();
+    const userID = user.id;
+    const token = user.token;
+    const [userData, setUserData] = useState<any>(null);
+
+    useFocusEffect(
+        React.useCallback(() => {
+            const fetchUserData = async () => {
+            try {
+                const response = await getUSerByID(userID, token);
+                setUserData(response);
+                console.log("response nè: ",response);
+            } catch (error) {
+                console.log(error);
+            }
+            };
+            fetchUserData();
+        }, [user])
+        );
+
+    // const user={
+    //     avatar:'https://res.cloudinary.com/delivery-food/image/upload/v1717925230/btywul9nnqtzlzjaawrx.jpg',
+    //     fullname:'Khách Hàng Tuyệt Vời',
+    //     email:'test@gmail.com',
+    //     phone:'012334234535',
+    //     address:'105/45/14 đường số 59, phường 14, Gò Vấp'
+    // }
+    const handleToProfileScreen = () => {
+        navigation.navigate(ProfileRootStackEnum.ProfileScreen);
     }
+    
     return (
-        <View style={styles.profileUser}>
-            <Image source={{uri:user.avatar}} style={styles.avatar} />
-            <View style={{flex:1}}>
-                <Text style={styles.nameUser}>{user.fullname}</Text>
-                <Text style={styles.detail}>{user?.email}</Text>
-                <View style={styles.line}></View>
-                <Text style={styles.detail}>{user?.phone}</Text>
-                <View style={styles.line}></View>
-                <Text style={styles.detail} numberOfLines={2}>{user.address}</Text>
+        <TouchableOpacity onPress={handleToProfileScreen}>
+            <View style={styles.profileUser}>
+                <Image source={userData && userData.avatar ? { uri: userData.avatar  } : require('../../media/icon/avatar.png')} style={styles.avatar} />
+                <View style={{flex:1}}>
+                {userData && (
+                    <Text style={styles.nameUser}>{userData.fullname}</Text>
+                )}
+                {userData && (
+                    <Text style={styles.detail}>{userData.email}</Text>
+                )}
+                    <View style={styles.line}></View>
+                {userData && (
+                    <Text style={styles.detail}>{userData.phone}</Text>
+                )}
+                    <View style={styles.line}></View>
+                {userData && (
+                    <Text style={styles.detail} numberOfLines={2}>{userData.address}</Text>
+                )}
+                </View>
             </View>
-        </View>
+        </TouchableOpacity>
     )
 }
 

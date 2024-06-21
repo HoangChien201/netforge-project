@@ -1,6 +1,7 @@
 import React from 'react';
 import { View, Text, StyleSheet, Image } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
+import Icon from 'react-native-vector-icons/Ionicons';
 
 interface GenderPickerProps {
   value: any;
@@ -15,13 +16,15 @@ const GenderPicker: React.FC<GenderPickerProps> = ({ value, onValueChange, inval
       <View style={styles.pickerContainer}>
         <Picker
             selectedValue={value}
-            onValueChange={onValueChange}>
-            <Picker.Item label="Giới tính" value="--"  />
-            <Picker.Item label="Nam" value="Nam"  />
-            <Picker.Item label="Nữ" value="Nữ"  />
-            <Picker.Item label="Khác" value="Khác"  />
+            onValueChange={onValueChange}
+            
+          dropdownIconColor={invalid ? 'red' : '#000'}>
+            <Picker.Item label="Giới tính" value="--"  style={styles.text}/>
+            <Picker.Item label="Nam" value="Nam"  style={styles.text}/>
+            <Picker.Item label="Nữ" value="Nữ"  style={styles.text}/>
+            <Picker.Item label="Khác" value="Khác"  style={styles.text}/>
         </Picker>
-        <Image style={styles.icon} source={require('../../media/icon/birthday-icon.png')} />
+        <Icon name="male-female-outline" size={22} color="#000" style={styles.icon} />
       </View>
       {invalid && <Text style={styles.errorText}>Giới tính không hợp lệ</Text>}
     </View>
@@ -30,7 +33,7 @@ const GenderPicker: React.FC<GenderPickerProps> = ({ value, onValueChange, inval
 
 const styles = StyleSheet.create({
   container: {
-    marginBottom: 20,
+    margin:9,
   },
   label: {
     fontSize: 16,
@@ -38,14 +41,12 @@ const styles = StyleSheet.create({
     color: '#333',
   },
   pickerContainer: {
-    borderRadius: 6,
-    borderWidth: 1,
+    justifyContent:'center',
+    borderBottomWidth: 1,
     borderColor: '#DDDDDD',
     height: 60,
-    paddingLeft: 35,
-    backgroundColor:'#F5F5F5',
-    margin:9,
-    justifyContent:'center'
+    paddingLeft: 30,
+    overflow: 'hidden',
   },
   icon: {
     position: 'absolute',
@@ -59,6 +60,11 @@ const styles = StyleSheet.create({
     fontSize: 12,
     color: 'red',
   },
+  text: {
+    fontSize:16,
+    color:'#000',
+    fontWeight:'500',
+  }
 });
 
 export default GenderPicker;

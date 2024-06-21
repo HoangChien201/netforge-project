@@ -1,5 +1,5 @@
-import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import React, { useState, useRef } from 'react';
+import { Image, Pressable, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import React, { useState, useRef, memo, useCallback, useMemo, useLayoutEffect } from 'react';
 import { useNavigation } from '@react-navigation/native';
 import AntDesignIcon from 'react-native-vector-icons/AntDesign';
 import { reaction } from '../../constant/emoji';
@@ -7,18 +7,19 @@ import * as Animatable from 'react-native-animatable';
 import { deleteLikePost, likePost, updateLikePost } from '../../http/userHttp/getpost';
 import { useMyContext } from '../navigation/UserContext';
 
-const ActionBar = ({   setIsLike , isLike,type, postId, comment_count, share_count,index1,active,setActive }: {setActive:(value:number)=>void,index1:number,active:number|null,setIsLike:(value:boolean)=>void ,isLike:boolean,type: number, postId: number, comment_count: number, share_count: number }) => {
+const ActionBar = memo(({ like_count,type, postId, comment_count, share_count,checkLike,setCheckLike }: {setCheckLike:(Value:boolean)=>void,checkLike:boolean,type: number, postId: number, comment_count: number, share_count: number,like_count:number }) => {
+    const [islike, setIsLike] = useState(false);
     const navigation = useNavigation();
     const {user}= useMyContext()
-    const [nameReaction, setNameReaction] = useState(null);
     const [numberLike, setNumberLike] = useState<number>(1000);
     const [number, setNumber] = useState<number | null>(type);
     const animationRef = useRef(null);
-    
-    
     function navigationScreen(screen: string) {
         navigation.navigate(`${screen}`)
       }
+    useLayoutEffect(()=>{
+        setNumber(type)
+    },[type])
 
     const deleteLike = async (idPost: number) => {
         try {
@@ -43,39 +44,56 @@ const ActionBar = ({   setIsLike , isLike,type, postId, comment_count, share_cou
             console.log("lỗi like post", error);
             throw error;
         }
+    }; 
+    const updatePost = async (idPost: number, type: number) => {
+        try {
+            const result:any = await updateLikePost(idPost,user.id, type);
+            if (result) {
+                console.log("ahihi", idPost);
+            }
+        } catch (error) {
+            console.log("lỗi like post", error);
+            throw error;
+        }
     };
 
     function format(like: number) {
         if (like >= 1000) {
             return (like / 1000).toFixed(1) + 'K';
         } else {
-            return like.toString();
+            return like;
         }
     }
 
     const OnPressIcon = () => {
-        if (isLike) {
+        if (islike && checkLike) {
             animationRef.current?.fadeOutDown(500).then(() => {
                 setIsLike(false);
+                setCheckLike(false)
+                
                 
             });
         } else {
-            setActive(index1)
-            setIsLike(true);
+                setIsLike(true);
+                setCheckLike(true)
+  
         }
     };
 
-    const ViewReaction = (type: number,postId:number,user_id:any) => {
+
+    const ViewReaction = (type: number,postId:number) => {
         const reactionMap = reaction.find(item => item.type === type);
         if (reactionMap) {
             return (
                 <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', marginRight: 10 }}>
                     <TouchableOpacity onLongPress={OnPressIcon} onPress={() => {
-                          deleteLike(postId,user_id)
+                          deleteLike(postId)
                           setNumber(null)
+                          setIsLike(false)
+                          setCheckLike(false)
                     }
                       }>
-                        <Image source={reactionMap.Emoji} style={{ width: 24, height: 24 }} />
+                        <Image source={reactionMap.Emoji} style={{ width: 23, height: 23 }} />
                     </TouchableOpacity>
                 </View>
             );
@@ -89,52 +107,57 @@ const ActionBar = ({   setIsLike , isLike,type, postId, comment_count, share_cou
                 <View style={{ flexDirection: 'row', alignItems: 'center', width: 50, marginRight: 5 }}>
                     {number === null ?
                         <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', marginRight: 10 }}>
-                            <TouchableOpacity onLongPress={OnPressIcon} onPress={() => {
-                                
+                            <Pressable onLongPress={OnPressIcon} onPress={() => {
                                 setNumber(1);
                                 likepost(postId, 1);
+                                setIsLike(false)
                             }}>
-                                <AntDesignIcon name='like2' size={24} color='#000' />
-                            </TouchableOpacity>
+                                <AntDesignIcon name='like2' size={22} color='#000' />
+                            </Pressable>
                         </View> :
                         <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}>
-                            {ViewReaction(number,postId,user.id)}
+                            {ViewReaction(number,postId)}
                         </View>
                     }
-                    <Text style={styles.text}>{format(numberLike)}</Text>
+                    <Text style={styles.text}>{format(like_count)}</Text>
                 </View>
                 <TouchableOpacity onPress={()=> navigation.navigate('CommentsScreen',{postId})} style={{ flexDirection: 'row', alignItems: 'center', marginHorizontal: 20 }}>
                     <AntDesignIcon name='message1' size={24} color='#000' style={styles.comment} />
                     <Text style={styles.text}>{comment_count ? comment_count : 0}</Text>
                 </TouchableOpacity>
                 <View style={{ flexDirection: 'row', alignItems: 'center', marginHorizontal: 5 }}>
-                    <AntDesignIcon name='sharealt' size={24} color='#000' style={styles.comment} />
+                    <AntDesignIcon name='sharealt' size={22} color='#000' style={styles.comment} />
                     <Text style={styles.text}>{share_count ? share_count : 0}</Text>
                 </View>
             </View>
-            {isLike && index1===active &&
+            {(islike && checkLike)  &&
+           
                 <Animatable.View
                     ref={animationRef}
                     animation="fadeInUp"
                     duration={100}
                     style={{ flexDirection: "row", position: 'absolute', bottom: 40, width: "74%", backgroundColor: '#fff', padding: 7, borderRadius: 20 }}
                 >
-                    {reaction.map((item, index) => (
-                        <TouchableOpacity key={index} style={{ paddingHorizontal: 8 }} onPress={() => {
-                            setNumber(item.type);
-                            setNameReaction(item.Emoji);
-                            setIsLike(false);
-                            item.Emoji === null ? likepost(postId, item.type):updateLikePost(postId,user.id,item.type)
-                        }}>
-                            <Image source={item.Emoji} style={{ width: 25, height: 25, marginVertical: 6 }} />
-
-                        </TouchableOpacity>
-                    ))}
+                    {reaction.map((item, index) => {
+                    
+                        return (
+                            <TouchableOpacity key={index} style={{ paddingHorizontal: 8 }} onPress={() => {
+                                setNumber(item.type);
+                                setIsLike(false)
+                               number === null ? likepost(postId, item.type):updatePost(postId,item.type)
+                            }}>
+                                <Image source={item.Emoji} style={{ width: 23, height: 23, marginVertical: 6 }} />
+    
+                            </TouchableOpacity>
+                        )
+                        
+                    })}
                 </Animatable.View>
+               
             }
         </View>
     );
-};
+});
 
 export default ActionBar;
 
