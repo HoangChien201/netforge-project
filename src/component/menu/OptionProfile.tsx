@@ -3,6 +3,7 @@ import React from 'react'
 import { navigationType } from '../../navigation/ManageNavigation'
 import { useNavigation } from '@react-navigation/native'
 import { useMyContext } from '../navigation/UserContext'
+import AsyncStorage from '@react-native-async-storage/async-storage'
 
 const OptionProfile = () => {
     const navigation=useNavigation()
@@ -37,8 +38,9 @@ const OptionProfile = () => {
         navigation.navigate(`${screen}`)
     }
     
-    function LogoutHandle(){
+    async function LogoutHandle(){
         setUser(null)
+        await AsyncStorage.removeItem('userToken');
     }
     return (
         <View style={styles.container}>
