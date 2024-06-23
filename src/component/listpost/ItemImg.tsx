@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
-import { FlatList, View, Image, StyleSheet, Text, TouchableOpacity } from 'react-native';
+import { FlatList, View, Image, StyleSheet, Text, TouchableOpacity, Pressable } from 'react-native';
 import Video from 'react-native-video';
+import ListImageDetail from './ListImageDetail';
 
 interface Medias {
   url: string,
@@ -14,12 +15,21 @@ const images: Medias[] = [
 
 
 const ItemImg = ({ image }: { image: Medias[] }) => {
+  const [visible,setVisible] = useState(false);
+  const [indeximg,setIndeximg] = useState(null);
   const [img, setImg] = useState<Medias[]>([...image]);
+console.log("image",image);
+
+
+  const onPressImg = (index)=>{
+    setIndeximg(index)
+    setVisible(true)
+  }
   return (
     <View style={{ flexDirection: "row", height: 225, justifyContent: 'center', padding: 8 }}>
       {
         img.length === 1 ? (
-          <View style={{ flex: 1, height: '100%' }}>
+          <TouchableOpacity onPress={()=>onPressImg(0)} style={{ flex: 1, height: '100%' }}>
             {
               img[0]?.url.endsWith('.mp4') ? // Kiểm tra nếu phần tử đầu tiên là video
                 <Video
@@ -29,14 +39,14 @@ const ItemImg = ({ image }: { image: Medias[] }) => {
                   controls={true}
                 />
                 :
-                <Image source={{ uri: img[0]?.url }} style={{ flex: 1 }} />
+               <Image source={{ uri: img[0]?.url }} style={{ flex: 1 }} />
             }
-          </View>
+          </TouchableOpacity>
         ) : (
           <>
             {
               (img.length === 3 || img.length === 2) ? (
-                <View style={{ flex: 1, height: 203, backgroundColor: 'red', margin: 4 }}>
+                <TouchableOpacity onPress={()=>onPressImg(0)} style={{ flex: 1, height: 203, backgroundColor: 'red', margin: 4 }}>
                   {
                     img[0]?.url.endsWith('.mp4') ? // Kiểm tra nếu phần tử đầu tiên là video
                       <Video
@@ -48,9 +58,9 @@ const ItemImg = ({ image }: { image: Medias[] }) => {
                       :
                       <Image source={{ uri: img[0]?.url }} style={{ flex: 1 }} />
                   }
-                </View>
+                </TouchableOpacity>
               ) : (
-                <View style={{ flex: 1, height: 210 }}>
+                <TouchableOpacity onPress={()=>onPressImg(0)} style={{ flex: 1, height: 210 }}>
                   {
                     img[0]?.url.endsWith('.mp4') ? // Kiểm tra nếu phần tử đầu tiên là video
                       <Video
@@ -62,17 +72,17 @@ const ItemImg = ({ image }: { image: Medias[] }) => {
                       :
                       <Image source={{ uri: img[0]?.url }} style={{ flex: 1 }} />
                   }
-                </View>
+                </TouchableOpacity>
               )
             }
             {
               img.length < 4 && (
                 <View style={{ flex: 1, height: 210 }}>
-                  <View style={{ flex: 1, height: 210, margin: 4 }}>
+                  <TouchableOpacity onPress={()=>onPressImg(1)} style={{ flex: 1, height: 210, margin: 4 }}>
                     {
-                      img[1]?.url.endsWith('.mp4') ? // Kiểm tra nếu phần tử đầu tiên là video
+                      img[1]?.url.endsWith('.mp4') ? 
                         <Video
-                          source={{ uri: img[1]?.url }} // Sử dụng uri của video
+                          source={{ uri: img[1]?.url }} 
                           style={{ flex: 1 }}
                           resizeMode="cover"
                           controls={true}
@@ -80,14 +90,14 @@ const ItemImg = ({ image }: { image: Medias[] }) => {
                         :
                         <Image source={{ uri: img[1]?.url }} style={{ flex: 1 }} />
                     }
-                  </View>
+                  </TouchableOpacity>
                   {
                     img[2] ? (
-                      <View style={{ flex: 1, height: 210, margin: 4 }}>
+                      <TouchableOpacity onPress={()=>onPressImg(2)} style={{ flex: 1, height: 210, margin: 4 }}>
                         {
-                          img[2]?.url.endsWith('.mp4') ? // Kiểm tra nếu phần tử đầu tiên là video
+                          img[2]?.url.endsWith('.mp4') ?
                             <Video
-                              source={{ uri: img[2]?.url }} // Sử dụng uri của video
+                              source={{ uri: img[2]?.url }} 
                               style={{ flex: 1 }}
                               resizeMode="cover"
                               controls={true}
@@ -95,7 +105,7 @@ const ItemImg = ({ image }: { image: Medias[] }) => {
                             :
                             <Image source={{ uri: img[2]?.url }} style={{ flex: 1 }} />
                         }
-                      </View>
+                      </TouchableOpacity>
                     ) : null
                   }
                 </View>
@@ -107,7 +117,7 @@ const ItemImg = ({ image }: { image: Medias[] }) => {
                   <FlatList
                     data={img.slice(1)}
                     renderItem={({ item, index }) => (
-                      <View style={{ width: 119, height: 70 }}>
+                      <TouchableOpacity onPress={()=>onPressImg(index+1)} style={{ width: 119, height: 70 }}>
                         {
                           item.url.endsWith('.mp4') ? // Kiểm tra nếu là video
                             <Video
@@ -119,7 +129,7 @@ const ItemImg = ({ image }: { image: Medias[] }) => {
                             :
                             <Image source={{ uri: item.url }} style={{ width: '100%', height: '100%', margin: 1 }} />
                         }
-                      </View>
+                      </TouchableOpacity>
                     )}
                     keyExtractor={(item, index) => index.toString()}
                   />
@@ -130,7 +140,7 @@ const ItemImg = ({ image }: { image: Medias[] }) => {
             {
               img.length > 4 && (
                 <View>
-                  <TouchableOpacity style={styles.overlay}>
+                  <TouchableOpacity onPress={()=>onPressImg(3)} style={styles.overlay}>
                     <Text style={styles.overlayText}>+{img.length - 4}</Text>
                   </TouchableOpacity>
                 </View>
@@ -139,6 +149,7 @@ const ItemImg = ({ image }: { image: Medias[] }) => {
           </>
         )
       }
+      <ListImageDetail indexImg={indeximg} onClose={setVisible} listImg={img} visible={visible}/>
     </View>
   );
 };
