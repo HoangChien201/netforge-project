@@ -61,7 +61,6 @@ export const addComments = async (posts: number, content: string, image: string,
       }
 
     );
-    console.log("tokenne", token);
     return result
 
 
@@ -135,7 +134,7 @@ export const getPostById = async(id: number) => {
     throw error;
   }
 }
-// like comments
+// like commentsne
 export const addLikeComments = async (comment: number, reaction: number) => {
   try {
     const token = await AsyncStorage.getItem('token')

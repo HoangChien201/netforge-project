@@ -13,6 +13,8 @@ import { useRoute } from '@react-navigation/native';
 import ItemPost from '../component/listpost/ItemPost';
 const CommentsScreen = () => {
     const navigation = useNavigation<navigationType>()
+    const [parent, setParent] = useState(null)
+    const [text, setText] = useState(null)
     const [post, setPosts] = useState(null);
     const [replyTo, setReplyTo] = useState(null);
     const [comment, setComments] = useState([]);
@@ -21,7 +23,9 @@ const CommentsScreen = () => {
     const scrollViewRef = useRef();
     const route = useRoute();
     const { postId } = route.params;
-    console.log('postId', postId);
+     console.log('postId', postId);
+    console.log(text);
+
     // lấy bài viết chi tiết
     const fetchPosts = async () => {
         try {
@@ -35,7 +39,6 @@ const CommentsScreen = () => {
             console.log(error);
         }
     };
-
     // hàm lấy danh sách comments
     const fetchComments = async () => {
         try {
@@ -50,14 +53,18 @@ const CommentsScreen = () => {
     // Hàm xử lý khi người dùng chọn trả lời một bình luận
     const handleReply = (parent) => {
         setReplyTo(parent); // Thiết lập bình luận cha để trả lời
-        console.log(parent);
+        console.log("parent:", parent);
     };
     // // hàm render comments
     useEffect(() => {
-
         fetchPosts();
+
     }, []);
 
+    //tat bottomtab
+    useEffect(() => {
+        navigation.getParent()?.setOptions({ tabBarStyle: { display: 'none' } });
+    }, []);
     const handleMediaSelected = (media) => {
         setImagePath(media);
     };
@@ -71,13 +78,13 @@ const CommentsScreen = () => {
     return (
         <View style={styles.container}>
 
-            <View style={{ height: "100%", backgroundColor: 'white' }}>
+            <View style={{ height: "95%", backgroundColor: 'white' }}>
 
                 <ScrollView ref={scrollViewRef} showsVerticalScrollIndicator={false} >
                     {
                         post && (
-                            <View>
-                                <TouchableOpacity onPress={() => navigation.goBack()} style={{ flex: 1}}>
+                            <View style={{ margin: 0 }}>
+                                <TouchableOpacity onPress={() => navigation.goBack()} style={{ zIndex: 2, top: 58, right: 5 }}>
                                     <Image source={require('../media/icon_tuong/back.png')} style={styles.IconBack} />
                                 </TouchableOpacity>
                                 <ItemPost key={post.id} data={post} />
@@ -94,7 +101,7 @@ const CommentsScreen = () => {
                         </View>
                     ) : (
                         comment.map(comment => (
-                            <CommentItem key={comment.id} comment={comment} onReply={handleReply} render={fetchComments} />
+                            <CommentItem key={comment.id} comment={comment} onReply={handleReply} render={fetchComments} parent={replyTo} setText={setText} />
                         ))
                     )
                     }
@@ -102,15 +109,13 @@ const CommentsScreen = () => {
             </View>
 
             <InputCmt
-                fetchComments={fetchComments}
+                setText={setText}
+                text={text}
                 parent={replyTo} // Truyền ID bình luận cha khi trả lời
+                fetchComments={fetchComments}
                 onMediaSelected={handleMediaSelected} // Xử lý khi người dùng chọn hình ảnh hoặc video
                 postId={postId}
-                onCommentAdded={() => {
-                    fetchComments(); // Gọi lại danh sách bình luận sau khi thêm bình luận
-                    setReplyTo(null) // Đặt lại trạng thái trả lời
-                    setImagePath(null); // Xóa đường dẫn hình ảnh sau khi thêm bình luận
-                }}
+                setParent={setReplyTo}
             />
 
 
@@ -133,7 +138,7 @@ const styles = StyleSheet.create({
     ViewNoComment: {
         justifyContent: 'center',
         alignItems: 'center',
-        height: 500
+        height: 400
     },
     itemRecentContai: {
         backgroundColor: '#f2f2f2'
@@ -207,9 +212,10 @@ const styles = StyleSheet.create({
         borderRadius: 100
     },
     IconBack: {
-        
+
         width: 28,
-        height: 28
+        height: 28,
+        marginRight: 10
     },
     ViewUser: {
         flexDirection: 'row',

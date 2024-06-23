@@ -5,14 +5,25 @@ import { addComments, uploadImage } from '../../http/TuongHttp'
 import { launchCamera, launchImageLibrary } from 'react-native-image-picker'
 import Video from 'react-native-video'
 import { useMyContext } from '../navigation/UserContext'
+import { isNull } from 'lodash'
 
 
-const InputCmt = ({ fetchComments, onMediaSelected, parent = null ,postId}) => {
+const InputCmt = ({ fetchComments, onMediaSelected, parent = null , postId, text,setParent, setText }) => {
     const { user } = useMyContext();
     const [comments, setComments] = useState('')
     const [media, setMedia] = useState(null);
     const [imagePath, setImagePath] = useState(null);
     const [mediaType, setMediaType] = useState(null);
+    useEffect(() => {
+        if (text) {
+            setComments(text)
+        }
+    }, [text])
+    const handleCancel =()=>{
+        setParent(null)
+        setText(null)
+        setComments('')
+    }
     //hàm xóa image nếu không muốn gửi ảnh nữa
     const handleDleteMedia = () => {
         setMedia(null)
@@ -20,7 +31,6 @@ const InputCmt = ({ fetchComments, onMediaSelected, parent = null ,postId}) => {
         setMediaType(null);
 
     }
-
     // choose photo or video
     const openPhoto = useCallback(async () => {
         const options = {
@@ -76,15 +86,10 @@ const InputCmt = ({ fetchComments, onMediaSelected, parent = null ,postId}) => {
     }, [onMediaSelected]);
 
     const handleAddComment = async () => {
-        // Wait for imagePath to be updatedR
-        // while (imagePath === null) {
-        //     await new Promise(resolve => setTimeout(resolve, 10)); // wait for 100ms
-        // }
         try {
             if (media === null && comments === '' && imagePath === null) {
                 console.log("Vui lòng comment");
                 return
-
             }
             const data = {
                 posts: postId, // lấy id từ id của bài viết
@@ -92,23 +97,22 @@ const InputCmt = ({ fetchComments, onMediaSelected, parent = null ,postId}) => {
                 image: imagePath,
                 parent: parent
             }
-            console.log(data); 
+            console.log(data);
+
             const reponse = await addComments(data.posts, data.content, data.image, data.parent)
             console.log(reponse);
             // nếu thêm thành công thì set các biến về trạng thái bang đầu 
+            setText(null)
+            setParent(null)
             fetchComments();
             setComments('');
             setMedia(null)
             setImagePath(null)
             setMediaType(null)
-            console.log("thành công" + data.image);
-        console.log(comments);
+            console.log("Thêm bình luận thành công !");
         } catch (error) {
             console.log(error);
-            
         }
-        
-        
     }
     return (
         <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={{
@@ -125,7 +129,7 @@ const InputCmt = ({ fetchComments, onMediaSelected, parent = null ,postId}) => {
                     {mediaType === 'image' ? (
                         <Image source={{ uri: imagePath }} style={styles.media} />
                     ) : (
-                        <View style={{ overflow: 'hidden', borderRadius: 10 }}>
+                        <View style={[{ overflow: 'hidden', borderRadius: 10 }, styles.media]}>
                             <Video
                                 source={{ uri: imagePath }}
                                 style={styles.media}
@@ -140,7 +144,22 @@ const InputCmt = ({ fetchComments, onMediaSelected, parent = null ,postId}) => {
 
 
             <View >
+                {
+                    text && (
+                        <View style={{  backgroundColor: '#F4F4F4', paddingTop: 2 }}>
+                            <View style = {{flexDirection: 'row', left: 68}}>
+                            <Text style = {{fontWeight: '700'}}>Trả lời</Text>
+                            <Text style = {{fontWeight: '800', color: 'black'}}> {text}</Text>
+                            <Text style={{marginLeft: 5, marginRight: 5}}>᛫</Text>
+                            <TouchableOpacity onPress={handleCancel}>
+                            <Text style = {{fontWeight: '700'}}>Hủy</Text>
+                            </TouchableOpacity>
+                            </View>
+                        </View>
+                    )
+                }
                 <View style={styles.ViewSendCmt}>
+
                     <TouchableOpacity onPress={openPhoto}>
                         <Image style={styles.ImageCmt} source={require('../../media/icon_tuong/cameracolor.png')} />
                     </TouchableOpacity>
@@ -149,9 +168,7 @@ const InputCmt = ({ fetchComments, onMediaSelected, parent = null ,postId}) => {
                         <TextInput placeholder='Nhập bình luận của bạn....' style={styles.inputSend}
                             value={comments}
                             onChangeText={text => { setComments(text) }}>
-
                         </TextInput>
-
                     </View>
 
                     <TouchableOpacity style={styles.btnSend} onPress={handleAddComment}>

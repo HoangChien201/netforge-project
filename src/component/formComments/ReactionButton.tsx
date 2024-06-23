@@ -1,61 +1,80 @@
-import { StyleSheet, Text, View, Modal, TouchableOpacity } from 'react-native'
-import React, {useState} from 'react'
-import { EmojiData } from '../../constant/emoji'
+import { StyleSheet, Text, View, Modal, TouchableOpacity, Image } from 'react-native'
+import React, { useState } from 'react'
+import { addLikeComments } from '../../http/TuongHttp';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
-const ReactionButton = ({isVisible, onClose }) => {
-    const [selectedReaction, setSelectedReaction] = useState(null);
-    const handleReaction = (reaction) => {
-        switch (reaction) {
-            case 1:
-                return console.log('like');
-            case 2:
-                return console.log('dislike');
-            case 3:
-                return console.log('wow');
-            case 4:
-                return console.log('haha');
-            case 5:
-                return console.log('Phẫn mộ');
-            default:
-                return console.log('Phẫn mộ');
+const ReactionButton = ({ isVisible, onClose, onSelectReaction, comment }) => {
+    const reactions = [
+        { id: 1, name: 'like', source: require('../../media/Dicons/thumb-up.png')},
+        { id: 2, name: 'love', source: require('../../media/Dicons/happy-face.png')},
+        { id: 3, name: 'haha', source: require('../../media/Dicons/smile.png') },
+        { id: 4, name: 'wow', source: require('../../media/Dicons/heartF.png')},
+        { id: 5, name: 'sad', source: require('../../media/Dicons/wow.png')},
+        { id: 6, name: 'angry', source: require('../../media/Dicons/angry.png')},
 
-        }
-    }
-    return (
-        
+    ];
+    
+    const handleReactionSelect = async (reaction) => { 
+       const data = {
+        comment: comment.id,
+        reaction: reaction.id
+       }
+        const reponse = await addLikeComments(data.comment, data.reaction);
+        console.log(reponse);
+        console.log('idcomment',comment.id);
+        console.log('Selected Reaction ID:', reaction.id);
        
-                <Modal
-                transparent={true}
-                visible={isVisible}
-                animationType="fade"
-                onRequestClose={onClose}
-            >
-                <TouchableOpacity style={styles.modalBackground}>
-                    <View style={styles.reactionContainer}>
-                        <TouchableOpacity onPress={() => handleReaction(1)} >
-                            <Text>Like</Text>
+        onSelectReaction(reaction);
+        onClose();
+    };
+    return (
+
+        <Modal
+            transparent={true}
+            visible={isVisible}
+            onRequestClose={onClose}
+            animationType="fade"
+        >
+            <TouchableOpacity style={styles.modalOverlay} onPress={onClose}>
+                <View style={styles.reactionPopupContainer}>
+                    {reactions.map(reaction => (
+                        <TouchableOpacity key={reaction.id} onPress={() => handleReactionSelect(reaction)}>
+                            <Image source={reaction.source} style={styles.reactionIcon} />
                         </TouchableOpacity>
-                        <TouchableOpacity onPress={() => handleReaction(2)}>
-                        <Text>Like</Text>
-                        </TouchableOpacity>
-                        <TouchableOpacity onPress={() => handleReaction(3)}>
-                        <Text>Like</Text>
-                        </TouchableOpacity>
-                        <TouchableOpacity onPress={() => handleReaction(4)}>
-                        <Text>Like</Text>
-                        </TouchableOpacity>
-                        <TouchableOpacity onPress={() => handleReaction(5)}>
-                        <Text>Like</Text>
-                        </TouchableOpacity>
-                       
-                    </View>
-                </TouchableOpacity>
-            </Modal>
-            
-        
+                    ))}
+                </View>
+            </TouchableOpacity>
+        </Modal>
+
     )
 }
 
 export default ReactionButton
 
-const styles = StyleSheet.create({})
+const styles = StyleSheet.create({
+    modalOverlay: {
+       
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    reactionPopupContainer: {
+      
+        height: 50,
+        position: 'absolute',
+        flexDirection: 'row',
+        backgroundColor: 'white',
+        padding: 10,
+        borderRadius: 20,
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.8,
+        shadowRadius: 2,
+        elevation: 5,
+    },
+    reactionIcon: {
+        width: 25,
+        height: 25,
+        marginHorizontal: 5,
+    },
+})
