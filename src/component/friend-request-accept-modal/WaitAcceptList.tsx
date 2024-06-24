@@ -5,9 +5,12 @@ import Icon from 'react-native-vector-icons/AntDesign'
 import { COLOR } from '../../constant/color'
 import { cancelWaitAccept, acceptRequest } from '../../http/QuyetHTTP'
 import EmptyWA from './EmptyWA'
-
-const WaitAcceptList = ({ dataWaitAccept, setDataWaitAccept, setReload }) => {
-    const cancelReq = async (friendId) => {
+type Wait ={
+    dataWaitAccept:any, 
+    setDataWaitAccept:()=>void,
+}
+const WaitAcceptList:React.FC<Wait> = ({ dataWaitAccept, setDataWaitAccept}) => {
+    const cancelReq = async (friendId:number) => {
         try {
             await cancelWaitAccept(friendId);
             setDataWaitAccept(prevData => prevData.filter(friend => friend.user.id !== friendId));
@@ -16,7 +19,7 @@ const WaitAcceptList = ({ dataWaitAccept, setDataWaitAccept, setReload }) => {
 
         }
     };
-    const acceptReq = async (friendId) => {
+    const acceptReq = async (friendId:number) => {
         try {
             await acceptRequest(friendId);
             setDataWaitAccept(prevData => prevData.filter(friend => friend.user.id  !== friendId));

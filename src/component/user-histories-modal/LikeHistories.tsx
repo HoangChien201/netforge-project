@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Image, StyleSheet, Text, View } from 'react-native';
 import { useMyContext } from '../navigation/UserContext';
 import { GetTimeComment } from '../../format/FormatDate';
+import Loading from '../Modal/Loading'
 type Like = {
     data: {
         likePosts?: any[],
@@ -14,6 +15,7 @@ const LikeHistories: React.FC<Like> = ({ data }) => {
     const [sortedData, setSortedData] = useState<any[]>([]);
     const [dataLikeP, setDataLikeP] = useState<any[]>([]);
     const [dataLikeC, setDataLikeC] = useState<any[]>([]);
+    const [loading, setLoading] = useState(true);
     useEffect(() => {
         if (data) {
             const likePosts = data.likePosts || [];
@@ -23,14 +25,16 @@ const LikeHistories: React.FC<Like> = ({ data }) => {
             setSortedData(sorted);
         }
         renderItem;
-        console.log('data ben like: ' + data);
+        //console.log('data ben like: ' + data);
         // console.log('like: ' + dataLikeC);
         // console.log('LikeP: ' + dataLikeP);
-    }, []);
-    useEffect(()=>{
+    }, [data]);
+    useEffect(() => {
         renderItem
-    },[data,sortedData ])
+    }, [data, sortedData])
+    useEffect(() => {
 
+    })
     const getReactionDetails = (reaction: any) => {
         switch (reaction) {
             case 1:
@@ -48,7 +52,7 @@ const LikeHistories: React.FC<Like> = ({ data }) => {
         }
     };
 
-    const renderItem = (item: { reaction: any; posts: { creater: { fullname: string | any; }; }; fullname: string | any; } , index: { toString: () => React.Key | null | undefined; }) => {
+    const renderItem = (item: { reaction: any; posts: { creater: { fullname: string | any; }; }; fullname: string | any; }, index: { toString: () => React.Key | null | undefined; }) => {
         const { text, iconName, iconColor, linkImage } = getReactionDetails(item.reaction);
         return (
             <View style={styles.itemContainer} key={index.toString()}>
@@ -84,12 +88,13 @@ const LikeHistories: React.FC<Like> = ({ data }) => {
 
     return (
         <View style={styles.container}>
-            {sortedData.length>0? (
-                sortedData.map(renderItem)
-            ) : (
+            {!sortedData ? (
                 <View>
                     <Text style={styles.textEmpty}>Bạn chưa có hoạt động nào</Text>
                 </View>
+            ) : (
+
+                sortedData.map(renderItem)
             )}
         </View>
     );
