@@ -1,15 +1,13 @@
-import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import React, { useState } from 'react';
+import { Image, Pressable, StyleSheet, Text, TouchableOpacity, TouchableWithoutFeedback, View } from 'react-native';
+import React, { memo, useState } from 'react';
 import ActionBar from './ActionBar';
 import { DateOfTimePost } from '../../format/DateOfTimePost';
 import ItemImg from './ItemImg';
 
-const ItemPost = ({ index, data, setIsLike, islike, setActive, active }) => {
-    const { creater, share_count, reaction, content, media, comment_count, create_at, id } = data;
+const ItemPost =  memo(({ index, data,onrefresh }) => {
+    const [checkLike,setCheckLike] = useState<boolean>(false)
+    const { creater, share_count, reaction, content, media, comment_count, create_at, id,like_count } = data;
 
-   
-
-   
    const fommatContent = ()=>{
     const fomat = content.split(/@\[([^\]]+)\]\(\d+\)/g)
     return (
@@ -29,19 +27,12 @@ const ItemPost = ({ index, data, setIsLike, islike, setActive, active }) => {
       );
    }
     const handleItemPress = () => {
-        setIsLike(false);
-        if (active === index) {
-            setActive(null)
-
-
-        } else {
-            setActive(index)
-        }
-
+        setCheckLike(false);
     };
 
     return (
-        <TouchableOpacity onPress={handleItemPress} activeOpacity={1} style={{ marginBottom: 6, backgroundColor: "#fff" }}>
+        <>
+        <Pressable onPress={handleItemPress}   style={{ marginBottom: 6, backgroundColor: "#fff" }}>
             <View style={styles.home}>
                 <View style={styles.containerAvt}>
                     {/* <Image source={require('../../media/icon/phuking.jpg')} style={styles.avt} /> */}
@@ -66,10 +57,13 @@ const ItemPost = ({ index, data, setIsLike, islike, setActive, active }) => {
             </View>
             {fommatContent()}
             {media.length > 0 ? <ItemImg image={media} /> : null}
-            <ActionBar setActive={setActive} active={active} index1={index} isLike={islike} postId={id} type={reaction} comment_count={comment_count} share_count={share_count} setIsLike={setIsLike} />
-        </TouchableOpacity>
+            <ActionBar checkLike={checkLike} setCheckLike={setCheckLike}  postId={id} type={reaction} comment_count={comment_count} share_count={share_count} like_count={like_count}  />
+            
+        </Pressable>
+      
+        </>
     );
-};
+});
 
 export default ItemPost;
 

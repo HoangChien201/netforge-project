@@ -36,7 +36,7 @@ const InputLogin = (props: props) => {
         if (ref.current) {
             setIsFocused(true)
             ref.current.setNativeProps({
-            style: { borderColor: COLOR.primary200, borderBottomWidth: 1 } // Đặt màu border khi focus
+            style: { borderColor: COLOR.PrimaryColor, borderBottomWidth: 1 } // Đặt màu border khi focus
           });
         }
        
