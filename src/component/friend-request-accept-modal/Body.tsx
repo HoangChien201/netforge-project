@@ -6,9 +6,16 @@ import { COLOR } from '../../constant/color';
 import RequestList from './RequestList';
 import WaitAcceptList from './WaitAcceptList';
 import SuggestList from './SuggestList';
+type Bob={
+    reload:any,
+    showModalFriend:any,
+    setShowModalFriend:(value:boolean)=>void,
+    setDot:(value:any)=>void, 
+    setReload :(value:boolean)=>void,
+}
 
-const Body = ({ showModalFriend, setShowModalFriend, setDot, setReload }) => {
-    const [textHeader, setTextHeader] = useState('Yêu cầu kết bạn');
+const Body:React.FC<Bob> = ({reload, showModalFriend, setShowModalFriend, setDot, setReload }) => {
+    const [textHeader, setTextHeader] = useState('Lời mời kết bạn');
     const [textShowRA, setTextShowRA] = useState('Lời mời');
     const [showRA, setShowRA] = useState(true);
     const [dataFriends, setDataFriends] = useState([]);
@@ -25,7 +32,12 @@ const Body = ({ showModalFriend, setShowModalFriend, setDot, setReload }) => {
         getRequestList(status1);
         getWaitAcceptList();
         getSuggestList();
-    }, [setReload]);
+    }, []);
+
+    useEffect(() => {
+        getFriendList(status2);
+        getSuggestList();
+    }, [dataFriends || dataRequest || dataSuggest || dataWaitAccept]);
 
     useEffect(() => {
         const total = dataRequest.length + dataWaitAccept.length;
@@ -52,7 +64,7 @@ const Body = ({ showModalFriend, setShowModalFriend, setDot, setReload }) => {
         }
     }, [showModalFriend]);
     // lấy danh sách bạn bè
-    const getFriendList = async (status) => {
+    const getFriendList = async (status:number) => {
         try {
             const result = await getFriends(status);
             //console.log('danh sách bạn bè 2: ' + JSON.stringify(result));
@@ -73,7 +85,7 @@ const Body = ({ showModalFriend, setShowModalFriend, setDot, setReload }) => {
         }
     };
 
-    const getRequestList = async (num) => {
+    const getRequestList = async (num:number) => {
         try {
             const result = await getFriends(num);
             //console.log('danh sách bạn bè 1: ' + JSON.stringify(result));
@@ -137,7 +149,7 @@ const Body = ({ showModalFriend, setShowModalFriend, setDot, setReload }) => {
     };
 
     const ITEM_HEIGHT = 80; // Height of each list item
-    const calculateHeight = (data) => {
+    const calculateHeight = (data:any) => {
         if (data.length === 0) {
 
         } else {
@@ -194,7 +206,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'space-between',
-        height: 40,
+        height: 50,
     },
     buttonCloseModal: {
         height: 24,

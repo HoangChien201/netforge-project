@@ -6,17 +6,21 @@ type Suggest = {
     setData: () => void,
     setReload: any
 }
-const SuggestList:React.FC<Suggest> = ({ data, setData, setReload }) => {
+const SuggestList: React.FC<Suggest> = ({ data, setData, setReload }) => {
     const [result, setResult] = useState('');
     const [textReqState, setTextReqState] = useState({});
+    const [disabledButtons, setDisabledButtons] = useState({});
     // gửi yêu cầu kết bạn
     const status = 1;
     const sendRequestFriend = async (id: number, status: number) => {
+        setDisabledButtons((prevState) => ({
+            ...prevState,
+            [id]: true,
+        }));
         try {
-            
             const result = await sendRequest(id, status);
             console.log('đã gửi lời mời');
-            
+
             if (result) {
                 setTextReqState((prevState) => ({
                     ...prevState,
@@ -24,17 +28,24 @@ const SuggestList:React.FC<Suggest> = ({ data, setData, setReload }) => {
                 }));
             }
         } catch (error) {
-
+            setDisabledButtons((prevState) => ({
+                ...prevState,
+                [id]: false,
+            }));
         }
     }
 
     if (!data || data.length === 0) {
         return <Text style={styles.headerText}>Không có gợi ý bạn bè</Text>;
     }
-    useEffect(()=>{
+    useEffect(() => {
         //console.log(data);
+
+    }, []);
+    const log =(id)=>{
+        console.log("id friend: " + id);
         
-    },[]);
+    }
     return (
         <ScrollView style={styles.container}>
             <Text style={styles.headerText}>Gợi ý cho bạn</Text>
@@ -49,9 +60,9 @@ const SuggestList:React.FC<Suggest> = ({ data, setData, setReload }) => {
                         </View>
                         <View style={styles.button}>
                             <TouchableOpacity style={textReqState[friend.id] === 'Đã gửi' ? styles.buttonAccept : styles.buttonReject}
-                            onPress={() => { sendRequestFriend(friend.id, status) }} disabled={textReqState[friend.id] === 'Đã gửi'} >
+                                onPress={() => { sendRequestFriend(friend.id,status) }} disabled={textReqState[friend.id] === 'Đã gửi'|| disabledButtons[friend.id]} >
                                 <Text style={textReqState[friend.id] === 'Đã gửi' ? styles.textAccept1 : styles.textAccept}>
-                                {textReqState[friend.id] === 'Đã gửi' ? 'Đã gửi' : 'kết bạn'}
+                                    {textReqState[friend.id] === 'Đã gửi' ? 'Đã gửi' : 'kết bạn'}
                                 </Text>
                             </TouchableOpacity>
                         </View>
@@ -134,9 +145,9 @@ const styles = StyleSheet.create({
         fontSize: 14,
         color: 'blue',
         fontWeight: 'bold',
-        fontStyle:'normal',
-        textTransform:'capitalize'
-        
+        fontStyle: 'normal',
+        textTransform: 'capitalize'
+
     },
     avatarne: {
         height: 48,
@@ -148,8 +159,8 @@ const styles = StyleSheet.create({
         fontSize: 14,
         color: 'green',
         fontWeight: 'bold',
-        fontStyle:'normal',
-        textTransform:'capitalize'
-        
+        fontStyle: 'normal',
+        textTransform: 'capitalize'
+
     },
 })
