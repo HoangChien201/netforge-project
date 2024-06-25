@@ -6,7 +6,7 @@ const EmojiList = ({onSelectEmoji}) => {
     return (
         <FlatList
             data={EmojiData}
-            numColumns={11}
+            numColumns={8}
             renderItem={({ item }) => (
                 <TouchableOpacity onPress={() => onSelectEmoji(item.emoji)}>
                     <Text style={styles.emoji}>{item.emoji}</Text>
@@ -22,7 +22,7 @@ export default EmojiList
 
 const styles = StyleSheet.create({
     emoji: {
-        fontSize: 24,
+        fontSize: 32,
     },
     listContainer: {
         flexGrow: 1,

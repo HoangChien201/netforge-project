@@ -3,13 +3,15 @@ import React, { useEffect, useState } from 'react'
 import { COLOR } from '../../constant/color'
 import { Image } from 'react-native';
 import { useMyContext } from '../navigation/UserContext';
+import ICON from 'react-native-vector-icons/AntDesign'
 const User = ({setPermission}) => {
     const [dropdownVisible, setDropdownVisible] = useState(false);
     const [selectedOption, setSelectedOption] = useState('Bạn bè');
+    const [selectIcon,setSelectIcon] = useState('team');
     const { user, setUser } = useMyContext();
     const options = [
-        { label: 'Bạn bè', value: 1 },
-        { label: 'Cá nhân', value: 2 }
+        { label: 'Bạn bè', value: 1 , Icon:'team'},
+        { label: 'Cá nhân', value: 2 ,Icon:'user'}
     ];
 
     const toggleDropdown = () => {
@@ -20,6 +22,7 @@ const User = ({setPermission}) => {
         setSelectedOption(option.label);
         setPermission(option.value);
         setDropdownVisible(false);
+        setSelectIcon(option.Icon)
     };
     useEffect(()=>{
         console.log(user);
@@ -34,8 +37,10 @@ const User = ({setPermission}) => {
             <View style={styles.type}>
                 <TouchableOpacity style={styles.dropdownButton} onPress={toggleDropdown}>
                     <View style={styles.buttonType}>
+                        <ICON name={selectIcon} size={18} color={COLOR.primary300}/>
                         <Text style={styles.buttonText}>{selectedOption}</Text>
-                        <Image style={styles.buttonTypeIcon} source={require('../../media/quyet_icon/down_w.png')} />
+                        {/* <Image style={styles.buttonTypeIcon} source={require('../../media/quyet_icon/down_w.png')} /> */}
+                        <ICON name='down' size={18} color={COLOR.primary150} />
                     </View>
 
                 </TouchableOpacity>
@@ -96,6 +101,7 @@ const styles = StyleSheet.create({
     buttonText: {
         color: '#FFF',
         textAlign: 'center',
+        fontWeight:'400'
     },
     buttonType:{
         flexDirection:'row',

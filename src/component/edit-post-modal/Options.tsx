@@ -4,6 +4,7 @@ import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
 import { EmojiData } from '../../constant/emoji';
 import EmojiList from './EmojiList';
 import { COLOR } from '../../constant/color';
+import ICON from 'react-native-vector-icons/AntDesign'
 export type fileType = {
     fileName: string,
     uri: string,
@@ -15,7 +16,7 @@ interface optionsProps {
     setShowModal: (show: boolean) => void;
 }
 
-const Options: React.FC<optionsProps> = ({ onSelectNewMedia, onSelectEmoji,setShowModal }) => {
+const Options: React.FC<optionsProps> = ({ onSelectNewMedia, onSelectEmoji, setShowModal }) => {
     const [showEmojiModal, setShowEmojiModal] = useState(false);
 
     const openCamera = useCallback(async () => {
@@ -55,27 +56,29 @@ const Options: React.FC<optionsProps> = ({ onSelectNewMedia, onSelectEmoji,setSh
     }, []);
     const handleEmojiSelect = (emoji: any) => {
         onSelectEmoji(emoji);
-        setShowEmojiModal(false);
+        //setShowEmojiModal(false);
     };
-    const showEdit =()=>{
+    const showEdit = () => {
         setShowModal(true)
     }
     return (
         <View style={styles.container}>
             <TouchableOpacity style={styles.button} onPress={showEdit}>
-                <Image style={styles.icon} source={require('../../media/quyet_icon/folder_p.png')} />
+                {/* <Image style={styles.icon} source={require('../../media/quyet_icon/folder_p.png')} /> */}
+                <ICON name='folderopen' size={30} color={'#00CC33'}/>
             </TouchableOpacity>
             {/* <TouchableOpacity style={styles.button} onPress={openCamera}>
                 <Image style={styles.icon} source={require('../../media/quyet_icon/camera_p.png')} />
             </TouchableOpacity> */}
-            <TouchableOpacity style={styles.button} onPress={()=>{setShowEmojiModal(true)}}>
-                <Image style={styles.icon} source={require('../../media/quyet_icon/smile_p.png')} />
+            <TouchableOpacity style={styles.button} onPress={() => { setShowEmojiModal(true) }}>
+                {/* <Image style={styles.icon} source={require('../../media/quyet_icon/smile_p.png')} /> */}
+                <ICON name='smileo' size={28} color={'#FF6600'} />
             </TouchableOpacity>
             <Modal visible={showEmojiModal} animationType="slide" transparent={true}>
                 <View style={styles.modalContainer}>
                     <View style={styles.modalContent}>
                         <TouchableOpacity onPress={() => setShowEmojiModal(false)}>
-                            <Text style={styles.closeButton}>Close</Text>
+                            <Text style={styles.closeButton}>Đóng</Text>
                         </TouchableOpacity>
                         <EmojiList onSelectEmoji={handleEmojiSelect} />
                     </View>
@@ -91,16 +94,36 @@ const styles = StyleSheet.create({
         height: 40,
         width: '100%',
         alignItems: 'center',
+        borderTopWidth:1,
+        borderTopColor:'#b9babc',
+        zIndex:999
     },
     icon: {
         height: 30,
         width: 30,
     },
+
     button: {
         alignItems: 'center',
         marginStart: 16,
         padding: 5,
+        backgroundColor: 'white',
+        borderRadius: 5,
+        shadowColor: 'black',
+        shadowOpacity: 0.5,
+        shadowRadius: 5,
+        shadowOffset: {
+            width: 0,
+            height: 2,
+        },
+        elevation: 5,
+        height: 40,
+        width: 40,
+        marginTop: 20,
+
     },
+
+
     emoji: {
         fontSize: 24,
     },

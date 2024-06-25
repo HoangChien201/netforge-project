@@ -21,9 +21,9 @@ interface BodyProps {
     showModalEdit: boolean;
     setShowModalEdit: (value: boolean) => void;
 }
-export type imageType={
-    url:string,
-    type:string
+export type imageType = {
+    url: string,
+    type: string
 }
 const Body: React.FunctionComponent<BodyProps> = ({ showModalEdit, setShowModalEdit }) => {
     const [content, setContent] = useState<string>('');
@@ -31,12 +31,12 @@ const Body: React.FunctionComponent<BodyProps> = ({ showModalEdit, setShowModalE
     const [media, setMedia] = useState([]);
     const [permission, setPermission] = useState(1);
     const [showModal, setShowModal] = useState(false);
-    const postId = 51;
+    const postId = 86;
     const [status, setStatus] = useState('');
     const [showPopup, setShowPopup] = useState(false);
     const [isError, setIsError] = useState(false);
     const [images, setImages] = useState<any[]>([]);
-    const [friends,setFriends] = useState([])
+    const [friends, setFriends] = useState([])
     const [isloading, setIsLoading] = useState(false)
     const ShowModalMedia = () => {
         setShowModal(true);
@@ -48,16 +48,17 @@ const Body: React.FunctionComponent<BodyProps> = ({ showModalEdit, setShowModalE
             // console.log('Bài viết đã được lấy thành công', result); // Logging kết quả
 
             // Kiểm tra và cập nhật state chỉ khi kết quả không phải là undefined
-            if (result) {
+            if (result || result.length > 0) {
                 setContent(result.content);
                 const mediaUrls = result.media.map(item => item.url);
-                const mediaItem = result.media.map(item =>item);
+                const mediaItem = result.media.map(item => item);
                 setImages(mediaItem)
                 //console.log('mediaUrl: ' + mediaUrls);
-                //console.log('images: ' + JSON.stringify(images));
+                console.log('images: ' + JSON.stringify(mediaItem));
                 setMedia(mediaUrls);
                 setPermission(result.permission);
                 //setFriends(result.tags)
+
             }
         } catch (error) {
             console.log('>>>>>>get news log', error);
@@ -67,7 +68,7 @@ const Body: React.FunctionComponent<BodyProps> = ({ showModalEdit, setShowModalE
     useEffect(() => {
         getOnePost();
     }, []);
-    
+
     const handleEmojiSelect = (emoji: any) => {
         setContent(content + emoji);
     };
@@ -80,7 +81,7 @@ const Body: React.FunctionComponent<BodyProps> = ({ showModalEdit, setShowModalE
         //console.log('media sau upload' + media);
 
     }, [newMedia]);
-    const tags = friends.map(id => ({ user: String(id) }));  
+    const tags = friends.map(id => ({ user: String(id) }));
     const log = () => {
         console.log(`
             tags: ${tags}
@@ -113,7 +114,7 @@ const Body: React.FunctionComponent<BodyProps> = ({ showModalEdit, setShowModalE
                 }, 1100);
             } else {
                 try {
-                    const newPost = await updatePost(postId, { permission, tags, content ,medias});
+                    const newPost = await updatePost(postId, { permission, tags, content, medias });
                     console.log('Bài viết đã được cập nhật:', newPost);
                     setIsLoading(false);
                     setTimeout(() => {
@@ -162,15 +163,15 @@ const Body: React.FunctionComponent<BodyProps> = ({ showModalEdit, setShowModalE
     };
 
     return (
+
         <Modal visible={showModalEdit} animationType="slide" style={styles.container}>
-            <Loading isLoading/>
+
             <View style={styles.header}>
                 <TouchableOpacity onPress={() => setShowModalEdit(false)} style={styles.closeButton}>
                     <Image style={styles.closeImage} source={require('../../media/quyet_icon/x_w.png')} />
                 </TouchableOpacity>
-                <Text style={styles.headerText}>Chỉnh sửa bài viết</Text>
                 <TouchableOpacity style={styles.saveButton} onPress={uploadMediaPost}>
-                    <Text style={styles.saveText}>Lưu</Text>
+                    <Text style={styles.saveText}>Cập nhật</Text>
                 </TouchableOpacity>
 
             </View>
@@ -178,18 +179,18 @@ const Body: React.FunctionComponent<BodyProps> = ({ showModalEdit, setShowModalE
 
             {/* Danh sách hình ảnh ------------------------------------------------------*/}
             {/* Đây là view sử dụng modal -----------------------------------*/}
-            <View>
-                {media.length>0 ? <TouchableOpacity onPress={() => { setShowModal(true) }}
+            <View >
+                {images.length > 0 ? <TouchableOpacity onPress={() => { setShowModal(true) }}
                     style={{ zIndex: 99, height: 28, width: 80, backgroundColor: '#FF6600', position: 'absolute', start: 10, top: 10, flexDirection: 'row', padding: 3, borderRadius: 4, alignItems: 'center' }} >
                     <Icon name='edit' size={20} color={'white'} />
                     <Text style={{ fontSize: 12, color: 'white' }}>Chỉnh sửa</Text>
                 </TouchableOpacity> : null}
 
-                {renderMedia({ media,images, setMedia, setShowModal })}
+                {renderMedia({ media, images, setMedia, setShowModal })}
             </View>
-            <MediaModal showModal={showModal} setShowModal={setShowModal} media={media} setMedia={setMedia} setImages={setImages} images={images}/>
-            <TEXTAREA content={content} setContent={setContent} setFriends={setFriends} friends={friends}/>
-            <OPTIONS onSelectEmoji={handleEmojiSelect} onSelectNewMedia={newMediaSelected} setShowModal={setShowModal}/>
+            <MediaModal showModal={showModal} setShowModal={setShowModal} media={media} setMedia={setMedia} setImages={setImages} images={images} />
+            <TEXTAREA content={content} setContent={setContent} setFriends={setFriends} friends={friends} />
+            <OPTIONS onSelectEmoji={handleEmojiSelect} onSelectNewMedia={newMediaSelected} setShowModal={setShowModal} />
             {showPopup ? (
                 isError ? (
                     <ModalFail text={status} visible={showPopup} />
@@ -197,6 +198,10 @@ const Body: React.FunctionComponent<BodyProps> = ({ showModalEdit, setShowModalE
                     <ModalPoup text={status} visible={showPopup} />
                 )
             ) : null}
+            <View style={{ zIndex: 9999 }}>
+                <Loading isLoading={isloading} />
+            </View>
+
         </Modal>
     )
 }
@@ -207,10 +212,10 @@ const styles = StyleSheet.create({
     container: {
         height: '100%',
         width: '100%',
-
     },
     closeButton: {
-        marginStart: 10
+        marginStart: 10,
+
     },
     closeImage: {
         height: 40,
@@ -221,26 +226,22 @@ const styles = StyleSheet.create({
         justifyContent: 'space-between',
         alignItems: 'center',
         flexDirection: 'row',
-        height: 50
+        height: 50,
+        zIndex: 999
     },
     saveButton: {
         marginEnd: 16
     },
     saveText: {
         color: 'white',
-        fontWeight: '400',
-        fontSize: 24
+        fontWeight: '500',
+        fontSize: 20
     },
     imagee: {
         width: 300,
         height: 300,
         marginTop: 20,
         alignSelf: 'center',
-    },
-    headerText: {
-        color: 'white',
-        fontWeight: '600',
-        fontSize: 24,
     },
     image: {
         width: '100%',
