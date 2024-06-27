@@ -1,23 +1,21 @@
 import 'react-native-gesture-handler';
 import React from "react";
 
-import { Image, Pressable, StyleSheet, Text, View } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
-import { COLOR } from '../../constant/color';
+import { StyleSheet, Text, View } from 'react-native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { HomeRootStackParams, HomeRootStackScreens } from './HomeRootStackParams';
+import { LiveRootStackParams, LiveRootStackScreens } from './LiveRootStackParams';
 
-const Stack = createNativeStackNavigator<HomeRootStackParams>();
+const Stack = createNativeStackNavigator<LiveRootStackParams>();
 
-export default function HomeStack(): React.JSX.Element {
+export default function LiveStack(): React.JSX.Element {
     return (
         <Stack.Navigator
             screenOptions={{
             }}
-            initialRouteName={"HomeScreen"}
+            initialRouteName={"LiveWithZego"}
         >
             {
-                HomeRootStackScreens.map((item, index) => {
+                LiveRootStackScreens.map((item, index) => {
                     return <Stack.Screen
                         key={item.id}
                         component={item.component}

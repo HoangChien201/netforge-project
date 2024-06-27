@@ -27,8 +27,8 @@ const AddressModal: React.FC<AddressModalProps> = ({ isVisible, selectedAddress,
   useEffect(() => {
     if (isVisible && query.length > 2) {
       setIsSearch(true);
-      // fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${query}&addressdetails=1&limit=5&countrycodes=vn`)
-      fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${query}&addressdetails=1&limit=5&countrycodes=vn&state&county&city&country`)
+      fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${query}&addressdetails=1&limit=5&countrycodes=vne`)
+      //fetch(`https://nominatim.openstreetmap.org/sarch?format=json&q=${query}&addressdetails=1&limit=5&countrycodes=vn&state&county&city&country`)
         .then(response => response.json())
         .then(data => {
           console.log('địa chỉ nè:', data);

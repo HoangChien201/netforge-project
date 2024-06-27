@@ -33,7 +33,7 @@ const CustomHeaderBar: React.FC<CustomHeaderBarProps> = ({ onBackPress, onSavePr
       </TouchableOpacity>
     </View>
   );
-};
+}; 
 
 export default CustomHeaderBar;
 
@@ -42,13 +42,13 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    paddingHorizontal: 20,
+    paddingHorizontal: 15,
     paddingTop:10,
     height: 60,
     backgroundColor: '#fff',
   },
   icon: {
-    marginLeft: 8,
+    marginLeft: 0,
   },
   title: {
     fontSize: 20,
