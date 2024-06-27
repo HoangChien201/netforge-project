@@ -3,17 +3,21 @@ import React, { useMemo, useState, useRef, useEffect } from 'react'
 import UserPost from '../component/formComments/UserPost';
 import InputCmt from '../component/formComments/InputCmt';
 import CommentItem from '../component/formComments/CommentItem';
-import { getComments, addComments } from '../http/TuongHttp';
+import { getComments, addComments, getPostById } from '../http/TuongHttp';
 import { useNavigation } from '@react-navigation/native'
 import { navigationType } from '../component/stack/UserStack'
 import Video from 'react-native-video';
 import { DateOfTimePost } from '../format/DateOfTimePost';
 import { number } from 'yup';
 import { useRoute } from '@react-navigation/native';
-
-
+import ItemPost from '../component/listpost/ItemPost';
+import Modal_GetLikePosts from '../component/formComments/Modal_GetLikePosts';
 const CommentsScreen = () => {
-    // const navigation = useNavigation<navigationType>()
+    const navigation = useNavigation<navigationType>()
+    const [modalGetLikePostVisible, setModalGetLikePostVisible] = useState(false);
+    const [commentUserId, setCommentUserId] = useState(null);
+    const [text, setText] = useState(null)
+    const [post, setPosts] = useState(null);
     const [replyTo, setReplyTo] = useState(null);
     const [comment, setComments] = useState([]);
     const [imagePath, setImagePath] = useState(null);
@@ -21,83 +25,54 @@ const CommentsScreen = () => {
     const scrollViewRef = useRef();
     const route = useRoute();
     const { postId } = route.params;
-    console.log(postId);
-// hàm lấy danh sách comments
+    const { numberLike } = route.params;
+    console.log('postId', postId);
+    console.log('numberLikeNe', numberLike);
+    console.log(text);
+
+    // lấy bài viết chi tiết
+    const fetchPosts = async () => {
+        try {
+            //goo
+            const response: any = await getPostById(postId);
+            console.log("posts", response);
+            setPosts(response)
+            fetchComments();
+            console.log("repon", response);
+        } catch (error) {
+            console.log(error);
+        }
+    };
+    // hàm lấy danh sách comments
     const fetchComments = async () => {
         try {
-            const response = await getComments(postId);
+            //goo
+            const response: any = await getComments(postId);
             setComments(response.reverse());
             setCommentCount(response.length);
         } catch (error) {
             console.log(error);
         }
     };
-  // Hàm xử lý khi người dùng chọn trả lời một bình luận
-  const handleReply = (parent) => {
-    setReplyTo(parent); // Thiết lập bình luận cha để trả lời
-    console.log(parent);
-    
-};
-    // hàm render comments
+    // Hàm xử lý khi người dùng chọn trả lời một bình luận
+    const handleReply = (parent) => {
+        setReplyTo(parent); // Thiết lập bình luận cha để trả lời
+        console.log("parent:", parent);
+    };
+    // // hàm render comments
     useEffect(() => {
-        fetchComments();
+        fetchPosts();
+
     }, []);
 
+    //tat bottomtab
+    useEffect(() => {
+        navigation.getParent()?.setOptions({ tabBarStyle: { display: 'none' } });
+    }, []);
     const handleMediaSelected = (media) => {
         setImagePath(media);
     };
 
-    const RenderItem = ({ item }) => {
-        const { id, content, image, create_at, user } = item
-        // console.log('hình nè', image);
-        const isVideo = image && image.match(/\.(mp4|mov)$/i); //kiểm tra nếu nó là video hay không
-
-        return (
-            <View style={styles.itemRecentContai}>
-                <View style={styles.itemRecent}>
-                    <Image source={{uri:user.avatar}} style={styles.imageItem} />
-                    <View style={{ flexDirection: 'column' }}>
-                        <View style={styles.InfoCmt}>
-                            <View style={styles.boderView}>
-                                <View style={{ margin: 10 }}>
-                                    <Text style={styles.nameItem}>{user.fullname}</Text>
-                                    <Text style={styles.textCmt}>{content}</Text>
-                                   <TouchableOpacity >
-                                   {image && !isVideo ? (
-                                        <Image
-                                            source={{ uri: image }}
-                                            resizeMode='cover'
-                                            style={{ width: 150, height: 200, borderRadius: 10 }}
-                                        />
-                                        
-                                    ) : null}
-                                    </TouchableOpacity>
-                                    
-                                    {image && isVideo ? (
-                                        <Video
-                                            source={{ uri: image }}
-                                            style={{ width: 150, height: 200, borderRadius: 10, overflow:'hidden' }}
-                                            resizeMode="cover"
-                                            controls={true}
-                                        
-                                        />
-                                    ) : null}
-                                  
-                                </View>
-                            </View>
-                            <Image source={require('../media/icon_tuong/heart.png')} style={{ width: 20, height: 20, marginTop: 5 }} />
-                        </View>
-                        <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 2, marginStart: 12 }}>
-                            <Text style={{ fontWeight: '500' }}>{DateOfTimePost(create_at)} giờ</Text>
-                          <TouchableOpacity style={{ marginStart: 5 }}  onPress={() => handleReply(item.id)}>
-                                <Text style={{ fontWeight: '900' }}>Reply</Text>
-                            </TouchableOpacity>
-                        </View>
-                    </View>
-                </View>
-            </View>
-        );
-    }
     useEffect(() => {
         if (commentCount > 0) {
             // Nếu có bình luận mới, scrollView sẽ cuộn xuống bình luận mới
@@ -106,62 +81,99 @@ const CommentsScreen = () => {
     }, [commentCount]);
     return (
         <View style={styles.container}>
-            <UserPost />
-            <View style={{ height: "85%"}}>
+
+            <View style={{ height: "95%", backgroundColor: 'white' }}>
 
                 <ScrollView ref={scrollViewRef} showsVerticalScrollIndicator={false} >
-                     {  comment.length ===0 ?(
-                        <View style = {styles.ViewNoComment}>
-                            <View style = {{justifyContent: 'center', alignItems: 'center'}}>
-                            <Image style = {{width: 200, height: 200, marginBottom: 20}} source={require('../media/icon_tuong/chat.png')}/>
-                            <Text style = {styles.textNoComment1}>Chưa có bình luận nào</Text>
-                            <Text style = {styles.textNoComment2}>Hãy là người đầu tiên bình luận.</Text>
+                    {
+                        post && (
+                            <View style={{ margin: 0 }}>
+                                <TouchableOpacity onPress={() => navigation.goBack()} style={{ zIndex: 2, top: 58, right: 5 }}>
+                                    <Image source={require('../media/icon_tuong/back.png')} style={styles.IconBack} />
+                                </TouchableOpacity>
+                                <ItemPost key={post.id} data={post} />
+
+                            </View>
+                        )
+                    }
+                    {
+                        numberLike && (
+                            <TouchableOpacity onPress={() => setModalGetLikePostVisible(true)}>
+                        <View style = {styles.ViewPostLike}>
+                            <Image style = {{width: 18, height: 18}} source={require('../media/Dicons/thumb-up.png')}/>
+                            <Text style = {{marginStart: 4, fontSize: 16, fontWeight: '500', color: '#000'}}>{numberLike}</Text>
+                        </View>
+                    </TouchableOpacity>
+                        )
+                    }
+                    {comment.length === 0 ? (
+                        <View style={styles.ViewNoComment}>
+                            <View style={{ justifyContent: 'center', alignItems: 'center' }}>
+                                <Image style={{ width: 200, height: 200, marginBottom: 20 }} source={require('../media/icon_tuong/chat.png')} />
+                                <Text style={styles.textNoComment1}>Chưa có bình luận nào</Text>
+                                <Text style={styles.textNoComment2}>Hãy là người đầu tiên bình luận.</Text>
                             </View>
                         </View>
-                     ) : (
+                    ) : (
                         comment.map(comment => (
-                            <CommentItem key={comment.id} comment={comment} onReply={handleReply} render = {fetchComments} />
+                            <CommentItem key={comment.id} comment={comment} onReply={handleReply} render={fetchComments} parent={replyTo} setText={setText} setUserId = {setCommentUserId} />
                         ))
-                     )
+                    )
                     }
                 </ScrollView>
             </View>
+            {
+                modalGetLikePostVisible ? (
+                    <Modal_GetLikePosts
+                        isVisible={modalGetLikePostVisible}
+                        onClose={() => setModalGetLikePostVisible(false)}
+                        postId={postId} />
+                ) : (
+                    <InputCmt
+                        comment = {commentUserId}
+                        setText={setText}
+                        text={text}
+                        parent={replyTo} // Truyền ID bình luận cha khi trả lời
+                        fetchComments={fetchComments}
+                        onMediaSelected={handleMediaSelected} // Xử lý khi người dùng chọn hình ảnh hoặc video
+                        postId={postId}
+                        setParent={setReplyTo}
+                    />
+                )
+            }
 
-            <InputCmt
-                fetchComments={fetchComments}
-                parent={replyTo} // Truyền ID bình luận cha khi trả lời
-                onMediaSelected={handleMediaSelected} // Xử lý khi người dùng chọn hình ảnh hoặc video
-                postId ={postId}
-                onCommentAdded={() => {
-                    fetchComments(); // Gọi lại danh sách bình luận sau khi thêm bình luận
-                    setReplyTo(null) // Đặt lại trạng thái trả lời
-                    setImagePath(null); // Xóa đường dẫn hình ảnh sau khi thêm bình luận
-                }}
-            />
-                      
 
-          
-           </View>
+
+
+
+
+        </View>
     )
 }
 
 export default CommentsScreen
 
 const styles = StyleSheet.create({
-    textNoComment2:{
+    ViewPostLike:{
+        alignItems: 'center',
+        flexDirection: 'row',
+        marginStart: 16,
+        bottom: 18
+    },
+    textNoComment2: {
         fontSize: 16,
         fontWeight: '500'
     },
-    textNoComment1:{
+    textNoComment1: {
         fontWeight: 'bold',
         fontSize: 20
     },
-    ViewNoComment:{
+    ViewNoComment: {
         justifyContent: 'center',
         alignItems: 'center',
-        height: 500
+        height: 400
     },
-    itemRecentContai:{
+    itemRecentContai: {
         backgroundColor: '#f2f2f2'
     },
     modalBackground: {
@@ -188,7 +200,7 @@ const styles = StyleSheet.create({
         marginRight: 10
     },
     itemRecent: {
-        
+
         margin: 10,
         flexDirection: 'row',
     },
@@ -233,8 +245,10 @@ const styles = StyleSheet.create({
         borderRadius: 100
     },
     IconBack: {
+
         width: 28,
-        height: 28
+        height: 28,
+        marginRight: 10
     },
     ViewUser: {
         flexDirection: 'row',

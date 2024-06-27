@@ -1,7 +1,7 @@
 import { StyleSheet, Text, View, Modal, TouchableOpacity, Image } from 'react-native'
 import React from 'react'
 
-const ModalDeleteComments = ({ isVisible, onConfirm, onCancel }) => {
+const ModalOtherDelete = ({ isVisible, onCancel }) => {
   return (
     <Modal
             visible={isVisible}
@@ -11,22 +11,20 @@ const ModalDeleteComments = ({ isVisible, onConfirm, onCancel }) => {
             <View style={styles.modalBackground}>
                 <View style={styles.modalContainer}>
                     <Text style = {{fontSize: 20, fontWeight: '700', color: '#000', marginBottom: 5}}>Xóa bình luận</Text>
-                    <Text style={styles.modalText}>Bạn có chắc chắn muốn xóa vĩnh viễn  bình luận này không?</Text>
+                    <Text style={styles.modalText}>Bạn không thể xóa bình luận này !</Text>
                     <View style={styles.buttonContainer}>
                         <TouchableOpacity style={styles.button} onPress={onCancel}>
-                            <Text style={[styles.buttonText, {color: '#000'}]}>Hủy</Text>
+                            <Text style={[styles.buttonText, {color: '#000'}]}>Xác Nhận</Text>
                         </TouchableOpacity>
-                        <TouchableOpacity style={styles.buttonDelete} onPress={onConfirm}>
-                            <Text style={[styles.buttonText, {color: 'white'}]}>Xóa</Text>
-                        </TouchableOpacity>
+                       
                     </View>
                 </View>
             </View>
         </Modal>
-    );
+  )
 }
 
-export default ModalDeleteComments
+export default ModalOtherDelete
 
 const styles = StyleSheet.create({
     modalBackground: {

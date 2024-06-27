@@ -61,7 +61,6 @@ export const addComments = async (posts: number, content: string, image: string,
       }
 
     );
-    console.log("tokenne", token);
     return result
 
 
@@ -121,15 +120,21 @@ export const getPostById = async(id: number) => {
   try {
     const token = await AsyncStorage.getItem('token')
     const axios = await AxiosInstance();
-    const url = `/posts/get-by-user/${id}`
-    const result = axios.get(url)
+    const url = `/posts/find-one/${id}`
+    const result = axios.get(url,
+      {
+        headers:{
+          Authorization: `Bearer ${token}`
+        }
+      }
+    )
     return result;
   } catch (error) {
     console.log('get-post-byId', error)
     throw error;
   }
 }
-// like comments
+// like commentsne
 export const addLikeComments = async (comment: number, reaction: number) => {
   try {
     const token = await AsyncStorage.getItem('token')
@@ -155,5 +160,38 @@ export const addLikeComments = async (comment: number, reaction: number) => {
     console.log('addComments', error); // Xuất lỗi
     throw error;
     
+  }
+}
+// delete likecomment nè
+export const deleteLikeComments = async(comment_id: number, user_id:number) => {
+  try {
+    const token = await AsyncStorage.getItem('token')
+    const axios = await AxiosInstance();
+    const url = `/like-comment/delete?comment_id=${comment_id}&user_id=${user_id}`
+    const result = axios.delete(url)
+    return result;
+  } catch (error) {
+    console.log('delete-like-comments', error)
+    throw error;
+  }
+}
+// get like posts
+// lấy danh sách bài viết chi tiết 
+export const getLikePostById = async(id: number) => {
+  try {
+    const token = await AsyncStorage.getItem('token')
+    const axios = await AxiosInstance();
+    const url = `/like-posts/get-by-posts/${id}`
+    const result = axios.get(url,
+      {
+        headers:{
+          Authorization: `Bearer ${token}`
+        }
+      }
+    )
+    return result;
+  } catch (error) {
+    console.log('get-like-post-byId', error)
+    throw error;
   }
 }

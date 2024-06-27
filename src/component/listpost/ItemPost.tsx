@@ -8,6 +8,7 @@ import { NavigationProp, ParamListBase, useNavigation } from '@react-navigation/
 import { useMyContext } from '../navigation/UserContext';
 import { ProfileRootStackEnum } from '../stack/ProfileRootStackParams';
 
+
 const ItemPost =  memo(({ index, data,onrefresh, userId, onPressProfile  }) => {
     //const navigation = useNavigation();
     const navigation: NavigationProp<ParamListBase> = useNavigation();
