@@ -66,8 +66,8 @@ const LikeItem = ({ like }) => {
 };
 const Modal_GetLikePosts = ({ isVisible, onClose, postId }) => {
     const [like, setLike] = useState([]);
-    console.log('postmodal:', postId);
-    console.log(like);
+    // console.log('postmodal:', postId);
+    // console.log(like);
     // ref
     const bottomSheetModalRef = useRef<BottomSheetModal>(null);
     // variables
@@ -76,7 +76,7 @@ const Modal_GetLikePosts = ({ isVisible, onClose, postId }) => {
         async () => {
             try {
                 const response: any = await getLikePostById(postId);
-                console.log('ghetlike', response);
+                console.log('Danh sách Like Posts:', response);
                 setLike(response)
             } catch (error) {
                 console.log('Lỗi lấy danh sách like post:', error);

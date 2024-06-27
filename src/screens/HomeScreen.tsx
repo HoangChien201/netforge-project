@@ -16,6 +16,9 @@ const HomeScreen = () => {
     const [refreshing, setRefreshing] = useState(false);
     const [prevScrollY, setPrevScrollY] = useState(0);
     const navigation = useNavigation();
+    // function navigationScreen(screen: string) {
+    //     navigation.navigate(`${screen}`)
+    //   }
     const isFocused = useIsFocused();
 
     useEffect(() => {
@@ -79,7 +82,12 @@ const HomeScreen = () => {
                     <Image source={require('../media/quyet_icon/netforge.png')} style={{ width: 70, height: 100 }} />
                     <Text style={{ color: COLOR.PrimaryColor, fontSize: 20, fontWeight: 'bold' }}>NetForge</Text>
                 </View>
-                <View style={{ flex: 0.1 }}>
+                <View style={{ flex: 0.1, marginRight: 10 }}>
+                    <TouchableOpacity onPress={()=>navigation.navigate('ExploreScreen')}>
+                        <Image source={require('../media/icon_tuong/glass.png')} style={{width:30,height:30}}/>
+                    </TouchableOpacity>
+                </View>
+                <View style={{ flex: 0.1, marginRight: 10 }}>
                     <TouchableOpacity>
                         <Image source={require('../media/Dicons/qr-code.png')} style={{width:30,height:30}}/>
                     </TouchableOpacity>

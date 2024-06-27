@@ -26,9 +26,9 @@ const CommentsScreen = () => {
     const route = useRoute();
     const { postId } = route.params;
     const { numberLike } = route.params;
-    console.log('postId', postId);
-    console.log('numberLikeNe', numberLike);
-    console.log(text);
+    // console.log('postId', postId);
+    // console.log('numberLikeNe', numberLike);
+    // console.log(text);
 
     // lấy bài viết chi tiết
     const fetchPosts = async () => {
@@ -141,12 +141,6 @@ const CommentsScreen = () => {
                     />
                 )
             }
-
-
-
-
-
-
         </View>
     )
 }
