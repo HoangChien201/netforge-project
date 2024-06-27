@@ -20,6 +20,7 @@ const ActionBar = memo(({ like_count,type, postId, comment_count, share_count,ch
     useLayoutEffect(()=>{
         setNumber(type)
     },[type])
+    
 
     const deleteLike = async (idPost: number) => {
         try {
@@ -123,7 +124,7 @@ const ActionBar = memo(({ like_count,type, postId, comment_count, share_count,ch
                     }
                     <Text style={styles.text}>{numberLike === null ? 0 : format(numberLike)}</Text>
                 </View>
-                <TouchableOpacity onPress={()=> navigation.navigate('CommentsScreen',{postId})} style={{ flexDirection: 'row', alignItems: 'center', marginHorizontal: 20 }}>
+                <TouchableOpacity onPress={()=> navigation.navigate('CommentsScreen',{postId, numberLike})} style={{ flexDirection: 'row', alignItems: 'center', marginHorizontal: 20 }}>
                     <AntDesignIcon name='message1' size={24} color='#000' style={styles.comment} />
                     <Text style={styles.text}>{comment_count ? comment_count : 0}</Text>
                 </TouchableOpacity>

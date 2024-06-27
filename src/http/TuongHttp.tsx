@@ -162,3 +162,36 @@ export const addLikeComments = async (comment: number, reaction: number) => {
     
   }
 }
+// delete likecomment nè
+export const deleteLikeComments = async(comment_id: number, user_id:number) => {
+  try {
+    const token = await AsyncStorage.getItem('token')
+    const axios = await AxiosInstance();
+    const url = `/like-comment/delete?comment_id=${comment_id}&user_id=${user_id}`
+    const result = axios.delete(url)
+    return result;
+  } catch (error) {
+    console.log('delete-like-comments', error)
+    throw error;
+  }
+}
+// get like posts
+// lấy danh sách bài viết chi tiết 
+export const getLikePostById = async(id: number) => {
+  try {
+    const token = await AsyncStorage.getItem('token')
+    const axios = await AxiosInstance();
+    const url = `/like-posts/get-by-posts/${id}`
+    const result = axios.get(url,
+      {
+        headers:{
+          Authorization: `Bearer ${token}`
+        }
+      }
+    )
+    return result;
+  } catch (error) {
+    console.log('get-like-post-byId', error)
+    throw error;
+  }
+}

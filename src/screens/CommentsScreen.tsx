@@ -11,9 +11,11 @@ import { DateOfTimePost } from '../format/DateOfTimePost';
 import { number } from 'yup';
 import { useRoute } from '@react-navigation/native';
 import ItemPost from '../component/listpost/ItemPost';
+import Modal_GetLikePosts from '../component/formComments/Modal_GetLikePosts';
 const CommentsScreen = () => {
     const navigation = useNavigation<navigationType>()
-    const [parent, setParent] = useState(null)
+    const [modalGetLikePostVisible, setModalGetLikePostVisible] = useState(false);
+    const [commentUserId, setCommentUserId] = useState(null);
     const [text, setText] = useState(null)
     const [post, setPosts] = useState(null);
     const [replyTo, setReplyTo] = useState(null);
@@ -23,7 +25,9 @@ const CommentsScreen = () => {
     const scrollViewRef = useRef();
     const route = useRoute();
     const { postId } = route.params;
-     console.log('postId', postId);
+    const { numberLike } = route.params;
+    console.log('postId', postId);
+    console.log('numberLikeNe', numberLike);
     console.log(text);
 
     // lấy bài viết chi tiết
@@ -88,7 +92,18 @@ const CommentsScreen = () => {
                                     <Image source={require('../media/icon_tuong/back.png')} style={styles.IconBack} />
                                 </TouchableOpacity>
                                 <ItemPost key={post.id} data={post} />
+
                             </View>
+                        )
+                    }
+                    {
+                        numberLike && (
+                            <TouchableOpacity onPress={() => setModalGetLikePostVisible(true)}>
+                        <View style = {styles.ViewPostLike}>
+                            <Image style = {{width: 18, height: 18}} source={require('../media/Dicons/thumb-up.png')}/>
+                            <Text style = {{marginStart: 4, fontSize: 16, fontWeight: '500', color: '#000'}}>{numberLike}</Text>
+                        </View>
+                    </TouchableOpacity>
                         )
                     }
                     {comment.length === 0 ? (
@@ -101,22 +116,34 @@ const CommentsScreen = () => {
                         </View>
                     ) : (
                         comment.map(comment => (
-                            <CommentItem key={comment.id} comment={comment} onReply={handleReply} render={fetchComments} parent={replyTo} setText={setText} />
+                            <CommentItem key={comment.id} comment={comment} onReply={handleReply} render={fetchComments} parent={replyTo} setText={setText} setUserId = {setCommentUserId} />
                         ))
                     )
                     }
                 </ScrollView>
             </View>
+            {
+                modalGetLikePostVisible ? (
+                    <Modal_GetLikePosts
+                        isVisible={modalGetLikePostVisible}
+                        onClose={() => setModalGetLikePostVisible(false)}
+                        postId={postId} />
+                ) : (
+                    <InputCmt
+                        comment = {commentUserId}
+                        setText={setText}
+                        text={text}
+                        parent={replyTo} // Truyền ID bình luận cha khi trả lời
+                        fetchComments={fetchComments}
+                        onMediaSelected={handleMediaSelected} // Xử lý khi người dùng chọn hình ảnh hoặc video
+                        postId={postId}
+                        setParent={setReplyTo}
+                    />
+                )
+            }
 
-            <InputCmt
-                setText={setText}
-                text={text}
-                parent={replyTo} // Truyền ID bình luận cha khi trả lời
-                fetchComments={fetchComments}
-                onMediaSelected={handleMediaSelected} // Xử lý khi người dùng chọn hình ảnh hoặc video
-                postId={postId}
-                setParent={setReplyTo}
-            />
+
+
 
 
 
@@ -127,6 +154,12 @@ const CommentsScreen = () => {
 export default CommentsScreen
 
 const styles = StyleSheet.create({
+    ViewPostLike:{
+        alignItems: 'center',
+        flexDirection: 'row',
+        marginStart: 16,
+        bottom: 18
+    },
     textNoComment2: {
         fontSize: 16,
         fontWeight: '500'

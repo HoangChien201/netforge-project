@@ -6,26 +6,30 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 const ReactionButton = ({ isVisible, onClose, onSelectReaction, comment }) => {
     const reactions = [
         { id: 1, name: 'like', source: require('../../media/Dicons/thumb-up.png')},
-        { id: 2, name: 'love', source: require('../../media/Dicons/happy-face.png')},
-        { id: 3, name: 'haha', source: require('../../media/Dicons/smile.png') },
-        { id: 4, name: 'wow', source: require('../../media/Dicons/heartF.png')},
-        { id: 5, name: 'sad', source: require('../../media/Dicons/wow.png')},
-        { id: 6, name: 'angry', source: require('../../media/Dicons/angry.png')},
+        { id: 2, name: 'haha', source: require('../../media/Dicons/happy-face.png')},
+        { id: 3, name: 'happy', source: require('../../media/Dicons/smile.png') },
+        { id: 4, name: 'love', source: require('../../media/Dicons/heartF.png')},
+        { id: 5, name: 'wow', source: require('../../media/Dicons/wow.png')},
+        { id: 6, name: 'hot', source: require('../../media/Dicons/angry.png')},
 
     ];
     
     const handleReactionSelect = async (reaction) => { 
-       const data = {
-        comment: comment.id,
-        reaction: reaction.id
-       }
-        const reponse = await addLikeComments(data.comment, data.reaction);
-        console.log(reponse);
-        console.log('idcomment',comment.id);
-        console.log('Selected Reaction ID:', reaction.id);
-       
         onSelectReaction(reaction);
         onClose();
+     try {
+        const data = {
+            comment: comment.id,
+            reaction: reaction.id
+           }
+            const reponse = await addLikeComments(data.comment, data.reaction);
+            console.log(reponse);
+            console.log('idcomment',comment.id);
+            console.log('Selected Reaction ID:', reaction.id);
+     } catch (error) {
+        console.log('like comment:',error);
+        
+     }
     };
     return (
 
@@ -53,13 +57,11 @@ export default ReactionButton
 
 const styles = StyleSheet.create({
     modalOverlay: {
-       
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
     },
     reactionPopupContainer: {
-      
         height: 50,
         position: 'absolute',
         flexDirection: 'row',

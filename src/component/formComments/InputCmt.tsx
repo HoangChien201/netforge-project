@@ -8,15 +8,24 @@ import { useMyContext } from '../navigation/UserContext'
 import { isNull } from 'lodash'
 
 
-const InputCmt = ({ fetchComments, onMediaSelected, parent = null , postId, text,setParent, setText }) => {
+const InputCmt = ({ fetchComments, onMediaSelected, parent = null , postId, text,setParent, setText, comment }) => {
     const { user } = useMyContext();
     const [comments, setComments] = useState('')
     const [media, setMedia] = useState(null);
     const [imagePath, setImagePath] = useState(null);
     const [mediaType, setMediaType] = useState(null);
+    console.log('inputcommentid', comment);
+    
     useEffect(() => {
         if (text) {
-            setComments(text)
+            if(user.id === comment){
+                
+                setText('chính mình')
+                
+            }else{
+                setComments(text)
+            }
+            
         }
     }, [text])
     const handleCancel =()=>{
