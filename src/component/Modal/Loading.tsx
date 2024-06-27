@@ -1,5 +1,6 @@
 import { StyleSheet, Text, View,ActivityIndicator, Modal } from 'react-native'
 import React,{useState} from 'react'
+import { COLOR } from '../../constant/color'
 
 const Loading = ({isLoading}:{isLoading:boolean}) => {
 
@@ -9,7 +10,7 @@ const Loading = ({isLoading}:{isLoading:boolean}) => {
             visible={isLoading}
         >
             <View style={styles.loading}>
-                <ActivityIndicator size="large" color="#ADB2B2" />
+                <ActivityIndicator size="large" color={COLOR.Primary600}/>
             </View>
         </Modal>
     )

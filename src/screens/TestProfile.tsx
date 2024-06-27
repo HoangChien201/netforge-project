@@ -1,124 +1,241 @@
-import React, { useEffect, useRef, useState } from 'react';
-import { Animated, NativeScrollEvent, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import ListPorts from '../component/listpost/ListPorts';
-import UpLoadAvatar from '../component/profile/UploadAvatar';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
+import { View, Animated, StyleSheet, ScrollView, Dimensions, Text, TouchableOpacity } from 'react-native';
+import { NavigationProp, ParamListBase, useFocusEffect, useNavigation } from '@react-navigation/native';
+import HeaderBanner from '../component/profile/HeaderBanner';
+import ProfileHeader from '../component/profile/ProfileHeader';
 import { useMyContext } from '../component/navigation/UserContext';
-import { formattedDate } from '../format/FormatDate';
-import Icon from 'react-native-vector-icons/MaterialIcons';
-import { ProfileRootStackEnum } from '../component/stack/ProfileRootStackParams';
-import { useNavigation } from '@react-navigation/native';
+import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
+import ListPortsByUser from '../component/listpost/ListPostByUser';
+import ProfileDetailData from '../component/profile/ProfileDetailData';
+import { getUSerByID } from '../http/PhuHTTP';
+import MediaOfUser from '../component/profile/MediaOfUser';
 
-const DATA = [
-  { id: 1 },
-  { id: 2 },
-  { id: 3 },
-  { id: 4 },
-  { id: 5 },
-  { id: 6 },
-  { id: 7 },
-  { id: 8 },
-  { id: 9 },
-  { id: 10 },
-];
 
-const Header_Max_Height = 160;
-const Header_Min_Height = 80;
-const Scroll_Distance = Header_Max_Height - Header_Min_Height;
+const { height: SCREEN_HEIGHT } = Dimensions.get('window');
 
-const HeaderBanner = ({ value}: any) => {
-  const [avatarPath, setAvatarPath] = useState<string>('');
-
-  const handleImageSelect = (imagePath: string) => {
-    setAvatarPath(imagePath);
-  };
-
-  const animatedHeaderHeight = value.interpolate({
-    inputRange: [0, Scroll_Distance],
-    outputRange: [Header_Max_Height, Header_Min_Height],
-    extrapolate: 'clamp',
-  });
-
-  const animatedHeaderColor = value.interpolate({
-    inputRange: [0, Scroll_Distance],
-    outputRange: ['#181D31', '#678983'],
-    extrapolate: 'clamp',
-  });
-
-  const avatarTop = animatedHeaderHeight.interpolate({
-    inputRange: [Header_Min_Height, Header_Max_Height],
-    outputRange: [-200, Header_Min_Height],
-    extrapolate: 'clamp',
-  });
-
-  return (
-    <Animated.View
-      style={[
-        styles.header,
-        {
-          height: animatedHeaderHeight,
-          backgroundColor: animatedHeaderColor,
-        },
-      ]}
-    >
-      
-      <Animated.View style={[styles.avatar, {
-        top: avatarTop,
-        zIndex: 1,
-        backgroundColor: 'transparent',
-      },]}>
-        {/* {showHeaderTitle && <Text style={styles.title}>hehe</Text>} */}
-        <UpLoadAvatar initialImage={avatarPath} onImageSelect={handleImageSelect} />
-      </Animated.View>
-    </Animated.View>
-  );
-};
+const Tab = createMaterialTopTabNavigator();
 
 const TestProfile = () => {
-  const navigation = useNavigation();
-  useEffect(() => {
-    navigation.getParent()?.setOptions({ tabBarStyle: {display:'none'}});
-  }, []);
   const { user } = useMyContext();
+  const navigation = useNavigation();
+  const navigation2: NavigationProp<ParamListBase> = useNavigation();
   const scrollOffsetY = useRef(new Animated.Value(0)).current;
+  const headerHeight = 400; // Chiều cao của header
+  const tabBarHeight = 80; // Chiều cao của tab bar
+  const [currentTab, setCurrentTab] = useState('MyPost'); // Khởi tạo tab mặc định
+  const [tabBarPosition, setTabBarPosition] = useState(headerHeight);
 
-  const handleToCreatStory = () => {
-  }
+  const userID = user.id;
+  const token = user.token;
+  const [userData, setUserData] = useState<any>();
+  let dateOfBirth = useState(null);
+  const nameUser = user.fullname;
+
+  useEffect(() => {
+    navigation.setOptions({
+      headerShown: true,
+      title: nameUser,
+      headerTitleAlign: 'center',
+    });
+  }, [navigation]);
+
+  useFocusEffect(
+    React.useCallback(() => {
+      const fetchUserData = async () => {
+        try {
+          const response = await getUSerByID(userID, token);
+          setUserData(response);
+          //console.log("response: ", response);
+          dateOfBirth = response.dateOfBirth;
+        } catch (error) {
+          console.log(error);
+        }
+      };
+      fetchUserData();
+    }, [setUserData])
+  );
+
+
+  useEffect(() => {
+    navigation.getParent()?.setOptions({ tabBarStyle: { display: 'none' } });
+  }, [user]);
+
+  const handleToCreateStory = () => {
+    
+  };
+
+  const handleScroll = Animated.event(
+    [{ nativeEvent: { contentOffset: { y: scrollOffsetY } } }],
+    { useNativeDriver: true }
+  );
+
+  const headerComponent = useMemo(() => {
+    if (!userData) return null;
+
+    return (
+      <>
+        <HeaderBanner value={scrollOffsetY} userId={user.id} />
+        <View style={{marginTop:220}}></View>
+          <ProfileHeader
+          fullname={userData.fullname}
+          userId={user.id} 
+          loggedInUserId={user.id}/>
+      </>
+    );
+  }, [userData, scrollOffsetY, navigation]);
+  const tabBarY = useMemo(() => {
+    return scrollOffsetY.interpolate({
+      inputRange: [0, headerHeight],
+      outputRange: [tabBarPosition, 0],
+      extrapolate: 'clamp',
+    });
+    
+  }, [headerHeight, scrollOffsetY, tabBarPosition]);
+  
+  // const handleTabChange = (tab: any) => {
+  //   setCurrentTab(tab);
+  //   const currentScrollY = scrollOffsetY._value; // Lấy giá trị của scrollOffsetY
+  //   setTabBarPosition(currentScrollY > headerHeight ? currentScrollY : headerHeight);
+  //   console.log(tabBarPosition)
+  //   console.log(currentScrollY);
+    
+  // };
+  const handleTabChange = (tab: any) => {
+    if (currentTab !== tab) {
+      setCurrentTab(tab);
+      console.log(tabBarPosition)
+      console.log(scrollOffsetY._value);
+      if (tabBarPosition === 0) {
+        setTabBarPosition(0);
+        //console.log('hihi')
+      } else {
+        setTabBarPosition(headerHeight); // Cập nhật lại vị trí tabBar khi chuyển tab
+      }
+    }
+  };
+  
+  const MyPostScreen = () => (
+    <View style={{ flex: 1 }}>
+      {userData && <ProfileDetailData userData={userData} />}
+      <ListPortsByUser onRefresh={false} userId = {userID} />
+    </View>
+  );
+
+  const MyMediaScreen = () => (
+    <View style={{ paddingTop:20}}>
+      <MediaOfUser userId={userID} onRefresh={false}/>
+    </View>
+  );
+
 
   return (
     <View style={styles.container}>
-      <HeaderBanner value={scrollOffsetY} />
-      <ScrollView
-        style={styles.scrollView}
-        contentContainerStyle={styles.scrollViewContent}
-        scrollEventThrottle={16}
+      {/* <ScrollView
         showsVerticalScrollIndicator={false}
-        onScroll={Animated.event(
-          [{ nativeEvent: { contentOffset: { y: scrollOffsetY } } }],
-          { useNativeDriver: false}
-        )}
+        onScroll={handleScroll}
+        scrollEventThrottle={16}
+        //contentContainerStyle={{ paddingBottom: tabBarHeight }}
       >
-        <View style={[styles.inForContainer]}>
-          <Text style={[styles.txtName,]}>{user.fullname}</Text>
-          <Text style={[styles.txtBirthDay,]}>Ngày sinh {formattedDate(user.dateOfBirth)}</Text>
-          <TouchableOpacity style={styles.btnToStory} onPress={handleToCreatStory}>
-              <Text style={{color:"#fff",fontSize:18,fontWeight:'700'}}>Thêm vào tin</Text>
+        {renderHeader()}
+        <View style={{ flexDirection: 'column', justifyContent: 'space-between', paddingTop:tabBarHeight }}></View>
+        {currentTab === 'MyPost' && <MyPostScreen />}
+        {currentTab === 'Reviews' && <ReviewScreen />}
+        {currentTab === 'Events' && <EventScreen />}
+      </ScrollView> */}
+      <Animated.FlatList
+        data={['MyPost', 'Media', 'Events']}
+        renderItem={({ item }) => (
+          <View style={{ flex: 1 }} key={item}>
+
+            {currentTab === item && (
+              <View style={{ minHeight: SCREEN_HEIGHT - headerHeight - tabBarHeight }}>
+
+                <View style={{ paddingTop:tabBarHeight }}></View>
+                {item === 'MyPost' && <MyPostScreen />}
+                {item === 'Media' && <MyMediaScreen />}
+                {item === 'Events' && <EventScreen />}
+              </View>
+            )}
+          </View>
+        )}
+        keyExtractor={(item) => item}
+        showsVerticalScrollIndicator={false}
+        onScroll={handleScroll}
+        scrollEventThrottle={16}
+        ListHeaderComponent={headerComponent}
+      />
+      
+      <Animated.View style={[styles.tabContainer, { transform: [{ translateY: tabBarY }] }]}>
+        <Tab.Navigator
+          screenOptions={{
+            tabBarStyle: {
+              backgroundColor: '#ffffff',
+              elevation: 0,
+              shadowOpacity: 0,
+            },
+            tabBarLabelStyle: {
+              fontSize: 14,
+              fontWeight: 'bold',
+            },
+            tabBarIndicatorStyle: {
+              backgroundColor: '#007AFF',
+            },
+          }}
+          initialRouteName="MyPost"
+          tabBar={(props) => (
+            <TabBar
+              {...props}
+              currentTab={currentTab}
+              handleTabChange={handleTabChange}
+            />
+          )}
+        >
+          <Tab.Screen name="MyPost" component={MyPostScreen} options={{ tabBarLabel: 'Bài viết' }} />
+          <Tab.Screen name="Media" component={MyMediaScreen} options={{ tabBarLabel: 'Hình ảnh' }} />
+          <Tab.Screen name="Events" component={EventScreen} options={{ tabBarLabel: 'Video' }} />
+        </Tab.Navigator>
+      </Animated.View>
+    </View>
+  );
+};
+
+
+const EventScreen = () => (
+  <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+
+  </View>
+);
+
+const TabBar = ({ state, descriptors, navigation, currentTab, handleTabChange }: any) => {
+  return (
+    <View style={styles.tabBar}>
+      {state.routes.map((route: any, index: number) => {
+        const { options } = descriptors[route.key];
+        const label = options.tabBarLabel !== undefined ? options.tabBarLabel : options.title !== undefined ? options.title : route.name;
+
+        const isFocused = state.index === index;
+
+        return (
+          <TouchableOpacity
+          key={route.key}
+            style={styles.tabItem}
+            onPress={() => {
+              const event = navigation.emit({
+                type: 'tabPress',
+                target: route.key,
+                canPreventDefault: true,
+              });
+
+              if (!isFocused && !event.defaultPrevented) {
+                handleTabChange(route.name);
+                navigation.navigate(route.name);
+              }
+            }}
+          >
+            <Text style={[styles.tabText, { color: isFocused ? '#007AFF' : '#333333' }]}>{label}</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.btnToEdit} onPress={() => navigation.navigate('EditProfileScreen')}>
-              <Icon name="edit" size={24} color="#000" style={{marginRight:10}}/>
-              <Text style={{color:"#000",fontSize:18,fontWeight:'700'}}>Chỉnh sửa trang cá nhân</Text>
-          </TouchableOpacity>
-        </View>
-        
-        <View style={{flex:1, borderWidth:2, width:'100%', borderColor:'#C0C0C0', marginTop:15}}></View>
-        {/* {DATA.map(val => {
-          return (
-            <View style={styles.card}>
-              <Text style={styles.subtitle}>({val.id})</Text>
-            </View>
-          );
-        })} */}
-        <ListPorts />
-      </ScrollView>
+        );
+      })}
     </View>
   );
 };
@@ -126,80 +243,37 @@ const TestProfile = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor:'#fff'
   },
-  header: {
-    justifyContent: 'center',
-    alignItems: 'center',
+  tabContainer: {
     position: 'absolute',
     left: 0,
     right: 0,
-    paddingTop: 25,
+    top: 0,
+    height: 50,
+    backgroundColor: '#ffffff',
+    borderTopWidth: 1,
     zIndex: 1,
+    borderBottomWidth:1,
+    borderColor:'#dddddd'
+    //elevation: 8,
   },
-  avatar: {
-    position: 'absolute',
-    left: 20,
-    zIndex: 2,
-    backgroundColor: 'transparent'
+  tabBar: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    alignItems: 'center',
+    height: '100%',
+    paddingHorizontal: 10,
   },
-  title: {
-    color: '#ffffff',
-    fontWeight: 'bold',
-    fontSize: 20,
-  },
-  scrollView: {
+  tabItem: {
     flex: 1,
-    backgroundColor: '#fff',
-  },
-  scrollViewContent: {
-    paddingTop: Header_Max_Height,
-  },
-  card: {
-    height: 100,
-    backgroundColor: '#E6DDC4',
-    marginTop: 10,
     justifyContent: 'center',
     alignItems: 'center',
-    marginHorizontal: 10,
   },
-  subtitle: {
-    color: '#181D31',
-    fontWeight: 'bold',
-  },
-  inForContainer:{
-    marginTop: 60,
-    paddingHorizontal: 20,
-  },
-  txtName: {
-    color: '#000',
-    fontSize: 24,
-    fontWeight: 'bold',
-  },
-  txtBirthDay: {
-    marginVertical:8,
+  tabText: {
     fontSize: 16,
-    color: 'gray',
+    fontWeight: 'bold',
   },
-  btnToStory: {
-    borderRadius:10,
-    backgroundColor:'#6A5ACD',
-    height:40,
-    width:'100%',
-    alignItems:'center',
-    justifyContent:'center',
-    marginTop:10,
-  },
-  btnToEdit: {
-    borderRadius:10,
-    backgroundColor:'#C0C0C0',
-    height:40,
-    width:'100%',
-    alignItems:'center',
-    justifyContent:'center',
-    marginTop:10,
-    flexDirection:'row',
-  }
-
 });
 
 export default TestProfile;

@@ -95,7 +95,7 @@ const ForgotPassword:React.FC = () => {
             </View>
         <View style={{ flexDirection: "row", paddingVertical: 75 }}>
             <View style={{position:"absolute",right:0,top:0}}>
-                <Image source={require('../media/Dicons/Ellipse.png')}/>
+                <Image source={require('../media/Dicons/elip.png')}/>
             </View>
             <View style={[styles.viewAll]}>
                 <Text style={styles.txt1}>Bạn quên mật khẩu?</Text>

@@ -119,7 +119,9 @@ dependencies {
         implementation jscFlavor
     }
 
-    //call-videocall--videosdk
+    //notification
+        implementation project(':react-native-notifications')
+        implementation 'com.google.firebase:firebase-core:16.0.0'
     
 }
 

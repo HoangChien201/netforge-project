@@ -259,7 +259,6 @@ const CommentItem = ({ comment, onReply, depth = 0, render, parent, setText, set
             <ModalOtherDelete
                 isVisible={isOtherDleteVisible}
                 onCancel={() => setIsOtherDleteVisible(false)} />
-
         </View>
     );
 };

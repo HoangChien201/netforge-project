@@ -2,8 +2,6 @@ import React from "react";
 
 import ProfileScreen from "../../screens/ProfileScreen";
 import EditProfileScreen from "../../screens/EditProfileScreen";
-import CustomBackButton from "../profile/CustomHeaderBar";
-import Live from "../../screens/Live";
 import SettingScreen from "../../screens/profile/SettingScreen";
 import HistoryActivityScreen from "../../screens/profile/HistoryActivityScreen";
 import HelpScreen from "../../screens/profile/HelpScreen";
@@ -12,13 +10,16 @@ import MenuScreen from "../../screens/MenuScreen";
 import NaviStack from "../../component/stack/NaviStack"
 import ChangePassword from "../../screens/ChangePassword";
 import QRcodeScreen from "../../screens/QRcodeScreen";
-import Scanner from "../../screens/Scanner";
+import HomeScreen from "../../screens/HomeScreen";
+import LiveStreamScreen from "../../screens/LiveStreamScreen";
+import LiveStack from "./LiveStack";
+import FriendProfile from "../profile/FriendProfile";
 
 export enum ProfileRootStackEnum {
     ProfileScreen = 'ProfileScreen',
     EditProfileScreen = 'EditProfileScreen',
     FollowingScreen = 'FollowingScreen',
-    Live = 'Live',
+    LiveStreamScreen = 'LiveStreamScreen',
     SettingScreen = 'SettingScreen',
     HistoryActivityScreen = 'HistoryActivityScreen',
     HelpScreen = 'HelpScreen',
@@ -27,21 +28,26 @@ export enum ProfileRootStackEnum {
     ChangePassword = 'ChangePassword',
     QRcodeScreen = 'QRcodeScreen',
     Scanner = 'Scanner',
+    HomeScreen = 'HomeScreen',
+    LiveStack = 'LiveStack',
+    FriendProfile = 'FriendProfile',
 
 }
 
 export type ProfileRootStackParams={
-    ProfileScreen : undefined;
-    EditProfileScreen: undefined;
-    Live : undefined;
-    SettingScreen : undefined;
-    HistoryActivityScreen : undefined;
-    HelpScreen : undefined;
-    NaviStack :undefined,
-    MenuScreen:undefined;
-    ChangePassword: undefined;
-    QRcodeScreen: undefined;
-    Scanner: undefined;
+    [ProfileRootStackEnum.ProfileScreen]: undefined;
+    [ProfileRootStackEnum.EditProfileScreen]: undefined;
+    [ProfileRootStackEnum.SettingScreen]: undefined;
+    [ProfileRootStackEnum.HistoryActivityScreen]: undefined;
+    [ProfileRootStackEnum.HelpScreen]: undefined;
+    [ProfileRootStackEnum.MenuScreen]: undefined;
+    [ProfileRootStackEnum.NaviStack]: undefined;
+    [ProfileRootStackEnum.ChangePassword]: undefined;
+    [ProfileRootStackEnum.QRcodeScreen]: undefined;
+    [ProfileRootStackEnum.HomeScreen]: undefined;
+    [ProfileRootStackEnum.LiveStreamScreen]: undefined;
+    [ProfileRootStackEnum.LiveStack]: undefined;
+    [ProfileRootStackEnum.FriendProfile]: undefined;
 }
 
 export const ProfileRootStackScreens=[
@@ -133,21 +139,43 @@ export const ProfileRootStackScreens=[
     },
     {
         id: Math.random() + "" + Date,
-        name: ProfileRootStackEnum.Scanner,
-        component: Scanner,
+        name: ProfileRootStackEnum.HomeScreen,
+        component: HomeScreen,
         options: {
-            title:"Scanner",
-            headerTitleAlign:'center'
+            headerShown: false
         }
-    }
-    // {
-    //     id: Math.random() + "" + Date,
-    //     name: ProfileRootStackEnum.Live,
-    //     component: Live,
-    //     options: {
-    //         headerShown: true,
-    //         tabBarShowLabel: false,
-    //     }
-    // }
+    },
+    {
+        id: Math.random() + "" + Date,
+        name: ProfileRootStackEnum.LiveStreamScreen,
+        component: LiveStreamScreen,
+        options: {
+            headerShown: true,
+            tabBarShowLabel: false,
+        
+        }
+    },
+    {
+        id: Math.random() + "" + Date,
+        name: ProfileRootStackEnum.LiveStack,
+        component: LiveStack,
+        options: {
+            headerShown: true,
+            tabBarShowLabel: false,
+        
+        }
+    },
+    {
+        id: Math.random() + "" + Date,
+        name: ProfileRootStackEnum.FriendProfile,
+        component: FriendProfile,
+        options: {
+            headerShown: true,
+            // headerLeft: () => null,
+            title:"Trang cá nhân",
+            headerTitleAlign:'center'
+            
+        }
+    },
     
 ]

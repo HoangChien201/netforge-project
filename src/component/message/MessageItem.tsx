@@ -1,23 +1,26 @@
-import { FlatList, Image, Modal, Pressable, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
-import React, { useEffect, useRef, useState } from 'react'
-import Video, { VideoRef } from 'react-native-video';
-
-import MessageText from './MessageText'
+import { Image, StyleSheet, Text, TouchableOpacity, View, useWindowDimensions } from 'react-native'
+import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import { COLOR } from '../../constant/color'
 import { CreateTime } from './format/FormatDate'
-import { EmojiReaction } from '../../constant/emoji'
 import ReactionOptionComponent from './ReactionOptionComponent'
 import ReactionsComponent from './ReactionsComponent'
 import MessageItemContent from './MessageItemContent';
-import { user } from '../../screens/message/MessageScreen';
 import { addMessageAPI } from '../../http/ChienHTTP';
+import PortalMessage from './PortalMessage'
+import { MessageCordinatesType } from '../../screens/message/MessageScreen'
+import StateMessage from './StateMessage'
 
 export type messageType = {
   id: number,
   create_at: string,
   update_at: string,
   state: number,
-  message: string,
+  message: string |
+  {
+    uri: string,
+    type: string,
+    fileName: string
+  },
   type: string,
   sender: {
     id: number,
@@ -25,6 +28,7 @@ export type messageType = {
     avatar: string
   },
   reactions: Array<reactionType>
+  group: number
 }
 
 export type reactionType = {
@@ -32,70 +36,97 @@ export type reactionType = {
   reaction: number
 }
 
-const MessageItem = ({ messsage, sender,group_id }: { messsage: messageType, sender: boolean,group_id:number }) => {
-  const [showReaction, setShowReaction] = useState(false);
+interface MessageItemProp {
+  setSelectedMessage: any,
+  message: messageType,
+  sender: boolean,
+  group_id: number,
+  setMessageCordinate: any
+}
+
+const MessageItem: React.FC<MessageItemProp> = ({ message, sender, group_id }) => {
+  const { height } = useWindowDimensions()
+  const [heightLayout, setHeightLayout] = useState()
+  const [showState, setShowState] = useState(false)
   const [reactions, setReactions]
     = useState(
-      messsage.reactions
+      message.reactions
     )
-  useEffect(()=>{
-    if(messsage.state === 0){
-      
-      addMessage()
-    }
-  },[messsage.state])
+  //
+  const [selectedMessage, setSelectedMessage] = useState<messageType | null>(null)
+  const [messageCordinates, setMessageCordinates] = useState<MessageCordinatesType>({ x: 0, y: 0 })
 
-  async function addMessage(){
-    messsage.state=1;
-    messsage['group']=group_id
-    const result = await addMessageAPI(messsage)
-    
-  }
+
+
 
   function ContentOnPress() {
-    console.log('ContentOnPress');
+    setShowState(prev => {
+      if (prev) return false
+      return true
+    })
 
   }
 
-  function ContentOnLongPress() {
-    console.log('ContentOnLongPress');
+  function ContentOnLongPress(e: any) {
+    const { pageY, locationY } = e.nativeEvent;
 
+    let y = pageY - locationY
+
+    const isPassTopScreen = y < 100
+    const isPassBottomScreen = height - y < heightLayout + 100
+
+    if (isPassBottomScreen) {
+      y = y - heightLayout + locationY
+    }
+    if (isPassTopScreen) {
+      y = y + heightLayout
+    }
+
+    setMessageCordinates({
+      x: 10,
+      y: y,
+    })
+    setSelectedMessage({ ...message, reactions })
     //show component option reaction
-    setShowReaction(true)
 
   }
 
 
   function OptionReactionOnSubmit({ status, reactionCurrent }: { status: number, reactionCurrent: reactionType }) {
+    console.log('reaction', reactionCurrent);
+
     switch (status) {
       //add reaction
       case 1:
-        setReactions(prevValue=>{
-          return [...prevValue,reactionCurrent]
+        setReactions(prevValue => {
+          return [...prevValue, reactionCurrent]
         })
+        setSelectedMessage(null)
         break;
       //change reaction
       case 2:
-        setReactions(prevValue=>{
-          return prevValue.map(rct=>{
-            if(parseInt(rct.user.toString()) === parseInt(reactionCurrent.user.toString())){
-              return {...rct,...reactionCurrent}
+        setReactions(prevValue => {
+          return prevValue.map(rct => {
+            if (parseInt(rct.user.toString()) === parseInt(reactionCurrent.user.toString())) {
+              return { ...rct, ...reactionCurrent }
             }
             return rct;
           })
         })
+        setSelectedMessage(null)
+
         break;
       //remove reaction
       case 3:
-        setReactions(prevValue=>{
-          return prevValue.filter(rct=>parseInt(rct.user.toString()) !== parseInt(reactionCurrent.user.toString()) )
+        setReactions(prevValue => {
+          return prevValue.filter(rct => parseInt(rct.user.toString()) !== parseInt(reactionCurrent.user.toString()))
         })
+        setSelectedMessage(null)
+
         break;
       default:
         break;
     }
-    //close component option reaction
-    setShowReaction(false)
   }
 
   function AvatarOnPress() {
@@ -103,36 +134,48 @@ const MessageItem = ({ messsage, sender,group_id }: { messsage: messageType, sen
 
   }
 
+  function onLayout(e: any) {
+    const { height } = e.nativeEvent.layout
+    setHeightLayout(height)
+  }
 
   return (
     <View style={[styles.container, { flexDirection: sender ? 'row-reverse' : 'row' }]}>
       {
         !sender &&
-        <TouchableOpacity style={styles.avatarContainer} onPress={AvatarOnPress}>
-          <Image style={styles.avatar} source={{ uri: messsage.sender.avatar }} />
+        <TouchableOpacity activeOpacity={0.9} style={styles.avatarContainer} onPress={AvatarOnPress}>
+          <Image style={styles.avatar} source={{ uri: message.sender.avatar }} />
         </TouchableOpacity>
       }
 
       <View style={{ paddingHorizontal: 10 }}>
 
 
-        <ReactionOptionComponent show={showReaction} ontionOnpress={OptionReactionOnSubmit} reactionOfMsg={messsage.reactions} />
-        <Pressable
+        <TouchableOpacity
+          activeOpacity={0.9}
           style={styles.content}
           onPress={ContentOnPress}
           onLongPress={ContentOnLongPress}
+          onLayout={onLayout}
         >
-          <MessageItemContent message={messsage} sender={sender} />
+          <MessageItemContent message={message} sender={sender} />
           {
             reactions && reactions.length > 0 &&
             <ReactionsComponent reactions={reactions} />
 
           }
-        </Pressable>
-        <View>
-          <Text style={styles.createTime}>{CreateTime(messsage.create_at)}</Text>
-        </View>
+        </TouchableOpacity>
+        {
+          <StateMessage message={message} group_id={group_id} />
+        }
       </View>
+
+      <PortalMessage
+        selectedMessage={selectedMessage}
+        messageCordinates={messageCordinates}
+        setSelectedMessage={setSelectedMessage}
+        optionReactionOnSubmit={OptionReactionOnSubmit}
+      />
     </View>
 
   )
@@ -141,10 +184,12 @@ const MessageItem = ({ messsage, sender,group_id }: { messsage: messageType, sen
 export default MessageItem
 
 const styles = StyleSheet.create({
+  status: {
 
+  },
   content: {
     minWidth: 0,
-    maxWidth:210
+    maxWidth: 210
   },
   createTime: {
     color: '#D9D9D8',
@@ -162,10 +207,10 @@ const styles = StyleSheet.create({
     width: 50,
   },
   container: {
-    minHeight: 80,
+    minHeight: 50,
     width: '100%',
-    marginVertical: 10,
     flexDirection: 'row',
+    marginVertical: 5
   },
 
 
