@@ -9,10 +9,10 @@ const ItemPost =  memo(({ index, data,onrefresh }) => {
     const { creater, share_count, reaction, content, media, comment_count, create_at, id,like_count } = data;
 
    const fommatContent = ()=>{
-    const fomat = content.split(/@\[([^\]]+)\]\(\d+\)/g)
+    const fomat = content?.split(/@\[([^\]]+)\]\(\d+\)/g)
     return (
         <View  style={{ marginHorizontal: 20, paddingBottom: media ? 0 : 20,flexDirection:'row',flexWrap:'wrap' }}>
-          {fomat.map((fomat, index) => {
+          {fomat?.map((fomat, index) => {
             if (index % 2 === 1) {
               return (
                 <Text key={index} style={{ color: 'black',fontWeight:'bold' }}>{fomat}</Text>

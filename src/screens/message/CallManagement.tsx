@@ -19,6 +19,7 @@ import {
   RtcSurfaceView,
 } from 'react-native-agora';
 import { useMyContext } from '../../component/navigation/UserContext';
+import Animated, { Easing, useAnimatedStyle, withTiming } from 'react-native-reanimated';
 
 // Define basic information
 const appId = '86ad32b787104827bb27995057914d87';
@@ -136,11 +137,23 @@ const CallManagement = () => {
     }
   }
 
+  const animatedStyled=useAnimatedStyle(()=>{
+    return {
+        transform: [
+            {
+                translateX: withTiming(100,
+                    { duration: 1000,easing:Easing.linear }
+                )
+            },
+          ]
+    
+    }
+  })
 
   // Render the user interface
   return (
     <SafeAreaView style={styles.main}>
-      <Text style={styles.head}>Agora Voice Call Quick Start</Text>
+      {/* <Text style={styles.head}>Agora Voice Call Quick Start</Text>
       <View style={styles.btnContainer}>
         <TouchableOpacity onPress={join}>
           <Text style={styles.button}>
@@ -196,7 +209,13 @@ const CallManagement = () => {
           <Text>{isJoined && !isHost ? 'Waiting for remote users to join' : ''}</Text>
         )}
         <Text style={styles.info}>{message}</Text>
-      </ScrollView>
+      </ScrollView> */}
+
+      <Animated.View 
+      style={animatedStyled}
+        > 
+        <Text>AHHA</Text>
+      </Animated.View>
     </SafeAreaView>
   );
 
