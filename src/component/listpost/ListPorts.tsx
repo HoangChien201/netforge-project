@@ -2,9 +2,13 @@ import { FlatList, View, StyleSheet, ActivityIndicator } from 'react-native';
 import React, { memo,useCallback, useEffect, useState } from 'react';
 import ItemPost from './ItemPost';
 import { getAll } from '../../http/userHttp/getpost';
+
 import { useMyContext } from '../navigation/UserContext';
 import { NavigationProp, ParamListBase, useNavigation } from '@react-navigation/native';
 import { ProfileRootStackEnum } from '../stack/ProfileRootStackParams';
+import { COLOR } from '../../constant/color';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import Loading from '../Modal/Loading';
 
 const ListPorts = memo(({ onrefresh }:{onrefresh:boolean}) => {
   const [allData, setAllData] = useState<any>([]);
@@ -17,11 +21,15 @@ const ListPorts = memo(({ onrefresh }:{onrefresh:boolean}) => {
   const navigation: NavigationProp<ParamListBase> = useNavigation();
 
   const PAGE_SIZE = 10;
-
+ 
   const getAllPost = useCallback(async () => {
+    const token = await AsyncStorage.getItem('token');
     setLoading(true);
     try {
-      const response:any = await getAll();
+
+      const response:any = await getAll(token);
+      console.log("res",response);
+      
       if (response) {
         setAllData([...response]);
         setDisplayData([...response.slice(0, PAGE_SIZE)]);
@@ -80,6 +88,7 @@ const handleToProfile = (userId: React.SetStateAction<null>) => {
 };
   return (
     <View style={{ backgroundColor: 'rgba(155,155,155,0.2)' }}>
+      <Loading isLoading={loading}/>
       <FlatList
         data={displayData}
         renderItem={({ item, index }) => {

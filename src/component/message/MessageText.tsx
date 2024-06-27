@@ -4,7 +4,7 @@ import { COLOR } from '../../constant/color'
 
 const MessageText = ({ text,sender }: { text: string,sender:boolean }) => {
     return (
-        <View style={[styles.container,{backgroundColor:sender ? COLOR.backgroundMessageSender : COLOR.backgroundMessageReceier}]}>
+        <View pointerEvents='none' style={[styles.container,{backgroundColor:sender ? COLOR.PrimaryColor : COLOR.backgroundMessageReceier}]}>
             <Text style={[styles.text,{color:sender ? '#fff' : '#000'}]}>{text}</Text>
         </View>
     )

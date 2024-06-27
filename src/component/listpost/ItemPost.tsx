@@ -61,6 +61,7 @@ const ItemPost =  memo(({ index, data,onrefresh, userId, onPressProfile  }) => {
     // };
 
     return (
+        <>
         <Pressable onPress={handleItemPress}   style={{ marginBottom: 6, backgroundColor: "#fff" }}>
             <TouchableOpacity  onPress={handleToProfile}>
                 <View style={styles.home}>
@@ -90,8 +91,9 @@ const ItemPost =  memo(({ index, data,onrefresh, userId, onPressProfile  }) => {
             {media.length > 0 ? <ItemImg image={media} /> : null}
             <ActionBar checkLike={checkLike} setCheckLike={setCheckLike}  postId={id} type={reaction} comment_count={comment_count} share_count={share_count} like_count={like_count}  />
             
-
         </Pressable>
+      
+        </>
     );
 });
 

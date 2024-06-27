@@ -17,7 +17,7 @@ const CreatePostScreen = () => {
   const [isError, setIsError] = useState(false);
   const { user} = useMyContext();
   const [friends, setFriends] = useState([]);
-  const [content, setContent] = useState('chào anh bé an khờ');
+  const [content, setContent] = useState('');
   // const [tags, setTags] = useState([]);
   const [media, setMedia] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -119,7 +119,7 @@ const CreatePostScreen = () => {
 
   }
 
-  const uries = media.map((file: fileType) => file.uri)
+
 
   return (
     <KeyboardAvoidingView style={styles.container}>
@@ -127,12 +127,12 @@ const CreatePostScreen = () => {
       <View style={styles.header} >
         <Text style={styles.headerText}>Tạo bài viết</Text>
         <TouchableOpacity onPress={uploadPost} >
-          <Text style={styles.headerPostText} >Lưu</Text>
+          <Text style={styles.headerPostText} >Đăng</Text>
         </TouchableOpacity>
       </View>
       <BODY content={content}
         setContent={setContent}
-        media={uries}
+        media={media}
         setMedia={setMedia}
         permission={permission}
         setPermission={setPermission}
@@ -169,13 +169,13 @@ const styles = StyleSheet.create({
     marginHorizontal: 16
   },
   headerText: {
-    color: 'white',
+    color: '#f8f7fc',
     fontWeight: '600',
     fontSize: 23,
 
   },
   headerPostText: {
-    color: 'white',
+    color: '#f8f7fc',
     fontWeight: '400',
     fontSize: 24
 

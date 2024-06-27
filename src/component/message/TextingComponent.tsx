@@ -9,7 +9,6 @@ import { useMyContext } from '../navigation/UserContext';
 
 const TextingComponent = ({addMessage}:{addMessage:any}) => {
     const [valueInput, setValueInput] = useState<string>()
-    const [media,setMedia] = useState<string>()
     const {user} = useMyContext()
     function onSubmit(messageArg?:any | null) {
         const message={

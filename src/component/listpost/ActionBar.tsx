@@ -7,11 +7,11 @@ import * as Animatable from 'react-native-animatable';
 import { deleteLikePost, likePost, updateLikePost } from '../../http/userHttp/getpost';
 import { useMyContext } from '../navigation/UserContext';
 
-const ActionBar = memo(({ like_count,type, postId, comment_count, share_count,checkLike,setCheckLike }: {setCheckLike:(Value:boolean)=>void,checkLike:boolean,type: number, postId: number, comment_count: number, share_count: number,like_count:number }) => {
+const ActionBar = memo(({ like_count,type, postId, comment_count, share_count,checkLike,setCheckLike }: {setCheckLike:(Value:boolean)=>void,checkLike?:boolean,type: number, postId?: number, comment_count?: number, share_count?: number,like_count?:number }) => {
     const [islike, setIsLike] = useState(false);
     const navigation = useNavigation();
     const {user}= useMyContext()
-    const [numberLike, setNumberLike] = useState<number>(1000);
+    const [numberLike, setNumberLike] = useState<number>(like_count);
     const [number, setNumber] = useState<number | null>(type);
     const animationRef = useRef(null);
     function navigationScreen(screen: string) {
@@ -89,6 +89,7 @@ const ActionBar = memo(({ like_count,type, postId, comment_count, share_count,ch
                     <TouchableOpacity onLongPress={OnPressIcon} onPress={() => {
                           deleteLike(postId)
                           setNumber(null)
+                          numberLike === null ? setNumberLike(0) : setNumberLike((pre)=>pre-1)
                           setIsLike(false)
                           setCheckLike(false)
                     }
@@ -110,6 +111,7 @@ const ActionBar = memo(({ like_count,type, postId, comment_count, share_count,ch
                             <Pressable onLongPress={OnPressIcon} onPress={() => {
                                 setNumber(1);
                                 likepost(postId, 1);
+                                numberLike === null ? setNumberLike(1) : setNumberLike(pre=>pre+1)
                                 setIsLike(false)
                             }}>
                                 <AntDesignIcon name='like2' size={22} color='#000' />
@@ -119,7 +121,7 @@ const ActionBar = memo(({ like_count,type, postId, comment_count, share_count,ch
                             {ViewReaction(number,postId)}
                         </View>
                     }
-                    <Text style={styles.text}>{format(like_count)}</Text>
+                    <Text style={styles.text}>{numberLike === null ? 0 : format(numberLike)}</Text>
                 </View>
                 <TouchableOpacity onPress={()=> navigation.navigate('CommentsScreen',{postId})} style={{ flexDirection: 'row', alignItems: 'center', marginHorizontal: 20 }}>
                     <AntDesignIcon name='message1' size={24} color='#000' style={styles.comment} />
@@ -144,6 +146,7 @@ const ActionBar = memo(({ like_count,type, postId, comment_count, share_count,ch
                             <TouchableOpacity key={index} style={{ paddingHorizontal: 8 }} onPress={() => {
                                 setNumber(item.type);
                                 setIsLike(false)
+                                numberLike === null ? setNumberLike(1) : setNumberLike(pre=>pre+1) 
                                number === null ? likepost(postId, item.type):updatePost(postId,item.type)
                             }}>
                                 <Image source={item.Emoji} style={{ width: 23, height: 23, marginVertical: 6 }} />

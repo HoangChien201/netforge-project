@@ -19,11 +19,16 @@ const CommentHistories: React.FC<Comment> = ({ dataComment }) => {
     const showPostModal = () => {
         setShowModal(true);
         console.log('click');
-        
+
     }
     return (
         <View style={styles.container}>
-            {sortedData.length > 0 ? (
+            {!sortedData ? (
+                <View>
+                    <Text style={styles.textEmpty}>Bạn chưa có hoạt động nào</Text>
+                </View>
+            ) : (
+
                 <View style={styles.listContainer}>
                     {sortedData.map((item: { content: any; create_at: any; }, index: { toString: () => React.Key | null | undefined; }) => (
                         <View key={index.toString()} style={styles.itemContainer}>
@@ -38,7 +43,7 @@ const CommentHistories: React.FC<Comment> = ({ dataComment }) => {
                             <View style={styles.contain}>
                                 <Text style={styles.text1} >Bạn đã bình luận về </Text>
                                 <Pressable>
-                                    <Text style={styles.text} onPress={showPostModal }>bài viết</Text>
+                                    <Text style={styles.text} onPress={showPostModal}>bài viết</Text>
                                 </Pressable>
                                 <Text style={styles.text1}> của </Text>
                                 <Text style={styles.text1}> {item.posts.creater.fullname}</Text>
@@ -49,15 +54,11 @@ const CommentHistories: React.FC<Comment> = ({ dataComment }) => {
                             </View>
                         </View>
                     ))}
-                    <Modal visible={showModal} style={{ alignItems: 'center', justifyContent: 'center' }}>
+                    <Modal visible={showModal} animationType="slide"  style={{ alignItems: 'center', justifyContent: 'center' }}>
                         <TouchableOpacity onPress={() => { setShowModal(false) }} style={{ backgroundColor: 'red', height: 40, width: 80 }}>
                             <Text>close modal</Text>
                         </TouchableOpacity>
                     </Modal>
-                </View>
-            ) : (
-                <View>
-                    <Text style={styles.textEmpty}>Bạn chưa có hoạt động nào</Text>
                 </View>
             )}
         </View>
@@ -104,7 +105,7 @@ const styles = StyleSheet.create({
         flex: 1,
         height: 40,
         flexDirection: 'row',
-        flexWrap:'wrap'
+        flexWrap: 'wrap'
 
     },
     listContainer: {
@@ -114,7 +115,7 @@ const styles = StyleSheet.create({
     text: {
         fontSize: 16,
         color: 'black',
-        fontWeight:'bold'
+        fontWeight: 'bold'
     },
     textEmpty: {
         fontSize: 16,
