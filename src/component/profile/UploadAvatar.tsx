@@ -4,7 +4,6 @@ import { launchCamera, launchImageLibrary, CameraOptions, ImageLibraryOptions } 
 import Icon from 'react-native-vector-icons/AntDesign';
 import FontistoIcon from 'react-native-vector-icons/Fontisto';
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons';
-
 import ImagePicker from 'react-native-image-crop-picker';
 import { uploadImage } from '../../http/TuongHttp';
 import { getUSerByID, updateAvatar } from '../../http/PhuHTTP';
@@ -16,10 +15,11 @@ import { useFocusEffect } from '@react-navigation/native';
 
 interface UpLoadAvatarProps {
   initialImage: string; 
-  onImageSelect: (imagePath: string) => void; 
+  onImageSelect: (imagePath: string) => void;
+  userId: any;
 }
 
-const UpLoadAvatar: React.FC<UpLoadAvatarProps> = ({ initialImage, onImageSelect }) => {
+const UpLoadAvatar: React.FC<UpLoadAvatarProps> = ({ initialImage, onImageSelect, userId }) => {
   const {user} = useMyContext();
   const [show, setShow] = useState<boolean>(false);
   const [showModal, setShowModal] = useState(false);
@@ -28,12 +28,14 @@ const UpLoadAvatar: React.FC<UpLoadAvatarProps> = ({ initialImage, onImageSelect
 
     const [userData, setUserData] = useState<any>(null);
     const [image, setImage] = useState<string>('');
+    // console.log("uploadAvatar đăng nhập: ", user.id);
+    // console.log("uploadAvatar của itemPost: ", userId);
 
     useFocusEffect(
         React.useCallback(() => {
             const fetchUserData = async () => {
             try {
-                const response = await getUSerByID(user.id, user.token);
+                const response = await getUSerByID(userId, user.token);
                 setUserData(response);
                 setImage(response.avatar);
             } catch (error) {
@@ -41,19 +43,13 @@ const UpLoadAvatar: React.FC<UpLoadAvatarProps> = ({ initialImage, onImageSelect
             }
             };
             fetchUserData();
-        }, [])
+        }, [userId])
         );
-
-       
-
-
   const onPressModal = () => {
     setShow(true);
   };
 
-
-
-  console.log(user.avatar)
+  //console.log(user.avatar)
 
   const takePhoto = useCallback(async (response: any) => {
     if (response.didCancel) return;
@@ -158,6 +154,7 @@ const UpLoadAvatar: React.FC<UpLoadAvatarProps> = ({ initialImage, onImageSelect
 
   return (
     <View style={styles.container}>
+      {userId === user.id ? ( 
       <TouchableOpacity onPress={handleUpLoadAvatar} style={{ position: 'relative' }}>
         <Image
           source={image ? { uri: image } : require('../../media/icon/avatar.png')}
@@ -167,7 +164,13 @@ const UpLoadAvatar: React.FC<UpLoadAvatarProps> = ({ initialImage, onImageSelect
           <Icon name="camera" size={18} color="#000" />
         </View>
       </TouchableOpacity>
-
+      ) : (
+        <>
+          <Image
+          source={image ? { uri: image } : require('../../media/icon/avatar.png')}
+          style={styles.editAvatar}/>
+        </>
+      )}
       <Modal animationType="slide" transparent={true} visible={show} onRequestClose={() => setShow(false)}>
         <View style={styles.modalContainer}>
           <View style={styles.modalContent}>

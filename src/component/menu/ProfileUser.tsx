@@ -15,14 +15,6 @@ interface user {
     gender:string | null;
   }
 
-const user={
-    avatar:'https://res.cloudinary.com/delivery-food/image/upload/v1717925230/btywul9nnqtzlzjaawrx.jpg',
-    fullname:'Khách Hàng Tuyệt Vời',
-    email:'test@gmail.com',
-    phone:'012334234535',
-    address:'105/45/14 đường số 59, phường 14, Gò Vấp'
-}
-
 const ProfileUser = () => {
     const navigation:NavigationProp<ParamListBase> = useNavigation();
     const {user} = useMyContext();
@@ -45,13 +37,6 @@ const ProfileUser = () => {
         }, [user])
         );
 
-    // const user={
-    //     avatar:'https://res.cloudinary.com/delivery-food/image/upload/v1717925230/btywul9nnqtzlzjaawrx.jpg',
-    //     fullname:'Khách Hàng Tuyệt Vời',
-    //     email:'test@gmail.com',
-    //     phone:'012334234535',
-    //     address:'105/45/14 đường số 59, phường 14, Gò Vấp'
-    // }
     const handleToProfileScreen = () => {
         navigation.navigate(ProfileRootStackEnum.ProfileScreen);
     }

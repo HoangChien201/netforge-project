@@ -13,8 +13,6 @@ interface CustomDatePickerProps {
 const CustomDatePicker:React.FC<CustomDatePickerProps> = ({ selectedDate, onDateChange, error }) => {
   const [isVisible, setIsVisible] = useState(false);
   //const [error, setError] = useState<string | null>(null);
-
-
   const showDatePicker = () => setIsVisible(true);
   const hideDatePicker = () => setIsVisible(false);
   // const handleConfirm = (date: any) => {
@@ -28,7 +26,6 @@ const CustomDatePicker:React.FC<CustomDatePickerProps> = ({ selectedDate, onDate
       onDateChange(date);
       hideDatePicker();
     } else {
-      
       onDateChange(date);
       hideDatePicker();
     }
@@ -54,12 +51,6 @@ const CustomDatePicker:React.FC<CustomDatePickerProps> = ({ selectedDate, onDate
 
 const styles = StyleSheet.create({
   dateButton: {
-    // borderRadius: 6,
-    // borderWidth: 1,
-    // borderColor: '#DDDDDD',
-    // height: 60,
-    // paddingLeft: 35,
-    // backgroundColor:'#F5F5F5',
     margin:9,
     justifyContent:'center',
     borderBottomWidth: 1,
@@ -67,8 +58,6 @@ const styles = StyleSheet.create({
     height: 60,
     paddingLeft: 40,
     overflow: 'hidden',
-    
-
   },
   dateButtonText: {
     marginLeft:5,

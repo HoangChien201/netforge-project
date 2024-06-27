@@ -26,7 +26,7 @@ interface user {
   fullname: string;
   dateOfBirth: any | null;
   phone: null | number;
-  address:null | string;
+  address:string | null;
   gender:string | null;
 }
 
@@ -40,7 +40,7 @@ const validationSchema = yup.object().shape({
   fullname: yup.string()
     .matches(fullNamePattern, 'Tên không hợp lệ!')
     .required('Tên là bắt buộc'),
-  address: yup.string(),
+  address: yup.string().nonNullable(),
   gender: yup.string().oneOf(['--', 'Nam', 'Nữ', 'Khác'])
 });
 
@@ -51,7 +51,7 @@ const validationSchema = yup.object().shape({
     navigation.getParent()?.setOptions({ tabBarStyle: {display:'none'}});
   }, []);
 
-  const {user} = useMyContext();
+  const {user, setUser} = useMyContext();
   const [userData, setUserData] = useState<any>(null);
   const dateOfBirth = user.dateOfBirth;
   const [isEditable, setIsEditable] = useState(false); // Trạng thái chỉnh sửa của InputField
@@ -72,7 +72,6 @@ const validationSchema = yup.object().shape({
   const [initialAddress, setInitialAddress] = useState('');
   const [initialAvatar, setInitialAvatar] = useState<string>('');
 
-
   useFocusEffect(
     React.useCallback(() => {
       const fetchUserData = async () => {
@@ -80,6 +79,7 @@ const validationSchema = yup.object().shape({
           
             const response = await getUSerByID(user.id, user.token);
             setUserData(response);
+            //setUser(response);
             console.log("response nè: ",response);
             setAvatarPath(response.avatar);
         } catch (error) {
@@ -87,18 +87,21 @@ const validationSchema = yup.object().shape({
       };
       fetchUserData();
            }
- }, [user])
+ }, [setUserData, user])
   );
 
-  
+  // useEffect(() => {
+  //   console.log("Updated user:", user); 
+  // }, [user]);
 
-  console.log("initialAvatar: ", initialAvatar);
+  //console.log("initialAvatar: ", initialAvatar);
 
   useEffect(() => {
-    if (user && user.address ) {
-      setInitialAddress(user.address);
+    if (userData && userData.address ) {
+      setInitialAddress(userData.address);
     }
-  }, [user]);
+  }, [userData]);
+
 
   // avatar
   useEffect(() => {
@@ -110,7 +113,7 @@ const validationSchema = yup.object().shape({
     setAvatarPath(imagePath);
   };
 
-  console.log("avatarPath nè: ", avatarPath);
+//console.log("avatarPath nè: ", avatarPath);
 
   const [initialDate, setInitialDate] = useState(user.dateOfBirth);
 
@@ -123,14 +126,6 @@ const validationSchema = yup.object().shape({
     }, 2000);
 }
 
-const initialValues = {
-  email: user.email,
-  fullname: user.fullname,
-  dateOfBirth: user.dateOfBirth || null,
-  phone: user.phone || null,
-  address: user.address || null,
-  gender: user.gender
-};
 
 const handleUpdateProfile = async (values: user) => {
     setIsLoading(true);
@@ -145,9 +140,8 @@ const handleUpdateProfile = async (values: user) => {
 
     try {
       const { email, fullname, phone, gender,address} = values;
-    const updatedGender = gender ?? ''; 
-    const updatedAddress = selectedAddress || user.address || ''; 
-    
+    const updatedGender = gender || user.gender || ''; 
+    const updatedAddress = selectedAddress || address || ''; 
     const response = await updateProfile(
       user.id,
       email,
@@ -157,15 +151,26 @@ const handleUpdateProfile = async (values: user) => {
       updatedAddress,
       updatedGender
     );
-
-      console.log(response)
+    //console.log(updatedAddress);
+    //console.log(response)
       if (response) {
+        setUserData(response);
+        setUser({
+          ...user,
+          email,
+          fullname,
+          dateOfBirth: startDate,
+          phone,
+          address: updatedAddress,
+          gender: updatedGender
+        });
           setShowModal(true);
           setStatus(true);
           setIsLoading(false);
           setTimeout(() => {
               setShowModal(false);
-              navigation.navigate(ProfileRootStackEnum.MenuScreen);
+              navigation.goBack();
+              console.log(address);
           }, 2000);
       }
     } catch (error: any) {
@@ -176,6 +181,15 @@ const handleUpdateProfile = async (values: user) => {
       }
       console.log("Error update profile:", error);
     }
+  };
+
+  const initialValues = {
+    email: user.email,
+    fullname: user.fullname,
+    dateOfBirth: user.dateOfBirth || null,
+    phone: user.phone || null,
+    address: user.address || null,
+    gender: user.gender
   };
 
 const handleBackPress = () => {
@@ -196,7 +210,7 @@ const handleBackPress = () => {
         {
           text: 'Có',
           onPress: () => {
-            navigation.navigate(ProfileRootStackEnum.MenuScreen);
+            navigation.goBack();
             setStartDate(initialDate);
             setDateError(null);
             formikProps.resetForm();
@@ -207,7 +221,7 @@ const handleBackPress = () => {
       { cancelable: true }
     );
   } else {
-    navigation.navigate(ProfileRootStackEnum.MenuScreen);
+    navigation.goBack();
   }
 };
 
@@ -216,7 +230,7 @@ const handleBackPress = () => {
       <CustomHeaderBar onBackPress={handleBackPress} 
         onSavePress={() => formikRef.current?.handleSubmit()}  title='Chỉnh sửa trang cá nhân'/>
 
-      <UpLoadAvatar initialImage={avatarPath} onImageSelect={handleImageSelect} />
+      <UpLoadAvatar initialImage={avatarPath} onImageSelect={handleImageSelect} userId={user.id} />
 
     <Formik
       innerRef={formikRef}
@@ -235,7 +249,6 @@ const handleBackPress = () => {
               onChangeText={formikProps.handleChange('fullname')}
               onBlur={formikProps.handleBlur('fullname')}
               invalid={formikProps.touched.fullname && !!formikProps.errors.fullname}
-              // imageSource={require('../media/Dicons/user.png')}
               iconName='person-outline'
               placeholder='Nhập họ tên'/>
 
@@ -256,7 +269,6 @@ const handleBackPress = () => {
               onBlur={formikProps.handleBlur('phone')}
               keyboardType="phone-pad"
               invalid={formikProps.touched.phone && !!formikProps.errors.phone}
-              // imageSource={require('../media/icon/Mail.png')}
               iconName='phone-portrait-outline'
               placeholder='Nhập số điện thoại'/>
               
@@ -265,7 +277,9 @@ const handleBackPress = () => {
       <View style={styles.addressContainer}>
         <TouchableOpacity onPress={() => setIsModalVisible(true)} style={{flexDirection:'row', alignItems:'center', maxWidth: '85%',  minHeight:60,}}>
           <Icon name="location-outline" size={20} color="#000" style={styles.iconAddress} />
-          <Text  style={[styles.input, ]} >{formikProps.values.address}</Text>
+          <Text style={[styles.input, !formikProps.values.address && styles.placeholderText]}>
+                {formikProps.values.address || 'Chọn địa chỉ'}
+          </Text>
         </TouchableOpacity>
 
         <AddressModal
@@ -386,6 +400,9 @@ const styles = StyleSheet.create({
   },
   iconAddress: {
     marginHorizontal:10
+  },
+  placeholderText: {
+    color: 'gray',
   },
 });
 

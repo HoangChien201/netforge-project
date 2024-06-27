@@ -13,6 +13,8 @@ import {
 } from 'react-native';
 import ManageNavigation from './src/component/navigation/ManageNavigation';
 import { UserProvider } from './src/component/navigation/UserContext';
+
+import { ZegoUIKitPrebuiltLiveStreamingFloatingMinimizedView } from '@zegocloud/zego-uikit-prebuilt-live-streaming-rn';
 import { Host } from 'react-native-portalize';
 import RequestNotificationPermission from './src/permissions/RequestNotificationPermission';
 import { registerRemoteNotificationsEvent } from './src/notifications/Events';
@@ -30,6 +32,7 @@ function App(): React.JSX.Element {
       <UserProvider>
         <Host>
           <ManageNavigation />
+          <ZegoUIKitPrebuiltLiveStreamingFloatingMinimizedView />
         </Host>
       </UserProvider>
     </>
