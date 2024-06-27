@@ -1,6 +1,7 @@
 import { Dimensions, Image, StyleSheet, TouchableOpacity, View } from 'react-native';
 import React from 'react';
 import { NavigationProp, ParamListBase, useNavigation } from '@react-navigation/native';
+import { COLOR } from '../../constant/color';
 
 
 const ItemStory = ({ setIndex, index, indexfind }) => {
@@ -16,7 +17,7 @@ const ItemStory = ({ setIndex, index, indexfind }) => {
           navigation.navigate("StoryScreen")
         }}
       >
-        <Image source={require('../../media/icon/phuking.jpg')} style={[styles.avt,{borderColor:indexfind===index?"red":"#E27C39"}]} />
+        <Image source={require('../../media/icon/phuking.jpg')} style={[styles.avt,{borderColor:indexfind===index?COLOR.PrimaryColor1:COLOR.PrimaryColor}]} />
       </TouchableOpacity>
       
     </View>

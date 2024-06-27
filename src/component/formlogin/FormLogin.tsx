@@ -60,8 +60,8 @@ const FormLogin = ({ setModal, setStatus, setIsLoading }: { setModal: (value: bo
       setIsLoading(true);
       try {
 
-        // await AsyncStorage.setItem('email', email);
-        // await AsyncStorage.setItem('password', password);
+        await AsyncStorage.setItem('email', email);
+        await AsyncStorage.setItem('password', password);
         const result = await login(email,password);
         console.log(result);
         setIsLoading(false);

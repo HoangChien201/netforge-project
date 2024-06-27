@@ -1,10 +1,10 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import AxiosInstance from "../AxiosInstance";
-export const getAll = async () => {
+export const getAll = async (token:any) => {
     try {
         const axioInstance = AxiosInstance();
         const url = `/posts/get-by-user-request`;
-        const token = await AsyncStorage.getItem('token');
+       
         const headers = {
             headers: {
                 'Authorization': `Bearer ${token}`,

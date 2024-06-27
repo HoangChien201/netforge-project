@@ -31,6 +31,7 @@ const ItemPost =  memo(({ index, data,onrefresh }) => {
     };
 
     return (
+        <>
         <Pressable onPress={handleItemPress}   style={{ marginBottom: 6, backgroundColor: "#fff" }}>
             <View style={styles.home}>
                 <View style={styles.containerAvt}>
@@ -57,7 +58,10 @@ const ItemPost =  memo(({ index, data,onrefresh }) => {
             {fommatContent()}
             {media.length > 0 ? <ItemImg image={media} /> : null}
             <ActionBar checkLike={checkLike} setCheckLike={setCheckLike}  postId={id} type={reaction} comment_count={comment_count} share_count={share_count} like_count={like_count}  />
+            
         </Pressable>
+      
+        </>
     );
 });
 

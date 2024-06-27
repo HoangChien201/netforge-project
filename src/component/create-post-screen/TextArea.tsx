@@ -1,8 +1,9 @@
 import React, { FC, useEffect, useMemo, useState } from 'react';
-import { StyleSheet, View, FlatList, Text, Image, ToastAndroid } from 'react-native';
+import { StyleSheet, View, FlatList, Text, Image, ToastAndroid, TouchableOpacity } from 'react-native';
 import { MentionInput, MentionSuggestionsProps, Suggestion, replaceMentionValues } from 'react-native-controlled-mentions';
 import { getFriends } from '../../http/QuyetHTTP';
 import { COLOR } from '../../constant/color';
+import { TextInput } from 'react-native-gesture-handler';
 
 type Props = {
     content: any,
@@ -79,14 +80,15 @@ const TextArea: React.FC<Props> = ({ content, setContent, friends, setFriends })
                 data={suggestions}
                 keyExtractor={item => item.id.toString()}
                 renderItem={({ item }) => (
-                    <View style={styles.suggestionItem}>
-                        {item.user.avatar? <Image source={{ uri: item.user.avatar }} style={styles.avatar} />  :  
-                        <View style={[styles.avatar,{borderWidth:1, borderColor:'#EEEEEE', borderRadius:100, backgroundColor:'#DDDDDD'}]}></View>}
-                        
-                        <Text onPress={() => handleSuggestionPress(item.user, onSuggestionPress)}>
+                    <TouchableOpacity style={styles.suggestionItem}
+                        onPress={() => handleSuggestionPress(item.user, onSuggestionPress)}
+                    >
+                        {item.user.avatar ? <Image source={{ uri: item.user.avatar }} style={styles.avatar} /> :
+                            <View style={[styles.avatar, { borderWidth: 1, borderColor: '#EEEEEE', borderRadius: 100, backgroundColor: '#DDDDDD' }]}></View>}
+                        <Text >
                             {item.user.fullname}
                         </Text>
-                    </View>
+                    </TouchableOpacity>
                 )}
             />
         );
@@ -116,6 +118,7 @@ const TextArea: React.FC<Props> = ({ content, setContent, friends, setFriends })
     };
     return (
         <View style={styles.container}>
+
             <MentionInput
                 value={content}
                 onChange={setContent}
@@ -127,7 +130,7 @@ const TextArea: React.FC<Props> = ({ content, setContent, friends, setFriends })
                     },
                 ]}
                 style={styles.input}
-                placeholder="Viết gì đó..."
+                placeholder=" Nhập @tên để gắn thẻ bạn bè"
             />
         </View>
     );
@@ -135,7 +138,7 @@ const TextArea: React.FC<Props> = ({ content, setContent, friends, setFriends })
 
 const styles = StyleSheet.create({
     container: {
-        padding: 20,
+        padding: 10,
     },
     textArea: {
         height: 150,
@@ -153,19 +156,25 @@ const styles = StyleSheet.create({
     },
     suggestionItem: {
         paddingHorizontal: 10,
-        backgroundColor: '#f0f0f0',
+        backgroundColor: '#f8f7fc',
         borderBottomWidth: 1,
         borderBottomColor: '#ccc',
         flexDirection: 'row',
         alignItems: 'center',
         height: 50,
         margin: 2,
+        borderRadius: 2,
+        zIndex: 998
+
     },
     input: {
         padding: 10,
         borderColor: 'gray',
-        borderWidth: 1,
+        // borderWidth: 1,
         borderRadius: 5,
+        minHeight: 100,
+        // borderBottomWidth:1
+
     },
     avatar: {
         width: 30,
@@ -176,8 +185,9 @@ const styles = StyleSheet.create({
     flatList: {
         position: 'absolute',
         zIndex: 999,
-        marginTop: 45,
-        height: 300,
+        marginTop: 85,
+        height: 160,
+        backgroundColor: '#FFF4E9'
     }
 });
 

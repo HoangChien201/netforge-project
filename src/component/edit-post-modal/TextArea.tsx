@@ -129,15 +129,14 @@ const TextArea: React.FC<Props> = ({ content, setContent, friends, setFriends })
 
 const styles = StyleSheet.create({
     container: {
-        padding: 20,
+        padding: 10,
+        zIndex:999
     },
     textArea: {
         height: 150,
         padding: 5,
         backgroundColor: '#FFF',
         borderRadius: 10,
-        borderColor: '#CCC',
-        borderWidth: 1,
         textAlignVertical: 'top',
         shadowColor: 'gray',
         shadowOffset: { width: 0, height: 1 },
@@ -153,13 +152,14 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
         height: 50,
-        margin: 2
+        margin: 2,
+        zIndex:9999
     },
     input: {
         padding: 10,
         borderColor: 'gray',
-        borderWidth: 1,
         borderRadius: 5,
+        height:50
     },
     avatar: {
         width: 30,
@@ -170,7 +170,7 @@ const styles = StyleSheet.create({
     flatList: {
         position: 'absolute',
         zIndex: 999,
-        marginTop: 45,
+        marginTop: -110,
         height: 300
     }
 });

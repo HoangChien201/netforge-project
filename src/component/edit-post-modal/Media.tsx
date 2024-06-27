@@ -256,7 +256,7 @@ const renderMedia:React.FC<renderMedia> = ({images, media, setMedia, setShowModa
 export default renderMedia;
 const styles = StyleSheet.create({
     container: {
-        backgroundColor: 'white',
+        backgroundColor: 'gray',
         height: '90%',
         width: '100%',
         borderTopStartRadius: 36,
@@ -313,7 +313,8 @@ const styles = StyleSheet.create({
         width: '100%',
         alignItems: 'center',
         justifyContent: 'center',
-        height: 300
+        height: 300,
+        
     },
     media1ContainerOf3: {
         height: '100%',
