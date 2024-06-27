@@ -5,7 +5,7 @@ import { FilterIconCall } from './format/FilterIconMessage'
 const MessageCall = ({type,sender}:{type:'audio'|'video',sender:boolean}) => {
     const icon=FilterIconCall(sender,type)
   return (
-    <View style={styles.container}>
+    <View pointerEvents='none' style={styles.container}>
         <View style={styles.iconWrapper}>
             <Image source={icon} />
         </View>

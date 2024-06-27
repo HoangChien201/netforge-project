@@ -3,6 +3,7 @@ import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons'
 import { COLOR } from '../../constant/color'
 import { useNavigation } from '@react-navigation/native'
+import { postLocalNotification } from '../../notifications/Events'
 
 const HeaderMessageComponent = ({ partner }: { partner: any }) => {
     const navigation = useNavigation()
@@ -18,7 +19,15 @@ const HeaderMessageComponent = ({ partner }: { partner: any }) => {
 
             //handle video call
             console.log('video');
-
+            postLocalNotification({
+                body: "Local notification!",
+                title: "Local Notification Title",
+                sound: "chime.aiff",
+                silent: false,
+                category: "SOME_CATEGORY",
+                userInfo: {},
+                fireDate: new Date(),
+            })
         }
 
         return (

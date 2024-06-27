@@ -138,9 +138,9 @@ const CommentItem = ({ comment, onReply, depth = 0, render }) => {
                 isVisible={isDleteVisible}
                 onConfirm={handleConfirmDelete}
                 onCancel={() => setIsDleteVisible(false)} />
-            <ReactionButton
+            {/* <ReactionButton
             isVisible={modalReactionVisible}
-            onClose={(setModaReactionlVisible(false))}/>
+            onClose={(setModaReactionlVisible(false))}/> */}
                 
         </View>
     );
