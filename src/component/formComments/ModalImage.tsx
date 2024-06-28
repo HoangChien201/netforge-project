@@ -51,9 +51,9 @@ const styles = StyleSheet.create({
         resizeMode: 'contain',
     },
     modalVideo: {
-        width: '90%',
+        width: '100%',
         height: '90%',
-        resizeMode: 'contain',
+        resizeMode: 'cover',
     },
     closeButton: {
         position: 'absolute',

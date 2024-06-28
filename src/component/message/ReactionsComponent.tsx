@@ -1,4 +1,4 @@
-import { Pressable, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import { Image, Pressable, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import React from 'react'
 import { EmojiReaction } from '../../constant/emoji'
 import { reactionType } from './MessageItem'
@@ -16,7 +16,7 @@ const ReactionsComponent = ({ reactions }: { reactions: Array<reactionType> }) =
       {
         reactionFiller.map((reaction, index) => {
           return (
-              <Text key={index}>{EmojiReaction[reaction]}</Text>
+              <Image style={styles.reaction} key={index} source={EmojiReaction[reaction].source}/>
           )
         })
       }
@@ -32,6 +32,10 @@ const ReactionsComponent = ({ reactions }: { reactions: Array<reactionType> }) =
 export default ReactionsComponent
 
 const styles = StyleSheet.create({
+  reaction:{
+    width:20,
+    height:20
+  },
   quantityReaction: {
     color: '#fff',
     fontWeight: '400',
@@ -40,7 +44,7 @@ const styles = StyleSheet.create({
   container: {
     minWidth: 40,
     height: 25,
-    backgroundColor: 'rgba(100,100,100,1)',
+    backgroundColor: 'rgba(225,225,225,.8)',
     position: 'absolute',
     borderRadius: 15,
     bottom: -10,

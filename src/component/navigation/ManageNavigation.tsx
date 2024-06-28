@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react'
-import { NavigationContainer, RouteProp } from '@react-navigation/native'
+import { NavigationContainer, RouteProp, useNavigation } from '@react-navigation/native'
 import { StackNavigationProp } from '@react-navigation/stack'
 import { useMyContext } from './UserContext'
 import NetworkStack from '../stack/NetworkStack'
@@ -11,6 +11,7 @@ import SplashScreen from '../../screens/SplashScreen'
 import AxiosInstance from '../../http/AxiosInstance'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import {login} from '../../http/userHttp/user'
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
 export type navigationType = StackNavigationProp<RootStackParamList>
 type routeType = RouteProp<{ params: { value: string } }, 'params'>
@@ -54,16 +55,19 @@ const ManageNavigation: React.FC = () => {
         const timer = setTimeout(() => {
             setShowSplash(false);
         }, 1500);
-
         return () => clearTimeout(timer); 
     }, []);
+
     if (showSplash) {
         return <SplashScreen />;
     }
     return (
-        <NavigationContainer>
-            {user ? <NetworkStack /> : <UserStack />}
-        </NavigationContainer>
+        <GestureHandlerRootView>
+            <NavigationContainer>
+                {user ? <NetworkStack /> : <UserStack />}
+                
+            </NavigationContainer>
+        </GestureHandlerRootView>
     )
 }
 

@@ -1,20 +1,78 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, Image, TouchableOpacity, StyleSheet, Modal } from 'react-native';
 import Video from 'react-native-video';
-import { getReplyComments, deleteComments } from "../../http/TuongHttp"
+import { getReplyComments, deleteComments, deleteLikeComments } from "../../http/TuongHttp"
 import { DateOfTimePost } from '../../format/DateOfTimePost';
 import ModalImage from './ModalImage';
 import ModalDeleteComments from './ModalDeleteComments';
+import ModalOtherDelete from './ModalOtherDelete';
 import ReactionButton from './ReactionButton';
-import { tr } from 'date-fns/locale';
-const CommentItem = ({ comment, onReply, depth = 0, render }) => {
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useMyContext } from '../navigation/UserContext';
+
+const CommentItem = ({ comment, onReply, depth = 0, render, parent, setText, setUserId }) => {
+    const { user } = useMyContext();
+    // console.log('commentUserId',user.id);
+              
     const [modalReactionVisible, setModaReactionlVisible] = useState(false);
+    const [likeIcon, setLikeIcon] = useState(null);
     const [replies, setReplies] = useState([]);
     // phóng to image
     const [selectedMedia, setSelectedMedia] = useState(null); // Đường dẫn hình ảnh được chọn
     const [isModalVisible, setIsModalVisible] = useState(false); // Trạng thái của modal hiển thị
     const [isDleteVisible, setIsDleteVisible] = useState(false) // delete modal
+    const [isOtherDleteVisible, setIsOtherDleteVisible] = useState(false)
     const [isHide, setIsHide] = useState(false);
+
+    useEffect(() => {
+        const loadReaction = async () => {
+            try {
+                const savedReaction = await AsyncStorage.getItem(`comment_${comment.id}_reaction`);
+                if (savedReaction) {
+                    setLikeIcon(JSON.parse(savedReaction));
+                }
+            } catch (error) {
+                console.log('Lỗi khi tải phản ứng:', error);
+            }
+        };
+        loadReaction();
+    }, [comment.id]);
+    //render
+    useEffect(() => {
+        if (comment.id) { // Lòng bình luận 2 cấp
+            fetchReplies(comment.id);
+     
+        }
+
+    }, [comment, depth]);
+    //handle hủy like
+    const handleCancelLike = async () => {
+        //call api cancelLike and setLikeIcon =null
+        setLikeIcon(null);
+        // console.log('delete like nè');
+        // console.log('idcomment', comment.id);
+        // console.log(comment.user.id);
+        try {
+            const reponse = await deleteLikeComments(comment.id, comment.user.id)
+            await AsyncStorage.removeItem(`comment_${comment.id}_reaction`);
+            console.log('delete like thành công:', reponse);
+
+        } catch (error) {
+            console.log(error);
+
+        }
+    }
+    // handle setIcon
+    const handleSelectReaction = async (reaction) => {
+        setModaReactionlVisible(false);
+        setLikeIcon(reaction.source)
+        try {
+            await AsyncStorage.setItem(`comment_${comment.id}_reaction`, JSON.stringify(reaction.source));
+            console.log('Icon đã chọn:', reaction);
+        } catch (error) {
+            console.log('Lỗi khi lưu Icon:', error);
+        }
+    };
     const handleImagePress = (media) => {
         if (typeof media === 'string') {
             setSelectedMedia(media);
@@ -23,7 +81,12 @@ const CommentItem = ({ comment, onReply, depth = 0, render }) => {
         }
     };
     const handleCommentPress = () => {
-        setIsDleteVisible(true);
+        if (user.id === comment.user.id) {
+            setIsDleteVisible(true);
+        } else {
+            setIsOtherDleteVisible(true)
+
+        }
         console.log(comment.id);
     };
     // handle delete comments
@@ -32,35 +95,77 @@ const CommentItem = ({ comment, onReply, depth = 0, render }) => {
         try {
             await deleteComments(comment.id);
             render();
-         
-            console.log('Thành công', 'Bình luận đã được xóa.');
+
+            console.log( 'Bình luận đã được xóa.');
         } catch (error) {
-            console.log('Lỗi', 'Không thể xóa bình luận. Vui lòng thử lại.');
+            console.log('Không thể xóa bình luận');
         }
     };
-  
-        
-    
-
-
+    // get ds reply
     const fetchReplies = async (commentId: any) => {
         try {
             const response: any = await getReplyComments(commentId);
-            setReplies(response);
+            setReplies(response)
 
         } catch (error) {
             console.error('Lỗi khi lấy danh sách trả lời bình luận', error);
         }
     };
-    useEffect(() => {
-        if (comment.id && depth < 1) { // Lòng bình luận 2 cấp
-            fetchReplies(comment.id);
+    // handle trả lời bình luận
+    const handleReply = () => {
+        onReply(comment.id)
+        // lấy name của bình luận cha và set vào innputComment
+        setText(comment.user.fullname);
+        console.log("item", comment.user.fullname);
+            //props lấy commnent.user.id
+            setUserId(comment.user.id)
+                console.log('idbinhluan',comment.user.id);
+    }
 
+    const renderRepliesContainer = () => {
+        if (depth < 0)
+            return (
+                <View style={styles.repliesContainer}>
+                    {replies.map(reply => (
+                        <CommentItem
+                            key={reply.id}
+                            comment={reply}
+                            onReply={onReply}
+                            depth={depth + 1}
+                            render={render}
+                            setText={setText}
+                            setUserId={setUserId}
+                        />
+                    ))}
+                </View>
+            );
+        else {
+
+            return (
+                <View style={styles.repliesContainer}>
+                    {replies.map(reply => (
+                        <CommentItem
+                            key={reply.id}
+                            comment={reply}
+                            onReply={onReply}
+                            depth={depth + 1}
+                            render={render}
+                            setText={setText}
+                            setUserId={setUserId}
+                        />
+                    ))}
+                </View>
+            );
         }
-    }, [comment, depth]);
 
+    };
     return (
-        <View style={[styles.commentContainer, depth > 0 && { marginLeft: depth * 20 }]}>
+        <View style={[
+            styles.commentContainer,
+            {
+                padding: depth < 1 ? 0 : 0,
+                marginStart: depth == 1 ? 25 : 0
+            }]}>
             {/* Render comment content */}
             <View style={{ flexDirection: 'row' }}>
                 <View style={{ flex: 1 }}>
@@ -93,40 +198,46 @@ const CommentItem = ({ comment, onReply, depth = 0, render }) => {
                     </View>
                     <View style={{ flexDirection: "row", alignItems: 'center', marginStart: 50 }}>
                         <Text style={{ marginRight: 5, fontWeight: 'bold' }}>{DateOfTimePost(comment.create_at)}</Text>
-                        {
+                        {/* {
                             !comment.parent &&
                             <>
                                 <Text style={{ fontWeight: 'bold', fontSize: 16, color: 'black' }}>᛫</Text>
-                                <TouchableOpacity onPress={() => onReply(comment.id)} style={styles.replyButton}>
+                                <TouchableOpacity onPress={handleReply} style={styles.replyButton}>
                                     <Text style={{ fontWeight: 'bold' }}>Trả lời</Text>
                                 </TouchableOpacity>
                             </>
-                        }
+                        } */}
+                        <Text style={{ fontWeight: 'bold', fontSize: 16, color: 'black' }}>᛫</Text>
+                        <TouchableOpacity onPress={handleReply} style={styles.replyButton}>
+                            <Text style={{ fontWeight: 'bold' }}>Trả lời</Text>
+                        </TouchableOpacity>
                         <Text style={{ fontWeight: 'bold', fontSize: 16, color: 'black', marginLeft: 5 }}>᛫</Text>
-                        <TouchableOpacity style={styles.replyButton} onLongPress={()=>setModaReactionlVisible(true)}>
-                            <Text style={{ fontWeight: 'bold' }}>Thích</Text>
+                        <TouchableOpacity style={styles.replyButton} onLongPress={() => setModaReactionlVisible(true)}>
+                            {likeIcon ?
+                                (<TouchableOpacity onPress={handleCancelLike} onLongPress={() => setModaReactionlVisible(true)}>
+                                    <Image source={likeIcon} style={styles.likeIcon} />
+                                </TouchableOpacity>)
+                                : <TouchableOpacity onLongPress={() => setModaReactionlVisible(true)}>
+                                    <Text style={{ fontWeight: 'bold' }}>Thích</Text>
+                                </TouchableOpacity>}
+
                         </TouchableOpacity>
                     </View>
                 </View>
             </View>
             {/* // */}
-            
+
             {
-                !isHide  && !comment.parent ?
-                replies.length > 0 &&(
-                    <View style = {{left: 45, top: 2}}>
-                <TouchableOpacity onPress={() => setIsHide(true)}>
-                <Text style={{fontWeight:'500', fontSize: 14}}>Xem thêm bình luận...</Text>
-                </TouchableOpacity>
-            </View>
-                )
+                !isHide && !comment.parent ?
+                    replies.length > 0 && (
+                        <View style={{ left: 45, top: 2 }}>
+                            <TouchableOpacity onPress={() => setIsHide(true)}>
+                                <Text style={{ fontWeight: '500', fontSize: 14 }}>Xem thêm bình luận...</Text>
+                            </TouchableOpacity>
+                        </View>
+                    )
                     :
-                    <View style={styles.repliesContainer}>
-                        {replies.map(reply => (
-                            <CommentItem key={reply.id} comment={reply} onReply={onReply} depth={depth + 1} render={render} />
-                        ))}
-                    </View>
-                    
+                    renderRepliesContainer()
             }
             {/* Modal phóng to hình ảnh khi chạm vào hình ảnh sẽ phóng to, khi chạm lần 2 hình sẽ ẩn */}
             <ModalImage
@@ -138,18 +249,27 @@ const CommentItem = ({ comment, onReply, depth = 0, render }) => {
                 isVisible={isDleteVisible}
                 onConfirm={handleConfirmDelete}
                 onCancel={() => setIsDleteVisible(false)} />
+            {/* Modal reaction comments*/}
             <ReactionButton
-            isVisible={modalReactionVisible}
-            onClose={(setModaReactionlVisible(false))}/>
-                
+                comment={comment}
+                isVisible={modalReactionVisible}
+                onSelectReaction={handleSelectReaction}
+                onClose={() => setModaReactionlVisible(false)} />
+            {/* Modal Otherdelete comments*/}
+            <ModalOtherDelete
+                isVisible={isOtherDleteVisible}
+                onCancel={() => setIsOtherDleteVisible(false)} />
         </View>
     );
 };
 
 export default CommentItem;
 const styles = StyleSheet.create({
+    likeIcon: {
+        width: 20,
+        height: 20
+    },
     repliesContainer: {
-        marginLeft: 10
     },
     modalBackground: {
         flex: 1,
@@ -157,23 +277,22 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         backgroundColor: 'rgba(0, 0, 0, 0.7)',
     },
-    line: {
-
-    },
     BackgroundComment: {
         marginLeft: 5,
         borderRadius: 10,
-        backgroundColor: "pink",
+        backgroundColor: "#E6E6FA",
         justifyContent: "center",
         alignItems: "center"
     }
     ,
     commentContainer: {
+
+        margin: 10,
         justifyContent: "center",
-        padding: 10,
     },
     userContainer: {
         flexDirection: 'row',
+        marginStart: 10
 
     },
     avatar: {

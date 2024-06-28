@@ -10,13 +10,14 @@ const ModalDeleteComments = ({ isVisible, onConfirm, onCancel }) => {
         >
             <View style={styles.modalBackground}>
                 <View style={styles.modalContainer}>
-                    <Text style={styles.modalText}>Bạn có chắc chắn muốn xóa bình luận này?</Text>
+                    <Text style = {{fontSize: 20, fontWeight: '700', color: '#000', marginBottom: 5}}>Xóa bình luận</Text>
+                    <Text style={styles.modalText}>Bạn có chắc chắn muốn xóa vĩnh viễn  bình luận này không?</Text>
                     <View style={styles.buttonContainer}>
                         <TouchableOpacity style={styles.button} onPress={onCancel}>
-                            <Text style={styles.buttonText}>Hủy</Text>
+                            <Text style={[styles.buttonText, {color: '#000'}]}>Hủy</Text>
                         </TouchableOpacity>
-                        <TouchableOpacity style={styles.button} onPress={onConfirm}>
-                            <Text style={styles.buttonText}>Xóa</Text>
+                        <TouchableOpacity style={styles.buttonDelete} onPress={onConfirm}>
+                            <Text style={[styles.buttonText, {color: 'white'}]}>Xóa</Text>
                         </TouchableOpacity>
                     </View>
                 </View>
@@ -36,16 +37,18 @@ const styles = StyleSheet.create({
     },
     modalContainer: {
         width: '80%',
-        backgroundColor: 'white',
+        backgroundColor: '#dcdcdc',
         padding: 20,
-        borderRadius: 10,
+        borderRadius: 15,
         alignItems: 'center',
     },
     modalText: {
         fontSize: 16,
-        fontWeight: 'bold',
+        fontWeight: '400',
         marginBottom: 20,
         textAlign: 'center',
+        color: '#000'
+        
     },
     buttonContainer: {
         flexDirection: 'row',
@@ -53,15 +56,25 @@ const styles = StyleSheet.create({
         width: '100%',
     },
     button: {
+        borderColor: 'gray',
         padding: 10,
-        backgroundColor: '#2196F3',
+        borderWidth:1,
+        backgroundColor: 'white',
+        borderRadius: 5,
+        flex: 1,
+        alignItems: 'center',
+        marginHorizontal: 5,
+    },
+    buttonDelete:{
+        padding: 10,
+        backgroundColor: '#E01E00',
         borderRadius: 5,
         flex: 1,
         alignItems: 'center',
         marginHorizontal: 5,
     },
     buttonText: {
-        color: 'white',
+        fontSize: 17,
         fontWeight: 'bold',
     },
 })
