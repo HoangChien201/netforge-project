@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react'
 import { COLOR } from '../../constant/color'
 import { Image } from 'react-native';
 import { useMyContext } from '../navigation/UserContext';
+import ICON from 'react-native-vector-icons/AntDesign'
 interface UserProps {
     setPermission: (permission: number) => void;
     permission: number;
@@ -10,10 +11,11 @@ interface UserProps {
 const User: React.FC<UserProps> = ({ setPermission, permission }) => {
     const [dropdownVisible, setDropdownVisible] = useState(false);
     const [selectedOption, setSelectedOption] = useState('Public');
+    const [selectIcon, setSelectIcon] = useState('team');
     const { user, setUser } = useMyContext();
     const options = [
-        { label: 'Bạn bè', value: 1 },
-        { label: 'Cá nhân', value: 2 },
+        { label: 'Bạn bè', value: 1, Icon: 'team' },
+        { label: 'Cá nhân', value: 2, Icon: 'user' }
     ];
     useEffect(() => {
         const defaultOption = options.find(option => option.value === permission);
@@ -23,22 +25,25 @@ const User: React.FC<UserProps> = ({ setPermission, permission }) => {
         setDropdownVisible(!dropdownVisible);
     };
 
-    const selectOption = (option: { label: any; value: any; }) => {
+    const selectOption = (option) => {
         setSelectedOption(option.label);
         setPermission(option.value);
         setDropdownVisible(false);
+        setSelectIcon(option.Icon)
     };
     return (
         <View style={styles.container}>
             <View style={styles.userInfor}>
-            {user.avatar? <Image style={styles.userInforAvatar} source={{uri: user.avatar}}/>  : <Image style={styles.userInforAvatar} source={require('../../media/quyet_icon/smile_p.png')}/>  }
+                {user.avatar ? <Image style={styles.userInforAvatar} source={{ uri: user.avatar }} /> : <Image style={styles.userInforAvatar} source={require('../../media/quyet_icon/smile_p.png')} />}
                 <Text style={styles.userInforName}>{user.fullname}</Text>
             </View>
             <View style={styles.type}>
                 <TouchableOpacity style={styles.dropdownButton} onPress={toggleDropdown}>
                     <View style={styles.buttonType}>
+                        <ICON name={selectIcon} size={18} color={COLOR.primary300} />
                         <Text style={styles.buttonText}>{selectedOption}</Text>
-                        <Image style={styles.buttonTypeIcon} source={require('../../media/quyet_icon/down_w.png')} />
+                        {/* <Image style={styles.buttonTypeIcon} source={require('../../media/quyet_icon/down_w.png')} /> */}
+                        <ICON name='down' size={18} color={COLOR.primary150} />
                     </View>
 
                 </TouchableOpacity>
@@ -100,13 +105,13 @@ const styles = StyleSheet.create({
     },
     dropdownButton: {
         padding: 10,
-        backgroundColor: '#FF6600',
+        backgroundColor: COLOR.PrimaryColor,
         borderRadius: 5,
     },
     buttonText: {
         color: '#FFF',
         textAlign: 'center',
-        fontWeight:'400'
+        fontWeight: '400'
     },
     buttonType: {
         flexDirection: 'row',

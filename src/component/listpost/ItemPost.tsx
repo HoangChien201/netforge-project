@@ -9,7 +9,7 @@ const ItemPost =  memo(({ index, data,onrefresh }) => {
     const { creater, share_count, reaction, content, media, comment_count, create_at, id,like_count } = data;
 
    const fommatContent = ()=>{
-    const fomat = content.split(/@\[([^\]]+)\]\(\d+\)/g)
+    const fomat = content ? content.split(/@\[([^\]]+)\]\(\d+\)/g) : [];
     return (
         <View  style={{ marginHorizontal: 20, paddingBottom: media ? 0 : 20,flexDirection:'row',flexWrap:'wrap' }}>
           {fomat.map((fomat, index) => {

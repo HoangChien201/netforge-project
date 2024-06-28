@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { Image, StyleSheet, Text, View } from 'react-native';
+import { Image, StyleSheet, Text, View, ActivityIndicator } from 'react-native';
 import { useMyContext } from '../navigation/UserContext';
 import { GetTimeComment } from '../../format/FormatDate';
 import Loading from '../Modal/Loading'
+import { COLOR } from '../../constant/color';
 type Like = {
     data: {
         likePosts?: any[],
@@ -10,6 +11,11 @@ type Like = {
     }
 }
 const LikeHistories: React.FC<Like> = ({ data }) => {
+    if (!data || data.length === 0) {
+        <View>
+            <Text style={styles.textEmpty}>Bạn chưa có hoạt động nào</Text>
+        </View>
+    }
     const [totalData, setTotalData] = useState([]);
     const { user } = useMyContext();
     const [sortedData, setSortedData] = useState<any[]>([]);
@@ -33,8 +39,14 @@ const LikeHistories: React.FC<Like> = ({ data }) => {
         renderItem
     }, [data, sortedData])
     useEffect(() => {
+        // Set a timeout to simulate loading
+        const timer = setTimeout(() => {
+            setLoading(false);
+        }, 1000);
 
-    })
+        // Clean up the timer
+        return () => clearTimeout(timer);
+    }, []);
     const getReactionDetails = (reaction: any) => {
         switch (reaction) {
             case 1:
@@ -85,15 +97,19 @@ const LikeHistories: React.FC<Like> = ({ data }) => {
             </View>
         );
     };
-
     return (
         <View style={styles.container}>
-            {!sortedData ? (
+            {/* {!sortedData ? (
                 <View>
                     <Text style={styles.textEmpty}>Bạn chưa có hoạt động nào</Text>
                 </View>
             ) : (
 
+                sortedData.map(renderItem)
+            )} */}
+            {loading ? (
+                <ActivityIndicator size="large" color={COLOR.PrimaryColor} />
+            ) : (
                 sortedData.map(renderItem)
             )}
         </View>

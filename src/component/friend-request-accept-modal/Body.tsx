@@ -226,7 +226,7 @@ const styles = StyleSheet.create({
     },
     buttonShowRA: {
         marginEnd: 10,
-        backgroundColor: COLOR.primary200,
+        backgroundColor: COLOR.PrimaryColor1,
         borderRadius: 10,
         height: 30,
         width: 80,

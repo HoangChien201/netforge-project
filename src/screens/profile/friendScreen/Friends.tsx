@@ -4,6 +4,7 @@ import { deleteFriend } from '../../../http/QuyetHTTP';
 import { useMyContext } from '../../../component/navigation/UserContext';
 import DeleteFriend from './DeleteFriend';
 import { number } from 'yup';
+import Loading from '../../../component/Modal/Loading';
 type Friend = {
   friends: any,
   setFriends: (friends: any[]) => void;
@@ -14,7 +15,8 @@ const Friends: React.FC<Friend> = ({ friends ,setFriends}) => {
   const [show, setShow] = useState(false);
   const [user2,setUser2]=useState<number>(0)
   if (!friends || friends.length === 0) {
-    return <Text style={styles.headerText}>Không có gợi ý bạn bè</Text>;
+    // return <Text style={styles.headerText}>Chưa có bạn bè</Text>;
+    return <Loading isLoading={true}/>;
   };
   const deleteFri = async (user2: number) => {
     setShow(true);

@@ -59,9 +59,9 @@ const FriendScreen: React.FC<Friends> = () => {
           </View>
         </View>
         {dot > 0 ? <View style={styles.dot}>
-          <Text style={{ color: 'red', fontSize: 16 }}>{dot}</Text>
+          <Text style={{ color: COLOR.PrimaryColor, fontSize: 16 }}>{dot}</Text>
         </View> : <View style={styles.dot}>
-          <Text style={{ color: 'red', fontSize: 16 }}>0</Text>
+          <Text style={{ color: COLOR.PrimaryColor, fontSize: 16 }}>0</Text>
         </View>}
       </TouchableOpacity>
       <View style={styles.header}>
@@ -94,14 +94,14 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-start',
     marginHorizontal: 10,
     borderTopWidth: 1,
-    borderColor: 'gray',
+    borderColor: COLOR.PrimaryColor,
     marginTop: 5
   },
   iconFriend: {
     height: 44,
     width: 44,
     borderWidth: 1,
-    borderColor: COLOR.primary200,
+    borderColor: COLOR.PrimaryColor,
     borderRadius: 50,
     alignItems: 'center',
     justifyContent: 'center',
