@@ -60,18 +60,6 @@ export const HomeRootStackScreens = [
             headerShown: true
         }
     },
-    }
-        id: Math.random() + "" + Date,
-        name: HomeRootStackEnum.ProfileScreen,
-        component: ProfileScreen,
-        options: {
-            headerShown: true,
-            // headerLeft: () => null,
-            title:"Trang cá nhân",
-            headerTitleAlign:'center'
-            
-        }
-    },
     {
         id: Math.random() + "" + Date,
         name: HomeRootStackEnum.FriendProfile,
@@ -106,5 +94,27 @@ export const HomeRootStackScreens = [
             // ),
         }
     },
+    {
+        id: Math.random() + "" + Date,
+        name: HomeRootStackEnum.ProfileScreen,
+        component: ProfileScreen,
+        options: {
+            headerShown: true,
+            // headerLeft: () => null,
+            title:"Trang cá nhân",
+            headerTitleAlign:'center'
+        }
+    },
+    // }
+    //     id: Math.random() + "" + Date,
+    //     name: HomeRootStackEnum.ProfileScreen,
+    //     component: ProfileScreen,
+    //     options: {
+    //         headerShown: true,
+    //         // headerLeft: () => null,
+    //         title:"Trang cá nhân",
+    //         headerTitleAlign:'center'
+    //     }
+    // },
 
 ]

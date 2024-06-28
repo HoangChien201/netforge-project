@@ -28,7 +28,7 @@ const ListPorts = memo(({ onrefresh }:{onrefresh:boolean}) => {
     try {
 
       const response:any = await getAll(token);
-      console.log("res",response);
+      //console.log("res",response);
       
       if (response) {
         setAllData([...response]);
