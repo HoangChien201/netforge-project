@@ -7,7 +7,8 @@ import { COLOR } from '../constant/color';
 import AntDesignIcon from 'react-native-vector-icons/AntDesign';
 import { Touchable } from 'react-native';
 import ActionBar from '../component/listpost/ActionBar';
-
+import { ProfileRootStackEnum } from '../component/stack/ProfileRootStackParams'; 
+import { HomeRootStackEnum } from '../component/stack/HomeRootStackParams';
 const HomeScreen = () => {
     const initialData = [{ key: 'stories' }, { key: 'posts' }];
     const [data, setData] = useState(initialData);
@@ -71,17 +72,19 @@ const HomeScreen = () => {
         }
         return null;
     }, [refreshing]);
-
+    const handleToScanner = () => {
+        navigation.navigate(HomeRootStackEnum.Scanner);
+    }
     return (
         <View style={styles.container}>
-            <View style={{ width: '100%', height: '10%', flexDirection: 'row', justifyContent: 'space-evenly', alignItems: 'center',paddingHorizontal:5 }}>
+            <View style={{ width: '100%', height: '10%', flexDirection: 'row', justifyContent: 'space-evenly', alignItems: 'center', paddingHorizontal: 5 }}>
                 <View style={{ flex: 1, flexDirection: 'row', alignItems: 'center' }}>
-                    <Image source={require('../media/quyet_icon/netforge.png')} style={{ width: 70, height: 100 }} />
+                    <Image source={require('../media/quyet_icon/netforge1.jpg')} style={{ width: 40, height: 40, borderRadius:50, marginEnd:5 }} />
                     <Text style={{ color: COLOR.PrimaryColor, fontSize: 20, fontWeight: 'bold' }}>NetForge</Text>
                 </View>
                 <View style={{ flex: 0.1 }}>
-                    <TouchableOpacity>
-                        <Image source={require('../media/Dicons/qr-code.png')} style={{width:30,height:30}}/>
+                    <TouchableOpacity onPress={handleToScanner}>
+                        <Image source={require('../media/Dicons/qr-code.png')} style={{ width: 30, height: 30 }} />
                     </TouchableOpacity>
                 </View>
             </View>
@@ -100,7 +103,7 @@ const HomeScreen = () => {
                     onRefresh={onRefresh}
                 />
             </View>
-            
+
         </View>
     );
 };

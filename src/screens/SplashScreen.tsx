@@ -4,7 +4,7 @@ import { View, Text, StyleSheet, Image } from 'react-native';
 const SplashScreen: React.FC = () => {
     return (
         <View style={styles.container}>
-            <Image style={styles.image} source={require('../media/quyet_icon/netforge.png')}/>
+            <Image style={styles.image} source={require('../media/quyet_icon/netforge1.jpg')}/>
             <Text style={styles.text}>Chào mừng đến NetForge!</Text>
         </View>
     );
@@ -22,9 +22,10 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
     },
     image:{
-        height: 100,
-        width:100,
-        marginBottom: 5
+        height: 80,
+        width:80,
+        marginBottom: 5,
+        borderRadius:100
     }
 });
 

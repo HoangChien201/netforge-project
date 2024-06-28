@@ -20,7 +20,7 @@ const ItemPost =  memo(({ index, data,onrefresh, userId, onPressProfile  }) => {
     const loggedInUserId = user.id;
     userId =creater.id;
    const fommatContent = ()=>{
-    const fomat = content?.split(/@\[([^\]]+)\]\(\d+\)/g)
+    const fomat = content ? content.split(/@\[([^\]]+)\]\(\d+\)/g) : [];
     return (
         <View  style={{ marginHorizontal: 20, paddingBottom: media ? 0 : 20,flexDirection:'row',flexWrap:'wrap' }}>
           {fomat?.map((fomat, index) => {

@@ -4,30 +4,35 @@ import NetworkBottomTab from "../bottom-stack/NetworkBottomTab"
 
 import UserStack from "./UserStack";
 import CommentsScreen from "../../screens/CommentsScreen";
+import Scanner from "../../screens/Scanner";
+
 import ProfileScreen from "../../screens/ProfileScreen";
 import EditProfileScreen from "../../screens/EditProfileScreen";
 import ProfileStack from "./ProfileStack";
 import FriendProfile from "../profile/FriendProfile";
 
 
-
-enum HomeRootStackEnum {
+export enum HomeRootStackEnum {
     StoryScreen = 'StoryScreen',
     HomeScreen = 'HomeScreen',
     CommentsScreen = 'CommentsScreen',
+    Scanner = 'Scanner',
     ProfileScreen = 'ProfileScreen',
     ProfileStack = 'ProfileStack',
     EditProfileScreen = 'EditProfileScreen',
     FriendProfile = 'FriendProfile',
+
 }
 
 export type HomeRootStackParams = {
     StoryScreen: undefined,
     HomeScreen: undefined,
+    Scanner:undefined
     ProfileScreen: undefined,
     ProfileStack: undefined,
     EditProfileScreen: undefined,
     FriendProfile: undefined,
+
 }
 
 export const HomeRootStackScreens = [
@@ -48,6 +53,14 @@ export const HomeRootStackScreens = [
         }
     },
     {
+        id: Math.random() + "" + Date,
+        name: HomeRootStackEnum.Scanner,
+        component: Scanner,
+        options: {
+            headerShown: true
+        }
+    },
+    }
         id: Math.random() + "" + Date,
         name: HomeRootStackEnum.ProfileScreen,
         component: ProfileScreen,
