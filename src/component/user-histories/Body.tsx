@@ -4,7 +4,8 @@ import CommentHistories from './CommentHistories'
 import LikeHistories from './LikeHistories'
 import Icon from 'react-native-vector-icons/AntDesign'
 import { COLOR } from '../../constant/color'
-import { getUserHistories } from '../../http/QuyetHTTP'
+import { getUserHistories } from '../../http/QuyetHTTP';
+import { useNavigation } from '@react-navigation/native'
 import Animated, { useSharedValue, useAnimatedStyle, withTiming } from 'react-native-reanimated'
 const { width } = Dimensions.get('window');
 type BodyH = {
@@ -14,8 +15,12 @@ const Body: React.FC<BodyH> = ({ }) => {
     const translateX = useSharedValue(0);
     const [data, setData] = useState<any>({});
     const [dataComment, setDataComment] = useState<any[]>([]);
-
+    const navigation=useNavigation();
+      function navigationScreen(screen:string){
+        navigation.navigate(`${screen}`)
+    };
     const getData = async () => {
+        
         try {
             const result = await getUserHistories();
             setData(result);
@@ -91,6 +96,7 @@ export default Body
 const styles = StyleSheet.create({
     container: {
         flexDirection: 'column',
+        zIndex:999
     },
     header: {
 

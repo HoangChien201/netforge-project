@@ -10,6 +10,8 @@ import MenuScreen from "../../screens/MenuScreen";
 import NaviStack from "../../component/stack/NaviStack"
 import ChangePassword from "../../screens/ChangePassword";
 import QRcodeScreen from "../../screens/QRcodeScreen";
+import Scanner from "../../screens/Scanner";
+import HistoryStack from "./HistoryStack";
 import HomeScreen from "../../screens/HomeScreen";
 import LiveStreamScreen from "../../screens/LiveStreamScreen";
 import LiveStack from "./LiveStack";
@@ -28,26 +30,32 @@ export enum ProfileRootStackEnum {
     ChangePassword = 'ChangePassword',
     QRcodeScreen = 'QRcodeScreen',
     Scanner = 'Scanner',
+    FriendScreen = 'FriendScreen',
+    HistoryStack = 'HistoryStack',
     HomeScreen = 'HomeScreen',
     LiveStack = 'LiveStack',
     FriendProfile = 'FriendProfile',
-
 }
 
 export type ProfileRootStackParams={
-    [ProfileRootStackEnum.ProfileScreen]: undefined;
-    [ProfileRootStackEnum.EditProfileScreen]: undefined;
-    [ProfileRootStackEnum.SettingScreen]: undefined;
-    [ProfileRootStackEnum.HistoryActivityScreen]: undefined;
-    [ProfileRootStackEnum.HelpScreen]: undefined;
-    [ProfileRootStackEnum.MenuScreen]: undefined;
-    [ProfileRootStackEnum.NaviStack]: undefined;
-    [ProfileRootStackEnum.ChangePassword]: undefined;
-    [ProfileRootStackEnum.QRcodeScreen]: undefined;
-    [ProfileRootStackEnum.HomeScreen]: undefined;
-    [ProfileRootStackEnum.LiveStreamScreen]: undefined;
-    [ProfileRootStackEnum.LiveStack]: undefined;
-    [ProfileRootStackEnum.FriendProfile]: undefined;
+    ProfileScreen : undefined;
+    EditProfileScreen: undefined;
+    Live : undefined;
+    SettingScreen : undefined;
+    HistoryActivityScreen : undefined;
+    HelpScreen : undefined;
+    NaviStack :undefined,
+    MenuScreen:undefined;
+    ChangePassword: undefined;
+    QRcodeScreen: undefined;
+    Scanner: undefined;
+    FriendScreen: undefined;
+    HistoryStack:undefined;
+    HomeScreen: undefined;
+    LiveStack: undefined;
+    FriendProfile:undefined;
+    
+
 }
 
 export const ProfileRootStackScreens=[
@@ -94,8 +102,8 @@ export const ProfileRootStackScreens=[
     },
     {
         id: Math.random() + "" + Date,
-        name: ProfileRootStackEnum.HistoryActivityScreen,
-        component: HistoryActivityScreen,
+        name: ProfileRootStackEnum.HistoryStack,
+        component: HistoryStack,
         options: {
             title:"Lịch sử hoạt động",
             headerTitleAlign:'center'
@@ -112,8 +120,8 @@ export const ProfileRootStackScreens=[
     },
     {
         id: Math.random() + "" + Date,
-        name: ProfileRootStackEnum.NaviStack,
-        component: NaviStack,
+        name: ProfileRootStackEnum.FriendScreen,
+        component: FriendScreen,
         options: {
             title:"Bạn bè",
             headerTitleAlign:'center'

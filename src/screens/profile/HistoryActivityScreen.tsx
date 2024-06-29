@@ -1,9 +1,7 @@
 import { StyleSheet, Text, View } from 'react-native'
 import React, { useEffect } from 'react'
 import { useIsFocused, useNavigation } from '@react-navigation/native';
-
-
-import HISTORY from '../../component/user-histories-modal/Body'
+import HISTORY from '../../component/user-histories/Body'
 const HistoryActivityScreen = () => {
   const navigation = useNavigation()
   const isFocus = useIsFocused()

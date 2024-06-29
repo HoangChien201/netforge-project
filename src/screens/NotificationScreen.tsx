@@ -6,7 +6,7 @@ import REQFriend from '../component/notificationes/RequestFriend'
 import OldNotificationes from '../component/notificationes/OldNotificationes'
 import NewNotificationes from '../component/notificationes/NewNotificationes'
 import MODALFRIEND from '../component/friend-request-accept-modal/Body'
-import MODALHISTORIES from '../component/user-histories-modal/Body'
+import MODALHISTORIES from '../component/user-histories/Body'
 import FRIENDS from '../screens/profile/FriendScreen'
 const NotificationScreen = () => {
   const [showModalEdit, setShowModalEdit] = useState(false);
@@ -39,7 +39,7 @@ const NotificationScreen = () => {
       <TouchableOpacity onPress={ShowModalFriend}>
         <REQFriend />
         {dot > 0 ? <View style={styles.dot}>
-          <Text style={{ color: 'red', fontSize: 16 }}>{dot}</Text>
+          <Text style={{ color: COLOR.PrimaryColor1, fontSize: 16 }}>{dot}</Text>
         </View> : null}
       </TouchableOpacity>
       <View style={{ flexDirection: 'column' }}>

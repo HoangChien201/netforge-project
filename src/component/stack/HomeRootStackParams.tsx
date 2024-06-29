@@ -4,18 +4,20 @@ import NetworkBottomTab from "../bottom-stack/NetworkBottomTab"
 import ExploreScreen from "../../screens/ExploreScreen";
 import UserStack from "./UserStack";
 import CommentsScreen from "../../screens/CommentsScreen";
+import Scanner from "../../screens/Scanner";
+
 import ProfileScreen from "../../screens/ProfileScreen";
 import EditProfileScreen from "../../screens/EditProfileScreen";
 import ProfileStack from "./ProfileStack";
 import FriendProfile from "../profile/FriendProfile";
 
 
-
-enum HomeRootStackEnum {
+export enum HomeRootStackEnum {
     StoryScreen = 'StoryScreen',
     HomeScreen = 'HomeScreen',
     CommentsScreen = 'CommentsScreen',
     ExploreScreen = 'ExploreScreen',
+    Scanner = 'Scanner',
     ProfileScreen = 'ProfileScreen',
     ProfileStack = 'ProfileStack',
     EditProfileScreen = 'EditProfileScreen',
@@ -26,10 +28,12 @@ enum HomeRootStackEnum {
 export type HomeRootStackParams = {
     StoryScreen: undefined,
     HomeScreen: undefined,
+    Scanner:undefined
     ProfileScreen: undefined,
     ProfileStack: undefined,
     EditProfileScreen: undefined,
     FriendProfile: undefined,
+
 }
 
 export const HomeRootStackScreens = [
@@ -51,25 +55,20 @@ export const HomeRootStackScreens = [
     },
     {
         id: Math.random() + "" + Date,
-
         name: HomeRootStackEnum.ExploreScreen,
         component: ExploreScreen,
         options: {
             headerShown: false
         }
     },
-
-
     {
         id: Math.random() + "" + Date,
         name: HomeRootStackEnum.ProfileScreen,
         component: ProfileScreen,
+        name: HomeRootStackEnum.Scanner,
+        component: Scanner,
         options: {
-            headerShown: true,
-            // headerLeft: () => null,
-            title:"Trang cá nhân",
-            headerTitleAlign:'center'
-            
+            headerShown: true
         }
     },
     {
@@ -106,5 +105,27 @@ export const HomeRootStackScreens = [
             // ),
         }
     },
+    {
+        id: Math.random() + "" + Date,
+        name: HomeRootStackEnum.ProfileScreen,
+        component: ProfileScreen,
+        options: {
+            headerShown: true,
+            // headerLeft: () => null,
+            title:"Trang cá nhân",
+            headerTitleAlign:'center'
+        }
+    },
+    // }
+    //     id: Math.random() + "" + Date,
+    //     name: HomeRootStackEnum.ProfileScreen,
+    //     component: ProfileScreen,
+    //     options: {
+    //         headerShown: true,
+    //         // headerLeft: () => null,
+    //         title:"Trang cá nhân",
+    //         headerTitleAlign:'center'
+    //     }
+    // },
 
 ]

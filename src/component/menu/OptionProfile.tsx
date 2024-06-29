@@ -56,8 +56,8 @@ const OptionProfile = () => {
                     />
             </View>
             <View style={styles.optionVertical}>
-                <OptionVerticalItem text='Bạn bè' onPress={navigationScreen.bind(this,'NaviStack')}/>
-                <OptionVerticalItem text='Lịch sử hoạt động' onPress={navigationScreen.bind(this,'HistoryActivityScreen')}/>
+                <OptionVerticalItem text='Bạn bè' onPress={navigationScreen.bind(this,'FriendScreen')}/>
+                <OptionVerticalItem text='Lịch sử hoạt động' onPress={navigationScreen.bind(this,'HistoryStack')}/>
                 <OptionVerticalItem text='Giúp đỡ' onPress={navigationScreen.bind(this,'HelpScreen')}/>
                 <OptionVerticalItem text='Đăng xuất' onPress={LogoutHandle}/>
 
