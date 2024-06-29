@@ -31,7 +31,10 @@ export enum ProfileRootStackEnum {
     QRcodeScreen = 'QRcodeScreen',
     Scanner = 'Scanner',
     FriendScreen = 'FriendScreen',
-    HistoryStack = 'HistoryStack'
+    HistoryStack = 'HistoryStack',
+    HomeScreen = 'HomeScreen',
+    LiveStack = 'LiveStack',
+    FriendProfile = 'FriendProfile',
 }
 
 export type ProfileRootStackParams={
@@ -48,26 +51,11 @@ export type ProfileRootStackParams={
     Scanner: undefined;
     FriendScreen: undefined;
     HistoryStack:undefined;
-    HomeScreen = 'HomeScreen',
-    LiveStack = 'LiveStack',
-    FriendProfile = 'FriendProfile',
+    HomeScreen: undefined;
+    LiveStack: undefined;
+    FriendProfile:undefined;
+    
 
-}
-
-export type ProfileRootStackParams={
-    [ProfileRootStackEnum.ProfileScreen]: undefined;
-    [ProfileRootStackEnum.EditProfileScreen]: undefined;
-    [ProfileRootStackEnum.SettingScreen]: undefined;
-    [ProfileRootStackEnum.HistoryActivityScreen]: undefined;
-    [ProfileRootStackEnum.HelpScreen]: undefined;
-    [ProfileRootStackEnum.MenuScreen]: undefined;
-    [ProfileRootStackEnum.NaviStack]: undefined;
-    [ProfileRootStackEnum.ChangePassword]: undefined;
-    [ProfileRootStackEnum.QRcodeScreen]: undefined;
-    [ProfileRootStackEnum.HomeScreen]: undefined;
-    [ProfileRootStackEnum.LiveStreamScreen]: undefined;
-    [ProfileRootStackEnum.LiveStack]: undefined;
-    [ProfileRootStackEnum.FriendProfile]: undefined;
 }
 
 export const ProfileRootStackScreens=[

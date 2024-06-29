@@ -18,7 +18,7 @@ const ItemImg = ({ image }: { image: Medias[] }) => {
   const [visible,setVisible] = useState(false);
   const [indeximg,setIndeximg] = useState(null);
   const [img, setImg] = useState<Medias[]>([...image]);
-console.log("image",image);
+// console.log("image",image);
 
 
   const onPressImg = (index)=>{
