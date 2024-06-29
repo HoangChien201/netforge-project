@@ -5,7 +5,7 @@ import Icon from 'react-native-vector-icons/AntDesign';
 const ListImageDetail = ({ visible, onClose, listImg, indexImg }) => {
   const [currentIndex, setCurrentIndex] = useState(indexImg);
   const scrollViewRef = useRef(null);
-  console.log("imgindex",indexImg);
+  // console.log("imgindex",indexImg);
   
 
   useEffect(() => {

@@ -1,12 +1,12 @@
 import { Image, StyleSheet, Text, View } from 'react-native'
-import React, { useRef } from 'react'
+import React, { useCallback, useMemo, useRef } from 'react'
 import { messageType } from './MessageItem';
 import MessageText from './MessageText';
 import Video, { VideoRef } from 'react-native-video';
 import { EmojiReaction } from '../../constant/emoji';
 import MessageCall from './MessageCall';
 
-const MessageItemContent = ({message,sender}:{message:messageType,sender:boolean}) => {
+const MessageItemContent = ({ message, sender }: { message: messageType, sender: boolean }) => {
     const videoRef = useRef<VideoRef>(null);
     function onBuffer(event) {
         console.log(event);
@@ -23,7 +23,7 @@ const MessageItemContent = ({message,sender}:{message:messageType,sender:boolean
             return (
                 <Video
                     // Can be a URL or a local file.
-                    source={{ uri: message.message }}
+                    source={{ uri: typeof message.message === 'object' ? message.message.uri : message.message }}
                     // Store reference  
                     ref={videoRef}
                     // Callback when remote video is buffering                                      
@@ -31,29 +31,32 @@ const MessageItemContent = ({message,sender}:{message:messageType,sender:boolean
                     // Callback when video cannot be loaded              
                     onError={onVideoError}
                     style={styles.messageImage}
+                    pointerEvents='none'
                 />
             )
 
         case "image": {
+            // console.log('imageselected');
+
             return (
                 <View style={styles.messageImage}>
                     {
                         message.message &&
-                        <Image style={{ width: '100%', height: '100%', borderRadius: 20 }} source={{ uri: message.message }} />
+                        <Image style={{ width: '100%', height: '100%', borderRadius: 20 }} source={{ uri: typeof message.message === 'object' ? message.message.uri : message.message }} />
                     }
                 </View>
             )
         }
 
-        case "audiocall":{
-            return <MessageCall type='audio' sender={sender}/>
+        case "audiocall": {
+            return <MessageCall type='audio' sender={sender} />
         }
 
-        case "videocall":{
-            return <MessageCall type='video' sender={sender}/>
+        case "videocall": {
+            return <MessageCall type='video' sender={sender} />
         }
         default:
-            
+
             return <MessageText text={message.message} sender={sender} />
     }
 }
@@ -63,6 +66,6 @@ export default MessageItemContent
 const styles = StyleSheet.create({
     messageImage: {
         height: 300,
-        width: '100%',
-      },
+        width: 200,
+    },
 })

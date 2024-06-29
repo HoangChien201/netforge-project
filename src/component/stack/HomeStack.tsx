@@ -13,8 +13,8 @@ export default function HomeStack(): React.JSX.Element {
     return (
         <Stack.Navigator
             screenOptions={{
-
             }}
+            initialRouteName={"HomeScreen"}
         >
             {
                 HomeRootStackScreens.map((item, index) => {

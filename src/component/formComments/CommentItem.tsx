@@ -198,19 +198,19 @@ const CommentItem = ({ comment, onReply, depth = 0, render, parent, setText, set
                     </View>
                     <View style={{ flexDirection: "row", alignItems: 'center', marginStart: 50 }}>
                         <Text style={{ marginRight: 5, fontWeight: 'bold' }}>{DateOfTimePost(comment.create_at)}</Text>
-                        {/* {
+                        {
                             !comment.parent &&
                             <>
-                                <Text style={{ fontWeight: 'bold', fontSize: 16, color: 'black' }}>᛫</Text>
+                                <Text style={{ fontWeight: 'bold', fontSize: 16, color: 'black', marginLeft: -5 }}>᛫</Text>
                                 <TouchableOpacity onPress={handleReply} style={styles.replyButton}>
                                     <Text style={{ fontWeight: 'bold' }}>Trả lời</Text>
                                 </TouchableOpacity>
                             </>
-                        } */}
-                        <Text style={{ fontWeight: 'bold', fontSize: 16, color: 'black' }}>᛫</Text>
+                        }
+                        {/* <Text style={{ fontWeight: 'bold', fontSize: 16, color: 'black' }}>᛫</Text>
                         <TouchableOpacity onPress={handleReply} style={styles.replyButton}>
                             <Text style={{ fontWeight: 'bold' }}>Trả lời</Text>
-                        </TouchableOpacity>
+                        </TouchableOpacity> */}
                         <Text style={{ fontWeight: 'bold', fontSize: 16, color: 'black', marginLeft: 5 }}>᛫</Text>
                         <TouchableOpacity style={styles.replyButton} onLongPress={() => setModaReactionlVisible(true)}>
                             {likeIcon ?
@@ -259,7 +259,6 @@ const CommentItem = ({ comment, onReply, depth = 0, render, parent, setText, set
             <ModalOtherDelete
                 isVisible={isOtherDleteVisible}
                 onCancel={() => setIsOtherDleteVisible(false)} />
-
         </View>
     );
 };

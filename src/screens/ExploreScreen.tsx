@@ -10,7 +10,6 @@ import ItemRencent from '../component/Explore/ItemRencent';
 import ItemSearch from '../component/Explore/ItemSearch';
 import { useMyContext } from '../component/navigation/UserContext';
 
-
 const ExploreScreen = () => {
   const navigation = useNavigation()
   const { user } = useMyContext();
@@ -81,7 +80,7 @@ const ExploreScreen = () => {
       setRecentUsers(updatedRecentUsers);
       saveRecentUsers(updatedRecentUsers); // Lưu vào AsyncStorage sau khi xóa
     } catch (error) {
-      console.log('Error removing recent user:', error);
+      console.log('Lỗi khi xóa user:', error);
     }
   };
   return (

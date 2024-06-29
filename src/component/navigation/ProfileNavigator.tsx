@@ -4,11 +4,21 @@ import { NavigationContainer, RouteProp } from '@react-navigation/native'
 import { StackNavigationProp } from '@react-navigation/stack'
 import ProfileStack from '../stack/ProfileStack'
 
+export type RootStackParamList = {
+  ProfileScreen: { userId: any };
+  EditProfileScreen: undefined;
+  SettingScreen: undefined;
+  HistoryActivityScreen: undefined;
+  HelpScreen: undefined;
+  NaviStack: undefined;
+  MenuScreen: undefined;
+  ChangePassword: undefined;
+  QRcodeScreen: undefined;
+  Scanner: undefined;
+};
+
 export type navigationType=StackNavigationProp<RootStackParamList>
 type routeType=RouteProp<{ params: { value: string } }, 'params'>
-export type RootStackParamList = {
-
-};
 
 const ProfileNavigator:React.FC = () => {
   return (
@@ -19,5 +29,3 @@ const ProfileNavigator:React.FC = () => {
 }
 
 export default ProfileNavigator
-
-const styles = StyleSheet.create({})
