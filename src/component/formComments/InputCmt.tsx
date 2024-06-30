@@ -131,6 +131,7 @@ const InputCmt = ({ fetchComments, onMediaSelected, parent = null , postId, text
             left: 0,
             right: 0,
             backgroundColor: 'white',
+           
         }} >
 
             {imagePath && (
@@ -197,6 +198,9 @@ export default InputCmt
 const styles = StyleSheet.create({
     mediaContainer: {
         flexDirection: 'row',
+        backgroundColor: '#F4F4F4',
+        borderTopRightRadius: 10,
+        borderTopLeftRadius: 10,
 
     },
     media: {

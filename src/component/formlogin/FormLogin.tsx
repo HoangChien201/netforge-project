@@ -29,7 +29,7 @@ export type valid = {
 const FormLogin = ({ setModal, setStatus, setIsLoading }: { setModal: (value: boolean) => void, setStatus: (value: boolean) => void, setIsLoading: (value: boolean) => void }) => {
   const navigation:NavigationProp<ParamListBase> = useNavigation();
 
-  const [valueF, setValueF] = useState<user>({ email: "", password: "" })
+  const [valueF, setValueF] = useState<user>({ email: "tuong123@gmail.com", password: "1234" })
 
   const [valid, setValid] = useState<valid>({ email: true, password: true })
 
@@ -72,7 +72,6 @@ const FormLogin = ({ setModal, setStatus, setIsLoading }: { setModal: (value: bo
             setUser(result.data);
 
           }
-          
           console.log(result);
           await AsyncStorage.setItem('userToken', result?.data.token);
           handleLoginResult(result);

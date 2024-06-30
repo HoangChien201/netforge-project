@@ -7,7 +7,7 @@ import * as Animatable from 'react-native-animatable';
 import { deleteLikePost, likePost, updateLikePost } from '../../http/userHttp/getpost';
 import { useMyContext } from '../navigation/UserContext';
 
-const ActionBar = memo(({ like_count,type, postId, comment_count, share_count,checkLike,setCheckLike }: {setCheckLike:(Value:boolean)=>void,checkLike?:boolean,type: number, postId?: number, comment_count?: number, share_count?: number,like_count?:number }) => {
+const ActionBar = memo(({onPressProfile, like_count,type, postId, comment_count, share_count,checkLike,setCheckLike }: {setCheckLike:(Value:boolean)=>void,checkLike?:boolean,type: number, postId?: number, comment_count?: number, share_count?: number,like_count?:number }) => {
     const [islike, setIsLike] = useState(false);
     const navigation = useNavigation();
     const {user}= useMyContext()
@@ -124,7 +124,7 @@ const ActionBar = memo(({ like_count,type, postId, comment_count, share_count,ch
                     }
                     <Text style={styles.text}>{numberLike === null ? 0 : format(numberLike)}</Text>
                 </View>
-                <TouchableOpacity onPress={()=> navigation.navigate('CommentsScreen',{postId, numberLike})} style={{ flexDirection: 'row', alignItems: 'center', marginHorizontal: 20 }}>
+                <TouchableOpacity onPress={()=> navigation.navigate('CommentsScreen',{postId, numberLike, onPressProfile})} style={{ flexDirection: 'row', alignItems: 'center', marginHorizontal: 20 }}>
                     <AntDesignIcon name='message1' size={24} color='#000' style={styles.comment} />
                     <Text style={styles.text}>{comment_count ? comment_count : 0}</Text>
                 </TouchableOpacity>

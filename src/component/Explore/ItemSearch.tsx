@@ -1,5 +1,6 @@
 import { StyleSheet, Text, View, TouchableOpacity, Image } from 'react-native'
 import React from 'react'
+import Icon from 'react-native-vector-icons/SimpleLineIcons'
 
 const ItemSearch = ({item, handleItemClick}) => {
   return (
@@ -8,7 +9,7 @@ const ItemSearch = ({item, handleItemClick}) => {
       <Image source={{ uri: item.avatar }} style={styles.imageItem} />
       <Text style={styles.nameItem}>{item.fullname}</Text>
       <TouchableOpacity style={{ marginRight: 10 }}>
-        <Image source={require('../../media/icon_tuong/option.png')} style={{ width: 25, height: 25 }} />
+      <Icon name='options' size={20} color={'#2F3645'} />
       </TouchableOpacity>
     </TouchableOpacity>
   </View>

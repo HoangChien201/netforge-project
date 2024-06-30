@@ -9,6 +9,9 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import ItemRencent from '../component/Explore/ItemRencent';
 import ItemSearch from '../component/Explore/ItemSearch';
 import { useMyContext } from '../component/navigation/UserContext';
+import { ProfileRootStackEnum } from '../component/stack/ProfileRootStackParams';
+import FastImage from 'react-native-fast-image';
+import Icon from 'react-native-vector-icons/AntDesign'
 
 const ExploreScreen = () => {
   const navigation = useNavigation()
@@ -59,10 +62,22 @@ const ExploreScreen = () => {
   };
   const handleItemClick = (item) => {
     console.log(item.id);
+    setKeyword('')
+    setUser([])
+    setIsSearching(true)
+    const userId = item.id
+    if (userId === user.id) {
+      //setIsModalVisible(false);
+      navigation.navigate(ProfileRootStackEnum.ProfileScreen);
+    } else {
+      //setIsModalVisible(true);
+      navigation.navigate(ProfileRootStackEnum.FriendProfile, { userId });
+    }
     setRecentUsers((prevRecentUsers) => {
       const isItemExists = prevRecentUsers.some((recentItem) => recentItem.id === item.id);
       const updatedRecentUsers = isItemExists ? prevRecentUsers : [item, ...prevRecentUsers];
       saveRecentUsers(updatedRecentUsers);
+
       return updatedRecentUsers;
     });
   };
@@ -83,6 +98,7 @@ const ExploreScreen = () => {
       console.log('Lỗi khi xóa user:', error);
     }
   };
+
   return (
     <View style={styles.container}>
       <View style={{ flexDirection: 'row', alignItems: 'center' }}>
@@ -117,26 +133,38 @@ const ExploreScreen = () => {
         <View>
           <View style={styles.RecentContai}>
             <Text style={styles.Recent}>Gần đây</Text>
-            <TouchableOpacity onPress={() => setModalVisibal(true)}>
-              <Text style={styles.ClearAll}>Xóa tất cả</Text>
-            </TouchableOpacity>
+            {
+              recentUsers.length > 0 ?(
+                <TouchableOpacity onPress={() => setModalVisibal(true)}>
+                <Text style={styles.ClearAll}>Xóa tất cả</Text>
+              </TouchableOpacity>
+              ):(
+                <Text style={{fontSize: 16}}>Xóa tất cả</Text>
+              )
+            }
+           
           </View>
 
           {
             recentUsers.length === 0 ? (
-              <View style={{ justifyContent: 'center', alignItems: 'center' }}>
-               
-                <Image  source={require('../media/icon_tuong/PepeGif.gif')}/>
-                <Text style={{ fontSize: 16, fontWeight: '700' }}>Chưa có cc gì?</Text>
+              <View style={{ justifyContent: 'center', alignItems: 'center', height: 450}}>
+                <View style = {{justifyContent: 'center', alignItems: 'center'}}>
+                <FastImage style = {{width: 120, height: 120}} source={require('../media/icon_tuong/chim.gif')}/>
+                <Text style={{ fontSize: 18, fontWeight: '500', marginTop: 20 }}>Tìm kiếm gần đây trống!</Text>
+                </View>
               </View>
             ) : (
-              recentUsers.map(item => (
-                <ScrollView showsVerticalScrollIndicator={false}>
-                  <View key={item.id}>
-                    <ItemRencent item={item} onPressDelete={removeRecentUser} />
-                  </View>
-                </ScrollView>
-              ))
+              <ScrollView showsVerticalScrollIndicator={false}>
+                {
+                  recentUsers.map(item => (
+
+                    <View key={item.id}>
+                      <ItemRencent item={item} onPressDelete={removeRecentUser} />
+                    </View>
+
+                  ))
+                }
+              </ScrollView>
             )
           }
 
