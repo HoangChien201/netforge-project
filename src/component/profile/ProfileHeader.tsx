@@ -8,6 +8,9 @@ import { COLOR } from '../../constant/color';
 import { useMyContext } from '../navigation/UserContext';
 import { deleteFriend, sendRequest } from '../../http/QuyetHTTP';
 import DeleteFriend from '../../screens/profile/friendScreen/DeleteFriend'
+import uuid from 'react-native-uuid';
+import { socket } from '../../http/SocketHandle';
+
 interface ProfileHeaderProps {
   fullname: string;
   userId: number;
@@ -49,12 +52,30 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({ fullname, userId, loggedI
         // console.log('id: '+ id + 'status: ' + status);
         if (result) {
           setTextReqState(true);
+          handleSendReaction(id);
         }
       } catch (error) {
         setDisabledButtons(false);
       }
     }
   }
+  const handleSendReaction = (id:any) => {
+    const data = {
+      id: uuid.v4(),
+      type: 3,
+      title: `${user.fullname} đã gửi cho bạn lời mời kết bạn`,
+      userInfo: {
+        receiver: id,
+        sender: `${user.id}`,
+        fullname: `${user.fullname}`, 
+        avatar: `${user.avatar}`, 
+      },
+      timestamp: new Date().toISOString()
+    };
+
+    socket.emit('notification', data);
+    console.log('Sent notification data:', data);
+  };
   const [show, setShow] = useState(false);
   const [type, setType] = useState(false);
   const openDelete = async () => {

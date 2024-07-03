@@ -9,15 +9,15 @@ import SwiperFlatList from 'react-native-swiper-flatlist';
 import Icon from 'react-native-vector-icons/Feather';
 type Bpob = {
     content: any,
-    setContent: () => void,
+    setContent: (value:any) => void,
     media: any,
-    setMedia: (value: string) => void,
+    setMedia: (value:any) => void,
     permission: any,
-    setPermission: () => void,
+    setPermission: (value:any) => void,
     setStatus: any,
-    setShowPopup: () => void,
+    setShowPopup: (value:any) => void,
     friends: any,
-    setFriends: () => void
+    setFriends: (value:any) => void
 }
 const Body: React.FC<Bpob> = ({ content, setContent, media, setMedia, permission, setPermission, setStatus, setShowPopup, friends, setFriends }) => {
     //const [media, setMedia] = useState([]);

@@ -12,7 +12,9 @@ import AxiosInstance from '../../http/AxiosInstance'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { login } from '../../http/userHttp/user'
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
-
+import PushNotification, { Importance } from 'react-native-push-notification';
+import { PermissionsAndroid } from 'react-native';
+import { socket } from '../../http/SocketHandle'
 
 
 export type navigationType = StackNavigationProp<RootStackParamList>
@@ -23,6 +25,7 @@ export type RootStackParamList = {
 const ManageNavigation: React.FC = () => {
     const [showSplash, setShowSplash] = useState(true);
     const { user, setUser } = useMyContext();
+    const [notifications, setNotifications] = useState([]);
 
     const handleAutoLogin = async () => {
         try {
@@ -53,6 +56,8 @@ const ManageNavigation: React.FC = () => {
     };
     useEffect(() => {
         handleAutoLogin();
+        createChannelNotify();
+        requestNotificationPermission();
     }, []);
     useEffect(() => {
         const timer = setTimeout(() => {
@@ -60,6 +65,89 @@ const ManageNavigation: React.FC = () => {
         }, 1500);
         return () => clearTimeout(timer);
     }, []);
+    useEffect(() => {
+        if (user) {
+            const id = user.id;
+            console.log('Socket connected:', socket.connected);
+
+            socket.on(`notification-${id}`, (data) => {
+                console.log('Notification received:', data);
+
+                // Check if the notification already exists in notifications
+                const exists = notifications.some(notification => notification.id === data.id);
+
+                // Add notification only if it doesn't already exist
+                if (!exists) {
+                    addNotification(data);
+                    showLocal(data);
+                }
+            });
+
+            return () => {
+                socket.off(`notification-${id}`);
+            };
+        }
+
+    }, [user]);
+    const addNotification = async (newNotification) => {
+        try {
+            const updatedNotifications = [...notifications, newNotification];
+            setNotifications(updatedNotifications);
+            await AsyncStorage.setItem('notifications', JSON.stringify(updatedNotifications));
+            console.log('Notification added and saved:', newNotification);
+        } catch (error) {
+            console.error('Error adding notification:', error);
+        }
+    };
+    const requestNotificationPermission = async () => {
+        try {
+            const granted = await PermissionsAndroid.request(
+                PermissionsAndroid.PERMISSIONS.POST_NOTIFICATIONS,
+                {
+                    title: "Notification Permission",
+                    message: "This app needs access to show notifications.",
+                    buttonNeutral: "Ask Me Later",
+                    buttonNegative: "Cancel",
+                    buttonPositive: "OK",
+                }
+            );
+            if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+                console.log("You can use the notifications");
+            } else {
+                console.log("Notification permission denied");
+            }
+        } catch (err) {
+            console.warn(err);
+        }
+    };
+    const createChannelNotify = async () => {
+        PushNotification.createChannel(
+            {
+                channelId: "channel-id-1",
+                channelName: "My channel",
+                channelDescription: "A channel to categorise your notifications",
+                playSound: true,
+                soundName: "default",
+                importance: Importance.HIGH,
+                vibrate: true,
+            },
+            (created) => console.log(`createChannel returned '${created}'`)
+        );
+    };
+    const showLocal = (notification: { notification?: any; body?: any; title?: any; }) => {
+        PushNotification.localNotification({
+            channelId: "channel-id-1",
+            autoCancel: true,
+            bigText: notification.body || "",
+            title: notification.title || " Thông báo mới",
+            message: notification.body || "",
+            vibrate: true,
+            vibration: 300,
+            playSound: true,
+            soundName: "default",
+        });
+
+    };
 
     if (showSplash) {
         return <SplashScreen />;

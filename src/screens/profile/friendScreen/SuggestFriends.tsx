@@ -1,9 +1,11 @@
 import React, { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { StyleSheet, Text, View, TouchableOpacity, Image, LogBox } from 'react-native';
 import BottomSheet, { BottomSheetModal, BottomSheetModalProvider, BottomSheetView, BottomSheetScrollView } from '@gorhom/bottom-sheet';
+import uuid from 'react-native-uuid';
 import { COLOR } from '../../../constant/color';
 import { sendRequest } from '../../../http/QuyetHTTP';
-
+import { useMyContext } from '../../../component/navigation/UserContext';
+import { socket } from '../../../http/SocketHandle';
 type Suggest = {
   data: any,
   setData: ()=> void,
@@ -14,11 +16,27 @@ const SuggestFriends: React.FC<Suggest> = ({ data, setData }) => {
   const bottomSheetRef = useRef<BottomSheet>(null);
   const [textReqState, setTextReqState] = useState({});
   const [disabledButtons, setDisabledButtons] = useState({});
-
+  const {user} = useMyContext()
   LogBox.ignoreLogs([
     '[Reanimated] Reduced motion setting is enabled on this device.',
   ]);
+  const handleSendReaction = (id:any) => {
+    const data = {
+      id: uuid.v4(),
+      type: 3,
+      title: `${user.fullname} đã gửi cho bạn lời mời kết bạn`,
+      userInfo: {
+        receiver: id,
+        sender: `${user.id}`,
+        fullname: `${user.fullname}`, 
+        avatar: `${user.avatar}`, 
+      },
+      timestamp: new Date().toISOString()
+    };
 
+    socket.emit('notification', data);
+    console.log('Sent notification data:', data);
+  };
   // gửi yêu cầu kết bạn
   const status = 1;
   const sendRequestFriend = async (id: number, status: number) => {
@@ -31,6 +49,7 @@ const SuggestFriends: React.FC<Suggest> = ({ data, setData }) => {
       console.log('đã gửi lời mời');
 
       if (result) {
+        handleSendReaction(id)
         setTextReqState((prevState) => ({
           ...prevState,
           [id]: 'Đã gửi'
