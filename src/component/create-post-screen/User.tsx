@@ -25,7 +25,7 @@ const User = ({setPermission}) => {
         setSelectIcon(option.Icon)
     };
     useEffect(()=>{
-        console.log(user);
+        //console.log(user);
         
     },[])
     return (
@@ -40,7 +40,7 @@ const User = ({setPermission}) => {
                         <ICON name={selectIcon} size={18} color={COLOR.primary300}/>
                         <Text style={styles.buttonText}>{selectedOption}</Text>
                         {/* <Image style={styles.buttonTypeIcon} source={require('../../media/quyet_icon/down_w.png')} /> */}
-                        <ICON name='down' size={18} color={COLOR.primary150} />
+                        <ICON name='down' size={16} color={COLOR.primary150} />
                     </View>
 
                 </TouchableOpacity>

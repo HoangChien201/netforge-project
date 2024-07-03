@@ -24,7 +24,8 @@ const MessageScreen = () => {
   const [partner, setPartner] = useState({
     name: '',
     avatar: '',
-    group_id: null
+    group_id: null,
+    id: null
   })
 
   const navigation = useNavigation()
@@ -41,10 +42,11 @@ const MessageScreen = () => {
     // console.log('render param');
 
     if (route.params?.group_id) {
-      const { name, avatar } = route.params
+      const { name, avatar, id } = route.params
       const group_id = route.params?.group_id
+      console.log("id", id)
       getMessages(group_id)
-      setPartner(prevValue => { return { ...prevValue, fullname: name, avatar, group_id } })
+      setPartner(prevValue => { return { ...prevValue, fullname: name, avatar, group_id, id} })
       socket.on(`message-${user?.id}`, (message) => {
         console.log('message'+user.id,message);
         getMessages(group_id)

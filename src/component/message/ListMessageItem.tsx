@@ -25,6 +25,7 @@ const ListMessageItem = ({ group }: { group: GroupChatType }) => {
     
     let avatar=''
     let name=''
+    let id = null
     if(group.type === 'group'){
         avatar=group.image ? group.image : '';
         name=group.name ? group.name : ''
@@ -34,6 +35,7 @@ const ListMessageItem = ({ group }: { group: GroupChatType }) => {
         if(userSend){
             avatar=userSend?.user.avatar
             name=userSend.user.fullname
+            id=userSend.user.id
         }
         else{
             avatar='../../media/quyet_icon/netforge.png';
@@ -44,8 +46,11 @@ const ListMessageItem = ({ group }: { group: GroupChatType }) => {
         navigation.navigate('MessageScreen',{
             group_id:group.id,
             name:name,
-            avatar:avatar
+            avatar:avatar,
+            id:id
         })
+        console.log("name: ", name);
+        console.log("user ID: ", id)
     }
     return (
         <TouchableOpacity onPress={onPress}>

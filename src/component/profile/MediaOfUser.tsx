@@ -20,77 +20,9 @@ interface Post {
   create_at: string;
   media: MediaItem[];
 }
-
 const { width, height } = Dimensions.get('window');
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#f8f9fa',
-    paddingHorizontal: 10,
-  },
-  imageContainer: {
-    height: height * 0.4,
-    backgroundColor: '#fff',
-    borderRadius: 12,
-    overflow: 'hidden', 
-    marginBottom: 20,
-    //marginTop:20,
-    position: 'relative',
-  },
-  image: {
-    width: '100%',
-    height: '100%',
-    borderRadius: 12,
-  },
-  paginationStyle: {
-    position: 'absolute',
-    top: 10,
-    right: 10,
-    backgroundColor: 'rgba(0, 0, 0, 0.6)',
-    borderRadius: 8,
-    paddingHorizontal: 8,
-    paddingVertical: 4,
-  },
-  paginationText: {
-    color: '#fff',
-    fontSize: 16,
-  },
-  postTime: {
-    position: 'absolute',
-    bottom: 10,
-    left: 10,
-    backgroundColor: 'rgba(0, 0, 0, 0.6)',
-    borderRadius: 8,
-    color: '#fff',
-    paddingHorizontal: 8,
-    paddingVertical: 4,
-    fontSize: 14,
-  },
-  noPhotos: {
-    fontSize: 18,
-    color: '#6c757d',
-    textAlign: 'center',
-    marginTop: 20,
-  },
-  overlay: {
-    height: 70,
-    width: 119,
-    position: 'absolute',
-    backgroundColor: 'rgba(0, 0, 0, 0.4)',
-    top: 0,
-    right: 0,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  overlayText: {
-    color: 'white',
-    fontWeight: 'bold',
-    fontSize: 20,
-  }
-});
-
-const renderPagination = (index, total) => {
+const renderPagination = (index: any, total: any) => {
   return (
     <View style={styles.paginationStyle}>
       <Text style={styles.paginationText}>{index + 1}/{total}</Text>
@@ -169,13 +101,79 @@ const MediaOfUser: React.FC<MediaOfUserProps> = ({ userId, onRefresh }) => {
           data={posts}
           renderItem={renderItem}
           keyExtractor={(item) => item.id.toString()}
-          ListEmptyComponent={<Text style={styles.noPhotos}>No posts found</Text>}
+          //ListEmptyComponent={<Text style={styles.noPhotos}>No posts found</Text>}
         />
       ) : (
-        <Text style={styles.noPhotos}>No posts with media found</Text>
+        <Text style={styles.noPhotos}>Không có ảnh nào để hiển thị</Text>
       )}
     </SafeAreaView>
   );
 };
 
 export default MediaOfUser;
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#f8f9fa',
+    paddingHorizontal: 10,
+  },
+  imageContainer: {
+    height: height * 0.4,
+    backgroundColor: '#fff',
+    borderRadius: 12,
+    overflow: 'hidden', 
+    marginBottom: 20,
+    //marginTop:20,
+    position: 'relative',
+  },
+  image: {
+    width: '100%',
+    height: '100%',
+    borderRadius: 12,
+  },
+  paginationStyle: {
+    position: 'absolute',
+    top: 10,
+    right: 10,
+    backgroundColor: 'rgba(0, 0, 0, 0.6)',
+    borderRadius: 8,
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+  },
+  paginationText: {
+    color: '#fff',
+    fontSize: 16,
+  },
+  postTime: {
+    position: 'absolute',
+    bottom: 10,
+    left: 10,
+    backgroundColor: 'rgba(0, 0, 0, 0.6)',
+    borderRadius: 8,
+    color: '#fff',
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    fontSize: 14,
+  },
+  noPhotos: {
+    fontSize: 18,
+    color: '#6c757d',
+    textAlign: 'center',
+    marginTop: 20,
+  },
+  overlay: {
+    height: 70,
+    width: 119,
+    position: 'absolute',
+    backgroundColor: 'rgba(0, 0, 0, 0.4)',
+    top: 0,
+    right: 0,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  overlayText: {
+    color: 'white',
+    fontWeight: 'bold',
+    fontSize: 20,
+  }
+});

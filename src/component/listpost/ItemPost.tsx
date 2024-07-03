@@ -64,8 +64,8 @@ const ItemPost =  memo(({ index, data,onrefresh, userId, onPressProfile  }) => {
     return (
         <>
         <Pressable onPress={handleItemPress}   style={{ marginBottom: 6, backgroundColor: "#fff" }}>
-            <TouchableOpacity  onPress={handleToProfile}>
-                <View style={styles.home}>
+            <View style={styles.home}>
+                <TouchableOpacity  onPress={handleToProfile}>
                     <View style={styles.containerAvt}>
                         {/* <Image source={require('../../media/icon/phuking.jpg')} style={styles.avt} /> */}
                         {creater.avatar ? (
@@ -81,19 +81,18 @@ const ItemPost =  memo(({ index, data,onrefresh, userId, onPressProfile  }) => {
                             </View>
                         </View>
                     </View>
+                </TouchableOpacity>
                     <View>
                         <TouchableOpacity>
                             <Image source={require('../../media/Dicons/ellipsis.png')} style={styles.ellips} />
                         </TouchableOpacity>
                     </View>
-                </View>
-            </TouchableOpacity>
+            </View>
             {fommatContent()}
             {media.length > 0 ? <ItemImg image={media} /> : null}
             <ActionBar checkLike={checkLike} setCheckLike={setCheckLike}  postId={id} type={reaction} comment_count={comment_count} share_count={share_count} like_count={like_count}  />
             
         </Pressable>
-      
         </>
     );
 });

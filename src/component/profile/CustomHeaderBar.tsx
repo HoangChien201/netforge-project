@@ -8,14 +8,12 @@ interface CustomHeaderBarProps {
   title?: string;
 }
 
-const CustomHeaderBar: React.FC<CustomHeaderBarProps> = ({ onBackPress, onSavePress, title }) => {
-
+const CustomHeaderBar:React.FC<CustomHeaderBarProps> = ({ onBackPress, onSavePress, title }) => {
   const handleBackPress = () => {
     if (onBackPress) {
-      onBackPress(); // Gọi hàm onPress nếu được truyền vào
-    }
-  };
-
+      onBackPress();
+      }
+    };
   const handleSavePress = () => {
     if (onSavePress) {
       onSavePress();
@@ -33,6 +31,7 @@ const CustomHeaderBar: React.FC<CustomHeaderBarProps> = ({ onBackPress, onSavePr
       </TouchableOpacity>
     </View>
   );
+  
 }; 
 
 export default CustomHeaderBar;
