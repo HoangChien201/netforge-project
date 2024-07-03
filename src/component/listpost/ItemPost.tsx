@@ -90,7 +90,7 @@ const ItemPost =  memo(({ index, data,onrefresh, userId, onPressProfile  }) => {
             </TouchableOpacity>
             {fommatContent()}
             {media.length > 0 ? <ItemImg image={media} /> : null}
-            <ActionBar checkLike={checkLike} setCheckLike={setCheckLike}  postId={id} type={reaction} comment_count={comment_count} share_count={share_count} like_count={like_count}  />
+            <ActionBar checkLike={checkLike} setCheckLike={setCheckLike}  postId={id} type={reaction} comment_count={comment_count} share_count={share_count} like_count={like_count} onPressProfile={onPressProfile} />
             
         </Pressable>
       

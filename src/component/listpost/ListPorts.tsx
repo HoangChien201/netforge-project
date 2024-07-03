@@ -82,7 +82,7 @@ const handleToProfile = (userId: React.SetStateAction<null>) => {
       navigation.navigate(ProfileRootStackEnum.ProfileScreen);
   } else {
       //setIsModalVisible(true);
-      navigation.navigate(ProfileRootStackEnum.FriendProfile, { userId});
+      navigation.navigate(ProfileRootStackEnum.FriendProfile, {userId});
   } 
 };
   return (

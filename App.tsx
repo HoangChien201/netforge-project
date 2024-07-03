@@ -24,7 +24,6 @@ import { registerRemoteNotificationsEvent } from './src/notifications/Events';
 function App(): React.JSX.Element {
   useEffect(()=>{
     RequestNotificationPermission()
-
     registerRemoteNotificationsEvent()
   })
   LogBox.ignoreLogs([

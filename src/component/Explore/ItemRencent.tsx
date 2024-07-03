@@ -1,23 +1,36 @@
 import { StyleSheet, Text, View, TouchableOpacity,Image } from 'react-native'
 import React from 'react'
-import {COLOR} from '../../constant/color';
-import { HangUpCallButton } from '@stream-io/video-react-native-sdk';
+import { useNavigation } from '@react-navigation/native';
+import { ProfileRootStackEnum } from '../stack/ProfileRootStackParams';
+import { useMyContext } from '../navigation/UserContext';
+import Icon from 'react-native-vector-icons/Feather'
+import { COLOR } from '../../constant/color';
 
-const ItemRencent = ({ item, onPressDelete }) => {
+const ItemRencent = ({ item, onPressDelete,  }) => {
+  const navigation = useNavigation()
+  const { user } = useMyContext();
+  const handleToProfile = () => {
+    //setSelectedUserId(userId);
+    const userId = item.id
+    if (userId === user.id) {
+        //setIsModalVisible(false);
+        navigation.navigate(ProfileRootStackEnum.ProfileScreen);
+    } else {
+        //setIsModalVisible(true);
+        navigation.navigate(ProfileRootStackEnum.FriendProfile, {userId});
+    } 
+  };
     const handleDelete = () => {
         onPressDelete(item.id);
       };
-      const handleNe =() =>{
-        console.log('idItemne:', item.id);
-        
-      }
+
   return (
     <View style={styles.itemRecentContai}>
-    <TouchableOpacity style={styles.itemRecent} onPress={handleNe}>
+    <TouchableOpacity style={styles.itemRecent} onPress={handleToProfile}>
       <Image source={{ uri: item.avatar }} style={styles.imageItem} />
       <Text style={styles.nameItem}>{item.fullname}</Text>
       <TouchableOpacity style={{ marginRight: 10 }} onPress={handleDelete}>
-        <Image source={require('../../media/icon_tuong/trash.png')} style={{ width: 20, height: 20 }} />
+      <Icon name='x' size={24} />
       </TouchableOpacity>
     </TouchableOpacity>
   </View>
