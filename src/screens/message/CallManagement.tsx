@@ -137,23 +137,11 @@ const CallManagement = () => {
     }
   }
 
-  const animatedStyled=useAnimatedStyle(()=>{
-    return {
-        transform: [
-            {
-                translateX: withTiming(100,
-                    { duration: 1000,easing:Easing.linear }
-                )
-            },
-          ]
-    
-    }
-  })
 
   // Render the user interface
   return (
     <SafeAreaView style={styles.main}>
-      {/* <Text style={styles.head}>Agora Voice Call Quick Start</Text>
+      <Text style={styles.head}>Agora Voice Call Quick Start</Text>
       <View style={styles.btnContainer}>
         <TouchableOpacity onPress={join}>
           <Text style={styles.button}>
@@ -209,13 +197,7 @@ const CallManagement = () => {
           <Text>{isJoined && !isHost ? 'Waiting for remote users to join' : ''}</Text>
         )}
         <Text style={styles.info}>{message}</Text>
-      </ScrollView> */}
-
-      <Animated.View 
-      style={animatedStyled}
-        > 
-        <Text>AHHA</Text>
-      </Animated.View>
+      </ScrollView>
     </SafeAreaView>
   );
 

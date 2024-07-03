@@ -4,6 +4,8 @@ import MaterialIcon from 'react-native-vector-icons/MaterialIcons'
 import { COLOR } from '../../constant/color'
 import { useNavigation } from '@react-navigation/native'
 import { postLocalNotification } from '../../notifications/Events'
+import { socket } from '../../http/SocketHandle'
+import { multiply } from 'lodash'
 
 const HeaderMessageComponent = ({ partner }: { partner: any }) => {
     const navigation = useNavigation()
@@ -19,15 +21,26 @@ const HeaderMessageComponent = ({ partner }: { partner: any }) => {
 
             //handle video call
             console.log('video');
-            postLocalNotification({
+            socket.emit('notification', {
+
                 body: "Local notification!",
                 title: "Local Notification Title",
-                sound: "chime.aiff",
-                silent: false,
-                category: "SOME_CATEGORY",
-                userInfo: {},
+                userInfo: {
+                    sender:2,
+                    multiple:true
+                },
                 fireDate: new Date(),
+
             })
+            // postLocalNotification({
+            //     body: "Local notification!",
+            //     title: "Local Notification Title",
+            //     sound: "chime.aiff",
+            //     silent: false,
+            //     category: "SOME_CATEGORY",
+            //     userInfo: {},
+            //     fireDate: new Date(),
+            // })
         }
 
         return (
