@@ -5,24 +5,38 @@ import ListMessageItem, { GroupChatType } from '../../component/message/ListMess
 import { useMyContext } from '../../component/navigation/UserContext'
 import { getGroupsAPI } from '../../http/ChienHTTP'
 import { socket } from '../../http/SocketHandle'
+import { StackNavigationProp } from '@react-navigation/stack'
+import { MessageRootStackParams } from '../../component/stack/MessageRootStackParams'
+import { RouteProp, useIsFocused } from '@react-navigation/native'
+
 const ListMessageScreen = () => {
   const {user}=useMyContext()
   const [groups,setGroups]=useState<Array<GroupChatType>>([])
-
+  const isFocus=useIsFocused()
   useEffect(()=>{
     getGroups()
-    socket.on(`message-${user?.id}`, (message) => {
-      console.log('message'+user.id,message);
+    socket.on(`list-group-${user.id}`, (message) => {
+      
       getGroups()
     })
-  },[])
+    return ()=>{
+      socket.off(`list-group-${user.id}`)
+    }
+  },[isFocus])
 
+  useEffect(()=>{
+    
+
+    
+  },[])
   async function getGroups(){
     const respone= await getGroupsAPI()
     if(respone){
       setGroups(respone)
     } 
   }
+
+  
   return (
     <View style={styles.container}>
       <View style={styles.headerContainer}>

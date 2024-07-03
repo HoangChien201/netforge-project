@@ -6,23 +6,27 @@ import { fileType } from '../create-post-screen/Options';
 import MCIcon from 'react-native-vector-icons/MaterialCommunityIcons'
 import { PermissionCamera } from './Permission';
 import { useMyContext } from '../navigation/UserContext';
+import { messageType } from './MessageItem';
 
-const UseMedia = ({ onSubmit }: { onSubmit: any }) => {
+const UseMedia = ({ onSubmit,reply }: { onSubmit: any,reply:messageType | null }) => {
     const { user } = useMyContext()
     function NewMessage(messsage: {
         type:string,
         fileName:string,
         uri:string
     }) {
+        let id=Date.now()
         let message = {
-            "id": Math.floor(Math.random() * 100),
+            "id": id,
             "create_at": new Date().toISOString(),
             "update_at": new Date().toISOString(),
             "state": 0,
             "type": "image",
             "message": messsage,
             "sender": user.id,
-            "reaction": []
+            "reaction": [],
+            "reads": [],
+            "parent":reply ? reply.id : null
 
         }
 
