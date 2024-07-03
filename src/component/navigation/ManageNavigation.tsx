@@ -10,8 +10,10 @@ import UserStack from '../stack/UserStack'
 import SplashScreen from '../../screens/SplashScreen'
 import AxiosInstance from '../../http/AxiosInstance'
 import AsyncStorage from '@react-native-async-storage/async-storage'
-import {login} from '../../http/userHttp/user'
+import { login } from '../../http/userHttp/user'
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
+
+
 
 export type navigationType = StackNavigationProp<RootStackParamList>
 type routeType = RouteProp<{ params: { value: string } }, 'params'>
@@ -21,6 +23,7 @@ export type RootStackParamList = {
 const ManageNavigation: React.FC = () => {
     const [showSplash, setShowSplash] = useState(true);
     const { user, setUser } = useMyContext();
+
     const handleAutoLogin = async () => {
         try {
             const keepLoggedIn = await AsyncStorage.getItem('keep');
@@ -36,10 +39,10 @@ const ManageNavigation: React.FC = () => {
                         setUser(result.data)
                     } catch (error) {
                         console.log(error);
-                        
+
                     }
-                } 
-            }else{
+                }
+            } else {
                 console.log('User chose not to stay logged in');
                 return;
             }
@@ -55,17 +58,17 @@ const ManageNavigation: React.FC = () => {
         const timer = setTimeout(() => {
             setShowSplash(false);
         }, 1500);
-        return () => clearTimeout(timer); 
+        return () => clearTimeout(timer);
     }, []);
 
     if (showSplash) {
         return <SplashScreen />;
     }
+
     return (
         <GestureHandlerRootView>
             <NavigationContainer>
                 {user ? <NetworkStack /> : <UserStack />}
-                
             </NavigationContainer>
         </GestureHandlerRootView>
     )

@@ -4,12 +4,11 @@ import React from 'react'
 import Icon from 'react-native-vector-icons/AntDesign'
 import { COLOR } from '../../constant/color'
 import { DateOfTimePost } from '../../format/DateOfTimePost'
-import { useNavigation } from '@react-navigation/native';
-
+import { useNavigation } from '@react-navigation/native'
 type Item = {
     notification: any
 }
-const ItemComment:React.FC<Item> = ({ notification }) => {
+const ItemShare:React.FC<Item> = ({ notification }) => {
     const navigation = useNavigation();
     function navigationScreen(screen: string) {
         navigation.navigate(`${screen}`)
@@ -22,7 +21,7 @@ const ItemComment:React.FC<Item> = ({ notification }) => {
         >
         <View style={styles.iconFriend} >
             <Image style={styles.avatar} source={{ uri: notification.userInfo.avatar }} />
-            <Icon style={styles.iconHeart} name='aliwangwang-o1' size={18} color={COLOR.PrimaryColor} />
+            <Icon style={styles.iconHeart} name='retweet' size={18} color={COLOR.PrimaryColor} />
         </View>
         <View style={styles.text}>
             <Text style={styles.textUser_Post}>{notification.title} </Text>
@@ -36,7 +35,7 @@ const ItemComment:React.FC<Item> = ({ notification }) => {
     )
 }
 
-export default ItemComment
+export default ItemShare
 
 const styles = StyleSheet.create({
     container: {

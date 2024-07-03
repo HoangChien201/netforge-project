@@ -60,7 +60,7 @@ export const HomeRootStackScreens = [
             headerShown: true
         }
     },
-    }
+    {
         id: Math.random() + "" + Date,
         name: HomeRootStackEnum.ProfileScreen,
         component: ProfileScreen,

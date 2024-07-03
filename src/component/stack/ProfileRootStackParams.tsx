@@ -31,13 +31,16 @@ export enum ProfileRootStackEnum {
     QRcodeScreen = 'QRcodeScreen',
     Scanner = 'Scanner',
     FriendScreen = 'FriendScreen',
-    HistoryStack = 'HistoryStack'
+    HistoryStack = 'HistoryStack',
+    HomeScreen= 'HomeScreen',
+    LiveStack= 'LiveStack' ,
+    FriendProfile='FriendProfile'
 }
 
 export type ProfileRootStackParams={
     ProfileScreen : undefined;
     EditProfileScreen: undefined;
-    Live : undefined;
+    LiveStreamScreen : undefined;
     SettingScreen : undefined;
     HistoryActivityScreen : undefined;
     HelpScreen : undefined;
@@ -48,27 +51,32 @@ export type ProfileRootStackParams={
     Scanner: undefined;
     FriendScreen: undefined;
     HistoryStack:undefined;
-    HomeScreen = 'HomeScreen',
-    LiveStack = 'LiveStack',
-    FriendProfile = 'FriendProfile',
+    HomeScreen: undefined;
+    LiveStack: undefined;
+    FriendProfile:undefined;
+    FollowingScreen:undefined
 
 }
 
-export type ProfileRootStackParams={
-    [ProfileRootStackEnum.ProfileScreen]: undefined;
-    [ProfileRootStackEnum.EditProfileScreen]: undefined;
-    [ProfileRootStackEnum.SettingScreen]: undefined;
-    [ProfileRootStackEnum.HistoryActivityScreen]: undefined;
-    [ProfileRootStackEnum.HelpScreen]: undefined;
-    [ProfileRootStackEnum.MenuScreen]: undefined;
-    [ProfileRootStackEnum.NaviStack]: undefined;
-    [ProfileRootStackEnum.ChangePassword]: undefined;
-    [ProfileRootStackEnum.QRcodeScreen]: undefined;
-    [ProfileRootStackEnum.HomeScreen]: undefined;
-    [ProfileRootStackEnum.LiveStreamScreen]: undefined;
-    [ProfileRootStackEnum.LiveStack]: undefined;
-    [ProfileRootStackEnum.FriendProfile]: undefined;
-}
+// export type ProfileRootStackParams={
+//     [ProfileRootStackEnum.ProfileScreen]: undefined;
+//     [ProfileRootStackEnum.EditProfileScreen]: undefined;
+//     [ProfileRootStackEnum.SettingScreen]: undefined;
+//     [ProfileRootStackEnum.HistoryActivityScreen]: undefined;
+//     [ProfileRootStackEnum.HelpScreen]: undefined;
+//     [ProfileRootStackEnum.MenuScreen]: undefined;
+//     [ProfileRootStackEnum.NaviStack]: undefined;
+//     [ProfileRootStackEnum.ChangePassword]: undefined;
+//     [ProfileRootStackEnum.QRcodeScreen]: undefined;
+//     [ProfileRootStackEnum.HomeScreen]: undefined;
+//     [ProfileRootStackEnum.LiveStreamScreen]: undefined;
+//     [ProfileRootStackEnum.LiveStack]: undefined;
+//     [ProfileRootStackEnum.FriendProfile]: undefined;
+//     [ProfileRootStackEnum.Scanner]: undefined;
+//     [ProfileRootStackEnum.FriendScreen]: undefined;
+//     [ProfileRootStackEnum.HistoryStack]: undefined;
+//     [ProfileRootStackEnum.FollowingScreen]:undefined
+// }
 
 export const ProfileRootStackScreens=[
     {
@@ -136,7 +144,9 @@ export const ProfileRootStackScreens=[
         component: FriendScreen,
         options: {
             title:"Bạn bè",
-            headerTitleAlign:'center'
+            headerTitleAlign:'center',
+            animationTypeForReplace: 'push',
+            animationEnabled: true,
         }
     },
     {

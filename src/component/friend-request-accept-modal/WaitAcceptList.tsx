@@ -7,7 +7,7 @@ import { cancelWaitAccept, acceptRequest } from '../../http/QuyetHTTP'
 import EmptyWA from './EmptyWA'
 type Wait ={
     dataWaitAccept:any, 
-    setDataWaitAccept:()=>void,
+    setDataWaitAccept:(value:any)=>void,
 }
 const WaitAcceptList:React.FC<Wait> = ({ dataWaitAccept, setDataWaitAccept}) => {
     const cancelReq = async (friendId:number) => {
@@ -47,7 +47,7 @@ const WaitAcceptList:React.FC<Wait> = ({ dataWaitAccept, setDataWaitAccept}) => 
                         <TouchableOpacity style={styles.buttonAccept}onPress={() => {
                             acceptReq(friend.user.id)
                         }}>
-                            <Icon name='down' size={22} color={'white'}/>
+                            <Icon name='check' size={22} color={'white'}/>
                             {/* <Text style={styles.textAccept}>Chấp nhận</Text> */}
                         </TouchableOpacity>
                         <View style={{ width: 10 }}></View>
@@ -108,7 +108,7 @@ const styles = StyleSheet.create({
     buttonAccept: {
         height: 32,
         width: 32,
-        backgroundColor: 'blue',
+        backgroundColor: COLOR.PrimaryColor1,
         alignItems: 'center',
         justifyContent: 'center',
         borderRadius: 32,

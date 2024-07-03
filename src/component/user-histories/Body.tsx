@@ -6,21 +6,20 @@ import Icon from 'react-native-vector-icons/AntDesign'
 import { COLOR } from '../../constant/color'
 import { getUserHistories } from '../../http/QuyetHTTP';
 import { useNavigation } from '@react-navigation/native'
-import Animated, { useSharedValue, useAnimatedStyle, withTiming } from 'react-native-reanimated'
 const { width } = Dimensions.get('window');
 type BodyH = {
 }
 const Body: React.FC<BodyH> = ({ }) => {
     const [view, setView] = useState(true);
-    const translateX = useSharedValue(0);
+
     const [data, setData] = useState<any>({});
     const [dataComment, setDataComment] = useState<any[]>([]);
-    const navigation=useNavigation();
-      function navigationScreen(screen:string){
+    const navigation = useNavigation();
+    function navigationScreen(screen: string) {
         navigation.navigate(`${screen}`)
     };
     const getData = async () => {
-        
+
         try {
             const result = await getUserHistories();
             setData(result);
@@ -67,7 +66,7 @@ const Body: React.FC<BodyH> = ({ }) => {
                             <Text style={styles.headerText}>Lịch sử thích</Text>
                         </View>
                         <ScrollView style={styles.page}>
-                            
+
                             <LikeHistories data={data} />
                         </ScrollView>
                     </View>
@@ -96,7 +95,7 @@ export default Body
 const styles = StyleSheet.create({
     container: {
         flexDirection: 'column',
-        zIndex:999
+        zIndex: 999
     },
     header: {
 
