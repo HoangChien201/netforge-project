@@ -1,8 +1,7 @@
-import { StyleSheet, Text, View, TextInput, Image, TouchableOpacity, ImageProps, FlatList, ScrollView, WebView, ActivityIndicator } from 'react-native'
+import { StyleSheet, Text, View, TextInput, Image, TouchableOpacity, ScrollView, ActivityIndicator } from 'react-native'
 import React, { useState, useEffect, useId, useRef, useMemo } from 'react'
 import { COLOR } from '../constant/color'
-import { BottomSheetModalProvider, BottomSheetModal, BottomSheetView, } from '@gorhom/bottom-sheet';
-import { NavigationProp, ParamListBase, useNavigation } from '@react-navigation/native'
+import { useNavigation } from '@react-navigation/native'
 import { searchUser } from '../http/TuongHttp';
 import ModalDeleteRecent from '../component/Explore/ModalDeleteRecent';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -11,33 +10,54 @@ import ItemSearch from '../component/Explore/ItemSearch';
 import { useMyContext } from '../component/navigation/UserContext';
 import { ProfileRootStackEnum } from '../component/stack/ProfileRootStackParams';
 import FastImage from 'react-native-fast-image';
-import Icon from 'react-native-vector-icons/AntDesign'
+import Icon from 'react-native-vector-icons/Entypo'
 
 const ExploreScreen = () => {
   const navigation = useNavigation()
   const { user } = useMyContext();
+  const timerRef = useRef(null);
   // modal comments
   const [keyword, setKeyword] = useState('');
   const [isSearching, setIsSearching] = useState(true);
   const [users, setUser] = useState([]);
   const [modalVisible, setModalVisibal] = useState(false);
   const [recentUsers, setRecentUsers] = useState([]);
+  const [noResult, setNoResult] = useState(false)
+  const [isLoading, setIsLoading] = useState(true)
   useEffect(() => {
     navigation.getParent()?.setOptions({ tabBarStyle: { display: 'none' } });
     loadRecentUsers();
   }, []);
   const onSearch = async text => {
+    if (text.trim() === '') {
+      console.log('uk');
+      clearTimeout(timerRef.current)
+      setKeyword(text)
+      setUser([]);
+      setIsSearching(true)
+      setNoResult(false)
+      setIsLoading(false)
+      return
+    }
+    setKeyword(text);
+    setNoResult(false);
+    setIsLoading(true);
+
     try {
       const result: any = await searchUser(text)
       setUser(result);
       setIsSearching(false)
 
-      if (text.trim() === '' && text.length === 0) {
-        setUser([]);
-        setIsSearching(true)
-        return;
+      if (result.length === 0 ) {
+        clearTimeout(timerRef.current);
+        timerRef.current = setTimeout(() => {
+          setIsLoading(false)
+          setNoResult(true);
+          console.log('hehe2');
+          
+          
+        }, 5000);
       }
-      return
     } catch (error) {
       console.log(error);
     }
@@ -99,6 +119,14 @@ const ExploreScreen = () => {
     }
   };
 
+  // xóa keywork
+  const handleDeleteKeywork = () => {
+    setKeyword('')
+    setIsSearching(true)
+    setNoResult(false)
+    clearTimeout(timerRef.current);
+  }
+
   return (
     <View style={styles.container}>
       <View style={{ flexDirection: 'row', alignItems: 'center' }}>
@@ -106,12 +134,18 @@ const ExploreScreen = () => {
           <Image source={require('../media/icon_tuong/backblack.png')} style={styles.IconBack} />
         </TouchableOpacity>
         <View style={styles.SearchContai}>
-          <TextInput style={styles.SearchInputn} placeholder='Tìm kiếm trên NetForge' onChangeText={text => {
-            setKeyword(text)
+          <TextInput style={styles.SearchInputn} placeholder='Tìm kiếm trên NetForge' 
+          onChangeText={(text) => 
             onSearch(text)
-          }} value={keyword} onFocus={() => setIsSearching(false)}>
+          } value={keyword} onFocus={() => setIsSearching(false)}>
           </TextInput>
-
+          {
+            keyword && (
+              <TouchableOpacity style = {{right: 8}} onPress={handleDeleteKeywork}>
+          <Icon name='circle-with-cross' size={20} color={'#686D76'}/>
+          </TouchableOpacity>
+            )
+          }
         </View>
       </View>
       {users.length > 0 ? (
@@ -122,35 +156,46 @@ const ExploreScreen = () => {
             </View>
           ))}
         </ScrollView>
-      ) : (
-        keyword.trim() !== '' && (
+      ):(
+        keyword && isLoading && (
+        
           <View style={styles.spinnerContainer}>
-            <ActivityIndicator size="large" color={COLOR.PrimaryColor} />
+            <ActivityIndicator size="large" color={COLOR.PrimaryColor}/>
           </View>
+
+          
         )
       )}
+
+     
+      {noResult && users.length === 0 && (
+        <View style={{justifyContent: 'center', alignItems: 'center', marginTop: 70}}>
+          <Text style={{fontSize: 17, fontWeight: '700'}}>Tìm kiếm không có kết quả!</Text>
+        </View>
+      )
+      }
       {isSearching && users.length === 0 && (
         <View>
           <View style={styles.RecentContai}>
             <Text style={styles.Recent}>Gần đây</Text>
             {
-              recentUsers.length > 0 ?(
+              recentUsers.length > 0 ? (
                 <TouchableOpacity onPress={() => setModalVisibal(true)}>
-                <Text style={styles.ClearAll}>Xóa tất cả</Text>
-              </TouchableOpacity>
-              ):(
-                <Text style={{fontSize: 16}}>Xóa tất cả</Text>
+                  <Text style={styles.ClearAll}>Xóa tất cả</Text>
+                </TouchableOpacity>
+              ) : (
+                <Text style={{ fontSize: 16 }}>Xóa tất cả</Text>
               )
             }
-           
+
           </View>
 
           {
             recentUsers.length === 0 ? (
-              <View style={{ justifyContent: 'center', alignItems: 'center', height: 450}}>
-                <View style = {{justifyContent: 'center', alignItems: 'center'}}>
-                <FastImage style = {{width: 120, height: 120}} source={require('../media/icon_tuong/chim.gif')}/>
-                <Text style={{ fontSize: 18, fontWeight: '500', marginTop: 20 }}>Tìm kiếm gần đây trống!</Text>
+              <View style={{ justifyContent: 'center', alignItems: 'center', height: 450 }}>
+                <View style={{ justifyContent: 'center', alignItems: 'center' }}>
+                  <FastImage style={{ width: 120, height: 120 }} source={require('../media/icon_tuong/chim.gif')} />
+                  <Text style={{ fontSize: 18, fontWeight: '500', marginTop: 20 }}>Tìm kiếm gần đây trống!</Text>
                 </View>
               </View>
             ) : (
@@ -189,9 +234,10 @@ const styles = StyleSheet.create({
     height: 25
   },
   spinnerContainer: {
-    height: 100,
+   marginTop: 100,
     justifyContent: 'center',
-    alignItems: 'center',
+    alignItems: 'center'
+  
   },
 
   container: {
