@@ -1,19 +1,19 @@
-import { StyleSheet, Text, View, TouchableOpacity, Image, TextInput, ScrollView, KeyboardAvoidingView, Platform, FlatList, Modal } from 'react-native'
+import { StyleSheet, Text, View, TouchableOpacity, Image, ScrollView} from 'react-native'
 import React, { useMemo, useState, useRef, useEffect } from 'react'
-import UserPost from '../component/formComments/UserPost';
 import InputCmt from '../component/formComments/InputCmt';
 import CommentItem from '../component/formComments/CommentItem';
 import { getComments, addComments, getPostById } from '../http/TuongHttp';
 import { useNavigation } from '@react-navigation/native'
 import { navigationType } from '../component/stack/UserStack'
-import Video from 'react-native-video';
-import { DateOfTimePost } from '../format/DateOfTimePost';
-import { number } from 'yup';
 import { useRoute } from '@react-navigation/native';
 import ItemPost from '../component/listpost/ItemPost';
 import Modal_GetLikePosts from '../component/formComments/Modal_GetLikePosts';
+import { ProfileRootStackEnum } from '../component/stack/ProfileRootStackParams';
+import { useMyContext } from '../component/navigation/UserContext';
+import Icon from 'react-native-vector-icons/Ionicons'
 const CommentsScreen = () => {
     const navigation = useNavigation<navigationType>()
+    const { user } = useMyContext();
     const [modalGetLikePostVisible, setModalGetLikePostVisible] = useState(false);
     const [commentUserId, setCommentUserId] = useState(null);
     const [text, setText] = useState(null)
@@ -23,12 +23,15 @@ const CommentsScreen = () => {
     const [imagePath, setImagePath] = useState(null);
     const [commentCount, setCommentCount] = useState(0);
     const scrollViewRef = useRef();
+
     const route = useRoute();
     const { postId } = route.params;
     const { numberLike } = route.params;
-    console.log('postId', postId);
-    console.log('numberLikeNe', numberLike);
-    console.log(text);
+
+
+    // console.log('postId', postId);
+    // console.log('numberLikeNe', numberLike);
+    // console.log(text);
 
     // lấy bài viết chi tiết
     const fetchPosts = async () => {
@@ -79,31 +82,50 @@ const CommentsScreen = () => {
             scrollViewRef.current.scrollToEnd({ animated: false });
         }
     }, [commentCount]);
+
+
+    const loggedInUserId = user.id;
+    const handleToProfile = (userId) => {
+        // //setSelectedUserId(userId);
+        console.log("userID: ", userId);
+        if (userId === loggedInUserId) {
+            //setIsModalVisible(false);
+            navigation.navigate(ProfileRootStackEnum.ProfileScreen);
+        } else {
+            //setIsModalVisible(true);
+            navigation.navigate(ProfileRootStackEnum.FriendProfile, { userId });
+        }
+    };
     return (
         <View style={styles.container}>
+            <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center', position: 'relative', height: 50, backgroundColor: '#fff' }}>
+                <TouchableOpacity onPress={()=>{navigation.goBack()}} style={{ position: 'absolute', left: 15 }}>
+                    <Icon name='arrow-back' size={28} color={'#000'}/>
+                </TouchableOpacity>
+                <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', }}>
+                    <Text style = {{fontSize: 20, fontWeight: '700', color: '#000'}}>Bình Luận</Text>
+                </View>
+            </View>
 
-            <View style={{ height: "95%", backgroundColor: 'white' }}>
+            <View style={{ height: "87%", backgroundColor: 'white' }}>
 
-                <ScrollView ref={scrollViewRef} showsVerticalScrollIndicator={false} >
+                <ScrollView ref={scrollViewRef} showsVerticalScrollIndicator={false}>
                     {
                         post && (
                             <View style={{ margin: 0 }}>
-                                <TouchableOpacity onPress={() => navigation.goBack()} style={{ zIndex: 2, top: 58, right: 5 }}>
-                                    <Image source={require('../media/icon_tuong/back.png')} style={styles.IconBack} />
-                                </TouchableOpacity>
-                                <ItemPost key={post.id} data={post} />
-
+                                <ItemPost key={post.id} data={post} onPressProfile={handleToProfile} />
                             </View>
                         )
                     }
                     {
                         numberLike && (
                             <TouchableOpacity onPress={() => setModalGetLikePostVisible(true)}>
-                        <View style = {styles.ViewPostLike}>
-                            <Image style = {{width: 18, height: 18}} source={require('../media/Dicons/thumb-up.png')}/>
-                            <Text style = {{marginStart: 4, fontSize: 16, fontWeight: '500', color: '#000'}}>{numberLike}</Text>
-                        </View>
-                    </TouchableOpacity>
+
+                                <View style={styles.ViewPostLike}>
+                                    <Image style={{ width: 18, height: 18 }} source={require('../media/Dicons/thumb-up.png')} />
+                                    <Text style={{ marginStart: 4, fontSize: 16, fontWeight: '500', color: '#000' }}>{numberLike}</Text>
+                                </View>
+                            </TouchableOpacity>
                         )
                     }
                     {comment.length === 0 ? (
@@ -116,7 +138,7 @@ const CommentsScreen = () => {
                         </View>
                     ) : (
                         comment.map(comment => (
-                            <CommentItem key={comment.id} comment={comment} onReply={handleReply} render={fetchComments} parent={replyTo} setText={setText} setUserId = {setCommentUserId} />
+                            <CommentItem key={comment.id} comment={comment} onReply={handleReply} render={fetchComments} parent={replyTo} setText={setText} setUserId={setCommentUserId} />
                         ))
                     )
                     }
@@ -130,7 +152,8 @@ const CommentsScreen = () => {
                         postId={postId} />
                 ) : (
                     <InputCmt
-                        comment = {commentUserId}
+
+                        comment={commentUserId}
                         setText={setText}
                         text={text}
                         parent={replyTo} // Truyền ID bình luận cha khi trả lời
@@ -141,12 +164,6 @@ const CommentsScreen = () => {
                     />
                 )
             }
-
-
-
-
-
-
         </View>
     )
 }
@@ -154,7 +171,7 @@ const CommentsScreen = () => {
 export default CommentsScreen
 
 const styles = StyleSheet.create({
-    ViewPostLike:{
+    ViewPostLike: {
         alignItems: 'center',
         flexDirection: 'row',
         marginStart: 16,

@@ -1,14 +1,14 @@
 import { Image, StyleSheet, Text, TouchableOpacity, View, useWindowDimensions } from 'react-native'
-import React, { useCallback, useEffect, useMemo, useState } from 'react'
-import { COLOR } from '../../constant/color'
-import { CreateTime } from './format/FormatDate'
-import ReactionOptionComponent from './ReactionOptionComponent'
+import React, { useEffect, useMemo, useState } from 'react'
+import MIcon from 'react-native-vector-icons/MaterialCommunityIcons'
+
 import ReactionsComponent from './ReactionsComponent'
 import MessageItemContent from './MessageItemContent';
-import { addMessageAPI } from '../../http/ChienHTTP';
 import PortalMessage from './PortalMessage'
 import { MessageCordinatesType } from '../../screens/message/MessageScreen'
 import StateMessage from './StateMessage'
+import { socket } from '../../http/SocketHandle'
+import { useMyContext } from '../navigation/UserContext';
 
 export type messageType = {
   id: number,
@@ -27,27 +27,66 @@ export type messageType = {
     fullname: string,
     avatar: string
   },
+  reads: Array<{
+    "id": number,
+    "user": {
+      "id": number,
+      "fullname": string,
+      "avatar": string
+    },
+    "message": number,
+    "read_at": string
+  }>,
   reactions: Array<reactionType>
-  group: number
+  group: number | {
+    id: number
+  },
+  parent: number | {
+    sender: {
+      "id": number,
+      "fullname": string,
+      "avatar": string
+    },
+    id: number,
+    message?: string
+  }
 }
 
 export type reactionType = {
-  user: number,
+  user: number | {
+    "id": number,
+    "fullname": string,
+    "avatar": string
+  },
   reaction: number
 }
 
 interface MessageItemProp {
-  setSelectedMessage: any,
   message: messageType,
   sender: boolean,
   group_id: number,
-  setMessageCordinate: any
+  setMessageReactionsSelected: any,
+  deleteMessage: any,
+  setReply: any,
+  lastMessage: boolean
 }
 
-const MessageItem: React.FC<MessageItemProp> = ({ message, sender, group_id }) => {
+type DataResponeReactionMessageSocket = {
+  reaction: reactionType,
+  status: number
+}
+
+const MessageItem: React.FC<MessageItemProp> = React.memo((
+  { message,
+    sender,
+    group_id,
+    setMessageReactionsSelected,
+    deleteMessage,
+    setReply,
+    lastMessage }) => {
+  const { user } = useMyContext()
   const { height } = useWindowDimensions()
-  const [heightLayout, setHeightLayout] = useState()
-  const [showState, setShowState] = useState(false)
+  const [heightLayout, setHeightLayout] = useState<number>(0)
   const [reactions, setReactions]
     = useState(
       message.reactions
@@ -56,17 +95,35 @@ const MessageItem: React.FC<MessageItemProp> = ({ message, sender, group_id }) =
   const [selectedMessage, setSelectedMessage] = useState<messageType | null>(null)
   const [messageCordinates, setMessageCordinates] = useState<MessageCordinatesType>({ x: 0, y: 0 })
 
+  useEffect(() => {
+    socket.on(`reaction-message-${message.id}`, (data: DataResponeReactionMessageSocket) => {
+      switch (data.status) {
+        case 1:
+          createReaction(data.reaction)
+          return
 
+        case 2:
+          updateReaction(data.reaction)
+          return
+
+        case 3:
+          deleteReaction(data.reaction)
+          return
+      }
+
+    })
+    return () => {
+      socket.off(`reaction-message-${message.id}`)
+    }
+  }, [])
 
 
   function ContentOnPress() {
-    setShowState(prev => {
-      if (prev) return false
-      return true
-    })
+
 
   }
 
+  //sự kiện show option reaction
   function ContentOnLongPress(e: any) {
     const { pageY, locationY } = e.nativeEvent;
 
@@ -91,36 +148,89 @@ const MessageItem: React.FC<MessageItemProp> = ({ message, sender, group_id }) =
 
   }
 
+  function updateReaction(reactionCurrent: any) {
 
+    setReactions(prevValue => {
+      //
+      const reactionExist = prevValue.find((reation) => {
+        return reation.user === reactionCurrent.user && reation.reaction === reactionCurrent.reaction
+      })
+
+      if (reactionExist) return prevValue
+
+      //
+      return prevValue.map(rct => {
+        if (parseInt(rct.user.toString()) === parseInt(reactionCurrent.user.toString())) {
+          return { ...rct, ...reactionCurrent }
+        }
+        return rct;
+      })
+    })
+  }
+
+  function createReaction(reactionCurrent: any) {
+
+    setReactions(prevValue => {
+      const reactionExist = prevValue.find((reation) => {
+        return (reation.user === reactionCurrent.user) && (reation.reaction === reactionCurrent.reaction)
+      })
+
+      if (reactionExist) return prevValue
+
+      return [...prevValue, reactionCurrent]
+    })
+  }
+
+  function deleteReaction(reactionCurrent: any) {
+    setReactions(prevValue => {
+      return prevValue.filter(rct => parseInt(rct.user.toString()) !== parseInt(reactionCurrent.user.toString()))
+    })
+  }
+
+  //lắng nghe sự kiện submit reaction
   function OptionReactionOnSubmit({ status, reactionCurrent }: { status: number, reactionCurrent: reactionType }) {
     console.log('reaction', reactionCurrent);
 
     switch (status) {
       //add reaction
       case 1:
-        setReactions(prevValue => {
-          return [...prevValue, reactionCurrent]
-        })
+        console.log({
+          ...reactionCurrent,
+          message: message.id
+        });
+
+        socket.emit('reaction-message',
+          {
+            ...reactionCurrent,
+            message: message.id
+          }
+          , status)
+
+        createReaction(reactionCurrent)
+
         setSelectedMessage(null)
         break;
       //change reaction
       case 2:
-        setReactions(prevValue => {
-          return prevValue.map(rct => {
-            if (parseInt(rct.user.toString()) === parseInt(reactionCurrent.user.toString())) {
-              return { ...rct, ...reactionCurrent }
-            }
-            return rct;
-          })
-        })
+        socket.emit('reaction-message',
+          {
+            ...reactionCurrent,
+            message: message.id
+          }
+          , status)
+        updateReaction(reactionCurrent)
         setSelectedMessage(null)
 
         break;
       //remove reaction
       case 3:
-        setReactions(prevValue => {
-          return prevValue.filter(rct => parseInt(rct.user.toString()) !== parseInt(reactionCurrent.user.toString()))
-        })
+        socket.emit('reaction-message',
+          {
+            ...reactionCurrent,
+            message: message.id
+          }
+          , status)
+        deleteReaction(reactionCurrent)
         setSelectedMessage(null)
 
         break;
@@ -129,63 +239,82 @@ const MessageItem: React.FC<MessageItemProp> = ({ message, sender, group_id }) =
     }
   }
 
+  //set id tin nhắn để show danh sách chi tiết reaction
+  function OnReactionComponent() {
+    setMessageReactionsSelected(message.id)
+  }
+
   function AvatarOnPress() {
     console.log('AvatarOnPress');
 
   }
 
+  //lấy kích thước của item message
   function onLayout(e: any) {
     const { height } = e.nativeEvent.layout
     setHeightLayout(height)
   }
-
+  const isMessageSennder=typeof message.sender === 'object' ? message.sender.id === user.id : message.sender === user.id;
   return (
-    <View style={[styles.container, { flexDirection: sender ? 'row-reverse' : 'row' }]}>
+    <View style={styles.container}>
       {
-        !sender &&
-        <TouchableOpacity activeOpacity={0.9} style={styles.avatarContainer} onPress={AvatarOnPress}>
-          <Image style={styles.avatar} source={{ uri: message.sender.avatar }} />
-        </TouchableOpacity>
+        (message.parent) && isMessageSennder &&
+        <View style={[styles.replyStyle, { justifyContent: sender ? 'flex-end' : 'flex-start' }]}>
+          <MIcon name='reply' size={20} color={'#707777'} />
+          <Text>Trả lời {message.parent.sender.fullname}</Text>
+        </View>
       }
-
-      <View style={{ paddingHorizontal: 10 }}>
-
-
-        <TouchableOpacity
-          activeOpacity={0.9}
-          style={styles.content}
-          onPress={ContentOnPress}
-          onLongPress={ContentOnLongPress}
-          onLayout={onLayout}
-        >
-          <MessageItemContent message={message} sender={sender} />
-          {
-            reactions && reactions.length > 0 &&
-            <ReactionsComponent reactions={reactions} />
-
-          }
-        </TouchableOpacity>
+      <View style={[styles.wrapperMessage, { flexDirection: sender ? 'row-reverse' : 'row' }]}>
         {
-          <StateMessage message={message} group_id={group_id} />
+          !sender &&
+          <TouchableOpacity activeOpacity={0.9} style={styles.avatarContainer} onPress={AvatarOnPress}>
+            <Image style={styles.avatar} source={{ uri: message.sender.avatar }} />
+          </TouchableOpacity>
         }
-      </View>
 
+        <View style={{ paddingHorizontal: 10 }}>
+
+
+          <TouchableOpacity
+            activeOpacity={0.9}
+            style={styles.content}
+            onPress={ContentOnPress}
+            onLongPress={ContentOnLongPress}
+            onLayout={onLayout}
+          >
+            <MessageItemContent message={message} sender={sender} />
+            {
+              reactions && reactions.length > 0 &&
+              <ReactionsComponent reactions={reactions} onPress={OnReactionComponent} />
+
+            }
+          </TouchableOpacity>
+
+          <StateMessage message={message} group_id={group_id} sender={sender} lastMessage={lastMessage}/>
+
+        </View>
+
+      </View>
       <PortalMessage
         selectedMessage={selectedMessage}
         messageCordinates={messageCordinates}
         setSelectedMessage={setSelectedMessage}
         optionReactionOnSubmit={OptionReactionOnSubmit}
+        heightLayout={heightLayout}
+        deleteMessage={deleteMessage}
+        setReply={setReply}
       />
     </View>
 
   )
-}
+})
 
 export default MessageItem
 
 const styles = StyleSheet.create({
-  status: {
-
+  replyStyle: {
+    flexDirection: 'row',
+    alignItems: 'center'
   },
   content: {
     minWidth: 0,
@@ -206,7 +335,7 @@ const styles = StyleSheet.create({
     height: 50,
     width: 50,
   },
-  container: {
+  wrapperMessage: {
     minHeight: 50,
     width: '100%',
     flexDirection: 'row',

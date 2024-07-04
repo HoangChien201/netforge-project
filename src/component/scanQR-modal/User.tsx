@@ -1,10 +1,16 @@
 import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import React, { useEffect } from 'react'
+import { useNavigation } from '@react-navigation/native';
+
+
 import FRIEND from './Friend'
+
 type USER = {
   user: any
 }
 const User: React.FC<USER> = ({ user }) => {
+  const navigation = useNavigation();
+  const userId = (user.id)
   const getRelationshipText = (status: any) => {
     if (status === 1) {
       return 'Bạn hoặc người dùng này đã gửi lời mời!';
@@ -14,6 +20,9 @@ const User: React.FC<USER> = ({ user }) => {
       return 'Hai bạn là kẻ thù của nhau!';
     }
   };
+  function navigationScreen(screen: string) {
+    navigation.navigate(`${screen}`)
+  }
   return (
     <View style={styles.container}>
       <View style={styles.avatar}>
@@ -37,7 +46,9 @@ const User: React.FC<USER> = ({ user }) => {
         :
         <View>
           <Text style={styles.isFriend}>{user.relationship ? getRelationshipText(user.relationship.status) : 'Không tìm thấy?'}</Text>
-          <TouchableOpacity style={styles.buttonPage}>
+          <TouchableOpacity style={styles.buttonPage}
+          onPress={()=> navigation.navigate('FriendProfile',{userId})}
+          >
             <Text style={styles.page}>Xem trang cá nhân</Text>
           </TouchableOpacity>
         </View>}

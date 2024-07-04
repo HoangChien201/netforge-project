@@ -21,7 +21,7 @@ const Remember: React.FC = () => {
         disabled={false}
         value={toggleCheckBox}
         onValueChange={handleToggleCheckBox}
-        tintColors={{ true: COLOR.primary200, false: "black" }}
+        tintColors={{ true: COLOR.PrimaryColor, false: "black" }}
       />
       <Text style={styles.label}>Giữ đăng nhập?</Text>
     </View>

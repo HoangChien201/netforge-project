@@ -46,7 +46,8 @@ export default RequestList
 
 const styles = StyleSheet.create({
     container: {
-        marginHorizontal: 2
+        marginHorizontal: 2,
+
     },
     itemWA: {
         flexDirection: 'row',

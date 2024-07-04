@@ -1,23 +1,30 @@
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
-import React, { useEffect, useState } from 'react'
-import { useIsFocused, useNavigation } from '@react-navigation/native';
+import React, { useCallback, useEffect, useState } from 'react'
+import { useFocusEffect, useIsFocused, useNavigation } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/AntDesign'
 import { COLOR } from '../../constant/color'
 
 import MODALFRIEND from '../../component/friend-request-accept-modal/Body'
-import { getFriends } from '../../http/QuyetHTTP';
+import { getAllUser, getFriends, getSuggest } from '../../http/QuyetHTTP';
 import Friends from './friendScreen/Friends';
 import RequestFriends from './friendScreen/RequestFriends';
+import SuggestFriends from './friendScreen/SuggestFriends';
+import { BounceIn, FadeIn, ReduceMotion, useReducedMotion } from 'react-native-reanimated';
 type Friends = {
 }
 const FriendScreen: React.FC<Friends> = () => {
+  const reduceMotion = useReducedMotion();
+  const entering = reduceMotion
+  ? FadeIn.reduceMotion(ReduceMotion.Never)
+  : BounceIn;
   const navigation = useNavigation()
   const isFocus = useIsFocused()
   const [friends, setFriends] = useState<any[]>([]);
   const status2 = 2;
   const [showModalFriend, setShowModalFriend] = useState(false);
   const [dot, setDot] = useState(Number);
-  const [reload, setReload] = useState(false)
+  const [reload, setReload] = useState(false);
+  const [dataSuggest, setDataSuggest] = useState([]);
   const getFriendList = async (status: number) => {
     try {
       const result = await getFriends(status);
@@ -30,12 +37,33 @@ const FriendScreen: React.FC<Friends> = () => {
       console.log(error);
     }
   };
+  const getSuggestList = async () => {
+    try {
+      const result = await getAllUser();
+      // const result = await getSuggest();
+      //console.log('danh sách gợi ý: ' + JSON.stringify(result));
+      setDataSuggest(result);
+
+      //console.log('suggest: ' + JSON.stringify(result));
+    } catch (error) {
+      console.log(error);
+    }
+  };
   const ShowModalFriend = () => {
     setShowModalFriend(true);
   }
   useEffect(() => {
     getFriendList(status2);
+    getSuggestList();
   }, [])
+  useEffect(() => {
+    getFriendList(status2);
+  }, [showModalFriend])
+  useFocusEffect(
+    useCallback(() => {
+      getFriendList(status2);
+    }, [])
+  );
   useEffect(() => {
     if (isFocus) {
       navigation.getParent()?.setOptions({
@@ -48,7 +76,7 @@ const FriendScreen: React.FC<Friends> = () => {
 
   return (
     <View style={styles.container}>
-      <TouchableOpacity  onPress={ShowModalFriend}>
+      <TouchableOpacity onPress={ShowModalFriend}>
         <View style={styles.reqFriends}>
           <View style={styles.iconFriend} >
             <Icon name='adduser' size={24} color={COLOR.PrimaryColor} />
@@ -67,16 +95,20 @@ const FriendScreen: React.FC<Friends> = () => {
       <View style={styles.header}>
         <Text style={styles.headerText}>Danh sách bạn bè</Text>
       </View>
-      <Friends friends={friends} setFriends={setFriends}/>
+      <Friends friends={friends} setFriends={setFriends} />
       <MODALFRIEND
         reload={reload}
         showModalFriend={showModalFriend}
         setShowModalFriend={setShowModalFriend}
         setDot={setDot}
         setReload={setReload}
+
       />
+      <SuggestFriends data={dataSuggest} setData={setDataSuggest} />
+
     </View>
   )
+
 }
 
 export default FriendScreen
@@ -85,7 +117,7 @@ const styles = StyleSheet.create({
   container: {
 
     height: '100%',
-    backgroundColor: 'white',
+    backgroundColor: COLOR.primary300,
   },
   reqFriends: {
     height: 54,

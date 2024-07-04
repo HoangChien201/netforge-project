@@ -6,7 +6,7 @@ type Mo = {
   show: boolean;
   setShow: (value: any) => void;
   user2: number;
-  setFriends: (friends: any[]) => void;
+  setFriends: () => void;
 }
 const DeleteFriend: React.FC<Mo> = ({ show, setShow, user2 ,setFriends}) => {
   const { user } = useMyContext();
@@ -18,7 +18,10 @@ const DeleteFriend: React.FC<Mo> = ({ show, setShow, user2 ,setFriends}) => {
       if(result){
         setShow(false);
         setFriends((prevFriends) => prevFriends.filter(friend => friend.user.id !== user2));
+        console.log('đã xóa idol :' + user2);
       }
+      
+      
     } catch (error) {
       console.log('Lỗi khi xóa bạn: ', error);
     }

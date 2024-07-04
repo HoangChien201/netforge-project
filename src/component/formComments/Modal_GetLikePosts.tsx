@@ -66,8 +66,8 @@ const LikeItem = ({ like }) => {
 };
 const Modal_GetLikePosts = ({ isVisible, onClose, postId }) => {
     const [like, setLike] = useState([]);
-    console.log('postmodal:', postId);
-    console.log(like);
+    // console.log('postmodal:', postId);
+    // console.log(like);
     // ref
     const bottomSheetModalRef = useRef<BottomSheetModal>(null);
     // variables
@@ -76,7 +76,7 @@ const Modal_GetLikePosts = ({ isVisible, onClose, postId }) => {
         async () => {
             try {
                 const response: any = await getLikePostById(postId);
-                console.log('ghetlike', response);
+                console.log('Danh sách Like Posts:', response);
                 setLike(response)
             } catch (error) {
                 console.log('Lỗi lấy danh sách like post:', error);
@@ -98,32 +98,13 @@ const Modal_GetLikePosts = ({ isVisible, onClose, postId }) => {
         }
     }, [onClose]);
     return (
-        // <Modal
-        //     transparent={true}
-        //     visible={isVisible}
-        //     onRequestClose={onClose}
-        //     animationType="fade">
-        //     <View style={styles.modalContainer}>
-        //         <View style={styles.modalContent}>
-        //             <Text style={styles.modalTitle}>Danh sách lượt thích</Text>
-        //             <FlatList
-        //                 data={like}
-        //                 renderItem={({ item }) => <LikeItem user={item.user} />}
-        //                 keyExtractor={(item) => item.user.id.toString()}
-        //                 contentContainerStyle={styles.listContainer}
-        //             />
-        //             <TouchableOpacity onPress={onClose} style={styles.closeButton}>
-        //                 <Text style={styles.closeButtonText}>Đóng</Text>
-        //             </TouchableOpacity>
-        //         </View>
-        //     </View>
-        // </Modal>
-        <BottomSheetModalProvider>
+        <BottomSheetModalProvider >
             <BottomSheetModal
                 ref={bottomSheetModalRef}
                 index={1}
                 snapPoints={snapPoints}
                 onChange={handleSheetChanges}
+                
             >
                 <BottomSheetView style={styles.contentContainer}>
                     <Text style={styles.modalTitle}>Danh Sách Lượt Thích</Text>
@@ -150,7 +131,7 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         width: 350,
         height: 1,
-        backgroundColor: '#BFBFBF',
+        backgroundColor: '#F6F5F5',
         alignItems: 'center'
     },
     reactionImage: {
@@ -160,10 +141,11 @@ const styles = StyleSheet.create({
         height: 18
     },
     contentContainer: {
+        
         flex: 1,
         alignItems: 'center',
         padding: 20,
-        borderRadius: 10
+        borderRadius: 20
     },
     modalTitle: {
         fontSize: 18,

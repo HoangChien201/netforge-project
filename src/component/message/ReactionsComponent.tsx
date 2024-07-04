@@ -3,12 +3,14 @@ import React from 'react'
 import { EmojiReaction } from '../../constant/emoji'
 import { reactionType } from './MessageItem'
 
-const ReactionsComponent = ({ reactions }: { reactions: Array<reactionType> }) => {
+const ReactionsComponent = ({ reactions,onPress }: { reactions: Array<reactionType>,onPress:any }) => {
   //lọc lấy reaction bằng number
   const reactionFiller= [...new Set(reactions.map(rct=>rct.reaction))]
 
   function OnPress() {
-    console.log('reactionsonpress');
+    console.log('reaction');
+    
+    onPress()
 
   }
   return (
@@ -33,22 +35,22 @@ export default ReactionsComponent
 
 const styles = StyleSheet.create({
   reaction:{
-    width:20,
-    height:20
+    width:15,
+    height:15,
   },
   quantityReaction: {
-    color: '#fff',
-    fontWeight: '400',
+    color: '#000',
+    fontWeight: '500',
     marginStart: 5
   },
   container: {
     minWidth: 40,
-    height: 25,
-    backgroundColor: 'rgba(225,225,225,.8)',
+    height: 20,
+    backgroundColor: 'rgba(225,225,225,0.9)',
     position: 'absolute',
     borderRadius: 15,
     bottom: -10,
-    right: 10,
+    right: 5,
     flexDirection: 'row',
     justifyContent: "space-evenly",
     alignItems: 'center',
