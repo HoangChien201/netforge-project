@@ -36,7 +36,7 @@ const InputLogin = (props: props) => {
         if (ref.current) {
             setIsFocused(true)
             ref.current.setNativeProps({
-            style: { borderColor: COLOR.PrimaryColor, borderBottomWidth: 1 } // Đặt màu border khi focus
+            style: { borderColor:COLOR.PrimaryColor, borderBottomWidth: 1 } // Đặt màu border khi focus
           });
         }
        
@@ -71,13 +71,9 @@ const InputLogin = (props: props) => {
     }
    
     const onchantext = (value: string) => {
-        onchangText(value)
-  
-
-        
-          
+        onchangText(value)  
        handleFocus();
-            // Ẩn thông báo khi người dùng bắt đầu gõ
+       
         
     }
     
@@ -85,7 +81,7 @@ const InputLogin = (props: props) => {
         
         <View  style={[invalid && {margin:0},{margin:9}]}>
             <Text  style={[styles.label]}>{label} {requireField && <Text style={{color:"#C30052"}}>*</Text>}</Text>
-            <TextInput  onFocus={handleFocus} onBlur={handleBlur} ref={ref} placeholder={" "+label} style={[styles.input,showInvalid && styles.validation]} secureTextEntry={hidePassword} value={value} onChangeText={onchantext} />
+            <TextInput style={{borderBottomColor: showInvalid && 'red'}}  onFocus={handleFocus} onBlur={handleBlur} ref={ref} placeholder={" "+label} style={[styles.input,showInvalid && styles.validation]} secureTextEntry={hidePassword} value={value} onChangeText={onchantext} />
             {iconE && <Image style={styles.iconMail} source={require('../../media/icon/Mail.png')} />}
             {iconPass && <Image style={styles.iconMail} source={require('../../media/icon/Password.png')} />}
             {iconP && <Image style={{
@@ -102,7 +98,7 @@ position: 'absolute',
                 
                 
                 showInvalid && <Text style={{fontSize:10,position:"absolute",bottom:-15,left:10,color:"red",fontWeight:"400", fontFamily: "poppins"
-                }}>Vui lòng nhập đúng định dạng {label} !</Text>
+                }}>Vui lòng nhập đúng  {label} !</Text>
             }
          
         </View>

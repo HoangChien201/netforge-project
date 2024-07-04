@@ -4,20 +4,20 @@ import { NavigationProp, ParamListBase, useNavigation } from '@react-navigation/
 import { COLOR } from '../../constant/color';
 
 
-const ItemStory = ({ setIndex, index, indexfind }) => {
+const ItemStory = ({ data,setIndex, index, indexfind,list }) => {
   const navigation:NavigationProp<ParamListBase> = useNavigation(); 
+  
+  const itemPost = data.posts
+ 
   return (
     <View style={styles.border}>
       <TouchableOpacity
         onPress={() => {
-          // Remove the undefined variable log or replace it with a valid statement
-          console.log('Item pressed',indexfind);
-          console.log('Item pressed1',index);
           setIndex(indexfind);
-          navigation.navigate("StoryScreen")
+          navigation.navigate("StoryScreen",{itemPost,list,indexfind})
         }}
       >
-        <Image source={require('../../media/icon/phuking.jpg')} style={[styles.avt,{borderColor:indexfind===index?COLOR.PrimaryColor1:COLOR.PrimaryColor}]} />
+        <Image source={{uri:data.avatar}} style={[styles.avt,{borderColor:indexfind===index?COLOR.PrimaryColor1:COLOR.PrimaryColor}]} />
       </TouchableOpacity>
       
     </View>

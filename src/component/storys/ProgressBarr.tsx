@@ -1,23 +1,26 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { View, Image, TouchableOpacity, Dimensions, StyleSheet, Text, ImageBackground } from 'react-native';
-import Sound from 'react-native-sound';
-import ProgressBar from './ProgressBar';
+import { COLOR } from '../../constant/color';
+import { DateOfTimePost } from '../../format/DateOfTimePost';
 
-const IMAGE_DATA = [
-    { id: 1, uri: 'https://via.placeholder.com/600/92c952', sound: 'https://console.cloudinary.com/console/c-faa0452b49d63d3ef1919bbb462e13/media_library/homepage/asset/57e7dc9d4350112ccd24aa26577bb665/manage?context=manage' },
-    { id: 2, uri: 'https://via.placeholder.com/600/771796', sound: 'https://console.cloudinary.com/console/c-faa0452b49d63d3ef1919bbb462e13/media_library/search/asset/cf8373476a3eba79848d4c6ff3199c79/manage?sortDirection=desc&sortField=uploaded_at&q=%7B%22uploadedTimeOption%22%3A%22today%22%2C%22createdTimeOption%22%3A%22today%22%2C%22createdByUsers%22%3A%5B%22014986dafeb76d342e32819aca0fce%22%5D%7D&view_mode=mosaic&context=manage' },
-];
 
-const ProgressBarr = () => {
-    const [activeIndex, setActiveIndex] = useState(0);
-    const soundRef = useRef(null);
-    const [data, setData] = useState(IMAGE_DATA);
-    const [paused, setPaused] = useState(false);
+
+const ProgressBarr = ({listpostStory}) => {
+    const [data, setData] = useState(listpostStory);
     return (
 
         <View style={styles.container}>
-            <Image source={{ uri: data[activeIndex].uri }} style={styles.fullscreenImage} resizeMode='cover'></Image>
-           
+            {
+                data[0]?.media[0]?.url ?
+                  <>
+                   <Image source={{ uri: data[0]?.media[0]?.url  }} style={styles.fullscreenImage} />
+                    <Text style={{ fontSize: 30, color: '#fff', position: 'absolute', top: '50%', left: '25%' }}>{data[0]?.content}</Text>
+                    <Text style={{ color: 'white', position: 'absolute', top: '5%', left: '20%' }}>{DateOfTimePost(data[0].create_at)}</Text>
+                  </>: <View style={styles.fullscreenImage1}>
+                        <Text style={{ fontSize: 30, color: "#000", position: 'absolute', top: '40%', left: '25%' }}>{data[0]?.content} </Text>
+                        <Text style={{ color: 'white', position: 'absolute', top: '5%', left: '20%' }}>{DateOfTimePost(data[0].create_at)}</Text>
+                    </View>
+            }
             <View style={{ flexDirection: 'row', position: 'absolute', height: '100%', backgroundColor: 'rgba(0, 0, 0, 0)', width: '100%' }}>
                 <TouchableOpacity
                     style={styles.button}>
@@ -45,6 +48,12 @@ const styles = StyleSheet.create({
     },
     button: {
         flex: 1
+    },
+    fullscreenImage1: {
+        flex: 1,
+        borderBottomRightRadius: 10,
+        borderBottomLeftRadius: 10,
+        backgroundColor: COLOR.PrimaryColor,
     },
     progressBarContainer: {
         position: 'absolute',
