@@ -1,20 +1,22 @@
 import { Animated, Modal, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import React, { useEffect, useState, useRef } from 'react';
-import { getFriends, getRequest, getSuggest } from '../../http/QuyetHTTP';
+import { getAllUser, getFriends, getRequest, getSuggest } from '../../http/QuyetHTTP';
 import Icon from 'react-native-vector-icons/AntDesign';
+import Swiper from 'react-native-swiper';
+
 import { COLOR } from '../../constant/color';
 import RequestList from './RequestList';
 import WaitAcceptList from './WaitAcceptList';
 import SuggestList from './SuggestList';
-type Bob={
-    reload:any,
-    showModalFriend:any,
-    setShowModalFriend:(value:boolean)=>void,
-    setDot:(value:any)=>void, 
-    setReload :(value:boolean)=>void,
+type Bob = {
+    reload: any,
+    showModalFriend: any,
+    setShowModalFriend: (value: boolean) => void,
+    setDot: (value: any) => void,
+    setReload: (value: boolean) => void,
 }
 
-const Body:React.FC<Bob> = ({reload, showModalFriend, setShowModalFriend, setDot, setReload }) => {
+const Body: React.FC<Bob> = ({ reload, showModalFriend, setShowModalFriend, setDot, setReload }) => {
     const [textHeader, setTextHeader] = useState('Lời mời kết bạn');
     const [textShowRA, setTextShowRA] = useState('Lời mời');
     const [showRA, setShowRA] = useState(true);
@@ -22,11 +24,29 @@ const Body:React.FC<Bob> = ({reload, showModalFriend, setShowModalFriend, setDot
     const [dataRequest, setDataRequest] = useState([]);
     const [dataWaitAccept, setDataWaitAccept] = useState([]);
     const [dataSuggest, setDataSuggest] = useState([]);
-    const [data,setData]=useState([]);
+    const [data, setData] = useState([]);
     const status1 = 1;
     const status2 = 2;
-    const slideAnim = useRef(new Animated.Value(-500)).current; // Initial position off screen
-    const slideAnim1 = useRef(new Animated.Value(-100)).current;
+    const slideAnim = useRef(new Animated.Value(-500)).current;
+    const swiperRef = useRef(null);
+    const OpenCloseRA = () => {
+        setShowRA(!showRA);
+        if (swiperRef.current) {
+          if (showRA) {
+            setTextShowRA('Lời mời');
+            swiperRef.current.scrollTo(-1);
+          } else {
+            setTextShowRA('Yêu cầu');
+            swiperRef.current.scrollTo(1);
+          }
+        }
+      };
+    useEffect(() => {
+        getFriendList(status2);
+        getRequestList(status1);
+        getWaitAcceptList();
+        getSuggestList();
+    }, [showModalFriend]);
     useEffect(() => {
         getFriendList(status2);
         getRequestList(status1);
@@ -35,14 +55,9 @@ const Body:React.FC<Bob> = ({reload, showModalFriend, setShowModalFriend, setDot
     }, []);
 
     useEffect(() => {
-        getFriendList(status2);
-        getSuggestList();
-    }, [dataFriends || dataRequest || dataSuggest || dataWaitAccept]);
-
-    useEffect(() => {
         const total = dataRequest.length + dataWaitAccept.length;
         setDot(total);
-        
+
         //
         const requestIds = new Set(dataRequest.map(request => request.user.id));
         const acceptIds = new Set(dataWaitAccept.map(accept => accept.user.id));
@@ -52,9 +67,9 @@ const Body:React.FC<Bob> = ({reload, showModalFriend, setShowModalFriend, setDot
         );
 
         setData(filteredData);
-        //console.log('dữ liệu nè: ' +JSON.stringify(filteredData));
-        
-    }, [dataFriends, dataRequest, dataWaitAccept]);
+        //console.log('dữ liệu nè: ' + JSON.stringify(filteredData));
+
+    }, [dataRequest || dataWaitAccept || dataSuggest]);
 
     useEffect(() => {
         if (showModalFriend) {
@@ -64,11 +79,11 @@ const Body:React.FC<Bob> = ({reload, showModalFriend, setShowModalFriend, setDot
         }
     }, [showModalFriend]);
     // lấy danh sách bạn bè
-    const getFriendList = async (status:number) => {
+    const getFriendList = async (status: number) => {
         try {
             const result = await getFriends(status);
             //console.log('danh sách bạn bè 2: ' + JSON.stringify(result));
-            //setDataFriends(result);
+            setDataFriends(result);
         } catch (error) {
             console.log(error);
         }
@@ -77,15 +92,17 @@ const Body:React.FC<Bob> = ({reload, showModalFriend, setShowModalFriend, setDot
     const getSuggestList = async () => {
         try {
             const result = await getSuggest();
+
             //console.log('danh sách gợi ý: ' + JSON.stringify(result));
             setDataSuggest(result);
+
             //console.log('suggest: ' + JSON.stringify(result));
         } catch (error) {
             console.log(error);
         }
     };
 
-    const getRequestList = async (num:number) => {
+    const getRequestList = async (num: number) => {
         try {
             const result = await getFriends(num);
             //console.log('danh sách bạn bè 1: ' + JSON.stringify(result));
@@ -130,32 +147,12 @@ const Body:React.FC<Bob> = ({reload, showModalFriend, setShowModalFriend, setDot
             useNativeDriver: true,
         }).start();
     }, [showRA]);
-    const OpenCloseRA = () => {
-        setShowRA(!showRA);
-        if (showRA) {
-           // setShowRA(false);
-            setTextHeader('Yêu cầu đã gửi');
-            setTextShowRA('Lời mời');
-        } else {
-           // setShowRA(true);
-            setTextHeader('Lời mời kết bạn');
-            setTextShowRA('Yêu cầu');
-        }
-    };
+
 
     const handleCloseModal = () => {
         slideOut();
         setTimeout(() => setShowModalFriend(false), 300); // Delay to match slide out animation
     };
-
-    const ITEM_HEIGHT = 80; // Height of each list item
-    const calculateHeight = (data:any) => {
-        if (data.length === 0) {
-
-        } else {
-            data.length * ITEM_HEIGHT;
-        }
-    }
 
 
     return (
@@ -165,25 +162,21 @@ const Body:React.FC<Bob> = ({reload, showModalFriend, setShowModalFriend, setDot
                     <TouchableOpacity onPress={handleCloseModal}>
                         <Icon name='close' size={24} color={'white'} style={styles.buttonCloseModal} />
                     </TouchableOpacity>
-                    <Text style={styles.textHeader}>{textHeader}</Text>
+                    <Text style={styles.textHeader}>Yêu cầu kết bạn</Text>
                     <TouchableOpacity onPress={OpenCloseRA} style={styles.buttonShowRA}>
+
                         <Text style={styles.textShowRA}>{textShowRA}</Text>
+                        <Icon name='doubleright' color={COLOR.PrimaryColor1} size={16} />
                     </TouchableOpacity>
                 </View>
-                <ScrollView>
-                {showRA ?
-                        <Animated.View style={[styles.listRA, { height: calculateHeight(dataWaitAccept), opacity: slideAnim1.interpolate({ inputRange: [0, 100], outputRange: [1, 0] }) }]}>
-                            <WaitAcceptList dataWaitAccept={dataWaitAccept} setDataWaitAccept={setDataWaitAccept} setReload={setReload} />
-                        </Animated.View>
-                        :
-                        <Animated.View style={[styles.listRA, { height: calculateHeight(dataRequest), opacity: slideAnim1.interpolate({ inputRange: [0, 100], outputRange: [1, 0] }) }]}>
-                            <RequestList dataRequest={dataRequest} setDataRequest={setDataRequest} setReload={setReload} />
-                        </Animated.View>
-                    }
-                    <View style={[{ height: calculateHeight(dataFriends), marginTop:15 }]}>
-                        <SuggestList data={data} setData={setData} setReload={setReload} />
+                <Swiper ref={swiperRef} loop={false} showsButtons={false}>
+                    <View>
+                        <WaitAcceptList dataWaitAccept={dataWaitAccept} setDataWaitAccept={setDataWaitAccept} />
                     </View>
-                </ScrollView>
+                    <View>
+                        <RequestList dataRequest={dataRequest} setDataRequest={setDataRequest} setReload={setReload} />
+                    </View>
+                </Swiper>
             </Animated.View>
         </Modal>
     );
@@ -199,7 +192,7 @@ const styles = StyleSheet.create({
         position: 'absolute',
         top: 0,
         left: 0,
-        zIndex: 1000,
+
     },
     header: {
         backgroundColor: COLOR.PrimaryColor,
@@ -217,21 +210,26 @@ const styles = StyleSheet.create({
         fontSize: 20,
         color: COLOR.primary300,
         fontWeight: '500',
-        marginStart: -80,
+        marginStart: -110,
     },
     textShowRA: {
-        fontSize: 18,
+        fontSize: 16,
         color: COLOR.primary300,
-        fontWeight: '500',
+        fontWeight: '400',
+        borderRightWidth: 1,
+        marginEnd: 2,
+        paddingEnd: 3,
+        borderRightColor: COLOR.PrimaryColor1
     },
     buttonShowRA: {
         marginEnd: 10,
-        backgroundColor: COLOR.PrimaryColor1,
+        // backgroundColor: COLOR.PrimaryColor1,
         borderRadius: 10,
         height: 30,
         width: 80,
         alignItems: 'center',
         justifyContent: 'center',
+        flexDirection: 'row'
     },
     listRA: {
         alignItems: 'center',

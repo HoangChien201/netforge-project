@@ -3,7 +3,6 @@ import React, { useEffect, useState } from 'react';
 import Icon from 'react-native-vector-icons/AntDesign';
 import { GetTimeComment } from '../../format/FormatDate'
 import { useMyContext } from '../navigation/UserContext'
-import PostDetail from '../post-detail-screen/Body';
 import { useNavigation } from '@react-navigation/native'
 import { COLOR } from '../../constant/color';
 type Comment = {
@@ -16,9 +15,11 @@ const CommentHistories: React.FC<Comment> = ({ dataComment }) => {
     const { user } = useMyContext();
     const [loading, setLoading] = useState(true);
     if (!dataComment || dataComment.length === 0) {
-        <View>
-            <Text style={styles.textEmpty}>Bạn chưa có hoạt động nào</Text>
-        </View>
+        return (
+            <View style={styles.containerEmpty}>
+                <Text style={styles.textEmpty}>Hãy tương tác với mọi người để lưu giữ kỉ niệm!</Text>
+            </View>
+        )
     }
     useEffect(() => {
         const sorted = [...dataComment].sort((a: { create_at: any | Date; }, b: { create_at: any | Date; }) => new Date(b.create_at) - new Date(a.create_at));
@@ -46,70 +47,45 @@ const CommentHistories: React.FC<Comment> = ({ dataComment }) => {
 
     return (
         <View style={styles.container}>
-            {/* {!sortedData ? (
-                <View>
-                    <Text style={styles.textEmpty}>Bạn chưa có hoạt động nào</Text>
-                </View>
-            ) : (
-
-                <View style={styles.listContainer}>
-                    {sortedData.map((item: { content: any; create_at: any; }, index: { toString: () => React.Key | null | undefined; }) => (
-                        <View key={index.toString()} style={styles.itemContainer}>
-                            <View style={styles.infor}>
-                                {user.avatar ?
-                                    <Image source={{ uri: user.avatar }} style={styles.avatar} />
-                                    :
-                                    <View style={[styles.avatar, { backgroundColor: 'gray' }]} ></View>
-                                }
-                                <Icon name='aliwangwang' size={18} color={'#0099FF'} style={styles.icon} />
-                            </View>
-                            <View style={styles.contain}>
-                                <Text style={styles.text1} >Bạn đã bình luận về </Text>
-                                <Pressable>
-                                    <Text style={styles.text} onPress={navigationScreen.bind(this, 'PostsDetail')}>bài viết</Text>
-                                </Pressable>
-                                <Text style={styles.text1}> của </Text>
-                                <Text style={styles.text1}> {item.posts.creater.fullname}</Text>
-                                <Text style={styles.text1}>: " {item.content} "</Text>
-                            </View>
-                            <View style={{ width: 60, height: '100%', alignItems: 'flex-end' }}>
-                                <Text style={{ color: 'gray', fontSize: 12, marginTop: 30 }}>{GetTimeComment(item.create_at)} trước</Text>
-                            </View>
-                        </View>
-                    ))}
-                </View>
-            )} */}
             {loading ? (
                 <ActivityIndicator size="large" color={COLOR.PrimaryColor} />
             )
 
                 :
                 <View style={styles.listContainer}>
-                    {sortedData.map((item: { content: any; create_at: any; }, index: { toString: () => React.Key | null | undefined; }) => (
-                        <View key={index.toString()} style={styles.itemContainer}>
-                            <View style={styles.infor}>
-                                {user.avatar ?
-                                    <Image source={{ uri: user.avatar }} style={styles.avatar} />
-                                    :
-                                    <View style={[styles.avatar, { backgroundColor: 'gray' }]} ></View>
-                                }
-                                <Icon name='aliwangwang' size={18} color={'#0099FF'} style={styles.icon} />
-                            </View>
-                            <View style={styles.contain}>
-                                <Text style={styles.text1} >Bạn đã bình luận về </Text>
-                                <Pressable>
-                                    <Text style={styles.text} onPress={navigationScreen.bind(this, 'PostsDetail')}>bài viết</Text>
-                                </Pressable>
-                                <Text style={styles.text1}> của </Text>
-                                <Text style={styles.text1}> {item.posts.creater.fullname}</Text>
-                                <Text style={styles.text1}>: " {item.content} "</Text>
-                            </View>
-                            <View style={{ width: 60, height: '100%', alignItems: 'flex-end' }}>
-                                <Text style={{ color: 'gray', fontSize: 12, marginTop: 30 }}>{GetTimeComment(item.create_at)} trước</Text>
-                            </View>
-                        </View>
-                    ))}
+                    {sortedData.map((item: { content: any; create_at: any; posts: { id: number; creater: { fullname: string } } }, index: { toString: () => React.Key | null | undefined; }) => {
+                        const postId = item.posts.id;
+                        return (
+                            <TouchableOpacity
+                                key={index.toString()}
+                                style={styles.itemContainer}
+                                onPress={() => navigation.navigate('CommentsScreen', { postId })}
+                            >
+                                <View style={styles.infor}>
+                                    {user.avatar ?
+                                        <Image source={{ uri: user.avatar }} style={styles.avatar} />
+                                        :
+                                        <View style={[styles.avatar, { backgroundColor: 'gray' }]} ></View>
+                                    }
+                                    <Icon name='aliwangwang' size={18} color={'#0099FF'} style={styles.icon} />
+                                </View>
+                                <View style={styles.contain}>
+                                    <Text style={styles.text1}>Bạn đã bình luận về </Text>
+                                    <Pressable>
+                                        <Text style={styles.text}>bài viết</Text>
+                                    </Pressable>
+                                    <Text style={styles.text1}> của </Text>
+                                    <Text style={styles.text1}>{item.posts.creater.fullname}</Text>
+                                    <Text style={styles.text1}>" {item.content} "</Text>
+                                </View>
+                                <View style={{ width: 60, height: '100%', alignItems: 'flex-end' }}>
+                                    <Text style={{ color: 'gray', fontSize: 12, marginTop: 30 }}>{GetTimeComment(item.create_at)} trước</Text>
+                                </View>
+                            </TouchableOpacity>
+                        );
+                    })}
                 </View>
+
             }
         </View>
     );
@@ -176,4 +152,11 @@ const styles = StyleSheet.create({
         fontSize: 16,
         color: 'black',
     },
+    containerEmpty: {
+        height: 50,
+        width: '100%',
+        alignItems: 'center',
+        justifyContent: 'center',
+        marginTop: 10
+    }
 });

@@ -328,3 +328,20 @@ export const getUserById = async (id: number) => {
         throw error;
     }
 }
+//GET
+//https://network-social-sever.onrender.com/user/get-one/id
+export const getAllUser = async () => {
+    try {
+        const token = await AsyncStorage.getItem('token');
+        const url = '/user'
+        const response = await AxiosInstance().get(url, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        });
+        return response;
+    } catch (error) {
+        console.log(error);
+        throw error;
+    }
+}

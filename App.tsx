@@ -15,20 +15,21 @@ import {
 import ManageNavigation from './src/component/navigation/ManageNavigation';
 import { UserProvider } from './src/component/navigation/UserContext';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
-
 import { ZegoUIKitPrebuiltLiveStreamingFloatingMinimizedView } from '@zegocloud/zego-uikit-prebuilt-live-streaming-rn';
 import { Host } from 'react-native-portalize';
 import RequestNotificationPermission from './src/permissions/RequestNotificationPermission';
 import { registerRemoteNotificationsEvent } from './src/notifications/Events';
+import { LogBox } from 'react-native';
 
 function App(): React.JSX.Element {
   useEffect(()=>{
     RequestNotificationPermission()
     registerRemoteNotificationsEvent()
-  })
+  });
   LogBox.ignoreLogs([
     '[Reanimated] Tried to modify key `reduceMotion` of an object which has been already passed to a worklet.',
   ]);
+
   return (
    <GestureHandlerRootView>
     <StatusBar barStyle="dark-content" backgroundColor="transparent"/>

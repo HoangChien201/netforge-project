@@ -15,6 +15,7 @@ interface ModalFriendProfileProps {
     // isVisible: boolean;
     // onCloseModal: () => void;
     userId:any;
+    setFriends:()=>void;
 }
 interface ContextType {
     user: any;
@@ -72,7 +73,10 @@ const FriendProfile:React.FC<ModalFriendProfileProps> = () => {
         <ProfileHeader
                 fullname={userData.fullname}
                 userId={userId} 
-                loggedInUserId={user.id}/>
+                loggedInUserId={user.id}
+                relationship ={userData.relationship}
+ 
+                />
       </>
     );
   }, [userData, scrollOffsetY, navigation]);
