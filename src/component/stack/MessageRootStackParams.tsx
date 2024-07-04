@@ -2,19 +2,25 @@ import { COLOR } from "../../constant/color";
 import CallManagement from "../../screens/message/CallManagement";
 import ListMessageScreen from "../../screens/message/ListMessageScreen";
 import MessageScreen from "../../screens/message/MessageScreen";
+import { messageType } from "../message/MessageItem";
 
 enum MessageRootStackEnum {
-    MessageScreen='MessageScreen',
-    ListMessageScreen='ListMessageScreen',
-    CallManagement='CallManagement',
+    MessageScreen = 'MessageScreen',
+    ListMessageScreen = 'ListMessageScreen',
+    CallManagement = 'CallManagement',
 
 
 }
 
 export type MessageRootStackParams = {
-    MessageScreen:undefined;
-    ListMessageScreen:undefined;
-    CallManagement:undefined;
+    MessageScreen: {
+        group_id: number,
+        fullname: string,
+        avatar: string,
+        messages: Array<messageType>
+    };
+    ListMessageScreen: undefined;
+    CallManagement: undefined;
 }
 
 export const MessageRootStackScreens = [
@@ -31,10 +37,10 @@ export const MessageRootStackScreens = [
         name: MessageRootStackEnum.MessageScreen,
         component: MessageScreen,
         options: {
-            title:'Tin nhắn',
-            headerTitleAlign:'center',
-            headerTransparent:true,
-            headerTintColor:'#fff'
+            title: 'Tin nhắn',
+            headerTitleAlign: 'center',
+            headerTransparent: true,
+            headerTintColor: '#fff'
         }
     },
     {

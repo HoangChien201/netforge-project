@@ -32,9 +32,9 @@ export enum ProfileRootStackEnum {
     Scanner = 'Scanner',
     FriendScreen = 'FriendScreen',
     HistoryStack = 'HistoryStack',
-    HomeScreen= 'HomeScreen',
-    LiveStack= 'LiveStack' ,
-    FriendProfile='FriendProfile'
+    HomeScreen = 'HomeScreen',
+    LiveStack = 'LiveStack',
+    FriendProfile = 'FriendProfile',
 }
 
 export type ProfileRootStackParams={

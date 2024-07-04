@@ -12,8 +12,11 @@ import { number } from 'yup';
 import { useRoute } from '@react-navigation/native';
 import ItemPost from '../component/listpost/ItemPost';
 import Modal_GetLikePosts from '../component/formComments/Modal_GetLikePosts';
+import { ProfileRootStackEnum } from '../component/stack/ProfileRootStackParams';
+import { useMyContext } from '../component/navigation/UserContext';
 const CommentsScreen = () => {
     const navigation = useNavigation<navigationType>()
+    const { user } = useMyContext();
     const [modalGetLikePostVisible, setModalGetLikePostVisible] = useState(false);
     const [commentUserId, setCommentUserId] = useState(null);
     const [text, setText] = useState(null)
@@ -26,9 +29,11 @@ const CommentsScreen = () => {
     const route = useRoute();
     const { postId } = route.params;
     const { numberLike } = route.params;
-    console.log('postId', postId);
-    console.log('numberLikeNe', numberLike);
-    console.log(text);
+
+    
+    // console.log('postId', postId);
+    // console.log('numberLikeNe', numberLike);
+    // console.log(text);
 
     // lấy bài viết chi tiết
     const fetchPosts = async () => {
@@ -79,6 +84,20 @@ const CommentsScreen = () => {
             scrollViewRef.current.scrollToEnd({ animated: false });
         }
     }, [commentCount]);
+
+
+    const loggedInUserId = user.id;
+    const handleToProfile = (userId) => {
+        // //setSelectedUserId(userId);
+        console.log("userID: ",userId);
+        if (userId === loggedInUserId) {
+            //setIsModalVisible(false);
+            navigation.navigate(ProfileRootStackEnum.ProfileScreen);
+        } else {
+            //setIsModalVisible(true);
+            navigation.navigate(ProfileRootStackEnum.FriendProfile, { userId});
+        } 
+      };
     return (
         <View style={styles.container}>
 
@@ -91,7 +110,7 @@ const CommentsScreen = () => {
                                 <TouchableOpacity onPress={() => navigation.goBack()} style={{ zIndex: 2, top: 58, right: 5 }}>
                                     <Image source={require('../media/icon_tuong/back.png')} style={styles.IconBack} />
                                 </TouchableOpacity>
-                                <ItemPost key={post.id} data={post} />
+                                <ItemPost key={post.id} data={post} onPressProfile = {handleToProfile}/>
 
                             </View>
                         )
@@ -141,12 +160,6 @@ const CommentsScreen = () => {
                     />
                 )
             }
-
-
-
-
-
-
         </View>
     )
 }

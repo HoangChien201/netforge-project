@@ -9,10 +9,14 @@ import ModalOtherDelete from './ModalOtherDelete';
 import ReactionButton from './ReactionButton';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useMyContext } from '../navigation/UserContext';
+import { ProfileRootStackEnum } from '../stack/ProfileRootStackParams';
+import { useNavigation } from '@react-navigation/native';
+import { navigationType } from '../stack/UserStack';
 
 const CommentItem = ({ comment, onReply, depth = 0, render, parent, setText, setUserId }) => {
     const { user } = useMyContext();
-    // console.log('commentUserId',user.id);
+    const navigation = useNavigation<navigationType>()
+    
               
     const [modalReactionVisible, setModaReactionlVisible] = useState(false);
     const [likeIcon, setLikeIcon] = useState(null);
@@ -23,28 +27,28 @@ const CommentItem = ({ comment, onReply, depth = 0, render, parent, setText, set
     const [isDleteVisible, setIsDleteVisible] = useState(false) // delete modal
     const [isOtherDleteVisible, setIsOtherDleteVisible] = useState(false)
     const [isHide, setIsHide] = useState(false);
-
+        //render
+        useEffect(() => {
+            if (comment.id) { // Lòng bình luận 2 cấp
+                fetchReplies(comment.id);
+         
+            }
+    
+        }, [comment]);
     useEffect(() => {
         const loadReaction = async () => {
             try {
-                const savedReaction = await AsyncStorage.getItem(`comment_${comment.id}_reaction`);
+                const savedReaction = await AsyncStorage.getItem(`comment_${comment.id}_user_${user.id}_reaction`);
                 if (savedReaction) {
                     setLikeIcon(JSON.parse(savedReaction));
                 }
             } catch (error) {
-                console.log('Lỗi khi tải phản ứng:', error);
+                console.log('Lỗi khi lấy Icon:', error);
             }
         };
         loadReaction();
-    }, [comment.id]);
-    //render
-    useEffect(() => {
-        if (comment.id) { // Lòng bình luận 2 cấp
-            fetchReplies(comment.id);
-     
-        }
+    }, [comment]);
 
-    }, [comment, depth]);
     //handle hủy like
     const handleCancelLike = async () => {
         //call api cancelLike and setLikeIcon =null
@@ -54,7 +58,7 @@ const CommentItem = ({ comment, onReply, depth = 0, render, parent, setText, set
         // console.log(comment.user.id);
         try {
             const reponse = await deleteLikeComments(comment.id, comment.user.id)
-            await AsyncStorage.removeItem(`comment_${comment.id}_reaction`);
+            await AsyncStorage.removeItem(`comment_${comment.id}_user_${user.id}_reaction`);
             console.log('delete like thành công:', reponse);
 
         } catch (error) {
@@ -67,7 +71,7 @@ const CommentItem = ({ comment, onReply, depth = 0, render, parent, setText, set
         setModaReactionlVisible(false);
         setLikeIcon(reaction.source)
         try {
-            await AsyncStorage.setItem(`comment_${comment.id}_reaction`, JSON.stringify(reaction.source));
+            await AsyncStorage.setItem(`comment_${comment.id}_user_${user.id}_reaction`, JSON.stringify(reaction.source));
             console.log('Icon đã chọn:', reaction);
         } catch (error) {
             console.log('Lỗi khi lưu Icon:', error);
@@ -159,6 +163,18 @@ const CommentItem = ({ comment, onReply, depth = 0, render, parent, setText, set
         }
 
     };
+    const handleToProfile = () => {
+        //setSelectedUserId(userId);
+        console.log("userID: ",comment.user.id);
+        const userId = comment.user.id
+        if (userId === user.id) {
+            //setIsModalVisible(false);
+            navigation.navigate(ProfileRootStackEnum.ProfileScreen);
+        } else {
+          //  setIsModalVisible(true);
+            navigation.navigate(ProfileRootStackEnum.FriendProfile, {userId});
+         } 
+      };
     return (
         <View style={[
             styles.commentContainer,
@@ -170,11 +186,15 @@ const CommentItem = ({ comment, onReply, depth = 0, render, parent, setText, set
             <View style={{ flexDirection: 'row' }}>
                 <View style={{ flex: 1 }}>
                     <View style={styles.userContainer}>
-                        <Image source={{ uri: comment.user.avatar }} style={styles.avatar} />
+                       <TouchableOpacity onPress={handleToProfile}>
+                       <Image source={{ uri: comment.user.avatar }} style={styles.avatar} />
+                       </TouchableOpacity>
 
                         <TouchableOpacity style={styles.BackgroundComment} onLongPress={() => handleCommentPress()}>
                             <View style={{ padding: 10, flexDirection: 'column' }}>
-                                <Text style={styles.fullname}>{comment.user.fullname}</Text>
+                               <TouchableOpacity onPress={handleToProfile}>
+                               <Text style={styles.fullname}>{comment.user.fullname}</Text>
+                               </TouchableOpacity>
                                 {comment.content ? (
                                     <Text style={styles.content}>{comment.content}</Text>
                                 ) : null}
@@ -198,28 +218,37 @@ const CommentItem = ({ comment, onReply, depth = 0, render, parent, setText, set
                     </View>
                     <View style={{ flexDirection: "row", alignItems: 'center', marginStart: 50 }}>
                         <Text style={{ marginRight: 5, fontWeight: 'bold' }}>{DateOfTimePost(comment.create_at)}</Text>
-                        {/* {
+                        {
                             !comment.parent &&
                             <>
-                                <Text style={{ fontWeight: 'bold', fontSize: 16, color: 'black' }}>᛫</Text>
+                                <Text style={{ fontWeight: 'bold', fontSize: 16, color: 'black', }}>᛫</Text>
                                 <TouchableOpacity onPress={handleReply} style={styles.replyButton}>
                                     <Text style={{ fontWeight: 'bold' }}>Trả lời</Text>
                                 </TouchableOpacity>
                             </>
-                        } */}
-                        <Text style={{ fontWeight: 'bold', fontSize: 16, color: 'black' }}>᛫</Text>
+                        }
+                        {/* <Text style={{ fontWeight: 'bold', fontSize: 16, color: 'black' }}>᛫</Text>
                         <TouchableOpacity onPress={handleReply} style={styles.replyButton}>
                             <Text style={{ fontWeight: 'bold' }}>Trả lời</Text>
-                        </TouchableOpacity>
-                        <Text style={{ fontWeight: 'bold', fontSize: 16, color: 'black', marginLeft: 5 }}>᛫</Text>
+                        </TouchableOpacity> */}
+                        <Text style={{ fontWeight: 'bold', fontSize: 16, color: 'black',     marginLeft: 5   }}>᛫</Text>
                         <TouchableOpacity style={styles.replyButton} onLongPress={() => setModaReactionlVisible(true)}>
                             {likeIcon ?
-                                (<TouchableOpacity onPress={handleCancelLike} onLongPress={() => setModaReactionlVisible(true)}>
+                                (<View style = {{flexDirection: 'row'}}>
+                                    <TouchableOpacity onPress={handleCancelLike} onLongPress={() => setModaReactionlVisible(true)}>
                                     <Image source={likeIcon} style={styles.likeIcon} />
-                                </TouchableOpacity>)
-                                : <TouchableOpacity onLongPress={() => setModaReactionlVisible(true)}>
+                                </TouchableOpacity>
+                                <Text style = {{marginLeft: 5}}>{comment.like_count}</Text>
+                                </View>
+                               )
+                                : 
+                                <View style = {{flexDirection: 'row'}}>
+                                    <TouchableOpacity onLongPress={() => setModaReactionlVisible(true)}>
                                     <Text style={{ fontWeight: 'bold' }}>Thích</Text>
-                                </TouchableOpacity>}
+                                </TouchableOpacity>
+                                {/* <Text style = {{marginLeft: 5}}>{comment.like_count}</Text> */}
+                                </View>
+                                }
 
                         </TouchableOpacity>
                     </View>

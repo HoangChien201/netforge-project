@@ -10,7 +10,7 @@ const ReactionButton = ({ isVisible, onClose, onSelectReaction, comment }) => {
         { id: 3, name: 'happy', source: require('../../media/Dicons/smile.png') },
         { id: 4, name: 'love', source: require('../../media/Dicons/heartF.png')},
         { id: 5, name: 'wow', source: require('../../media/Dicons/wow.png')},
-        { id: 6, name: 'hot', source: require('../../media/Dicons/angry.png')},
+        { id: 6, name: 'nóng giận', source: require('../../media/Dicons/angry.png')},
 
     ];
     
@@ -25,7 +25,7 @@ const ReactionButton = ({ isVisible, onClose, onSelectReaction, comment }) => {
             const reponse = await addLikeComments(data.comment, data.reaction);
             console.log(reponse);
             console.log('idcomment',comment.id);
-            console.log('Selected Reaction ID:', reaction.id);
+            console.log('Đã', reaction.name);
      } catch (error) {
         console.log('like comment:',error);
         

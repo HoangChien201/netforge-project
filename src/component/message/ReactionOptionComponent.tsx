@@ -5,13 +5,14 @@ import { reactionType } from './MessageItem'
 import { useMyContext } from '../navigation/UserContext'
 import { MessageCordinatesType } from '../../screens/message/MessageScreen'
 
-const HEIGHT_DEFAULT = 40
 const STATUS_ADD_REACTION = 1
 const STATUS_CHANGE_REACTION = 2
 const STATUS_REMOVE_REACTION = 3
-const ReactionOptionComponent = ({ ontionOnpress, reactionOfMsg, messageCordinates,setSelectedMessage }: { ontionOnpress?: any, reactionOfMsg: Array<reactionType>, messageCordinates: MessageCordinatesType,setSelectedMessage:any }) => {
+const ReactionOptionComponent = ({ ontionOnpress, reactionOfMsg }: { ontionOnpress?: any, reactionOfMsg: Array<reactionType>, messageCordinates: MessageCordinatesType,setSelectedMessage:any }) => {
     const { user } = useMyContext()
     const [reactionActive, setReactionActive] = useState(reactionOfMsg ? reactionOfMsg.find(reaction => reaction.user.toString() === user.id.toString()) : undefined)
+    console.log('reactionActive',reactionOfMsg);
+    
     //get react of user
     useEffect(() => {
 
@@ -71,7 +72,7 @@ const ReactionOptionComponent = ({ ontionOnpress, reactionOfMsg, messageCordinat
                             key={index}
                             onPress={OptionOnPress.bind(this, index)}
                             style={[styles.reactionWrapper,
-                            { backgroundColor: reactionActive?.reaction === index ? '#fff' : 'rgba(150,150,150,0)' }
+                            { backgroundColor: reactionActive?.reaction === index ? '#ccc' : 'rgba(150,150,150,0)' }
                             ]
                             }>
                             <Image style={styles.reaction} source={reaction.source} />
@@ -90,9 +91,10 @@ export default ReactionOptionComponent
 const styles = StyleSheet.create({
     reactionWrapper: {
 
-        borderRadius: 8,
+        borderRadius: 10,
         justifyContent: 'center',
-        alignItems: 'center'
+        alignItems: 'center',
+        padding:8
     },
     reaction: {
         width: 40,
@@ -103,6 +105,8 @@ const styles = StyleSheet.create({
         borderRadius: 50,
         flexDirection: 'row',
         gap: 8,
-        padding: 8,
+        paddingVertical: 8,
+        paddingHorizontal: 20,
+
     }
 })

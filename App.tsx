@@ -7,6 +7,7 @@
 import 'react-native-gesture-handler';
 import React, { useEffect } from 'react';
 import {
+  LogBox,
   StatusBar,
   Text,
   View,
@@ -23,7 +24,6 @@ import { LogBox } from 'react-native';
 function App(): React.JSX.Element {
   useEffect(()=>{
     RequestNotificationPermission()
-
     registerRemoteNotificationsEvent()
   });
   LogBox.ignoreLogs([

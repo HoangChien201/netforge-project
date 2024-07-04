@@ -28,7 +28,6 @@ const ListPorts = memo(({ onrefresh }:{onrefresh:boolean}) => {
     try {
 
       const response:any = await getAll(token);
-      console.log("res",response);
       
       if (response) {
         setAllData([...response]);
@@ -83,7 +82,7 @@ const handleToProfile = (userId: React.SetStateAction<null>) => {
       navigation.navigate(ProfileRootStackEnum.ProfileScreen);
   } else {
       //setIsModalVisible(true);
-      navigation.navigate(ProfileRootStackEnum.FriendProfile, { userId});
+      navigation.navigate(ProfileRootStackEnum.FriendProfile, {userId});
   } 
 };
   return (
