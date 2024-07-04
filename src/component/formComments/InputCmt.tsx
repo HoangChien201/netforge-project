@@ -1,11 +1,14 @@
 import { StyleSheet, Text, View, TouchableOpacity, Image, TextInput, ScrollView, KeyboardAvoidingView, Platform, TouchableWithoutFeedback, Keyboard, PermissionsAndroid } from 'react-native'
-import React, { useState, useEffect, useCallback } from 'react'
+import React, { useState, useEffect, useCallback, useRef } from 'react'
 import CommentsScreen from '../../screens/CommentsScreen'
 import { addComments, uploadImage } from '../../http/TuongHttp'
 import { launchCamera, launchImageLibrary } from 'react-native-image-picker'
 import Video from 'react-native-video'
 import { useMyContext } from '../navigation/UserContext'
-import { isNull } from 'lodash'
+import Icon from 'react-native-vector-icons/Feather'
+import IconPhoto from 'react-native-vector-icons/Foundation'
+import IconSend from 'react-native-vector-icons/FontAwesome'
+import { COLOR } from '../../constant/color'
 
 
 const InputCmt = ({ fetchComments, onMediaSelected, parent = null , postId, text,setParent, setText, comment }) => {
@@ -14,20 +17,39 @@ const InputCmt = ({ fetchComments, onMediaSelected, parent = null , postId, text
     const [media, setMedia] = useState(null);
     const [imagePath, setImagePath] = useState(null);
     const [mediaType, setMediaType] = useState(null);
-    console.log('inputcommentid', comment);
+    const inputRef = useRef(null);
     
+    console.log('inputcommentid', comment);
+  
     useEffect(() => {
         if (text) {
             if(user.id === comment){
                 
                 setText('chính mình')
-                
             }else{
                 setComments(text)
             }
             
         }
+    
+
     }, [text])
+    if (inputRef.current) {
+        inputRef.current.focus();
+        console.log('render');
+        
+    }
+    // useEffect(() => {
+    //     // Tự động gọi focus() khi component được hiển thị
+    //     if (text) {
+    //         if(inputRef.current){
+    //             inputRef.current.focus();
+    //         console.log('trả lời');
+    //         } 
+    //     } 
+    // }, [text]);
+
+   
     const handleCancel =()=>{
         setParent(null)
         setText(null)
@@ -124,7 +146,7 @@ const InputCmt = ({ fetchComments, onMediaSelected, parent = null , postId, text
         }
     }
     return (
-        <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={{
+        <KeyboardAvoidingView style={{
             flex: 1,
             position: 'absolute',
             bottom: 0,
@@ -146,8 +168,8 @@ const InputCmt = ({ fetchComments, onMediaSelected, parent = null , postId, text
                                 resizeMode='cover'
                             /></View>
                     )}
-                    <TouchableOpacity onPress={handleDleteMedia} style={{ marginStart: -15, marginTop: 2 }}>
-                        <Image source={require('../../media/icon_tuong/exitblack.png')} style={{ width: 15, height: 15 }} />
+                    <TouchableOpacity onPress={handleDleteMedia} style={{ marginStart: -5, marginTop: 5 }}>
+                        <Icon name='x-circle' size={25} color={COLOR.PrimaryColor}/>
                     </TouchableOpacity>
                 </View>
             )}
@@ -156,7 +178,7 @@ const InputCmt = ({ fetchComments, onMediaSelected, parent = null , postId, text
             <View >
                 {
                     text && (
-                        <View style={{  backgroundColor: '#F4F4F4', paddingTop: 2 }}>
+                        <View style={{  backgroundColor: '#F4F4F4', paddingTop: 2}}>
                             <View style = {{flexDirection: 'row', left: 68}}>
                             <Text style = {{fontWeight: '700'}}>Trả lời</Text>
                             <Text style = {{fontWeight: '800', color: 'black'}}> {text}</Text>
@@ -171,25 +193,23 @@ const InputCmt = ({ fetchComments, onMediaSelected, parent = null , postId, text
                 <View style={styles.ViewSendCmt}>
 
                     <TouchableOpacity onPress={openPhoto}>
-                        <Image style={styles.ImageCmt} source={require('../../media/icon_tuong/cameracolor.png')} />
+                        <IconPhoto style={styles.ImageCmt} name='camera' size={35} color={COLOR.PrimaryColor}/>
                     </TouchableOpacity>
 
                     <View style={styles.boderInput}>
                         <TextInput placeholder='Nhập bình luận của bạn....' style={styles.inputSend}
                             value={comments}
-                            onChangeText={text => { setComments(text) }}>
+                            onChangeText={text => { setComments(text) }}
+                            multiline={true}
+                            ref={inputRef}>
                         </TextInput>
                     </View>
-
                     <TouchableOpacity style={styles.btnSend} onPress={handleAddComment}>
-                        <Image source={require('../../media/icon_tuong/send.png')} />
+                        <IconSend name='send' size={28} color={COLOR.PrimaryColor}/>
                     </TouchableOpacity>
                 </View>
             </View>
         </KeyboardAvoidingView>
-
-
-
     )
 }
 
@@ -201,7 +221,6 @@ const styles = StyleSheet.create({
         backgroundColor: '#F4F4F4',
         borderTopRightRadius: 10,
         borderTopLeftRadius: 10,
-
     },
     media: {
         margin: 6,
@@ -248,7 +267,6 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'space-between',
         margin: 10,
-
     },
     boderInput: {
         alignItems: 'center',
@@ -257,18 +275,18 @@ const styles = StyleSheet.create({
         width: 280,
         backgroundColor: 'white',
         borderRadius: 50,
-
         height: 40
     },
     btnSend: {
-        marginRight: 10
+        marginRight: 10,
+        right: 5
     },
     inputSend: {
         width: 250
     },
     ImageCmt: {
-        marginStart: 10
-
+        marginStart: 10,
+        left: 3
     },
     ViewSendCmt: {
         backgroundColor: '#F4F4F4',
