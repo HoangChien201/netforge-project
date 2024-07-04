@@ -1,10 +1,12 @@
-import { FlatList, View, StyleSheet, ActivityIndicator } from 'react-native';
+import { FlatList, View, StyleSheet, ActivityIndicator, Text, Dimensions } from 'react-native';
 import React, { memo,useCallback, useEffect, useState } from 'react';
 import ItemPost from './ItemPost';
 import { getAll } from '../../http/userHttp/getpost';
 import { COLOR } from '../../constant/color';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Loading from '../Modal/Loading';
+import { date } from 'yup';
+import { useMyContext } from '../navigation/UserContext';
 
 const ListPorts = memo(({ onrefresh }:{onrefresh:boolean}) => {
   const [allData, setAllData] = useState<any>([]);
@@ -12,42 +14,49 @@ const ListPorts = memo(({ onrefresh }:{onrefresh:boolean}) => {
   const [loading, setLoading] = useState(false);
   const [loadingMore, setLoadingMore] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
-console.log("data");
-
+  const{user} = useMyContext();
   const PAGE_SIZE = 10;
  
   const getAllPost = useCallback(async () => {
-    const token = await AsyncStorage.getItem('token');
+    const token = await AsyncStorage.getItem('userToken');
+    
     setLoading(true);
     try {
-
-      const response:any = await getAll(token);
-      console.log("res",response);
-      
-      if (response) {
-        setAllData([...response]);
-        setDisplayData([...response.slice(0, PAGE_SIZE)]);
+      const response:any = await getAll(token,user.id);
+        
+      if (response.length > 0) {
+        const getByTypeOne = response.filter(post => post.type === 1)
+        
+        setAllData([...getByTypeOne]);
+        setDisplayData([...getByTypeOne.slice(0, PAGE_SIZE)]);
+       
+        
       }
     } catch (error) {
       console.error(error);
     }
     setLoading(false);
-  }, [setAllData, setDisplayData]);
+  }, [setAllData, setDisplayData,onrefresh]);
 
   useEffect(() => {
+    
     getAllPost();
   }, [getAllPost, onrefresh]);
 
+  
+
   const loadMoreData = () => {
-    if (loadingMore || displayData.length >= allData.length) return;
+  
+    if ( loadingMore ||displayData.length >= allData.length) return;
     setLoadingMore(true);
     const newPage = currentPage + 1;
     const startIndex = (newPage - 1) * PAGE_SIZE;
     const endIndex = startIndex + PAGE_SIZE;
     const newData = allData.slice(startIndex, endIndex);
-    
+   
+
     setTimeout(() => {
-      setDisplayData(prevData => [...prevData, ...newData]);
+      setDisplayData((prevData: any) => [...prevData, ...newData]);
       setCurrentPage(newPage);
       setLoadingMore(false);
     }, 1000); 
@@ -62,19 +71,33 @@ console.log("data");
   };
 
   return (
-    <View style={{ backgroundColor: 'rgba(155,155,155,0.2)' }}>
-      <Loading isLoading={loading}/>
-      <FlatList
-        data={displayData}
-        renderItem={({ item, index }) => {
-          return <ItemPost onrefresh={onrefresh} index={index} data={item} />;
-        }}
-        keyExtractor={(item) => item.id.toString()}
-        showsVerticalScrollIndicator={false}
-        onEndReached={loadMoreData}
-        onEndReachedThreshold={0.5}
-        ListFooterComponent={renderFooter}
-      />
+    <View style={{ flex:1,backgroundColor: 'rgba(155,155,155,0.2)' }}>
+      
+        <Loading isLoading={loading} />
+      
+         {
+           
+             allData.length > 0 ? 
+           (  <><FlatList
+            data={displayData}
+            renderItem={({ item, index }) => {
+              return <ItemPost  onrefresh={onrefresh} index={index} data={item} />;
+            } }
+            keyExtractor={(item) => item.id.toString()}
+            showsVerticalScrollIndicator={false}
+            onEndReached={loadMoreData}
+            onEndReachedThreshold={0.5}
+            ListFooterComponent={renderFooter} /></>):
+            (
+              !loading && (
+                  <View style={styles.messageContainer}>
+                      <Text style={styles.messageText}>Hiện chưa có bài viết nào</Text>
+                  </View>
+              )
+          )
+            
+          }
+      
     </View>
   );
 });
@@ -86,5 +109,17 @@ const styles = StyleSheet.create({
     padding: 10,
     alignItems: 'center',
     justifyContent: 'center'
-  }
+  },
+  messageContainer: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    flex: 1,
+    backgroundColor: '#fff',
+    height: Dimensions.get('screen').height / 1.7,
+},
+messageText: {
+    fontSize: 20,
+    color: '#000',
+    fontWeight: 'bold',
+},
 });

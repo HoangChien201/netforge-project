@@ -68,7 +68,6 @@ const FormLogin = ({ setModal, setStatus, setIsLoading }: { setModal: (value: bo
         
         if (result) {
             setUser(result.data);
-
           }
           
           console.log(result);
@@ -78,7 +77,7 @@ const FormLogin = ({ setModal, setStatus, setIsLoading }: { setModal: (value: bo
           
       } catch (error) {
         setIsLoading(false);
-
+        setValid({ email: false, password: false });
         console.log("Login error", error);
       }
     }
@@ -114,9 +113,9 @@ const FormLogin = ({ setModal, setStatus, setIsLoading }: { setModal: (value: bo
             const password = String(stPassword);
             try {
               const result = await login(email, password);
-              await AsyncStorage.setItem('userToken', result.data.token);
+              await AsyncStorage.setItem('userToken', result?.data.token);
               handleLoginResult(result);
-              console.log(result);
+             
             } catch (error) {
               console.log("Touch ID login error", error);
               console.log('email: ' + JSON.stringify(stEmail) + 'pass :' + JSON.stringify(stPassword));

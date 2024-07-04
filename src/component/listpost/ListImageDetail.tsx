@@ -1,24 +1,26 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { memo, useEffect, useRef, useState } from 'react';
 import { Modal, View, Image, StyleSheet, TouchableOpacity, ScrollView, Dimensions } from 'react-native';
 import Icon from 'react-native-vector-icons/AntDesign';
+import FastImage from 'react-native-fast-image';
+import { useNavigation, useRoute } from '@react-navigation/native';
 
-const ListImageDetail = ({ visible, onClose, listImg, indexImg }) => {
-  const [currentIndex, setCurrentIndex] = useState(indexImg);
+const ListImageDetail = memo(() => {
+  const route = useRoute();
+  const {  img, index } = route.params;
   const scrollViewRef = useRef(null);
-  console.log("imgindex",indexImg);
-  
-
+  const navigation=useNavigation()
+ 
   useEffect(() => {
-    if (visible) {
+    if (img.length>0) {
       const itemWidth = Dimensions.get('screen').width;
-      scrollViewRef.current.scrollTo({ x: indexImg * itemWidth, animated: false });
+      scrollViewRef?.current?.scrollTo({ x: index * itemWidth, animated: false });
     }
-  }, [visible]);
+  }, [index,img]);
 
   return (
-    <Modal visible={visible} transparent={true} animationType="slide">
+    <>
       <View style={styles.modalContainer}>
-        <TouchableOpacity style={styles.closeButton} onPress={() => onClose(false)}>
+        <TouchableOpacity style={styles.closeButton} onPress={() => navigation.goBack()}>
           <Icon name="close" size={24} color="#fff" />
         </TouchableOpacity>
 
@@ -28,16 +30,23 @@ const ListImageDetail = ({ visible, onClose, listImg, indexImg }) => {
           pagingEnabled
           showsHorizontalScrollIndicator={false}
         >
-          {listImg.length > 0 && listImg.map((imageUrl, index) => (
-            <View key={index} style={{ width: Dimensions.get('screen').width }}>
-              <Image source={{ uri: imageUrl.url }} style={styles.image} resizeMode="contain" />
+          {img?.map((imageUrl, index: any) => (
+            <View key={imageUrl?.id} style={{ width: Dimensions.get('screen').width }}>
+              <FastImage
+                style={styles.image}
+                source={{
+                  uri: imageUrl?.url,
+                  priority: FastImage.priority.normal,
+                }}
+                resizeMode={FastImage.resizeMode.contain}
+              />
             </View>
           ))}
         </ScrollView>
       </View>
-    </Modal>
+    </>
   );
-};
+});
 
 const styles = StyleSheet.create({
   modalContainer: {
