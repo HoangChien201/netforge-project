@@ -2,7 +2,9 @@ import { FlatList, View, StyleSheet, ActivityIndicator, Text, Dimensions } from 
 import React, { memo,useCallback, useEffect, useState } from 'react';
 import ItemPost from './ItemPost';
 import { getAll } from '../../http/userHttp/getpost';
-import { COLOR } from '../../constant/color';
+import { useMyContext } from '../navigation/UserContext';
+import { NavigationProp, ParamListBase, useNavigation } from '@react-navigation/native';
+import { ProfileRootStackEnum } from '../stack/ProfileRootStackParams';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Loading from '../Modal/Loading';
 import { date } from 'yup';
@@ -14,9 +16,10 @@ const ListPorts = memo(({ onrefresh }:{onrefresh:boolean}) => {
   const [loading, setLoading] = useState(false);
   const [loadingMore, setLoadingMore] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
+
   const{user} = useMyContext();
+  const navigation: NavigationProp<ParamListBase> = useNavigation();
   const PAGE_SIZE = 10;
- 
   const getAllPost = useCallback(async () => {
     const token = await AsyncStorage.getItem('userToken');
     
@@ -29,8 +32,6 @@ const ListPorts = memo(({ onrefresh }:{onrefresh:boolean}) => {
         
         setAllData([...getByTypeOne]);
         setDisplayData([...getByTypeOne.slice(0, PAGE_SIZE)]);
-       
-        
       }
     } catch (error) {
       console.error(error);
@@ -69,8 +70,21 @@ const ListPorts = memo(({ onrefresh }:{onrefresh:boolean}) => {
       </View>
     ) : null;
   };
+  
 
+  const { user } = useMyContext();
+  const loggedInUserId = user.id;
+
+const handleToProfile = (userId: React.SetStateAction<null>) => {
+  //console.log("userID: ",userId);
+  if (userId === loggedInUserId) {
+    navigation.navigate(ProfileRootStackEnum.ProfileScreen);
+  } else {
+    navigation.navigate(ProfileRootStackEnum.FriendProfile, { userId});
+  } 
+};
   return (
+
     <View style={{ flex:1,backgroundColor: 'rgba(155,155,155,0.2)' }}>
       
         <Loading isLoading={loading} />

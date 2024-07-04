@@ -33,6 +33,12 @@ const TouchId = ({ visible, setVisible }: { visible: boolean, setVisible: (value
     const cancelTouchIdLogin = () => {
         setVisible(false);
     };
+    const dontAskTouchIdLogin = async() => {
+        setVisible(false);
+        await AsyncStorage.setItem('cancelBiometric','false');
+        console.log('cancelBiometric == false');
+        
+    };
     const confirmTouchIdLogin = async () => {
         try {
             await AsyncStorage.setItem('touch', 'true');
@@ -49,7 +55,11 @@ const TouchId = ({ visible, setVisible }: { visible: boolean, setVisible: (value
     return (
         <Modal transparent visible={visible}>
             <View style={styles.modalBackGround}>
+
                 {confirm ? <Animated.View style={[styles.modalContainer, { transform: [{ scale: scaleValues }] }]}>
+                <TouchableOpacity style={styles.close} onPress={cancelTouchIdLogin}>
+                    <ICON name="close"  color={COLOR.PrimaryColor} size={20} />
+                </TouchableOpacity>
                     <View style={{ alignItems: "center", justifyContent: 'center' }}>
                         <View style={{ alignItems: "center", justifyContent: 'center' }}>
                             <ICON name="fingerprint" size={100} color={COLOR.PrimaryColor} />
@@ -58,8 +68,8 @@ const TouchId = ({ visible, setVisible }: { visible: boolean, setVisible: (value
                         </View>
                     </View>
                     <View style={styles.options}>
-                        <TouchableOpacity style={styles.buttonK} onPress={cancelTouchIdLogin}>
-                            <Text style={styles.textL}>Không</Text>
+                        <TouchableOpacity style={styles.buttonK} onPress={dontAskTouchIdLogin}>
+                            <Text style={styles.textK}>Không nhắc lại</Text>
                         </TouchableOpacity>
                         <TouchableOpacity style={styles.buttonL} onPress={confirmTouchIdLogin}>
                             <Text style={styles.textL}>Lưu</Text>
@@ -108,16 +118,16 @@ const styles = StyleSheet.create({
     },
     buttonK: {
         height: 40,
-        width: 80,
+        width: 90,
         backgroundColor: '#FF0000',
         borderRadius: 10,
         alignItems: 'center',
-        justifyContent: 'center'
+        justifyContent: 'center',
     },
     buttonL: {
         height: 40,
         width: 80,
-        backgroundColor: '#0000FF',
+        backgroundColor:COLOR.PrimaryColor,
         borderRadius: 10,
         alignItems: 'center',
         justifyContent: 'center'
@@ -126,5 +136,22 @@ const styles = StyleSheet.create({
         color: 'white',
         fontSize: 16,
         fontWeight: '400'
+    },
+    textK: {
+        color: 'white',
+        fontSize: 12,
+        fontWeight: '400'
+    },
+    close:{
+        position:'absolute',
+        end:10,
+        top:10,
+        zIndex:999,
+        height:30,
+        width:30,
+
+        alignItems:'center',
+        justifyContent:'center'
+
     }
 })

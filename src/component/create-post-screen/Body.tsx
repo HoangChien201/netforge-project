@@ -1,29 +1,50 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { StyleSheet, Text, View, TouchableOpacity, Image, FlatList, Animated, Keyboard, Easing, KeyboardAvoidingView } from 'react-native';
+import { StyleSheet, Text, View, TouchableOpacity, Image, FlatList, Animated, Keyboard, Easing, KeyboardAvoidingView, TextInput } from 'react-native';
 import Video from 'react-native-video';
 import USER from './User';
 import TEXTAREA from './TextArea';
-import OPTIONS from './Options';
+import OPTIONS, { fileType } from './Options';
 import { COLOR } from '../../constant/color';
 import SwiperFlatList from 'react-native-swiper-flatlist';
 import Icon from 'react-native-vector-icons/Feather';
-
-const Body = ({ content, setContent, media, setMedia, permission, setPermission, setStatus, setShowPopup, friends, setFriends }) => {
+type Bpob = {
+    content: any,
+    setContent: (value:any) => void,
+    media: any,
+    setMedia: (value:any) => void,
+    permission: any,
+    setPermission: (value:any) => void,
+    setStatus: any,
+    setShowPopup: (value:any) => void,
+    friends: any,
+    setFriends: (value:any) => void
+}
+const Body: React.FC<Bpob> = ({ content, setContent, media, setMedia, permission, setPermission, setStatus, setShowPopup, friends, setFriends }) => {
     //const [media, setMedia] = useState([]);
     const [playingVideo, setPlayingVideo] = useState(null);
     const [viewMore, setViewMore] = useState(false);
+    const [uries, setUries] = useState<any>([])
+
     const handleEmojiSelect = (emoji) => {
         setContent(content + emoji);
     };
+    useEffect(() => {
+        //console.log('media:', JSON.stringify(media, null, 2));
+        // const uris = media.map((file: fileType) => file.uri)
+        // setUries(uris);
+    }, []);
 
-    const handleMediaSelect = (uris) => {
-        setMedia(uris);
-        console.log(uris);
+    const handleMediaSelect = (newImages) => {
+        setMedia(newImages);
+        console.log('Media selected:', JSON.stringify(newImages, null, 2));
     };
+
     const deleteImage = (uri) => {
-        const updatedImages = media.filter(media => media !== uri);
+        const updatedImages = media.filter(media => media.uri !== uri);
         setMedia(updatedImages);
         console.log(updatedImages);
+        console.log(media);
+
 
     };
     const togglePlayVideo = (uri) => {
@@ -39,32 +60,32 @@ const Body = ({ content, setContent, media, setMedia, permission, setPermission,
             return (
                 <View style={styles.oneMediaContainer}>
                     {item.map((uri, index) => (
-                        uri.endsWith('.mp4') ? (
+                        uri.uri.endsWith('.mp4') ? (
                             <View key={index.toString()} style={styles.mediaContainer}>
                                 <Video
-                                    source={{ uri }}
+                                    source={{ uri: uri.uri }}
                                     style={styles.oneMedia}
                                     resizeMode="cover"
-                                    paused={playingVideo !== uri}
+                                    paused={playingVideo !== uri.uri}
                                     repeat={true}
                                 />
                                 <TouchableOpacity
                                     style={styles.playButton}
-                                    onPress={() => togglePlayVideo(uri)}
+                                    onPress={() => togglePlayVideo(uri.uri)}
                                 >
                                     <Text style={styles.playButtonText}>
-                                        {playingVideo === uri ? <Icon name="pause-circle" size={24} color={'#fff'} /> : <Icon name="play-circle" size={24} color={'#fff'} />}
+                                        {playingVideo === uri.uri ? <Icon name="pause-circle" size={24} color={'#fff'} /> : <Icon name="play-circle" size={24} color={'#fff'} />}
                                     </Text>
                                 </TouchableOpacity>
-                                <TouchableOpacity style={styles.buttonDeleteImage} onPress={() => deleteImage(uri)}>
-                                    <Icon name='trash-2' size={28} color={COLOR.PrimaryColor} />
+                                <TouchableOpacity style={styles.buttonDeleteImage} onPress={() => deleteImage(uri.uri)}>
+                                    <Icon name='x' size={28} color={COLOR.primary500} />
                                 </TouchableOpacity>
                             </View>
                         ) : (
                             <View style={styles.oneMedia} key={index.toString()}>
-                                <Image key={index} source={{ uri }} style={styles.oneMedia} resizeMode="cover" />
-                                <TouchableOpacity style={styles.buttonDeleteImage} onPress={() => deleteImage(uri)}>
-                                    <Icon name='trash-2' size={28} color={COLOR.PrimaryColor} />
+                                <Image key={index.toString()} source={{ uri: uri.uri }} style={styles.oneMedia} resizeMode="cover" />
+                                <TouchableOpacity style={styles.buttonDeleteImage} onPress={() => deleteImage(uri.uri)}>
+                                    <Icon name='x' size={28} color={COLOR.primary500} />
                                 </TouchableOpacity>
                             </View>
 
@@ -76,32 +97,32 @@ const Body = ({ content, setContent, media, setMedia, permission, setPermission,
             return (
                 <View style={styles.twoMediaContainer}>
                     {item.map((uri, index) => (
-                        uri.endsWith('.mp4') ? (
+                        uri.uri.endsWith('.mp4') ? (
                             <View key={index.toString()} style={styles.mediaContainer}>
                                 <Video
-                                    source={{ uri }}
+                                    source={{ uri: uri.uri }}
                                     style={styles.twoMedia}
                                     resizeMode="cover"
-                                    paused={playingVideo !== uri}
+                                    paused={playingVideo !== uri.uri}
                                     repeat={true}
                                 />
                                 <TouchableOpacity
                                     style={styles.playButton}
-                                    onPress={() => togglePlayVideo(uri)}
+                                    onPress={() => togglePlayVideo(uri.uri)}
                                 >
                                     <Text style={styles.playButtonText}>
-                                        {playingVideo === uri ? <Icon name="pause-circle" size={24} color={'#fff'} /> : <Icon name="play-circle" size={24} color={'#fff'} />}
+                                        {playingVideo === uri.uri ? <Icon name="pause-circle" size={24} color={'#fff'} /> : <Icon name="play-circle" size={24} color={'#fff'} />}
                                     </Text>
                                 </TouchableOpacity>
-                                <TouchableOpacity style={styles.buttonDeleteImage} onPress={() => deleteImage(uri)}>
-                                    <Icon name='trash-2' size={28} color={COLOR.PrimaryColor} />
+                                <TouchableOpacity style={styles.buttonDeleteImage} onPress={() => deleteImage(uri.uri)}>
+                                    <Icon name='x' size={28} color={COLOR.primary500} />
                                 </TouchableOpacity>
                             </View>
                         ) : (
                             <View style={styles.mediaContainer} key={index.toString()}>
-                                <Image key={index} source={{ uri }} style={styles.oneMedia} resizeMode="cover" />
-                                <TouchableOpacity style={styles.buttonDeleteImage} onPress={() => deleteImage(uri)}>
-                                    <Icon name='trash-2' size={28} color={COLOR.PrimaryColor} />
+                                <Image key={index.toString()} source={{ uri: uri.uri }} style={styles.oneMedia} resizeMode="cover" />
+                                <TouchableOpacity style={styles.buttonDeleteImage} onPress={() => deleteImage(uri.uri)}>
+                                    <Icon name='x' size={28} color={COLOR.primary500} />
                                 </TouchableOpacity>
                             </View>
                         )
@@ -112,74 +133,74 @@ const Body = ({ content, setContent, media, setMedia, permission, setPermission,
             return (
                 <TouchableOpacity style={styles.threeMediaContainer} onPress={() => setViewMore(true)}>
                     <View style={styles.media1ContainerOf3} >
-                        {item[0].endsWith('.mp4') ? (
+                        {item[0].uri.endsWith('.mp4') ? (
                             <View style={styles.media1of3} >
                                 <Video
-                                    source={{ uri: item[0] }}
+                                    source={{ uri: item[0].uri }}
                                     style={styles.mediaFill}
                                     resizeMode="cover"
-                                    paused={playingVideo !== item[0]}
+                                    paused={playingVideo !== item[0].uri}
                                     repeat={true}
                                 />
                                 <TouchableOpacity
                                     style={styles.playButton}
-                                    onPress={() => togglePlayVideo(item[0])}
+                                    onPress={() => togglePlayVideo(item[0].uri)}
                                 >
                                     <Text style={styles.playButtonText}>
-                                        {playingVideo === item[0] ? <Icon name="pause-circle" size={24} color={'#fff'} /> : <Icon name="play-circle" size={24} color={'#fff'} />}
+                                        {playingVideo === item[0].uri ? <Icon name="pause-circle" size={24} color={'#fff'} /> : <Icon name="play-circle" size={24} color={'#fff'} />}
                                     </Text>
                                 </TouchableOpacity>
                             </View>
                         ) : (
-                            <Image source={{ uri: item[0] }} style={styles.mediaFill} resizeMode="cover" />
+                            <Image source={{ uri: item[0].uri }} style={styles.mediaFill} resizeMode="cover" />
                         )}
                     </View>
                     <View style={styles.threeMedia23Container}>
                         <View style={styles.media23Container}>
-                            {item[1].endsWith('.mp4') ? (
+                            {item[1].uri.endsWith('.mp4') ? (
                                 <View style={styles.media1of3}>
                                     <Video
-                                        source={{ uri: item[1] }}
+                                        source={{ uri: item[1].uri }}
                                         style={styles.mediaFill}
                                         resizeMode="cover"
-                                        paused={playingVideo !== item[1]}
+                                        paused={playingVideo !== item[1].uri}
                                         repeat={true}
                                     />
                                     <TouchableOpacity
                                         style={styles.playButton}
-                                        onPress={() => togglePlayVideo(item[1])}
+                                        onPress={() => togglePlayVideo(item[1].uri)}
                                     >
                                         <Text style={styles.playButtonText}>
-                                            {playingVideo === item[1] ? <Icon name="pause-circle" size={24} color={'#fff'} /> : <Icon name="play-circle" size={24} color={'#fff'} />}
+                                            {playingVideo === item[1].uri ? <Icon name="pause-circle" size={24} color={'#fff'} /> : <Icon name="play-circle" size={24} color={'#fff'} />}
                                         </Text>
                                     </TouchableOpacity>
                                 </View>
                             ) : (
-                                <Image source={{ uri: item[1] }} style={styles.mediaFill} resizeMode="cover" />
+                                <Image source={{ uri: item[1].uri }} style={styles.mediaFill} resizeMode="cover" />
                             )}
                         </View>
                         <View style={styles.media23Container}>
-                            {item[2].endsWith('.mp4') ? (
+                            {item[2].uri.endsWith('.mp4') ? (
                                 <View style={styles.media1of3}>
                                     <Video
-                                        source={{ uri: item[2] }}
+                                        source={{ uri: item[2].uri }}
                                         style={styles.mediaFill}
                                         resizeMode="cover"
                                         repeat={true}
-                                        paused={playingVideo !== item[2]}
+                                        paused={playingVideo !== item[2].uri}
 
                                     />
                                     <TouchableOpacity
                                         style={styles.playButton}
-                                        onPress={() => togglePlayVideo(item[2])}
+                                        onPress={() => togglePlayVideo(item[2].uri)}
                                     >
                                         <Text style={styles.playButtonText}>
-                                            {playingVideo === item[2] ? <Icon name="pause-circle" size={24} color={'#fff'} /> : <Icon name="play-circle" size={24} color={'#fff'} />}
+                                            {playingVideo === item[2].uri ? <Icon name="pause-circle" size={24} color={'#fff'} /> : <Icon name="play-circle" size={24} color={'#fff'} />}
                                         </Text>
                                     </TouchableOpacity>
                                 </View>
                             ) : (
-                                <Image source={{ uri: item[2] }} style={styles.mediaFill} resizeMode="cover" />
+                                <Image source={{ uri: item[2].uri }} style={styles.mediaFill} resizeMode="cover" />
                             )}
                         </View>
                     </View>
@@ -189,7 +210,7 @@ const Body = ({ content, setContent, media, setMedia, permission, setPermission,
             return (
                 <View style={styles.multipleMediaContainer}>
                     <View style={styles.media1ContainerOf3}>
-                        {item[0].endsWith('.mp4') ? (
+                        {item[0].uri.endsWith('.mp4') ? (
                             <View style={styles.media1of3}>
                                 <Video
                                     source={{ uri: item[0] }}
@@ -208,61 +229,61 @@ const Body = ({ content, setContent, media, setMedia, permission, setPermission,
                                 </TouchableOpacity>
                             </View>
                         ) : (
-                            <Image source={{ uri: item[0] }} style={styles.mediaFill} resizeMode="cover" />
+                            <Image source={{ uri: item[0].uri }} style={styles.mediaFill} resizeMode="cover" />
                         )}
                     </View>
                     <View style={styles.multipleMedia23Container}>
                         <View style={styles.multiplemediaContainer}>
-                            {item[1].endsWith('.mp4') ? (
+                            {item[1].uri.endsWith('.mp4') ? (
                                 <View style={styles.media1of3}>
                                     <Video
-                                        source={{ uri: item[1] }}
+                                        source={{ uri: item[1].uri }}
                                         style={styles.mediaFill}
                                         resizeMode="cover"
-                                        paused={playingVideo !== item[1]}
+                                        paused={playingVideo !== item[1].uri}
                                         repeat={true}
                                     />
                                     <TouchableOpacity
                                         style={styles.playButton}
-                                        onPress={() => togglePlayVideo(item[1])}
+                                        onPress={() => togglePlayVideo(item[1].uri)}
                                     >
                                         <Text style={styles.playButtonText}>
-                                            {playingVideo === item[1] ? <Icon name="pause-circle" size={24} color={'#fff'} /> : <Icon name="play-circle" size={24} color={'#fff'} />}
+                                            {playingVideo === item[1].uri ? <Icon name="pause-circle" size={24} color={'#fff'} /> : <Icon name="play-circle" size={24} color={'#fff'} />}
                                         </Text>
                                     </TouchableOpacity>
                                 </View>
                             ) : (
-                                <Image source={{ uri: item[1] }} style={styles.mediaFill} resizeMode="cover" />
+                                <Image source={{ uri: item[1].uri }} style={styles.mediaFill} resizeMode="cover" />
                             )}
                         </View>
                         <View style={styles.multiplemediaContainer}>
-                            {item[2].endsWith('.mp4') ? (
+                            {item[2].uri.endsWith('.mp4') ? (
                                 <View style={styles.media1of3}>
                                     <Video
-                                        source={{ uri: item[2] }}
+                                        source={{ uri: item[2].uri }}
                                         style={styles.mediaFill}
                                         resizeMode="cover"
                                         repeat={true}
-                                        paused={playingVideo !== item[2]}
+                                        paused={playingVideo !== item[2].uri}
 
                                     />
                                     <TouchableOpacity
                                         style={styles.playButton}
-                                        onPress={() => togglePlayVideo(item[2])}
+                                        onPress={() => togglePlayVideo(item[2].uri)}
                                     >
                                         <Text style={styles.playButtonText}>
-                                            {playingVideo === item[2] ? <Icon name="pause-circle" size={24} color={'#fff'} /> : <Icon name="play-circle" size={24} color={'#fff'} />}
+                                            {playingVideo === item[2].uri ? <Icon name="pause-circle" size={24} color={'#fff'} /> : <Icon name="play-circle" size={24} color={'#fff'} />}
                                         </Text>
                                     </TouchableOpacity>
                                 </View>
                             ) : (
-                                <Image source={{ uri: item[2] }} style={styles.mediaFill} resizeMode="cover" />
+                                <Image source={{ uri: item[2].uri }} style={styles.mediaFill} resizeMode="cover" />
                             )}
                         </View>
                         {numMedia > 3 && (
                             <TouchableOpacity style={styles.multiplemediaContainer} onPress={() => setViewMore(true)}>
-                                <Text style={styles.viewMoreText}>View More</Text>
-                                <Image source={{ uri: item[3] }} style={styles.viewMore} resizeMode="cover" />
+                                <Text style={styles.viewMoreText}>Xem thêm</Text>
+                                <Image source={{ uri: item[3].uri }} style={styles.viewMore} resizeMode="cover" />
                             </TouchableOpacity>
                         )}
                     </View>
@@ -283,24 +304,24 @@ const Body = ({ content, setContent, media, setMedia, permission, setPermission,
                     data={item}
                     renderItem={({ item }) => (
                         <View style={styles.imageContainer} key={item.toString()}>
-                            {item.endsWith('.mp4') ? (
+                            {item.uri.endsWith('.mp4') ? (
                                 <View>
                                     <Video
-                                        source={{ uri: item }}
+                                        source={{ uri: item.uri }}
                                         style={styles.image}
                                         resizeMode="contain"
                                         controls={true}
                                         paused={true}
                                     />
-                                    <TouchableOpacity style={styles.buttonDeleteImage} onPress={() => deleteImage(item)}>
-                                        <Icon name='trash-2' size={28} color={COLOR.PrimaryColor} />
+                                    <TouchableOpacity style={styles.buttonDeleteImage} onPress={() => deleteImage(item.uri)}>
+                                        <Icon name='x' size={28} color={COLOR.PrimaryColor} />
                                     </TouchableOpacity>
                                 </View>
                             ) : (
                                 <View key={item.toString}>
-                                    <Image source={{ uri: item }} style={styles.image} resizeMode="contain" />
-                                    <TouchableOpacity style={styles.buttonDeleteImage} onPress={() => deleteImage(item)}>
-                                        <Icon name='trash-2' size={28} color={COLOR.PrimaryColor} />
+                                    <Image source={{ uri: item.uri }} style={styles.image} resizeMode="contain" />
+                                    <TouchableOpacity style={styles.buttonDeleteImage} onPress={() => deleteImage(item.uri)}>
+                                        <Icon name='x' size={28} color={COLOR.PrimaryColor} />
                                     </TouchableOpacity>
                                 </View>
                             )}
@@ -325,7 +346,8 @@ const Body = ({ content, setContent, media, setMedia, permission, setPermission,
                         {switchMedia(media)}
                         {viewMore ?
                             <TouchableOpacity style={styles.buttonCloseSwitch} onPress={() => { setViewMore(false) }}>
-                                <Icon name='x' color={'#fff'} size={24} />
+                                {/* <Icon name='x' color={'#fff'} size={24} /> */}
+                                <Text style={{ color: COLOR.primary300, fontWeight: '400' }}>Đóng</Text>
                             </TouchableOpacity>
                             :
                             null
@@ -355,7 +377,13 @@ const styles = StyleSheet.create({
         borderTopEndRadius: 36,
     },
     buttonCloseSwitch: {
-        backgroundColor: COLOR.PrimaryColor, height: 28, width: 28, position: 'absolute', top: 10, end: 10, alignItems: 'center', justifyContent: 'center', borderRadius: 5
+        backgroundColor: COLOR.PrimaryColor,
+        height: 28, width: 58,
+        position: 'absolute',
+        bottom: 10, end: 10,
+        alignItems: 'center',
+        justifyContent: 'center',
+        borderRadius: 5
     },
     header: {
         width: '100%',
@@ -371,21 +399,12 @@ const styles = StyleSheet.create({
     buttonDeleteImage: {
         height: 38,
         width: 38,
-        borderRadius: 10,
         position: 'absolute',
         end: 5,
-        bottom: 5,
+        top: 5,
         alignItems: 'center',
         justifyContent: 'center',
-        backgroundColor: 'white',
-        shadowColor: 'black',
-        shadowOpacity: 0.5,
-        shadowRadius: 5,
-        shadowOffset: {
-            width: 0,
-            height: 2,
-        },
-        elevation: 5,
+
     },
     imageContainer: {
         width: 388,
@@ -405,13 +424,13 @@ const styles = StyleSheet.create({
     },
     itemContainer: {
         width: '100%',
-        marginBottom: 10,
     },
     oneMediaContainer: {
         width: '100%',
         alignItems: 'center',
         justifyContent: 'center',
-        height: 300
+        height: 300,
+        marginTop: 20
     },
     media1ContainerOf3: {
         height: '100%',
@@ -431,9 +450,9 @@ const styles = StyleSheet.create({
     twoMediaContainer: {
         flexDirection: 'row',
         justifyContent: 'space-between',
-        marginBottom: 5,
         height: 300,
         width: '100%',
+        marginTop: 20
 
     },
     twoMedia: {
@@ -443,6 +462,7 @@ const styles = StyleSheet.create({
     threeMediaContainer: {
         flexDirection: 'row',
         height: 300,
+        marginTop: 20
     },
     threeMedia23Container: {
         flexDirection: 'column',
@@ -480,7 +500,7 @@ const styles = StyleSheet.create({
         width: '100%',
     },
     multipleMediaContainer: {
-        marginBottom: 5,
+        marginTop: 20,
         flexDirection: 'row',
         height: 300,
         justifyContent: 'space-between'
@@ -498,14 +518,15 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
     },
     viewMoreText: {
-        fontSize: 16,
-        fontWeight: 'bold',
+        fontSize: 14,
+        fontWeight: '400',
         position: 'absolute',
         zIndex: 99,
         color: 'white',
-        backgroundColor: 'black',
+        backgroundColor: '#32DEEE',
         padding: 2,
-        borderRadius: 5
+        borderRadius: 5,
+        paddingHorizontal: 5
     },
     mediaContainer: {
         height: '100%',

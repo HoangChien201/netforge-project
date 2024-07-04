@@ -7,8 +7,12 @@ import { useMyContext } from '../navigation/UserContext';
 import AntDesignIcon from 'react-native-vector-icons/AntDesign';
 import { SharePost } from '../../http/userHttp/getpost';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-
-const ItemPost = memo(({ index, data, onrefresh }) => {
+import ModalFriendProfile from '../profile/FriendProfile';
+import { NavigationProp, ParamListBase, useNavigation } from '@react-navigation/native';
+import { useMyContext } from '../navigation/UserContext';
+import { ProfileRootStackEnum } from '../stack/ProfileRootStackParams';
+   
+const ItemPost = memo(({ index, data,onrefresh, userId, onPressProfile  }) => {
     const { creater, share_count, reaction, content, media, comment_count, create_at, id, like_count, share } = data;
     const [checkLike, setCheckLike] = useState(false);
     const [shareId, setshareId] = useState(null);
@@ -17,6 +21,12 @@ const ItemPost = memo(({ index, data, onrefresh }) => {
     const menu = useRef(new Animated.Value(0)).current;
     const [hidden, setHidden] = useState(false);
 
+    //
+    const navigation: NavigationProp<ParamListBase> = useNavigation();
+      const [isModalVisible, setIsModalVisible] = useState(false);
+      const [selectedUserId, setSelectedUserId] = useState(null);
+      const loggedInUserId = user.id;
+      userId =creater.id;
     useEffect(() => {
         if (share) {
             setshareId(share);
@@ -24,6 +34,7 @@ const ItemPost = memo(({ index, data, onrefresh }) => {
                 const token = await AsyncStorage.getItem('userToken');
                 const result = await SharePost(share.id);
                 setPostShare(result);
+            }
             }
             getPostShare();
         }
@@ -81,6 +92,26 @@ const ItemPost = memo(({ index, data, onrefresh }) => {
         hiddenMenu1();
         setCheckLike(false);
     };
+
+    // const handleToProfile = () => {
+    //     userId =creater.id;
+    //     setSelectedUserId(creater.id);
+    //     console.log("userID: ",creater.id);
+    //     if (creater.id === loggedInUserId) {
+    //         setIsModalVisible(false);
+    //         navigation.navigate(ProfileRootStackEnum.ProfileScreen);
+    //     } else {
+    //         setIsModalVisible(true);
+    //     } 
+    // };
+    const handleToProfile = () => {
+        onPressProfile(creater.id);
+    };
+
+    // const closeModal = () => {
+    //     setIsModalVisible(false);
+    //     setSelectedUserId(null); 
+    // };
 
     return (
         <Pressable onPress={handleItemPress} style={{ margin: 5, marginBottom: 6, backgroundColor: "#fff" }}>

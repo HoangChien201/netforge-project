@@ -40,7 +40,13 @@ const OptionProfile = () => {
     
     async function LogoutHandle(){
         setUser(null)
-        await AsyncStorage.removeItem('userToken');
+        try {
+            await AsyncStorage.clear();
+            console.log('All items removed from AsyncStorage');
+        } catch (error) {
+            console.error('Error clearing AsyncStorage:', error);
+        }
+        
     }
     return (
         <View style={styles.container}>
@@ -57,7 +63,7 @@ const OptionProfile = () => {
             </View>
             <View style={styles.optionVertical}>
                 <OptionVerticalItem text='Bạn bè' onPress={navigationScreen.bind(this,'FriendScreen')}/>
-                <OptionVerticalItem text='Lịch sử hoạt động' onPress={navigationScreen.bind(this,'HistoryActivityScreen')}/>
+                <OptionVerticalItem text='Lịch sử hoạt động' onPress={navigationScreen.bind(this,'HistoryStack')}/>
                 <OptionVerticalItem text='Giúp đỡ' onPress={navigationScreen.bind(this,'HelpScreen')}/>
                 <OptionVerticalItem text='Đăng xuất' onPress={LogoutHandle}/>
 

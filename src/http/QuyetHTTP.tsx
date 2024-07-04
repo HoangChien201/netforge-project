@@ -13,7 +13,7 @@ export const getPostById = async (postId: any) => {
                 Authorization: `Bearer ${token}`
             }
         });
-        console.log('Server response:', result); // Logging toàn bộ phản hồi từ server
+        //console.log('Server response:', result); // Logging toàn bộ phản hồi từ server
         return result;
     } catch (error) {
         console.error(error);
@@ -85,10 +85,11 @@ export const updatePost = async (postId: number, postDetails: any) => {
 };
 
 // Delete post
+//Delete
+//https://network-social-sever.onrender.com/posts/delete/:id
 export const deletePost = async (postId: number) => {
     try {
-
-        const url = `/v1/post/delete/${postId}`;
+        const url = `/posts/delete/${postId}`;
         return await AxiosInstance().delete(url);
     } catch (error) {
         console.error(error);
@@ -165,7 +166,7 @@ export const getWaitAccept = async () => {
 // gửi yêu cầu kết bạn
 //POST
 // https://network-social-sever.onrender.com/friendship
-export const sendRequest = async (status: number, user2: number) => {
+export const sendRequest = async (user2: number, status: number,) => {
     try {
         const token = await AsyncStorage.getItem('token')
         if (!token) {
@@ -173,8 +174,8 @@ export const sendRequest = async (status: number, user2: number) => {
         }
         const url = '/friendship'
         const result = AxiosInstance().post(url, {
-                status: status,
-                user2: user2
+            status: status,
+            user2: user2
         }, {
             headers: {
                 Authorization: `Bearer ${token}`
@@ -197,7 +198,7 @@ export const acceptRequest = async (friendId: number) => {
         }
         const url = '/friendship/accept-request'
         const result = await AxiosInstance().post(url, {
-                user1:friendId
+            user1: friendId
         }, {
             headers: {
                 Authorization: `Bearer ${token}`
@@ -221,7 +222,7 @@ export const cancelRequest = async (friendId: number) => {
         }
         const url = '/friendship/cancle-request'
         const result = await AxiosInstance().post(url, {
-                user2:friendId
+            user2: friendId
         }, {
             headers: {
                 Authorization: `Bearer ${token}`
@@ -257,7 +258,7 @@ export const cancelWaitAccept = async (friendId: number) => {
 // https://network-social-sever.onrender.com/friendship/get-all
 // status 1 = request
 // status 2 = friends
-export const getFriends = async (num:number) => {
+export const getFriends = async (num: number) => {
     try {
         const token = await AsyncStorage.getItem('token');
         const url = '/friendship/get-all';
@@ -281,6 +282,58 @@ export const getUserHistories = async () => {
     try {
         const token = await AsyncStorage.getItem('token');
         const url = '/user/history-activity'
+        const response = await AxiosInstance().get(url, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        });
+        return response;
+    } catch (error) {
+        console.log(error);
+        throw error;
+    }
+}
+//GET
+//https://network-social-sever.onrender.com/friendshipun-friendship?
+
+export const deleteFriend = async (user1: number, user2: number) => {
+    try {
+        const url = '/friendship/un-friendship'
+        const response = await AxiosInstance().delete(url, {
+            data: {
+                user1: user1,
+                user2: user2,
+            },
+        });
+        return response;
+    } catch (error) {
+        console.error('API call error:', error);
+        throw error;
+    }
+}
+//GET
+//https://network-social-sever.onrender.com/user/get-one/id
+export const getUserById = async (id: number) => {
+    try {
+        const token = await AsyncStorage.getItem('token');
+        const url = `/user/get-one/${id}`
+        const response = await AxiosInstance().get(url, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        });
+        return response;
+    } catch (error) {
+        console.log(error);
+        throw error;
+    }
+}
+//GET
+//https://network-social-sever.onrender.com/user/get-one/id
+export const getAllUser = async () => {
+    try {
+        const token = await AsyncStorage.getItem('token');
+        const url = '/user'
         const response = await AxiosInstance().get(url, {
             headers: {
                 Authorization: `Bearer ${token}`

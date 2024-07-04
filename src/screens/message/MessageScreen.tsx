@@ -1,168 +1,181 @@
-import { StyleSheet, Text, View } from 'react-native'
-import React, { useEffect, useRef, useState } from 'react'
+import { StyleSheet, Text, View, FlatList, Button } from 'react-native'
+import React, { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
+
 import MessageItem, { messageType } from '../../component/message/MessageItem'
 import HeaderMessageComponent from '../../component/message/HeaderMessageComponent'
 import { COLOR } from '../../constant/color'
-import { FlatList } from 'react-native-gesture-handler'
 import TextingComponent from '../../component/message/TextingComponent'
-import { useNavigation, useRoute } from '@react-navigation/native'
+import { RouteProp, useIsFocused, useNavigation, useRoute } from '@react-navigation/native'
 import MessageCall from '../../component/message/MessageCall'
 import { getMessageByGroupAPI } from '../../http/ChienHTTP'
 import { useMyContext } from '../../component/navigation/UserContext'
+import PortalMessage from '../../component/message/PortalMessage';
+import { Host } from 'react-native-portalize';
+import { socket } from '../../http/SocketHandle'
+import { StackNavigationProp } from '@react-navigation/stack'
+import { MessageRootStackParams } from '../../component/stack/MessageRootStackParams'
+import {
+  BottomSheetModal,
+  BottomSheetView,
+  BottomSheetModalProvider,
+} from '@gorhom/bottom-sheet';
+import ShowReactionComponent from '../../component/message/ShowReactionComponent'
 
-export const MESSAGES_DEFAULT: Array<messageType> = [
-  {
-    "id": 1,
-    "create_at": "2024-05-31T09:12:47.456Z",
-    "update_at": "2024-06-12T10:57:38.809Z",
-    "state": 1,
-    "type": "text",
-    "message": "dsfsdfsd",
-    "sender": {
-      "id": 2,
-      "fullname": "Le Hoang lan",
-      "avatar": "https://res.cloudinary.com/delivery-food/image/upload/v1717925230/btywul9nnqtzlzjaawrx.jpg"
-    },
-    "reactions": [
-      {
-        "user":2,
-        "reaction": 3
-      }
-    ]
-  },
-  {
-    "id": 2,
-    "create_at": "2024-05-31T09:12:47.456Z",
-    "update_at": "2024-06-12T10:57:38.809Z",
-    "state": 1,
-    "type": "image",
-    "message": "https://res.cloudinary.com/delivery-food/image/upload/v1717925230/btywul9nnqtzlzjaawrx.jpg",
-    "sender": {
-      "id": 1,
-      "fullname": "Le Hoang Chien",
-      "avatar": "https://res.cloudinary.com/delivery-food/image/upload/v1717925230/btywul9nnqtzlzjaawrx.jpg"
-    },
-    "reactions": [
-      {
-        "user":1,
-        "reaction": 2
-      },
-      {
-        "user":2,
-        "reaction": 0
-      }
-    ]
-  },
-  {
-    "id": 3,
-    "create_at": "2024-05-31T09:12:47.456Z",
-    "update_at": "2024-06-12T10:57:38.809Z",
-    "state": 1,
-    "type": "image",
-    "message": "file:///data/user/0/com.eventproject/cache/rn_image_picker_lib_temp_a5e9e753-6e98-4f9d-ad7e-f1b9ab5c12f2.jpg",
-    "sender": {
-      "id": 2,
-      "fullname": "Le Hoang lan",
-      "avatar": "https://res.cloudinary.com/delivery-food/image/upload/v1717925230/btywul9nnqtzlzjaawrx.jpg"
-    },
-    "reactions": []
-  },
-  {
-    "id": 4,
-    "create_at": "2024-05-31T09:12:47.456Z",
-    "update_at": "2024-06-12T10:57:38.809Z",
-    "state": 1,
-    "type": "audiocall",
-    "message": "",
-    "sender": {
-      "id": 1,
-      "fullname": "Le Hoang lan",
-      "avatar": "https://res.cloudinary.com/delivery-food/image/upload/v1717925230/btywul9nnqtzlzjaawrx.jpg"
-    },
-    "reactions": []
-  },
-  {
-    "id": 5,
-    "create_at": "2024-05-31T09:12:47.456Z",
-    "update_at": "2024-06-12T10:57:38.809Z",
-    "state": 1,
-    "type": "videocall",
-    "message": "",
-    "sender": {
-      "id": 2,
-      "fullname": "Le Hoang lan",
-      "avatar": "https://res.cloudinary.com/delivery-food/image/upload/v1717925230/btywul9nnqtzlzjaawrx.jpg"
-    },
-    "reactions": []
-  }
-]
+export type MessageCordinatesType = {
+  x: number,
+  y: number,
+}
+
+export type MessageScreenNavigationProp = StackNavigationProp<
+  MessageRootStackParams,
+  'MessageScreen'
+>;
+
+
+export type MessageScreenRouteProp = RouteProp<MessageRootStackParams, 'MessageScreen'>;
+
 const MessageScreen = () => {
-  const [messages,setMessages]=useState<Array<messageType>>([])
-  const [partner,setPartner]=useState({
-    name:'',
-    avatar:'',
-    group_id:null
+  const { user } = useMyContext()
+  const [messages, setMessages] = useState<Array<messageType>>([])
+  const [partner, setPartner] = useState({
+    fullnamename: '',
+    avatar: '',
+    group_id: null,
+    id: null
   })
+  const [reply,setReply] = useState<messageType | null>(null)
+  const isFocus = useIsFocused()
 
-  const flatListRef=useRef()
-  const navigation=useNavigation()
-  const route=useRoute()
-  const {user} = useMyContext()
+  const navigation = useNavigation()
+  const route: MessageScreenRouteProp = useRoute()
 
-  async function getMessages(group_id:number){
-    const respone=await getMessageByGroupAPI(group_id)
+
+  async function getMessages(group_id: number) {
+    const respone = await getMessageByGroupAPI(group_id)
+
     setMessages(respone)
   }
 
+  function DeleteMessage(message_id:number){
+    setMessages((prev)=>{
+      const messagesFilter=prev.filter((message)=>message.id !== message_id)
+      return messagesFilter
+    })
+  } 
 
-  useEffect(() => {
+  useLayoutEffect(() => {
+    navigation.getParent()?.setOptions({ tabBarStyle: { display: 'none' } });
+
     if (route.params?.group_id) {
-      const {name,avatar} = route.params
-      const group_id=route.params?.group_id
-      // Post updated, do something with `route.params.post`
-      // For example, send the post to the server
+      const { fullname, avatar, id } = route.params
+      const group_id = route.params?.group_id
       getMessages(group_id)
-      setPartner(prevValue=>{return {...prevValue,fullname:name,avatar,group_id}})
-      
-    }
-  }, [route.params?.group_id]);
-  useEffect(() => {
+      setPartner(prevValue => { return { ...prevValue, fullname, avatar, group_id, id} })
         
-    navigation.getParent()?.setOptions({ tabBarStyle: {display:'none'}});
-    
-}, []);
+      setMessages(route.params?.messages)
+      socket.on(`message-${user.id}`, (message) => {
+        if (isFocus) {
+          //đọc tin nhắn khi vào tin nhắn
+          socket.emit('read-message', {
+            user: user.id,
+            group: group_id
+          })
+        }
+        getMessages(group_id)
+      })
+    }
+    return () => {
+      socket.off(`message-${user.id}`);
+    };
 
+  }, []);
 
-  function addMessage(message:messageType){
-    
+  function addMessage(message: messageType) {
+    if(reply) {
+      message.parent={
+        sender:reply?.sender
+      }
+
+      setReply(null)
+    }
+
     setMessages(
-      (prevValue)=>{
-        return [message,...prevValue]
+      (prevValue) => {
+        return [message, ...prevValue]
       }
     )
   }
 
+  const ListMessage = useCallback(() => {
+    console.log('render list');
+
+    return (
+      <FlatList
+        inverted
+        data={messages}
+        renderItem={({ item,index }) => {
+          const sender = typeof (item.sender) === 'object' ? item.sender.id : item.sender
+          
+          return (
+            <MessageItem
+              message={item}
+              sender={user.id === sender}
+              group_id={route.params?.group_id} 
+              setMessageReactionsSelected={setMessageReactionsSelected}
+              deleteMessage={DeleteMessage}
+              setReply={setReply}
+              lastMessage={index === 0}/>
+          )
+        }}
+        keyExtractor={(item) => item.id.toString()}
+        showsVerticalScrollIndicator={false}
+        extraData={messages}
+      />
+    )
+  },[messages])
+
+  //--------bottomsheet
+  const [messageReactionSelected,setMessageReactionsSelected]=useState()
+  // ref
+  const bottomSheetModalRef = useRef<BottomSheetModal>(null);
+
+  // variables
+  const snapPoints = useMemo(() => ['50%'], []);
+
+  // callbacks
+  useEffect(() => {
+    if(messageReactionSelected){
+      bottomSheetModalRef.current?.present();
+    }
+  }, [messageReactionSelected]);
+  
+  const handleSheetChanges = useCallback((index: number) => {
+    if(index < 0){
+      setMessageReactionsSelected(undefined)
+    }
+  }, []);
+//---------bottomsheet
+
   return (
-    <View style={styles.container}>
-      <HeaderMessageComponent partner={partner} />
-      <View style={styles.content}>
-        <FlatList
-          inverted
-          data={messages}
-          renderItem={({ item }) => {
-            const sender= typeof (item.sender) === 'object' ? item.sender.id : item.sender
-            
-            return (
-              <MessageItem messsage={item} sender={user.id === sender} group_id={partner.group_id}/>
-            )
-          }}
-          keyExtractor={(item)=>item.id.toString()}
-          showsVerticalScrollIndicator={false}
-        />
+    <BottomSheetModalProvider>
+      <View style={styles.container}>
+
+        <HeaderMessageComponent partner={partner} />
+        <View style={styles.content}>
+          <ListMessage/>
+        </View>
+
+        <TextingComponent addMessage={addMessage} reply={reply} setReply={setReply}/>
+        <BottomSheetModal
+          ref={bottomSheetModalRef}
+          index={0}
+          snapPoints={snapPoints}
+          onChange={handleSheetChanges}
+        >
+          <ShowReactionComponent messageReactionsSelected={messageReactionSelected}/>
+        </BottomSheetModal>
       </View>
-      
-      <TextingComponent addMessage={addMessage}/>
-    </View>
+    </BottomSheetModalProvider>
   )
 }
 
@@ -170,7 +183,7 @@ export default MessageScreen
 
 const styles = StyleSheet.create({
   content: {
-    backgroundColor: "#fff",
+    backgroundColor: "rgba(255,255,255,.9)",
     flex: 1,
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,

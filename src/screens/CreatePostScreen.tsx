@@ -10,19 +10,22 @@ import { useMyContext } from '../component/navigation/UserContext';
 import { fileType } from '../component/create-post-screen/Options'
 import Loading from '../component/Modal/Loading'
 import NetworkBottomTab from '../component/bottom-stack/NetworkBottomTab'
-
+import { socket } from '../http/SocketHandle'
+import uuid from 'react-native-uuid';
+import { boolean } from 'yup'
 const CreatePostScreen = () => {
   const [status, setStatus] = useState('');
   const [showPopup, setShowPopup] = useState(false);
   const [isError, setIsError] = useState(false);
   const { user} = useMyContext();
   const [friends, setFriends] = useState([]);
-  const [content, setContent] = useState('chào anh bé an khờ');
+  const [content, setContent] = useState('');
   // const [tags, setTags] = useState([]);
   const [media, setMedia] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const type = 1;
-  const [permission, setPermission] = useState(1)
+  const [permission, setPermission] = useState(1);
+  const [sendAll, setSendAll] = useState(true);
   const clear = () => {
     setContent('');
     setMedia([]);
@@ -57,6 +60,9 @@ const CreatePostScreen = () => {
         //Create new post with the uploaded media paths
         const newPost = await createNewPost({ content, type, tags, medias, permission });
         console.log('Bài viết đã được tạo:', JSON.stringify(newPost));
+        if(newPost && permission == 1){
+          handleSendReaction(newPost);
+        }
         setTimeout(() => {
           setIsLoading(false);
           setStatus('Tạo bài viết thành công');
@@ -74,6 +80,9 @@ const CreatePostScreen = () => {
         console.log('here: ' + JSON.stringify(media));
         const newPost = await createNewPost({ content, type, tags, permission });
         console.log('Bài viết đã được tạo không medias:', newPost);
+        if(newPost && permission == 1){
+          handleSendReaction(newPost);
+        }
         setTimeout(() => {
           setIsLoading(false);
           setStatus('Tạo bài viết thành công');
@@ -113,13 +122,37 @@ const CreatePostScreen = () => {
     }
   };
 
+  const handleSendReaction = (post:any) => {
+    const data = {
+      id: uuid.v4(),
+      type: 4,
+      postId: post.id, 
+      commentId: "", 
+      messId: "",
+      title: `${user.fullname} đã tạo bài viết mới`,
+      body: `${content}`, 
+      userInfo: {
+        sender: `${user.id}`,
+        fullname: `${user.fullname}`, 
+        avatar: `${user.avatar}`, 
+        multiple: true
+      },
+      reaction: {
+        type: 2 // 1 thích - 2 ha ha - 3 thương thương - 4 yêu thích - 5 tức giận
+      },
+      timestamp: new Date().toISOString()
+    };
+
+    socket.emit('notification', data);
+    console.log('Sent notification data:', data);
+  };
   const log = () => {
 
     console.log(content, media, type, permission, tags);
 
   }
 
-  const uries = media.map((file: fileType) => file.uri)
+
 
   return (
     <KeyboardAvoidingView style={styles.container}>
@@ -127,12 +160,12 @@ const CreatePostScreen = () => {
       <View style={styles.header} >
         <Text style={styles.headerText}>Tạo bài viết</Text>
         <TouchableOpacity onPress={uploadPost} >
-          <Text style={styles.headerPostText} >Lưu</Text>
+          <Text style={styles.headerPostText} >Đăng</Text>
         </TouchableOpacity>
       </View>
       <BODY content={content}
         setContent={setContent}
-        media={uries}
+        media={media}
         setMedia={setMedia}
         permission={permission}
         setPermission={setPermission}
@@ -169,13 +202,13 @@ const styles = StyleSheet.create({
     marginHorizontal: 16
   },
   headerText: {
-    color: 'white',
+    color: '#f8f7fc',
     fontWeight: '600',
     fontSize: 23,
 
   },
   headerPostText: {
-    color: 'white',
+    color: '#f8f7fc',
     fontWeight: '400',
     fontSize: 24
 

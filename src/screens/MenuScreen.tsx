@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react'
 import { useIsFocused, useNavigation } from '@react-navigation/native';
 import ProfileUser from '../component/menu/ProfileUser';
 import OptionProfile from '../component/menu/OptionProfile';
-import { ProfileRootStackEnum } from '../component/stack/ProfileRootStackParams';
+// import { ProfileRootStackEnum } from '../component/stack/ProfileRootStackParams';
 import EditProfileScreen from './EditProfileScreen';
 import { useMyContext } from '../component/navigation/UserContext';
 
@@ -32,7 +32,7 @@ const MenuScreen = () => {
     }
 
     const handleEditProfile = async () => {
-        navigation.navigate(ProfileRootStackEnum.EditProfileScreen);
+        navigation.navigate("EditProfileScreen");
     }
     return (
         <ScrollView>

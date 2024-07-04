@@ -4,27 +4,29 @@ import CommentHistories from './CommentHistories'
 import LikeHistories from './LikeHistories'
 import Icon from 'react-native-vector-icons/AntDesign'
 import { COLOR } from '../../constant/color'
-import { getUserHistories } from '../../http/QuyetHTTP'
-import Animated, { useSharedValue, useAnimatedStyle, withTiming } from 'react-native-reanimated'
-
+import { getUserHistories } from '../../http/QuyetHTTP';
+import { useNavigation } from '@react-navigation/native'
 const { width } = Dimensions.get('window');
-type BodyH ={
-    showModalHistories:(value:boolean)=>void, 
-    setShowModalHistories:(value:boolean)=>void, 
+type BodyH = {
 }
-const Body:React.FC<BodyH> = ({ showModalHistories, setShowModalHistories }) => {
+const Body: React.FC<BodyH> = ({ }) => {
     const [view, setView] = useState(true);
-    const translateX = useSharedValue(0);
+
     const [data, setData] = useState<any>({});
     const [dataComment, setDataComment] = useState<any[]>([]);
+    const navigation = useNavigation();
+    function navigationScreen(screen: string) {
+        navigation.navigate(`${screen}`)
+    };
     const getData = async () => {
+
         try {
             const result = await getUserHistories();
             setData(result);
             // setDataLikeP(result.likePosts);
             // setDataLikeC(result.likeComments);
             setDataComment(result.comments)
-            console.log('body data: ' + result);
+            //console.log('body data: ' + result);
             // console.log('dataH' + JSON.stringify(result));
             // console.log('data likeP: ' + JSON.stringify(result.likePosts));
             // console.log('data likeC: ' + JSON.stringify(result.likeComments));
@@ -36,37 +38,16 @@ const Body:React.FC<BodyH> = ({ showModalHistories, setShowModalHistories }) => 
     useEffect(() => {
         getData();
     }, [])
-    const animatedStyle = useAnimatedStyle(() => {
-        return {
-            transform: [{ translateX: translateX.value }]
-        };
-    });
-
     const switchToLike = () => {
         setView(true);
-        translateX.value = withTiming(0, { duration: 300 });
     };
-
     const switchToComment = () => {
         setView(false);
-        translateX.value = withTiming(-width, { duration: 300 });
-    };
-    const ShowModalHistories = () => {
-        setShowModalHistories(false);
     };
     return (
-        <Modal style={styles.container} visible={showModalHistories}
-            animationType="fade"
+        <View style={styles.container}
         >
             <View style={styles.header}>
-                <View style={styles.back}>
-                    <TouchableOpacity onPress={ShowModalHistories}>
-                        <Icon name='left' size={24} color={'white'} />
-                    </TouchableOpacity>
-
-                    <Text style={styles.textHead}>Lịch sử hoạt động</Text>
-                </View>
-
                 <View style={styles.typeHis}>
                     <TouchableOpacity style={styles.likeButton} onPress={switchToLike}>
                         <Icon name='like1' size={18} color={COLOR.PrimaryColor} />
@@ -78,28 +59,34 @@ const Body:React.FC<BodyH> = ({ showModalHistories, setShowModalHistories }) => 
                     </TouchableOpacity>
                 </View>
             </View>
-            <Animated.View style={[styles.container, animatedStyle]}>
-                <View>
-                    <View style={styles.header}>
-                        <Text style={styles.headerText}>Lịch sử thích</Text>
+            <View style={[styles.container,]}>
+                {view ?
+                    <View>
+                        <View style={styles.header}>
+                            <Text style={styles.headerText}>Lịch sử thích</Text>
+                        </View>
+                        <ScrollView style={styles.page}>
+
+                            <LikeHistories data={data} />
+                        </ScrollView>
                     </View>
-                    <ScrollView style={styles.page}>
-                        <LikeHistories data={data} />
-                    </ScrollView>
-                </View>
-                <View>
-                    <View style={styles.header}>
-                        <Text style={styles.headerText}>Lịch sử bình luận</Text>
+                    :
+                    <View>
+                        <View style={styles.header}>
+                            <Text style={styles.headerText}>Lịch sử bình luận</Text>
+                        </View>
+                        <ScrollView style={styles.page}>
+
+                            <CommentHistories dataComment={dataComment} />
+
+                        </ScrollView>
                     </View>
-                    <ScrollView style={styles.page}>
+                }
 
-                        <CommentHistories dataComment={dataComment} />
 
-                    </ScrollView>
-                </View>
 
-            </Animated.View>
-        </Modal>
+            </View>
+        </View>
     )
 }
 
@@ -107,12 +94,11 @@ export default Body
 
 const styles = StyleSheet.create({
     container: {
-        height: '100%',
-        flexDirection: 'row',
-        width: '200%'
+        flexDirection: 'column',
+        zIndex: 999
     },
     header: {
-        
+
     },
     typeHis: {
         flexDirection: 'row',
@@ -150,7 +136,7 @@ const styles = StyleSheet.create({
         color: COLOR.primary350,
         fontSize: 20,
         marginStart: 5,
-        fontWeight:'500'
+        fontWeight: '500'
     },
     page: {
         width: (width),
@@ -161,6 +147,6 @@ const styles = StyleSheet.create({
         fontSize: 20,
         color: 'black',
         fontWeight: '500',
-        marginStart:10
+        marginStart: 10
     },
 });

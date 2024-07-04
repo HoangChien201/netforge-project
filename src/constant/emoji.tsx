@@ -102,7 +102,22 @@ export const EmojiData = [
     { emoji: '🤖' },
     { emoji: '🎃' },
 ];
-export const EmojiReaction=['😂','🥰','😭','😡','😱']
+export const EmojiReaction=[{
+    source:require('../media/Dicons/thumb-up.png'),
+},
+{
+    source:require('../media/Dicons/happy-face.png'),
+},
+{
+    source:require('../media/Dicons/smile.png'),
+},
+{
+    source:require('../media/Dicons/heartF.png'),
+},
+{
+    source:require('../media/Dicons/wow.png'),
+},
+]
 export const reaction = [
     {
         id:"1",

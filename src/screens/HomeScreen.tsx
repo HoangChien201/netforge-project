@@ -8,9 +8,15 @@ import AntDesignIcon from 'react-native-vector-icons/AntDesign';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import { Touchable } from 'react-native';
 import ActionBar from '../component/listpost/ActionBar';
+
 import { NavigateRootStackEnum } from '../component/stack/StackNavigate';
 import { NetworkRootStackEnum, NetworkRootStackScreens } from '../component/stack/NetworkRootStackParams';
 import { useMyContext } from '../component/navigation/UserContext';
+import { ProfileRootStackEnum } from '../component/stack/ProfileRootStackParams';
+import { HomeRootStackEnum } from '../component/stack/HomeRootStackParams';
+import TouchId from '../component/Modal/TouchId';
+import TouchID from 'react-native-touch-id';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const HomeScreen = () => {
     const initialData = [{ key: 'stories' }, { key: 'posts' }];
@@ -21,9 +27,38 @@ const HomeScreen = () => {
     const [hidden,setHidden]= useState(false);
     const [prevScrollY, setPrevScrollY] = useState(0);
     const navigation = useNavigation();
+    // function navigationScreen(screen: string) {
+    //     navigation.navigate(`${screen}`)
+    //   }
     const isFocused = useIsFocused();
     const {user}= useMyContext()
+    const [visible, setVisible] = useState(false);
+    const checkTouchIdLogin = () => {
+        TouchID.isSupported().then(async biometryType => {
+            if (biometryType === 'FaceID') {
+                console.log('FaceID isSupported');
+            } else {
+                console.log('TouchID isSupported');
+                try {
+                    const checkDontAskTouch = await AsyncStorage.getItem('cancelBiometric');
+                    const check = await AsyncStorage.getItem('touch')
+                    if (check != 'true' && checkDontAskTouch != 'false') {
+                        setVisible(true);
+                    }
+                } catch (error) {
+                    console.error('Error checking touch ID login:', error);
+                }
+            }
+        }).catch(error => {
+            console.log('TouchID not supported', error);
+        });
 
+
+    };
+    useEffect(() => {
+
+        checkTouchIdLogin();
+    }, [])
     useEffect(() => {
         const listener = tabBarTranslateY.addListener(({ value }) => {
             navigation.getParent()?.setOptions({
@@ -98,11 +133,15 @@ const HomeScreen = () => {
         setHidden(pre=>!pre)
     }
 
+    const handleToScanner = () => {
+        navigation.navigate(HomeRootStackEnum.Scanner);
+    }
     return (
         <View style={styles.container}>
+            <TouchId visible={visible} setVisible={setVisible} />
             <View style={{ width: '100%', height: '10%', flexDirection: 'row', justifyContent: 'space-evenly', alignItems: 'center', paddingHorizontal: 5 }}>
                 <View style={{ flex: 1, flexDirection: 'row', alignItems: 'center' }}>
-                    <Image source={require('../media/quyet_icon/netforge.png')} style={{ width: 70, height: 100 }} />
+                    <Image source={require('../media/quyet_icon/netforge1.jpg')} style={{ width: 40, height: 40, borderRadius: 50, marginEnd: 5 }} />
                     <Text style={{ color: COLOR.PrimaryColor, fontSize: 20, fontWeight: 'bold' }}>NetForge</Text>
                 </View>
                {
@@ -123,6 +162,14 @@ const HomeScreen = () => {
                     <TouchableOpacity onPress={handlerClick}>
                         <Image source={{uri:user.avatar}} style={{ width: 30, height: 30,borderWidth:0.5,borderRadius:50,borderColor:'#000' }} />
                         <Text style={{textAlign:'center',fontSize:10,color:'#000',fontWeight:'bold',margin:1}}>{user.fullname}</Text>
+                <View style={{ flex: 0.1, marginRight: 10 }}>
+                    <TouchableOpacity onPress={()=>navigation.navigate('ExploreScreen')}>
+                        <Image source={require('../media/icon_tuong/searchcolor.png')} style={{width:30,height:30}}/>
+                    </TouchableOpacity>
+                </View>
+                <View style={{ flex: 0.1, marginRight: 12 }}>
+                    <TouchableOpacity>
+                        <Image source={require('../media/Dicons/qr-code.png')} style={{width:30,height:30}}/>
                     </TouchableOpacity>
                 </View>
             </View>

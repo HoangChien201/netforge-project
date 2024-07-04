@@ -1,25 +1,25 @@
 import { StyleSheet, Text, View } from 'react-native'
 import React, { useEffect } from 'react'
 import { useIsFocused, useNavigation } from '@react-navigation/native';
-
+import HISTORY from '../../component/user-histories/Body'
 const HistoryActivityScreen = () => {
   const navigation = useNavigation()
-  const isFocus=useIsFocused()
+  const isFocus = useIsFocused()
   useEffect(() => {
-    if(isFocus){
-     navigation.getParent()?.setOptions({
+    if (isFocus) {
+      navigation.getParent()?.setOptions({
         tabBarStyle: {
-            display: 'none',
+          display: 'none',
         }
-    });
+      });
     }
-   
 
 
-}, [isFocus]);
+
+  }, [isFocus]);
   return (
     <View>
-      <Text>HistoryActivityScreen</Text>
+      <HISTORY/>
     </View>
   )
 }

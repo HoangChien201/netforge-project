@@ -2,6 +2,8 @@ import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import React from 'react'
 import { useNavigation } from '@react-navigation/native'
 import { useMyContext } from '../navigation/UserContext'
+import { messageType } from './MessageItem'
+import { MessageScreenNavigationProp, MessageScreenRouteProp } from '../../screens/message/MessageScreen'
 
 export type GroupChatType = {
     "id": number,
@@ -14,51 +16,71 @@ export type GroupChatType = {
             fullname: string,
             avatar: string
         }
-    }>
-}
+    }>,
+    "messages": Array<messageType>
 
+}
+const STATUS_SEEN = 2
 const ListMessageItem = ({ group }: { group: GroupChatType }) => {
-    // const {user} = useMyContext()
+    const { user } = useMyContext()
     // console.log('user',user.id);
-    
-    const navigation = useNavigation()
-    
-    let avatar=''
-    let name=''
-    if(group.type === 'group'){
-        avatar=group.image ? group.image : '';
-        name=group.name ? group.name : ''
+    const navigation: MessageScreenNavigationProp = useNavigation()
+
+    let avatar = ''
+    let name = ''
+    let id = null
+    if (group.type === 'group') {
+        avatar = group.image ? group.image : '';
+        name = group.name ? group.name : ''
     }
-    else{
-        const userSend=group.members.find(member=>member.user.id !==1)
-        if(userSend){
-            avatar=userSend?.user.avatar
-            name=userSend.user.fullname
+    else {
+        const userSend = group.members.find(member => member.user.id !== user.id)
+        if (userSend) {
+            avatar = userSend?.user.avatar
+            name = userSend.user.fullname
+            id=userSend.user.id
         }
-        else{
-            avatar='../../media/quyet_icon/netforge.png';
-            name="Netforge"
+        else {
+            avatar = '../../media/quyet_icon/netforge.png';
+            name = "Netforge"
         }
     }
     const onPress = () => {
-        navigation.navigate('MessageScreen',{
-            group_id:group.id,
-            name:name,
-            avatar:avatar
+        navigation.navigate('MessageScreen', {
+            group_id: group.id,
+            fullname: name,
+            avatar: avatar,
+            messages: group.messages,
+            id:id
         })
     }
+    const messageLastest = group.messages[0]
+    const messageUnSeen =
+        (messageLastest.reads.length <= 0) &&
+        (typeof messageLastest.sender === 'object' ? messageLastest.sender.id !== user.id : messageLastest.sender !== user.id)
+
     return (
         <TouchableOpacity onPress={onPress}>
-            <View style={styles.container} >
+            <View style={[styles.container]} >
                 <View style={styles.avatarContainer}>
                     {
-                        <Image style={styles.avatar} source={{ uri:avatar }} />
+                        <Image style={styles.avatar} source={{ uri: avatar }} />
                     }
 
                 </View>
                 <View style={styles.content}>
-                    <Text style={styles.name}>{name}</Text>
-                    {/* <Text style={styles.message}>ListMessageItem</Text> */}
+                    <Text style={[styles.name,
+                    messageUnSeen ? styles.nameUnSeen : undefined
+                    ]}>{name}</Text>
+                    <View style={{
+                        flexDirection:"row"
+                    }}>
+                        <Text style={styles.nameSender}>{messageLastest.sender.id === user.id ? 'Bạn: ':undefined}</Text>
+                        <Text style={[styles.message,
+                        messageUnSeen ? styles.textMessageUnSeen : undefined]}>
+                            {messageLastest.type === 'text' ? messageLastest.message.toString() : messageLastest.type}
+                        </Text>
+                    </View>
 
                 </View>
             </View>
@@ -70,6 +92,17 @@ const ListMessageItem = ({ group }: { group: GroupChatType }) => {
 export default ListMessageItem
 
 const styles = StyleSheet.create({
+    nameSender:{
+
+    },
+    nameUnSeen: {
+        fontWeight: 'bold',
+        color: '#000'
+    },
+    textMessageUnSeen: {
+        fontWeight: 'bold',
+        color: '#000'
+    },
     message: {
         fontSize: 13,
         color: '#B4B5B1'
@@ -77,7 +110,7 @@ const styles = StyleSheet.create({
     name: {
         fontSize: 18,
         color: '#000',
-        fontWeight: '700'
+        fontWeight: '500'
     },
     content: {
         height: '100%',
@@ -97,8 +130,8 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
         height: 60,
-        borderBottomColor:'rgba(200,200,200,0.9)',
-        borderBottomWidth:.2,
-        marginBottom:10
+        borderBottomColor: 'rgba(200,200,200,0.9)',
+        borderBottomWidth: .2,
+        marginBottom: 10
     },
 })
