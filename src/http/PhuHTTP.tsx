@@ -124,3 +124,20 @@ export const getPostByUser = async (id:number) => {
     }
   
 }
+
+//share post
+export const sharePost = async (share: any, content: string|null, permission:any, type: any) => {
+    const token = await AsyncStorage.getItem('token');
+    try {
+        const url = '/posts';
+        const body = {share, content, permission, type}
+        return await AxiosInstance().post(url, body, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        });
+    } catch (error) {
+        console.error('Error creating post:', error);
+        throw error;
+    }
+};

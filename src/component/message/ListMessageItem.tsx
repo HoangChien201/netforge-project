@@ -24,11 +24,11 @@ const STATUS_SEEN = 2
 const ListMessageItem = ({ group }: { group: GroupChatType }) => {
     const { user } = useMyContext()
     // console.log('user',user.id);
-
     const navigation: MessageScreenNavigationProp = useNavigation()
 
     let avatar = ''
     let name = ''
+    let id = null
     if (group.type === 'group') {
         avatar = group.image ? group.image : '';
         name = group.name ? group.name : ''
@@ -38,6 +38,7 @@ const ListMessageItem = ({ group }: { group: GroupChatType }) => {
         if (userSend) {
             avatar = userSend?.user.avatar
             name = userSend.user.fullname
+            id=userSend.user.id
         }
         else {
             avatar = '../../media/quyet_icon/netforge.png';
@@ -49,7 +50,8 @@ const ListMessageItem = ({ group }: { group: GroupChatType }) => {
             group_id: group.id,
             fullname: name,
             avatar: avatar,
-            messages: group.messages
+            messages: group.messages,
+            id:id
         })
     }
     const messageLastest = group.messages[0]

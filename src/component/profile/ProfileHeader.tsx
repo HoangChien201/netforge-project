@@ -3,7 +3,6 @@ import { View, Text, TouchableOpacity, StyleSheet, ToastAndroid, Modal } from 'r
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import { formattedDate } from '../../format/FormatDate';
 import { useNavigation } from '@react-navigation/native';
-import { name } from '@stream-io/video-react-native-sdk';
 import { COLOR } from '../../constant/color';
 import { useMyContext } from '../navigation/UserContext';
 import { deleteFriend, sendRequest } from '../../http/QuyetHTTP';
@@ -23,13 +22,14 @@ interface ProfileHeaderProps {
 
 const ProfileHeader: React.FC<ProfileHeaderProps> = ({ fullname, userId, loggedInUserId, relationship }) => {
   const navigation = useNavigation();
+
+  const handleToEditProfile = () =>  {
   const { user } = useMyContext();
   //const isOwnProfile = userId === loggedInUserId; // Kiểm tra xem đây có phải là trang cá nhân của người đang đăng nhập hay không
 
   // if (userId === loggedInUserId) {
   //   navigation.navigate('ProfileScreen');
   // }
-  const handleToEditProfile = () => {
     navigation.navigate('EditProfileScreen' as never);
     //navigation.navigate('StoryScreen');
   }

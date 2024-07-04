@@ -28,8 +28,6 @@ const UpLoadAvatar: React.FC<UpLoadAvatarProps> = ({ initialImage, onImageSelect
 
     const [userData, setUserData] = useState<any>(null);
     const [image, setImage] = useState<string>('');
-    // console.log("uploadAvatar đăng nhập: ", user.id);
-    // console.log("uploadAvatar của itemPost: ", userId);
 
     useFocusEffect(
         React.useCallback(() => {
@@ -45,11 +43,6 @@ const UpLoadAvatar: React.FC<UpLoadAvatarProps> = ({ initialImage, onImageSelect
             fetchUserData();
         }, [userId])
         );
-  const onPressModal = () => {
-    setShow(true);
-  };
-
-  //console.log(user.avatar)
 
   const takePhoto = useCallback(async (response: any) => {
     if (response.didCancel) return;
@@ -125,7 +118,7 @@ const UpLoadAvatar: React.FC<UpLoadAvatarProps> = ({ initialImage, onImageSelect
 
 
   const handleUpLoadAvatar = () => {
-    onPressModal();
+    setShow(true);
   };
 
   const handleUpdateAvatar = async (image:string) => {
@@ -152,6 +145,10 @@ const UpLoadAvatar: React.FC<UpLoadAvatarProps> = ({ initialImage, onImageSelect
     }
   };
 
+  const handleShowAvatar = () => {
+    setIsImageViewerVisible(true)
+  }
+
   return (
     <View style={styles.container}>
       {userId === user.id ? ( 
@@ -165,11 +162,11 @@ const UpLoadAvatar: React.FC<UpLoadAvatarProps> = ({ initialImage, onImageSelect
         </View>
       </TouchableOpacity>
       ) : (
-        <>
+        <TouchableOpacity onPress={handleShowAvatar}>
           <Image
           source={image ? { uri: image } : require('../../media/icon/avatar.png')}
           style={styles.editAvatar}/>
-        </>
+        </TouchableOpacity>
       )}
       <Modal animationType="slide" transparent={true} visible={show} onRequestClose={() => setShow(false)}>
         <View style={styles.modalContainer}>

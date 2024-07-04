@@ -14,7 +14,6 @@ const HeaderBanner: React.FC<HeaderBannerProps> = ({value, userId}) => {
     const handleImageSelect = (imagePath: string) => {
     setAvatarPath(imagePath);
   };
-  //console.log("HeaderBanner: ", userId)
 
   return (
     <Animated.View

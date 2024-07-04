@@ -85,7 +85,7 @@ const CallManagement = () => {
   const join = async () => {
     if (isJoined) {
       return;
-    }
+    } 
     try {
       // Set the channel profile type to communication after joining the channel
       agoraEngineRef.current?.setChannelProfile(
