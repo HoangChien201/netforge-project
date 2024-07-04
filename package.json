@@ -39,7 +39,6 @@
     "react": "18.2.0",
     "react-delegate-component": "^1.0.0",
     "react-lifecycle-compat": "^0.0.0",
-    "react-modal": "^3.16.1",
     "react-native": "0.73.2",
     "react-native-agora": "^4.3.2",
     "react-native-calendar-picker": "^6.1.5",

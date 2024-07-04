@@ -8,10 +8,13 @@ import { socket } from '../../http/SocketHandle'
 import { StackNavigationProp } from '@react-navigation/stack'
 import { MessageRootStackParams } from '../../component/stack/MessageRootStackParams'
 import { RouteProp, useIsFocused } from '@react-navigation/native'
+import ModalNewMessage from '../../component/message/ModalNewMessage'
 
 const ListMessageScreen = () => {
   const {user}=useMyContext()
   const [groups,setGroups]=useState<Array<GroupChatType>>([])
+  const [visibleModalNewMessage,SetVisibleModalNewMessage]=useState(false)
+
   const isFocus=useIsFocused()
   useEffect(()=>{
     getGroups()
@@ -41,7 +44,7 @@ const ListMessageScreen = () => {
     <View style={styles.container}>
       <View style={styles.headerContainer}>
         <Text style={styles.header}>Nhắn tin</Text>
-        <TouchableOpacity>
+        <TouchableOpacity onPress={()=>SetVisibleModalNewMessage(true)} >
           <EntypoIcon name='new-message' size={24} color={'#000'}/>
         </TouchableOpacity>
       </View>
@@ -57,6 +60,7 @@ const ListMessageScreen = () => {
             showsVerticalScrollIndicator={false}
           />
       </View>
+      <ModalNewMessage visible={visibleModalNewMessage} setVisible={SetVisibleModalNewMessage}/>
     </View>
   )
 }
