@@ -6,6 +6,7 @@ import { reaction } from '../../constant/emoji';
 import * as Animatable from 'react-native-animatable';
 import { deleteLikePost, likePost, updateLikePost } from '../../http/userHttp/getpost';
 import { useMyContext } from '../navigation/UserContext';
+import ModalShare from '../share-post/ModalShare';
 
 const ActionBar = memo(({onPressProfile, like_count,type, postId, comment_count, share_count,checkLike,setCheckLike }: {setCheckLike:(Value:boolean)=>void,checkLike?:boolean,type: number, postId?: number, comment_count?: number, share_count?: number,like_count?:number }) => {
     const [islike, setIsLike] = useState(false);
@@ -14,6 +15,11 @@ const ActionBar = memo(({onPressProfile, like_count,type, postId, comment_count,
     const [numberLike, setNumberLike] = useState<number>(like_count);
     const [number, setNumber] = useState<number | null>(type);
     const animationRef = useRef(null);
+    const [isModalVisible, setModalVisible] = useState(false);
+
+    const toggleModal = () => {
+      setModalVisible(!isModalVisible);
+    };
     function navigationScreen(screen: string) {
         navigation.navigate(`${screen}`)
       }
@@ -128,10 +134,11 @@ const ActionBar = memo(({onPressProfile, like_count,type, postId, comment_count,
                     <AntDesignIcon name='message1' size={24} color='#000' style={styles.comment} />
                     <Text style={styles.text}>{comment_count ? comment_count : 0}</Text>
                 </TouchableOpacity>
-                <View style={{ flexDirection: 'row', alignItems: 'center', marginHorizontal: 5 }}>
+                <TouchableOpacity onPress={toggleModal} style={{ flexDirection: 'row', alignItems: 'center', marginHorizontal: 5 }}>
                     <AntDesignIcon name='sharealt' size={22} color='#000' style={styles.comment} />
                     <Text style={styles.text}>{share_count ? share_count : 0}</Text>
-                </View>
+                </TouchableOpacity>
+                <ModalShare isVisible={isModalVisible} onClose={toggleModal} idPost={postId}/>
             </View>
             {(islike && checkLike)  &&
            

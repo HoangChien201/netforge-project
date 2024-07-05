@@ -7,8 +7,11 @@ import { COLOR } from '../constant/color';
 import AntDesignIcon from 'react-native-vector-icons/AntDesign';
 import { Touchable } from 'react-native';
 import ActionBar from '../component/listpost/ActionBar';
-import { ProfileRootStackEnum } from '../component/stack/ProfileRootStackParams'; 
+import { ProfileRootStackEnum } from '../component/stack/ProfileRootStackParams';
 import { HomeRootStackEnum } from '../component/stack/HomeRootStackParams';
+import TouchId from '../component/Modal/TouchId';
+import TouchID from 'react-native-touch-id';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 const HomeScreen = () => {
     const initialData = [{ key: 'stories' }, { key: 'posts' }];
     const [data, setData] = useState(initialData);
@@ -21,7 +24,33 @@ const HomeScreen = () => {
     //     navigation.navigate(`${screen}`)
     //   }
     const isFocused = useIsFocused();
+    const [visible, setVisible] = useState(false);
+    const checkTouchIdLogin = () => {
+        TouchID.isSupported().then(async biometryType => {
+            if (biometryType === 'FaceID') {
+                console.log('FaceID isSupported');
+            } else {
+                console.log('TouchID isSupported');
+                try {
+                    const checkDontAskTouch = await AsyncStorage.getItem('cancelBiometric');
+                    const check = await AsyncStorage.getItem('touch')
+                    if (check != 'true' && checkDontAskTouch != 'false') {
+                        setVisible(true);
+                    }
+                } catch (error) {
+                    console.error('Error checking touch ID login:', error);
+                }
+            }
+        }).catch(error => {
+            console.log('TouchID not supported', error);
+        });
 
+
+    };
+    useEffect(() => {
+
+        checkTouchIdLogin();
+    }, [])
     useEffect(() => {
         const listener = tabBarTranslateY.addListener(({ value }) => {
             navigation.getParent()?.setOptions({
@@ -80,9 +109,10 @@ const HomeScreen = () => {
     }
     return (
         <View style={styles.container}>
+            <TouchId visible={visible} setVisible={setVisible} />
             <View style={{ width: '100%', height: '10%', flexDirection: 'row', justifyContent: 'space-evenly', alignItems: 'center', paddingHorizontal: 5 }}>
-                <View style={{ flex: 1, flexDirection: 'row', alignItems: 'center', marginLeft: 7 }}>
-                    <Image source={require('../media/quyet_icon/netforge1.jpg')} style={{ width: 40, height: 40, borderRadius:50, marginEnd:5 }} />
+                <View style={{ flex: 1, flexDirection: 'row', alignItems: 'center' }}>
+                    <Image source={require('../media/quyet_icon/netforge1.jpg')} style={{ width: 40, height: 40, borderRadius: 50, marginEnd: 5 }} />
                     <Text style={{ color: COLOR.PrimaryColor, fontSize: 20, fontWeight: 'bold' }}>NetForge</Text>
                 </View>
                 <View style={{ flex: 0.1, marginRight: 10 }}>

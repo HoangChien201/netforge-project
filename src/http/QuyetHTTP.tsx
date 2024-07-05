@@ -13,7 +13,7 @@ export const getPostById = async (postId: any) => {
                 Authorization: `Bearer ${token}`
             }
         });
-        console.log('Server response:', result); // Logging toàn bộ phản hồi từ server
+        //console.log('Server response:', result); // Logging toàn bộ phản hồi từ server
         return result;
     } catch (error) {
         console.error(error);
@@ -317,6 +317,23 @@ export const getUserById = async (id: number) => {
     try {
         const token = await AsyncStorage.getItem('token');
         const url = `/user/get-one/${id}`
+        const response = await AxiosInstance().get(url, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        });
+        return response;
+    } catch (error) {
+        console.log(error);
+        throw error;
+    }
+}
+//GET
+//https://network-social-sever.onrender.com/user/get-one/id
+export const getAllUser = async () => {
+    try {
+        const token = await AsyncStorage.getItem('token');
+        const url = '/user'
         const response = await AxiosInstance().get(url, {
             headers: {
                 Authorization: `Bearer ${token}`

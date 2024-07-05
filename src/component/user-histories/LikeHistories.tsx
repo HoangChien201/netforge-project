@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { Image, StyleSheet, Text, View, ActivityIndicator } from 'react-native';
+import { Image, StyleSheet, Text, View, ActivityIndicator, TouchableOpacity } from 'react-native';
 import { useMyContext } from '../navigation/UserContext';
 import { GetTimeComment } from '../../format/FormatDate';
+import { useNavigation } from '@react-navigation/native';
 import Loading from '../Modal/Loading'
 import { COLOR } from '../../constant/color';
 type Like = {
@@ -11,10 +12,26 @@ type Like = {
     }
 }
 const LikeHistories: React.FC<Like> = ({ data }) => {
-    if (!data || data.length === 0) {
-        <View>
-            <Text style={styles.textEmpty}>Bạn chưa có hoạt động nào</Text>
-        </View>
+    const navigation = useNavigation();
+
+
+    function navigationScreen(screen: string) {
+        navigation.navigate(`${screen}`)
+      }
+    const noData = () => {
+        if (data.likeComments?.length>0 || data.likePosts?.length>0) {
+            return (
+                (sortedData.map(renderItem))
+            )
+        } else {
+            return (
+                <View style={styles.containerEmpty}>
+                    <Text style={styles.textEmpty}>Hãy tương tác với mọi người để lưu giữ kỉ niệm!</Text>
+                </View>
+            )
+        }
+
+
     }
     const [totalData, setTotalData] = useState([]);
     const { user } = useMyContext();
@@ -29,9 +46,10 @@ const LikeHistories: React.FC<Like> = ({ data }) => {
             const total = [...likeComments, ...likePosts];
             const sorted = total.sort((a, b) => new Date(b.create_at) - new Date(a.create_at));
             setSortedData(sorted);
+            //console.log('data ben like: ' + JSON.stringify(sorted));
         }
         renderItem;
-        //console.log('data ben like: ' + data);
+
         // console.log('like: ' + dataLikeC);
         // console.log('LikeP: ' + dataLikeP);
     }, [data]);
@@ -64,10 +82,14 @@ const LikeHistories: React.FC<Like> = ({ data }) => {
         }
     };
 
-    const renderItem = (item: { reaction: any; posts: { creater: { fullname: string | any; }; }; fullname: string | any; }, index: { toString: () => React.Key | null | undefined; }) => {
+    const renderItem = (item: { reaction: any, posts: { id: number }, creater: { fullname: string } }, index: { toString: () => React.Key | null | undefined; }) => {
         const { text, iconName, iconColor, linkImage } = getReactionDetails(item.reaction);
+        const postId = item.posts.id;
+    
         return (
-            <View style={styles.itemContainer} key={index.toString()}>
+            <TouchableOpacity style={styles.itemContainer} key={index.toString()}
+            onPress={()=> navigation.navigate('CommentsScreen',{postId})}
+            >
                 <View style={styles.infor}>
                     <Image source={{ uri: user.avatar }} style={styles.avatar} />
                     <Image source={linkImage} style={styles.icon} />
@@ -77,7 +99,7 @@ const LikeHistories: React.FC<Like> = ({ data }) => {
                         <Text>
                             <Text style={styles.text}>Bạn đã bày tỏ </Text>
                             <Text style={styles.text}>{text}</Text>
-                            <Text style={styles.text1}>Bài viết</Text>
+                            <Text style={styles.text1}>bài viết</Text>
                             <Text style={styles.text}> của </Text>
                             <Text style={styles.text1}>{item.posts.creater.fullname}</Text>
                         </Text>
@@ -87,16 +109,17 @@ const LikeHistories: React.FC<Like> = ({ data }) => {
                             <Text style={styles.text1}>{text}</Text>
                             <Text style={styles.text}>bình luận</Text>
                             <Text style={styles.text}> của </Text>
-                            <Text style={styles.text1}>{item.fullname}</Text>
+                            <Text style={styles.text1}>{item.posts.creater.fullname}</Text>
                         </Text>
                     )}
                 </View>
                 <View style={{ width: 60, height: '100%', alignItems: 'flex-end' }}>
                     <Text style={{ color: 'gray', fontSize: 12, marginTop: 30 }}>{GetTimeComment(item.create_at)} trước</Text>
                 </View>
-            </View>
+            </TouchableOpacity>
         );
     };
+    
     return (
         <View style={styles.container}>
             {/* {!sortedData ? (
@@ -109,10 +132,11 @@ const LikeHistories: React.FC<Like> = ({ data }) => {
             )} */}
             {loading ? (
                 <ActivityIndicator size="large" color={COLOR.PrimaryColor} />
-            ) : (
-                sortedData.map(renderItem)
-            )}
-        </View>
+            ) :
+                
+            noData()
+            }
+        </View >
     );
 };
 
@@ -166,4 +190,11 @@ const styles = StyleSheet.create({
         color: 'black',
         fontWeight: '400',
     },
+    containerEmpty: {
+        height: 50,
+        width: '100%',
+        alignItems: 'center',
+        justifyContent: 'center',
+        marginTop: 10
+    }
 });

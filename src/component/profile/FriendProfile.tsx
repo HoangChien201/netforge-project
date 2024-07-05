@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
-import { View, Animated, StyleSheet, ScrollView, Dimensions, Text, TouchableOpacity, Modal, StatusBar, Platform } from 'react-native';
+import { View, Animated, StyleSheet, ScrollView, Dimensions, Text, TouchableOpacity} from 'react-native';
 import { useFocusEffect, useNavigation, useRoute } from '@react-navigation/native';
 import HeaderBanner from './HeaderBanner';
 import ProfileHeader from './ProfileHeader';
@@ -12,9 +12,8 @@ import MediaOfUser from './MediaOfUser';
 import Icon from 'react-native-vector-icons/Ionicons';
 
 interface ModalFriendProfileProps {
-    // isVisible: boolean;
-    // onCloseModal: () => void;
     userId:any;
+    setFriends:()=>void;
 }
 interface ContextType {
     user: any;
@@ -72,7 +71,10 @@ const FriendProfile:React.FC<ModalFriendProfileProps> = () => {
         <ProfileHeader
                 fullname={userData.fullname}
                 userId={userId} 
-                loggedInUserId={user.id}/>
+                loggedInUserId={user.id}
+                relationship ={userData.relationship}
+ 
+                />
       </>
     );
   }, [userData, scrollOffsetY, navigation]);
@@ -110,11 +112,6 @@ const FriendProfile:React.FC<ModalFriendProfileProps> = () => {
   );
 
   return (
-    // <Modal
-    //   visible={isVisible}
-    //   transparent={true}
-    //   animationType="slide"
-    //   onRequestClose={onCloseModal}>
       <View style={styles.container}>
         <Animated.FlatList
           data={['MyPost', 'Media', 'Events']}
@@ -182,12 +179,7 @@ const FriendProfile:React.FC<ModalFriendProfileProps> = () => {
             />
           </Tab.Navigator>
         </Animated.View>
-
-        {/* <TouchableOpacity style={styles.closeButton} onPress={onCloseModal}>
-          <Text style={styles.closeButtonText}>Đóng</Text>
-        </TouchableOpacity> */}
       </View>
-    // </Modal>
   );
 };
 

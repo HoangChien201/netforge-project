@@ -37,8 +37,13 @@ export type MessageScreenRouteProp = RouteProp<MessageRootStackParams, 'MessageS
 const MessageScreen = () => {
   const { user } = useMyContext()
   const [messages, setMessages] = useState<Array<messageType>>([])
+  const [partner, setPartner] = useState({
+    fullnamename: '',
+    avatar: '',
+    group_id: null,
+    id: null
+  })
   const [reply,setReply] = useState<messageType | null>(null)
-  const [partner, setPartner] = useState({})
   const isFocus = useIsFocused()
 
   const navigation = useNavigation()
@@ -62,15 +67,11 @@ const MessageScreen = () => {
     navigation.getParent()?.setOptions({ tabBarStyle: { display: 'none' } });
 
     if (route.params?.group_id) {
-      const { fullname, avatar } = route.params
+      const { fullname, avatar, id } = route.params
       const group_id = route.params?.group_id
-      setPartner(prevValue => {
-        return {
-          ...prevValue,
-          fullname,
-          avatar,
-        }
-      })
+      getMessages(group_id)
+      setPartner(prevValue => { return { ...prevValue, fullname, avatar, group_id, id} })
+        
       setMessages(route.params?.messages)
       socket.on(`message-${user.id}`, (message) => {
         if (isFocus) {
@@ -81,12 +82,6 @@ const MessageScreen = () => {
           })
         }
         getMessages(group_id)
-      })
-
-      //đọc tin nhắn khi vào tin nhắn
-      socket.emit('read-message', {
-        user: user.id,
-        group: group_id
       })
     }
     return () => {

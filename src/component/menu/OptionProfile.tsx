@@ -40,7 +40,13 @@ const OptionProfile = () => {
     
     async function LogoutHandle(){
         setUser(null)
-        await AsyncStorage.removeItem('userToken');
+        try {
+            await AsyncStorage.clear();
+            console.log('All items removed from AsyncStorage');
+        } catch (error) {
+            console.error('Error clearing AsyncStorage:', error);
+        }
+        
     }
     return (
         <View style={styles.container}>

@@ -5,24 +5,22 @@ import Icon from 'react-native-vector-icons/AntDesign'
 import { COLOR } from '../../constant/color'
 import { DateOfTimePost } from '../../format/DateOfTimePost'
 import { useNavigation } from '@react-navigation/native';
-
 type Item = {
     notification: any
 }
-const ItemComment:React.FC<Item> = ({ notification }) => {
+const ItemNewPost:React.FC<Item> = ({ notification }) => {
     const navigation = useNavigation();
     function navigationScreen(screen: string) {
         navigation.navigate(`${screen}`)
     }
-    const postId = notification.postId
     const displayDate = DateOfTimePost(notification.timestamp);
     return (
         <TouchableOpacity style={styles.container} key={notification.id.toString()}
-        onPress={()=> navigation.navigate('CommentsScreen',{postId})}
+        onPress={()=> navigation.navigate('HomeScreen')}
         >
         <View style={styles.iconFriend} >
             <Image style={styles.avatar} source={{ uri: notification.userInfo.avatar }} />
-            <Icon style={styles.iconHeart} name='aliwangwang-o1' size={18} color={COLOR.PrimaryColor} />
+            <Icon style={styles.iconHeart} name='form' size={18} color={COLOR.PrimaryColor} />
         </View>
         <View style={styles.text}>
             <Text style={styles.textUser_Post}>{notification.title} </Text>
@@ -36,7 +34,7 @@ const ItemComment:React.FC<Item> = ({ notification }) => {
     )
 }
 
-export default ItemComment
+export default ItemNewPost
 
 const styles = StyleSheet.create({
     container: {

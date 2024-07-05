@@ -10,7 +10,9 @@ import { useMyContext } from '../component/navigation/UserContext';
 import { fileType } from '../component/create-post-screen/Options'
 import Loading from '../component/Modal/Loading'
 import NetworkBottomTab from '../component/bottom-stack/NetworkBottomTab'
-
+import { socket } from '../http/SocketHandle'
+import uuid from 'react-native-uuid';
+import { boolean } from 'yup'
 const CreatePostScreen = () => {
   const [status, setStatus] = useState('');
   const [showPopup, setShowPopup] = useState(false);
@@ -22,7 +24,8 @@ const CreatePostScreen = () => {
   const [media, setMedia] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const type = 1;
-  const [permission, setPermission] = useState(1)
+  const [permission, setPermission] = useState(1);
+  const [sendAll, setSendAll] = useState(true);
   const clear = () => {
     setContent('');
     setMedia([]);
@@ -57,6 +60,9 @@ const CreatePostScreen = () => {
         //Create new post with the uploaded media paths
         const newPost = await createNewPost({ content, type, tags, medias, permission });
         console.log('Bài viết đã được tạo:', JSON.stringify(newPost));
+        if(newPost && permission == 1){
+          handleSendReaction(newPost);
+        }
         setTimeout(() => {
           setIsLoading(false);
           setStatus('Tạo bài viết thành công');
@@ -74,6 +80,9 @@ const CreatePostScreen = () => {
         console.log('here: ' + JSON.stringify(media));
         const newPost = await createNewPost({ content, type, tags, permission });
         console.log('Bài viết đã được tạo không medias:', newPost);
+        if(newPost && permission == 1){
+          handleSendReaction(newPost);
+        }
         setTimeout(() => {
           setIsLoading(false);
           setStatus('Tạo bài viết thành công');
@@ -113,6 +122,30 @@ const CreatePostScreen = () => {
     }
   };
 
+  const handleSendReaction = (post:any) => {
+    const data = {
+      id: uuid.v4(),
+      type: 4,
+      postId: post.id, 
+      commentId: "", 
+      messId: "",
+      title: `${user.fullname} đã tạo bài viết mới`,
+      body: `${content}`, 
+      userInfo: {
+        sender: `${user.id}`,
+        fullname: `${user.fullname}`, 
+        avatar: `${user.avatar}`, 
+        multiple: true
+      },
+      reaction: {
+        type: 2 // 1 thích - 2 ha ha - 3 thương thương - 4 yêu thích - 5 tức giận
+      },
+      timestamp: new Date().toISOString()
+    };
+
+    socket.emit('notification', data);
+    console.log('Sent notification data:', data);
+  };
   const log = () => {
 
     console.log(content, media, type, permission, tags);

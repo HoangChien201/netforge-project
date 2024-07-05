@@ -1,32 +1,43 @@
 import { Image, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import React, { useState } from 'react'
+import { NavigationProp, ParamListBase, useFocusEffect, useNavigation } from '@react-navigation/native';
+
+
 import { deleteFriend } from '../../../http/QuyetHTTP';
 import { useMyContext } from '../../../component/navigation/UserContext';
 import DeleteFriend from './DeleteFriend';
-import { number } from 'yup';
 import Loading from '../../../component/Modal/Loading';
+import { ProfileRootStackEnum } from '../../../component/stack/ProfileRootStackParams';
+
 type Friend = {
   friends: any,
-  setFriends: (friends: any[]) => void;
+  setFriends: () => void;
 }
 
-const Friends: React.FC<Friend> = ({ friends ,setFriends}) => {
+const Friends: React.FC<Friend> = ({ friends, setFriends}) => {
   const { user } = useMyContext();
   const [show, setShow] = useState(false);
-  const [user2,setUser2]=useState<number>(0)
+  const [user2, setUser2] = useState<number>(0);
+  const navigation: NavigationProp<ParamListBase> = useNavigation();
   if (!friends || friends.length === 0) {
-    // return <Text style={styles.headerText}>Chưa có bạn bè</Text>;
-    return <Loading isLoading={true}/>;
+    return <View style={{alignItems:'center', justifyContent:'center',
+      marginTop:10
+    }}>
+      <Text style={styles.headerText}>Chưa có bạn bè</Text>
+    </View>;
+    //return <Loading isLoading={true}/>;
   };
   const deleteFri = async (user2: number) => {
     setShow(true);
     setUser2(user2);
   };
-
+  const handleToFriendProfile = (userId: any) => {
+    navigation.navigate(ProfileRootStackEnum.FriendProfile, { userId });
+  };
   return (
     <ScrollView style={{ marginHorizontal: 10 }}>
       {friends.map((friend: { user: { id: string | number; avatar: any; fullname: string | any | undefined } }) => (
-        <View key={friend.id.toString()}>
+        <TouchableOpacity key={friend.id.toString()} onPress={() => handleToFriendProfile(friend.user.id)}>
           <View style={styles.itemWA}>
             <View style={styles.user}>
               {friend.user.avatar ? <Image source={{ uri: friend.user.avatar }} style={styles.avatarne} /> :
@@ -43,10 +54,10 @@ const Friends: React.FC<Friend> = ({ friends ,setFriends}) => {
             </View>
           </View>
 
-        </View>
+        </TouchableOpacity>
       ))
       }
-  <DeleteFriend show={show} setShow={setShow} user2={user2} setFriends={setFriends}/>
+      <DeleteFriend show={show} setShow={setShow} user2={user2} setFriends={setFriends}/>
     </ScrollView >
   )
 }

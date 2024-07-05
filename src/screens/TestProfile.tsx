@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { View, Animated, StyleSheet, ScrollView, Dimensions, Text, TouchableOpacity } from 'react-native';
-import { NavigationProp, ParamListBase, useFocusEffect, useNavigation } from '@react-navigation/native';
+import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import HeaderBanner from '../component/profile/HeaderBanner';
 import ProfileHeader from '../component/profile/ProfileHeader';
 import { useMyContext } from '../component/navigation/UserContext';
@@ -18,7 +18,6 @@ const Tab = createMaterialTopTabNavigator();
 const TestProfile = () => {
   const { user } = useMyContext();
   const navigation = useNavigation();
-  const navigation2: NavigationProp<ParamListBase> = useNavigation();
   const scrollOffsetY = useRef(new Animated.Value(0)).current;
   const headerHeight = 400; // Chiều cao của header
   const tabBarHeight = 80; // Chiều cao của tab bar
@@ -45,7 +44,6 @@ const TestProfile = () => {
         try {
           const response = await getUSerByID(userID, token);
           setUserData(response);
-          //console.log("response: ", response);
           dateOfBirth = response.dateOfBirth;
         } catch (error) {
           console.log(error);
@@ -92,14 +90,7 @@ const TestProfile = () => {
     
   }, [headerHeight, scrollOffsetY, tabBarPosition]);
   
-  // const handleTabChange = (tab: any) => {
-  //   setCurrentTab(tab);
-  //   const currentScrollY = scrollOffsetY._value; // Lấy giá trị của scrollOffsetY
-  //   setTabBarPosition(currentScrollY > headerHeight ? currentScrollY : headerHeight);
-  //   console.log(tabBarPosition)
-  //   console.log(currentScrollY);
-    
-  // };
+
   const handleTabChange = (tab: any) => {
     if (currentTab !== tab) {
       setCurrentTab(tab);
@@ -107,7 +98,6 @@ const TestProfile = () => {
       console.log(scrollOffsetY._value);
       if (tabBarPosition === 0) {
         setTabBarPosition(0);
-        //console.log('hihi')
       } else {
         setTabBarPosition(headerHeight); // Cập nhật lại vị trí tabBar khi chuyển tab
       }

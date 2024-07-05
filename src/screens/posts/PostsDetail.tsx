@@ -6,9 +6,8 @@ import { GestureHandlerRootView } from 'react-native-gesture-handler';
 const PostsDetail = () => {
 
   return (
-    <Animated.View style={styles.container}>
-        <ViewBottomSheet />
-    </Animated.View>
+    <View style={styles.container}>
+    </View>
   );
 };
 
