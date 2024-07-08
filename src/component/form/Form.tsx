@@ -51,7 +51,7 @@ const Form= ({setModal}:{setModal:(values:boolean)=>void}) => {
       console.log("fullnameValues",fullnameValues);
 
       const passwordconfirm = password === confirmpassword
-      console.log("com",passwordconfirm);
+      console.log("com",password);
       
       
 
@@ -62,7 +62,7 @@ const Form= ({setModal}:{setModal:(values:boolean)=>void}) => {
         return
       }
 
-      const result = await regiter(email,fullname,password);
+      const result = await regiter(email,password,fullname);
       console.log(result);
       
       if(result){
@@ -84,8 +84,8 @@ const Form= ({setModal}:{setModal:(values:boolean)=>void}) => {
       <Input invalid={!valid.email} label="Email" value={valueF.email} onchangText={onChangText.bind(this,'email')} iconE />
       <Input invalid={!valid.password} label="Password" value={valueF.password} onchangText={onChangText.bind(this,'password')} iconPass password={true} />
       <Input invalid={!valid.confirmpassword} label="Confirm Password" value={valueF.confirmpassword} onchangText={onChangText.bind(this,'confirmpassword')} iconPass password={true} />
-      <View>
-        <ButtonLogin chilren='Sign Up' textColor='#fff' onPress={submit}/>
+      <View style={{width:'100%'}}>
+        <ButtonLogin chilren='Đăng nhập' textColor='#fff' onPress={submit}/>
       </View>
     </View>
   )

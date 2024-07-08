@@ -7,6 +7,7 @@ import ModalPoup from '../component/Modal/ModalPoup'
 import { useNavigation } from '@react-navigation/native'
 import { navigationType } from '../component/stack/UserStack'
 import { TouchableOpacity } from 'react-native-gesture-handler'
+import { wrap } from 'lodash'
 
 const SignupScreen: React.FC = () => {
     const [modal,setModal]= useState(false);
@@ -20,29 +21,29 @@ const SignupScreen: React.FC = () => {
                     <View  style={[styles.viewToolbar, styles.viewAll]}>
                        <TouchableOpacity onPress={()=>navigation.goBack()} style={{flexDirection:"row",alignItems:"center"}}>
                        <Image  source={require("../media/Dicons/back.png")} style={styles.image} />
-                        <Text style={{ color: "white" }}>Back</Text>
+                        <Text style={{ color: "white" }}>Trở về</Text>
                        </TouchableOpacity>
                     </View>
                     <View style={[styles.viewAll]}>
-                        <Text style={styles.labelLogin}>Create Account</Text>
+                        <Text style={styles.labelLogin}>Tạo tài khoản</Text>
                     </View>
                     <View style={styles.viewAll}></View>
                 </View>
                 <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'null'} style={styles.viewContent}>
-                    <Text style={{ marginBottom: 10, fontSize: 28, color: "black", fontWeight: "bold" }}>Welcome</Text>
+                    <Text style={{ marginBottom: 10, fontSize: 28, color: "black", fontWeight: "bold" }}>Xin Chào</Text>
                     <View style={{ marginBottom: 10 }}>
-                        <Text>Create Account to keep exploring amazing</Text>
-                        <Text>destinations around the world!</Text>
+                        <Text style={{flexWrap:'wrap',fontFamily:'800'}}>Tạo tài khoản để tiếp tục khám phá những điều tuyệt vời</Text>
+                        <Text>các điểm đến trên khắp thế giới!</Text>
                     </View>
                     <Form setModal={setModal} />
                     <View style={styles.text}>
-                        <Text style={{ color: "black" }}>Already have an account?</Text>
-                        <Text style={{ fontSize: 15, color: COLOR.PrimaryColor, fontWeight: "bold" }}>Sign in</Text>
+                        <Text style={{ color: "black" }}>Bạn đã có tài khoản?</Text>
+                        <Text style={{ fontSize: 15, color: COLOR.PrimaryColor, fontWeight: "bold" }}> Đăng nhập</Text>
                     </View>
                     <View style={{ flex: 1,alignItems:"center",justifyContent:"center" }}>
                         <View style={{position:"absolute",bottom:30}}>
-                            <Text style={{ textAlign: "center",color:"black" }}>By creating an account, you agree to our</Text>
-                            <Text style={{color:"black"}}><Text style={{color:COLOR.PrimaryColor}}>Terms & Condistions</Text> and agree to <Text style={{color:COLOR.PrimaryColor}}>Privacy Policy</Text></Text>
+                            <Text style={{ textAlign: "center",color:"black" }}>Bằng cách tạo một tài khoản, bạn đồng ý với</Text>
+                            <Text style={{color:"black"}}><Text style={{color:COLOR.PrimaryColor}}>Điều khoản & Điều kiện</Text> và đồng ý <Text style={{color:COLOR.PrimaryColor}}>Chính sách bảo mật</Text></Text>
                         </View>
                     </View>
                     

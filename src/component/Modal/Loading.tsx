@@ -10,7 +10,7 @@ const Loading = ({isLoading}:{isLoading:boolean}) => {
             visible={isLoading}
         >
             <View style={styles.loading}>
-                <ActivityIndicator size="large" color={COLOR.PrimaryColor}/>
+                <ActivityIndicator size="large" color={COLOR.PrimaryColor} />
             </View>
         </Modal>
     )
