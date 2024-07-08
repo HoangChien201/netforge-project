@@ -255,13 +255,16 @@ const MessageItem: React.FC<MessageItemProp> = React.memo((
     setHeightLayout(height)
   }
   const isMessageSennder=typeof message.sender === 'object' ? message.sender.id === user.id : message.sender === user.id;
+  
+  // console.log('mesageprarent',message);
+  
   return (
     <View style={styles.container}>
       {
         (message.parent) && isMessageSennder &&
         <View style={[styles.replyStyle, { justifyContent: sender ? 'flex-end' : 'flex-start' }]}>
           <MIcon name='reply' size={20} color={'#707777'} />
-          <Text>Trả lời {message.parent.sender.fullname}</Text>
+          <Text>Trả lời {message.parent?.sender?.fullname}</Text>
         </View>
       }
       <View style={[styles.wrapperMessage, { flexDirection: sender ? 'row-reverse' : 'row' }]}>

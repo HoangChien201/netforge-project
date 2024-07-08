@@ -1,8 +1,20 @@
-import { Button, Modal, Pressable, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
-import React from 'react'
+import { Button, Image, Modal, Pressable, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+
+import React, { useState } from 'react'
 import { COLOR } from '../../constant/color'
+import NewMessageComponent from './NewMessageComponent'
+import NewGroupComponent from './NewGroupComponent'
 
 const ModalNewMessage = ({ visible, setVisible }: { visible: boolean, setVisible: any }) => {
+    const [type, setType] = useState('message')
+    function CancleHandle() {
+        if (type === 'message') {
+            setVisible(false)
+            return
+        }
+        setType('message')
+
+    }
     return (
         <Modal
             animationType='slide'
@@ -16,16 +28,28 @@ const ModalNewMessage = ({ visible, setVisible }: { visible: boolean, setVisible
                 <View style={styles.container}>
 
                     <View style={styles.header}>
-                        <TouchableOpacity onPress={() => setVisible(false)}>
+                        <TouchableOpacity onPress={CancleHandle}>
                             <Text style={styles.cancle}>Hủy</Text>
                         </TouchableOpacity>
                         <View style={styles.titleWrapper}>
-                            <Text style={styles.title}>Thêm tin nhắn</Text>
+                            <Text style={styles.title}>{
+                                type === 'message' ?
+                                    "Tin nhắn mới"
+                                    :
+                                    "Nhóm mới"
+                            }</Text>
                         </View>
                     </View>
-
+                    {
+                        type === 'message' ?
+                            <NewMessageComponent setType={setType} />
+                            :
+                            <NewGroupComponent />
+                    }
                 </View>
+
             </Pressable>
+
         </Modal >
 
     )
@@ -56,9 +80,9 @@ const styles = StyleSheet.create({
         left: 20,
         zIndex: 99
     },
-    titleWrapper:{
-        alignItems:'center',
-        justifyContent:"center",
+    titleWrapper: {
+        alignItems: 'center',
+        justifyContent: "center",
     },
     title: {
         color: '#000',
@@ -68,6 +92,7 @@ const styles = StyleSheet.create({
     header: {
         height: 60,
         backgroundColor: "rgba(215,215,215,0.9)",
-        justifyContent:'center'
-    }
+        justifyContent: 'center'
+    },
+
 })

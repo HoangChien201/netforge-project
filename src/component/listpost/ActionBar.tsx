@@ -118,7 +118,7 @@ const ActionBar = memo(({onPressProfile, like_count,type, postId, comment_count,
                             <Pressable onLongPress={OnPressIcon} onPress={() => {
                                 setNumber(1);
                                 likepost(postId, 1);
-                                numberLike === null ? setNumberLike(1) : setNumberLike(pre=>pre+1)
+                                numberLike === null ? setNumberLike(1) : setNumberLike(pre=>parseInt(pre.toString())+1)
                                 setIsLike(false)
                             }}>
                                 <AntDesignIcon name='like2' size={22} color='#000' />

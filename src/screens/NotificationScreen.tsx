@@ -129,7 +129,7 @@ const NotificationScreen = () => {
       //----------------------------------------------
       body: "ủa là sao bạn?", // nội dung hiển thị trên thông báo / tùy chỉnh (thuộc về người gửi) 
       userInfo: {
-        receiver: 8, // id người nhận
+        receiver: `${user.id}`, // id người nhận
         sender: `${user.id}`, // id người đăng nhập
         fullname: `${user.fullname}`, // tên người đăng nhập
         avatar: `${user.avatar}`, // ảnh người đăng nhập

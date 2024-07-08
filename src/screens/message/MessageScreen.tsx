@@ -91,17 +91,22 @@ const MessageScreen = () => {
   }, []);
 
   function addMessage(message: messageType) {
+    let messageNew={...message}
     if(reply) {
-      message.parent={
-        sender:reply?.sender
+      messageNew={
+        ...message,
+        parent:{
+          id:message.parent,
+          sender:reply?.sender
+        }
       }
-
+      
       setReply(null)
     }
-
+    
     setMessages(
       (prevValue) => {
-        return [message, ...prevValue]
+        return [messageNew, ...prevValue]
       }
     )
   }

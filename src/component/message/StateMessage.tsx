@@ -43,15 +43,21 @@ const StateMessage: React.FC<StateMessageType> = ({ message, group_id, sender,la
     switch (message.type) {
 
       case 'text':
-        message.state = STATUS_SEND;
-        message['group'] = group_id
-        if(message.parent){
-          message.parent=typeof message.parent === 'object' ? message.parent.id : message.parent
+        let messageCreate={
+          ...message,
+          state:STATUS_SEND,
+          group:group_id
         }
-        const messageCreate = await addMessageAPI(message)
-        if (messageCreate) {
-          socket.emit(`message`, messageCreate)
-          setState(messageCreate.state)
+
+        if(message.parent){
+
+          messageCreate.parent=typeof message.parent === 'object' ? message.parent.id : message.parent
+        }
+
+        const messageNew = await addMessageAPI(messageCreate)
+        if (messageNew) {
+          socket.emit(`message`, messageNew)
+          setState(messageNew.state)
         }
         break;
 
@@ -76,15 +82,17 @@ const StateMessage: React.FC<StateMessageType> = ({ message, group_id, sender,la
       // Kiểm tra cấu trúc phản hồi từ API uploadImage
       // Kiểm tra xem phản hồi có phải là một mảng và có ít nhất một phần tử không
       if (Array.isArray(resultImage) && resultImage.length > 0) {
-        message.state = 1;
-        message.message = resultImage[0].url
-        message['group'] = group_id
+        let messageCreate={
+          ...message,
+          state:STATUS_SEND,
+          group:group_id,
+          message:resultImage[0].url
+        }
+        const messageNew = await addMessageAPI(messageCreate)
+        if (messageNew) {
+          socket.emit(`message`, messageNew)
 
-        const messageCreate = await addMessageAPI(message)
-        if (messageCreate) {
-          socket.emit(`message`, messageCreate)
-
-          setState(messageCreate.state)
+          setState(messageNew.state)
         }
 
       } else {
