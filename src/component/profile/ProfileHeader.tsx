@@ -9,7 +9,7 @@ import { deleteFriend, sendRequest } from '../../http/QuyetHTTP';
 import DeleteFriend from '../../screens/profile/friendScreen/DeleteFriend'
 import uuid from 'react-native-uuid';
 import { socket } from '../../http/SocketHandle';
-
+import { useSendNotification } from '../../constant/notify';
 interface ProfileHeaderProps {
   fullname: string;
   userId: number;
@@ -22,7 +22,17 @@ interface ProfileHeaderProps {
 
 const ProfileHeader: React.FC<ProfileHeaderProps> = ({ fullname, userId, loggedInUserId, relationship }) => {
   const navigation = useNavigation();
-
+  const [cancelAdd, setCancelAdd] = useState(false);
+  const [textReqState, setTextReqState] = useState(false);
+  const [disabledButtons, setDisabledButtons] = useState(false);
+  const [cancelF, setCancelF] = useState('Hủy kết bạn');
+  const [show, setShow] = useState(false);
+  const [type, setType] = useState(false);
+  const [change, setChange] = useState(false);
+  const {sendNRequestFriend} = useSendNotification();
+  useEffect(()=>{
+    checkFiend()
+  },[show])
   const handleToEditProfile = () =>  {
   const { user } = useMyContext();
   //const isOwnProfile = userId === loggedInUserId; // Kiểm tra xem đây có phải là trang cá nhân của người đang đăng nhập hay không
@@ -37,10 +47,7 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({ fullname, userId, loggedI
   const handleToCreateStory = () => {
     navigation.navigate('LiveStack' as never);
   }
-  const [cancelAdd, setCancelAdd] = useState(false);
-  const [textReqState, setTextReqState] = useState(false);
-  const [disabledButtons, setDisabledButtons] = useState(false);
-  const [cancelF, setCancelF] = useState('Hủy kết bạn');
+
   const sendRequestFriend = async (id: number, status: number) => {
     if (cancelAdd) {
       ToastAndroid.show("Không thể gửi kết bạn ngay sau khi xóa! thử lại sau", ToastAndroid.LONG);
@@ -52,36 +59,24 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({ fullname, userId, loggedI
         // console.log('id: '+ id + 'status: ' + status);
         if (result) {
           setTextReqState(true);
-          handleSendReaction(id);
+          handleSendNotify(id);
         }
       } catch (error) {
         setDisabledButtons(false);
       }
     }
   }
-  const handleSendReaction = (id:any) => {
+  const handleSendNotify = (id:any) => {
     const data = {
-      id: uuid.v4(),
-      type: 3,
-      title: `${user.fullname} đã gửi cho bạn lời mời kết bạn`,
-      userInfo: {
-        receiver: id,
-        sender: `${user.id}`,
-        fullname: `${user.fullname}`, 
-        avatar: `${user.avatar}`, 
-      },
-      timestamp: new Date().toISOString()
+      receiver:id,
     };
-
-    socket.emit('notification', data);
-    console.log('Sent notification data:', data);
+    sendNRequestFriend(data)
   };
-  const [show, setShow] = useState(false);
-  const [type, setType] = useState(false);
+
   const openDelete = async () => {
     setShow(true);
   };
-  const [change, setChange] = useState(false);
+
   const deleteF = async (id: number) => {
     const user1 = Number(user.id);
     const user2 = Number(id);

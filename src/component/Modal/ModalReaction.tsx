@@ -1,29 +1,14 @@
-import { Modal, SafeAreaView, StyleSheet, Text, TouchableOpacity, View, Image } from 'react-native'
-import React, { useState } from 'react'
-import Reaction from '../storys/Reaction'
-import { reaction } from '../../constant/emoji'
+import { StyleSheet, Text, View } from 'react-native'
+import React from 'react'
 
-
-const ModalReaction = ({style}) => {
-
+const ModalReaction = () => {
   return (
-   
+    <View>
+      <Text>ModalReaction</Text>
+    </View>
   )
 }
 
 export default ModalReaction
 
-const styles = StyleSheet.create({
-    popup:{
-     
-        borderRadius:10,
-        borderColor:'#333',
-        borderWidth:1,
-        backgroundColor:'#fff',
-        padding:10,
-        position:'absolute',
-        flexDirection:'row',
-        left:0,
-        bottom:0
-    }
-})
+const styles = StyleSheet.create({})

@@ -10,18 +10,18 @@ type Item = {
 }
 const ItemMessage:React.FC<Item> = ({ notification }) => {
     const navigation = useNavigation();
-    const displayDate = DateOfTimePost(notification.timestamp);
+    const displayDate = DateOfTimePost(notification.data[0].timestamp);
     return (
-        <TouchableOpacity style={styles.container} key={notification.id.toString()}
+        <TouchableOpacity style={styles.container} key={notification.idv4.toString()} 
         onPress={()=> navigation.navigate('MessageStack')}
         >
         <View style={styles.iconFriend} >
-            <Image style={styles.avatar} source={{ uri: notification.userInfo.avatar }} />
+            <Image style={styles.avatar} source={{ uri: notification.data[0].userInfo.avatar }} />
             <Icon style={styles.iconHeart} name='message1' size={18} color={COLOR.PrimaryColor} />
         </View>
         <View style={styles.text}>
-            <Text style={styles.textUser_Post}>{notification.title} </Text>
-            <Text>{notification.body}</Text>
+            <Text style={styles.textUser_Post}>{notification.data[0].title} </Text>
+            <Text style={styles.text1} numberOfLines={1} ellipsizeMode="tail">{notification.data[0].body}</Text>
         </View>
         <View style={styles.viewTime}>
             <Text style={styles.textTime}>{displayDate}</Text>
@@ -39,7 +39,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
         flex: 1,
-        marginTop:5 
+        marginTop: 5
     },
     iconFriend: {
         // height: 44,
@@ -50,7 +50,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
         margin: 6,
-        flex: 1
+        flex: 0.8
     },
     avatar: {
         height: 44,
@@ -58,39 +58,75 @@ const styles = StyleSheet.create({
         borderRadius: 44,
         borderWidth: 1,
         borderColor: COLOR.PrimaryColor1,
+        zIndex: 40
+    },
+    avatar1: {
+        height: 22,
+        width: 22,
+        borderRadius: 44,
+        borderWidth: 1,
+        borderColor: COLOR.PrimaryColor1,
+        position: 'absolute',
+        start: 0, bottom: -2,
+        zIndex: 50
+    },
+    avatar2: {
+        height: 16,
+        width: 16,
+        borderRadius: 44,
+        borderWidth: 1,
+        borderColor: COLOR.PrimaryColor1,
+        position: 'absolute',
+        start: 10, bottom: -2,
+        zIndex: 51
+    },
+    avatar3: {
+        height: 14,
+        width: 14,
+        borderRadius: 44,
+        borderWidth: 1,
+        borderColor: COLOR.PrimaryColor1,
+        position: 'absolute',
+        start: 20, bottom: -2,
+        zIndex: 52
     },
     iconHeart: {
         position: 'absolute',
-        end: -2,
-        bottom: -2,
+        end: -6,
+        bottom: -4,
         height: 20,
-        width: 20
+        width: 20,
+        zIndex: 55
     },
     text: {
         marginStart: 10,
         flex: 5,
-        overflow:'hidden'
+        flexDirection:'column',
+        overflow:'hidden',
+        
     },
     textUser_Post: {
         fontSize: 16,
-        fontWeight: '600',
+        fontWeight: '500',
         fontStyle: "normal",
         color: 'black',
 
     },
     text1: {
-        fontSize: 16,
+        fontSize: 13,
         fontWeight: '400',
         fontStyle: "normal",
-        color: 'black'
+        color: 'black',
+        marginEnd:5
     },
     textTime: {
-        fontSize: 11,
+        fontSize: 9,
         fontWeight: '300',
         fontStyle: "normal",
         color: 'black',
         position: 'absolute',
-        top:2
+        end: 5,
+        bottom:8
     },
     headerText: {
         fontSize: 18,
@@ -100,6 +136,7 @@ const styles = StyleSheet.create({
         marginStart: 5
     },
     viewTime: {
-        flex: 1.5
+        flex: 0.5,
+        height:'100%'
     }
 })

@@ -11,8 +11,12 @@ export type fileType={
     uri:string,
     type:string
 }
+type Op={
+    onSelectMedia:(value:any)=>void,
+    onSelectEmoji:(value:any)=>void
+}
 
-const Options = ({ onSelectMedia, onSelectEmoji }) => {
+const Options:React.FC<Op> = ({ onSelectMedia, onSelectEmoji }) => {
     const [showEmojiModal, setShowEmojiModal] = useState(false);
     useEffect(()=>{
         //openLibrary();
@@ -59,7 +63,7 @@ const Options = ({ onSelectMedia, onSelectEmoji }) => {
             
         }
     }, []);
-    const handleEmojiSelect = (emoji) => {
+    const handleEmojiSelect = (emoji: any) => {
         onSelectEmoji(emoji);
         //setShowEmojiModal(false);
     };

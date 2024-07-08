@@ -84,7 +84,7 @@ const LikeHistories: React.FC<Like> = ({ data }) => {
 
     const renderItem = (item: { reaction: any, posts: { id: number }, creater: { fullname: string } }, index: { toString: () => React.Key | null | undefined; }) => {
         const { text, iconName, iconColor, linkImage } = getReactionDetails(item.reaction);
-        const postId = item.posts.id;
+        const postId = item.posts?.id;
     
         return (
             <TouchableOpacity style={styles.itemContainer} key={index.toString()}
@@ -101,7 +101,7 @@ const LikeHistories: React.FC<Like> = ({ data }) => {
                             <Text style={styles.text}>{text}</Text>
                             <Text style={styles.text1}>bài viết</Text>
                             <Text style={styles.text}> của </Text>
-                            <Text style={styles.text1}>{item.posts.creater.fullname}</Text>
+                            <Text style={styles.text1}>{item.posts?.creater.fullname}</Text>
                         </Text>
                     ) : (
                         <Text>
@@ -109,7 +109,7 @@ const LikeHistories: React.FC<Like> = ({ data }) => {
                             <Text style={styles.text1}>{text}</Text>
                             <Text style={styles.text}>bình luận</Text>
                             <Text style={styles.text}> của </Text>
-                            <Text style={styles.text1}>{item.posts.creater.fullname}</Text>
+                            <Text style={styles.text1}>{item.posts?.creater.fullname}</Text>
                         </Text>
                     )}
                 </View>

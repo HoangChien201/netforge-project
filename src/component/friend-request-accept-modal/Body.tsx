@@ -7,7 +7,6 @@ import Swiper from 'react-native-swiper';
 import { COLOR } from '../../constant/color';
 import RequestList from './RequestList';
 import WaitAcceptList from './WaitAcceptList';
-import SuggestList from './SuggestList';
 type Bob = {
     reload: any,
     showModalFriend: any,

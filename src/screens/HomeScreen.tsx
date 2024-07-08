@@ -129,6 +129,7 @@ const HomeScreen = () => {
         }
         return null;
     }, [refreshing]);
+
     const handlerClick = ()=>{
         setHidden(pre=>!pre)
     }
@@ -136,6 +137,7 @@ const HomeScreen = () => {
     const handleToScanner = () => {
         navigation.navigate(HomeRootStackEnum.Scanner);
     }
+
     return (
         <View style={styles.container}>
             <TouchId visible={visible} setVisible={setVisible} />
@@ -168,7 +170,7 @@ const HomeScreen = () => {
                     </TouchableOpacity>
                 </View>
                 <View style={{ flex: 0.1, marginRight: 12 }}>
-                    <TouchableOpacity>
+                    <TouchableOpacity onPress={()=>navigation.navigate('Scanner')}>
                         <Image source={require('../media/Dicons/qr-code.png')} style={{width:30,height:30}}/>
                     </TouchableOpacity>
                 </View>

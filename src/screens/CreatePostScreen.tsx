@@ -12,7 +12,8 @@ import Loading from '../component/Modal/Loading'
 import NetworkBottomTab from '../component/bottom-stack/NetworkBottomTab'
 import { socket } from '../http/SocketHandle'
 import uuid from 'react-native-uuid';
-import { boolean } from 'yup'
+import { useSendNotification } from '../constant/notify'
+
 const CreatePostScreen = () => {
   const [status, setStatus] = useState('');
   const [showPopup, setShowPopup] = useState(false);
@@ -26,6 +27,7 @@ const CreatePostScreen = () => {
   const type = 1;
   const [permission, setPermission] = useState(1);
   const [sendAll, setSendAll] = useState(true);
+  const {sendNCreateNewPostHistory} = useSendNotification();
   const clear = () => {
     setContent('');
     setMedia([]);
@@ -124,27 +126,10 @@ const CreatePostScreen = () => {
 
   const handleSendReaction = (post:any) => {
     const data = {
-      id: uuid.v4(),
-      type: 4,
-      postId: post.id, 
-      commentId: "", 
-      messId: "",
-      title: `${user.fullname} đã tạo bài viết mới`,
-      body: `${content}`, 
-      userInfo: {
-        sender: `${user.id}`,
-        fullname: `${user.fullname}`, 
-        avatar: `${user.avatar}`, 
-        multiple: true
-      },
-      reaction: {
-        type: 2 // 1 thích - 2 ha ha - 3 thương thương - 4 yêu thích - 5 tức giận
-      },
-      timestamp: new Date().toISOString()
+      postId:post.id,
+      body:post.contain
     };
-
-    socket.emit('notification', data);
-    console.log('Sent notification data:', data);
+    sendNCreateNewPostHistory(data);
   };
   const log = () => {
 
