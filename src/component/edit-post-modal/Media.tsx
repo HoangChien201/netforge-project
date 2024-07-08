@@ -7,10 +7,11 @@ import OPTIONS from './Options';
 import { COLOR } from '../../constant/color';
 import SwiperFlatList from 'react-native-swiper-flatlist';
 import Icon from 'react-native-vector-icons/Feather';
+import { imageType } from './Body';
 
 interface renderMedia{
     images:string;
-    meida:string;
+    media:string;
     setMedia: (Permission:string) => void;
     setShowModal: (Permission:boolean) => void;
 };

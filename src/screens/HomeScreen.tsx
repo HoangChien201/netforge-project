@@ -133,7 +133,9 @@ const HomeScreen = () => {
         setHidden(prev => !prev);
     };
 
-
+    const handleToScanner = () => {
+        navigation.navigate(HomeRootStackEnum.Scanner);
+    }
     return (
         <View style={styles.container}>
             <TouchId visible={visible} setVisible={setVisible} />

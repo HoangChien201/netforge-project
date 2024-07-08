@@ -5,7 +5,7 @@
  * @format
  */
 import 'react-native-gesture-handler';
-import React, { useEffect } from 'react';
+import React, { createContext, useEffect, useState } from 'react';
 import {
 
   StatusBar,
@@ -19,21 +19,32 @@ import { ZegoUIKitPrebuiltLiveStreamingFloatingMinimizedView } from '@zegocloud/
 import { Host } from 'react-native-portalize';
 import RequestNotificationPermission from './src/permissions/RequestNotificationPermission';
 import { registerRemoteNotificationsEvent } from './src/notifications/Events';
-import { LogBox } from 'react-native';
-
+import PushNotification from 'react-native-push-notification';
 function App(): React.JSX.Element {
-
-
+  PushNotification.configure({
+    onNotification: function (notification) {
+      console.log('LOCAL NOTIFICATION ==>', notification);
+    },
+    requestPermissions: false,
+  });
+  useEffect(() => {
+    RequestNotificationPermission()
+    registerRemoteNotificationsEvent()
+  });
+  LogBox.ignoreLogs([
+    '[Reanimated] Tried to modify key `reduceMotion` of an object which has been already passed to a worklet.',
+  ]);
+  LogBox.ignoreLogs(['new NativeEventEmitter']);
   return (
-   <GestureHandlerRootView>
-    <StatusBar barStyle="dark-content" backgroundColor="transparent"/>
+    <GestureHandlerRootView>
+      <StatusBar barStyle="dark-content" backgroundColor="transparent" />
       <UserProvider>
         <Host>
           <ManageNavigation />
           <ZegoUIKitPrebuiltLiveStreamingFloatingMinimizedView />
         </Host>
       </UserProvider>
-   </GestureHandlerRootView>
+    </GestureHandlerRootView>
   )
 }
 

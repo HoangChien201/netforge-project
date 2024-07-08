@@ -7,7 +7,7 @@ import { TextInput } from 'react-native-gesture-handler';
 
 type Props = {
     content: any,
-    setContent: () => void,
+    setContent: (value:any) => void,
     friends: any,
     setFriends: (value: any) => void
 }

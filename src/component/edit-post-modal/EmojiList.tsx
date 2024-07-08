@@ -1,8 +1,10 @@
 import { StyleSheet, Text, View,FlatList,TouchableOpacity } from 'react-native'
 import React from 'react'
 import {EmojiData } from '../../constant/emoji'
-
-const EmojiList = ({onSelectEmoji}) => {
+type Em ={
+    onSelectEmoji:(value:any)=>void
+}
+const EmojiList:React.FC<Em> = ({onSelectEmoji}) => {
     return (
         <FlatList
             data={EmojiData}
