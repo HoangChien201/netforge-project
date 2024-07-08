@@ -8,7 +8,7 @@ import { ProfileRootStackEnum } from '../stack/ProfileRootStackParams';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Loading from '../Modal/Loading';
 import { date } from 'yup';
-import { useMyContext } from '../navigation/UserContext';
+
 
 const ListPorts = memo(({ onrefresh }:{onrefresh:boolean}) => {
   const [allData, setAllData] = useState<any>([]);
@@ -17,7 +17,7 @@ const ListPorts = memo(({ onrefresh }:{onrefresh:boolean}) => {
   const [loadingMore, setLoadingMore] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
 
-  const{user} = useMyContext();
+ 
   const navigation: NavigationProp<ParamListBase> = useNavigation();
   const PAGE_SIZE = 10;
   const getAllPost = useCallback(async () => {

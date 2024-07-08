@@ -7,7 +7,7 @@
 import 'react-native-gesture-handler';
 import React, { createContext, useEffect, useState } from 'react';
 import {
-  LogBox,
+
   StatusBar,
   Text,
   View,

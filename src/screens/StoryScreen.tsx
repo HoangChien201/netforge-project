@@ -24,7 +24,7 @@ const StoryScreen = ({ index }) => {
   const [currentIndex, setCurrentIndex] = useState(indexfind);
   const [data1, setData1] = useState(DATA);
   const scrollViewRef = useRef<ScrollView>(null);
-console.log("list",list);
+
 
 
 
