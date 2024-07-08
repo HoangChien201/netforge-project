@@ -7,7 +7,7 @@
 import 'react-native-gesture-handler';
 import React, { useEffect } from 'react';
 import {
-  LogBox,
+
   StatusBar,
   Text,
   View,
@@ -22,13 +22,7 @@ import { registerRemoteNotificationsEvent } from './src/notifications/Events';
 import { LogBox } from 'react-native';
 
 function App(): React.JSX.Element {
-  useEffect(()=>{
-    RequestNotificationPermission()
-    registerRemoteNotificationsEvent()
-  });
-  LogBox.ignoreLogs([
-    '[Reanimated] Tried to modify key `reduceMotion` of an object which has been already passed to a worklet.',
-  ]);
+
 
   return (
    <GestureHandlerRootView>

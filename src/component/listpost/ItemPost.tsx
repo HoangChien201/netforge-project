@@ -9,7 +9,7 @@ import { SharePost } from '../../http/userHttp/getpost';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import ModalFriendProfile from '../profile/FriendProfile';
 import { NavigationProp, ParamListBase, useNavigation } from '@react-navigation/native';
-import { useMyContext } from '../navigation/UserContext';
+
 import { ProfileRootStackEnum } from '../stack/ProfileRootStackParams';
    
 const ItemPost = memo(({ index, data,onrefresh, userId, onPressProfile  }) => {
@@ -20,13 +20,15 @@ const ItemPost = memo(({ index, data,onrefresh, userId, onPressProfile  }) => {
     const { user } = useMyContext();
     const menu = useRef(new Animated.Value(0)).current;
     const [hidden, setHidden] = useState(false);
-
+    
     //
     const navigation: NavigationProp<ParamListBase> = useNavigation();
       const [isModalVisible, setIsModalVisible] = useState(false);
       const [selectedUserId, setSelectedUserId] = useState(null);
       const loggedInUserId = user.id;
       userId =creater.id;
+
+      
     useEffect(() => {
         if (share) {
             setshareId(share);
@@ -34,7 +36,7 @@ const ItemPost = memo(({ index, data,onrefresh, userId, onPressProfile  }) => {
                 const token = await AsyncStorage.getItem('userToken');
                 const result = await SharePost(share.id);
                 setPostShare(result);
-            }
+            
             }
             getPostShare();
         }
@@ -55,6 +57,7 @@ const ItemPost = memo(({ index, data,onrefresh, userId, onPressProfile  }) => {
             useNativeDriver: true,
         }).start(() => setHidden(false));
     };
+
 
     const formatContent = useMemo(() => {
         const format = content?.split(/@\[([^\]]+)\]\(\d+\)/g);
@@ -104,14 +107,16 @@ const ItemPost = memo(({ index, data,onrefresh, userId, onPressProfile  }) => {
     //         setIsModalVisible(true);
     //     } 
     // };
-    const handleToProfile = () => {
-        onPressProfile(creater.id);
-    };
+    const handleToProfile = (userId: React.SetStateAction<null>) => {
+        //console.log("userID: ",userId);
+        if (userId === loggedInUserId) {
+          navigation.navigate(ProfileRootStackEnum.ProfileScreen);
+        } else {
+          navigation.navigate(ProfileRootStackEnum.FriendProfile, { userId});
+        } 
+      };
 
-    // const closeModal = () => {
-    //     setIsModalVisible(false);
-    //     setSelectedUserId(null); 
-    // };
+  
 
     return (
         <Pressable onPress={handleItemPress} style={{ margin: 5, marginBottom: 6, backgroundColor: "#fff" }}>
@@ -119,7 +124,8 @@ const ItemPost = memo(({ index, data,onrefresh, userId, onPressProfile  }) => {
                 <>
                     <View style={styles.home1}>
                         <View style={styles.containerAvt}>
-                            {creater.avatar ? (
+                          <TouchableOpacity onPress={()=>handleToProfile(creater.id)} style={styles.containerAvt}>
+                          {creater.avatar ? (
                                 <Image source={{ uri: creater.avatar }} style={styles.avt} />
                             ) : (
                                 <Image source={require('../../media/icon/phuking.jpg')} style={styles.avt} />
@@ -131,6 +137,7 @@ const ItemPost = memo(({ index, data,onrefresh, userId, onPressProfile  }) => {
                                     <Image source={require('../../media/icon/icon-hour-light.png')} />
                                 </View>
                             </View>
+                          </TouchableOpacity>
                         </View>
                         <View>
                             {user.id === creater.id && (
@@ -162,7 +169,8 @@ const ItemPost = memo(({ index, data,onrefresh, userId, onPressProfile  }) => {
                     <View style={styles.sharedPost}>
                         <View style={styles.home}>
                             <View style={styles.containerAvt}>
-                                {postsShares?.creater?.avatar ? (
+                               <TouchableOpacity style={styles.containerAvt} onPress={()=>handleToProfile(postsShares?.creater?.id)}>
+                               {postsShares?.creater?.avatar ? (
                                     <Image source={{ uri: postsShares?.creater?.avatar }} style={styles.avt} />
                                 ) : (
                                     <Image source={require('../../media/icon/phuking.jpg')} style={styles.avt} />
@@ -174,6 +182,7 @@ const ItemPost = memo(({ index, data,onrefresh, userId, onPressProfile  }) => {
                                         <Image source={require('../../media/icon/icon-hour-light.png')} />
                                     </View>
                                 </View>
+                               </TouchableOpacity>
                             </View>
                         </View>
                         <View style={styles.sharedPostContainer}>
@@ -187,7 +196,8 @@ const ItemPost = memo(({ index, data,onrefresh, userId, onPressProfile  }) => {
                 <>
                     <View style={styles.home}>
                         <View style={styles.containerAvt}>
-                            {creater.avatar ? (
+                           <TouchableOpacity style={styles.containerAvt} onPress={()=>handleToProfile(creater.id)}>
+                           {creater.avatar ? (
                                 <Image source={{ uri: creater.avatar }} style={styles.avt} />
                             ) : (
                                 <Image source={require('../../media/icon/phuking.jpg')} style={styles.avt} />
@@ -199,6 +209,7 @@ const ItemPost = memo(({ index, data,onrefresh, userId, onPressProfile  }) => {
                                     <Image source={require('../../media/icon/icon-hour-light.png')} />
                                 </View>
                             </View>
+                           </TouchableOpacity>
                         </View>
                         <View>
                             {user.id === creater.id && (
