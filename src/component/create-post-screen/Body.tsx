@@ -25,7 +25,7 @@ const Body: React.FC<Bpob> = ({ content, setContent, media, setMedia, permission
     const [viewMore, setViewMore] = useState(false);
     const [uries, setUries] = useState<any>([])
 
-    const handleEmojiSelect = (emoji) => {
+    const handleEmojiSelect = (emoji: any) => {
         setContent(content + emoji);
     };
     useEffect(() => {
@@ -34,24 +34,24 @@ const Body: React.FC<Bpob> = ({ content, setContent, media, setMedia, permission
         // setUries(uris);
     }, []);
 
-    const handleMediaSelect = (newImages) => {
+    const handleMediaSelect = (newImages: any) => {
         setMedia(newImages);
         console.log('Media selected:', JSON.stringify(newImages, null, 2));
     };
 
-    const deleteImage = (uri) => {
-        const updatedImages = media.filter(media => media.uri !== uri);
+    const deleteImage = (uri: any) => {
+        const updatedImages = media.filter((media: { uri: any; }) => media.uri !== uri);
         setMedia(updatedImages);
         console.log(updatedImages);
         console.log(media);
 
 
     };
-    const togglePlayVideo = (uri) => {
+    const togglePlayVideo = (uri:any) => {
         setPlayingVideo(playingVideo === uri ? null : uri);
     };
     // View danh sách media
-    const renderMedia = (item) => {
+    const renderMedia = (item:any) => {
         if (!item || item.length === 0) {
             return null;
         }
@@ -59,7 +59,7 @@ const Body: React.FC<Bpob> = ({ content, setContent, media, setMedia, permission
         if (numMedia === 1) {
             return (
                 <View style={styles.oneMediaContainer}>
-                    {item.map((uri, index) => (
+                    {item.map((uri: { uri: string | null| any; }, index: { toString: () => React.Key | any | undefined; }) => (
                         uri.uri.endsWith('.mp4') ? (
                             <View key={index.toString()} style={styles.mediaContainer}>
                                 <Video
@@ -294,7 +294,7 @@ const Body: React.FC<Bpob> = ({ content, setContent, media, setMedia, permission
         }
     };
     // Media edit
-    const switchMedia = (item) => {
+    const switchMedia = (item: string | any[] | any) => {
         if (!item || item.length === 0) {
             return null;
         }

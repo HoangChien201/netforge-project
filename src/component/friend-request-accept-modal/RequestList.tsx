@@ -2,13 +2,17 @@ import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import EmptyReq from './EmptyReq'
 import {cancelRequest} from '../../http/QuyetHTTP'
+type Req ={
+    dataRequest:any, 
+    setDataRequest:(value:any)=>void, 
+    setReload:(value:any)=>void, 
+}
+const RequestList:React.FC<Req> = ({ dataRequest, setDataRequest, setReload }) => {
 
-const RequestList = ({ dataRequest, setDataRequest, setReload }) => {
-
-const cancelReq = async (friendId)=>{
+const cancelReq = async (friendId: number)=>{
     try {
         await cancelRequest(friendId);
-        setDataRequest(prevData => prevData.filter(friend => friend.user.id !== friendId));
+        setDataRequest((prevData: any[]) => prevData.filter(friend => friend.user.id !== friendId));
     } catch (error) {
         console.log(error);
         console.log(friendId);
@@ -20,7 +24,7 @@ const cancelReq = async (friendId)=>{
     }
     return (
         <View style={styles.container}>
-            {dataRequest.map(friend => (
+            {dataRequest.map((friend: { user: { id: React.Key | null | undefined | any; avatar: any; fullname: string | undefined |any } }) => (
                 <View style={styles.itemWA} key={friend.user.id}>
                     <View style={styles.user}>
                         {friend.user.avatar? <Image source={{uri: friend.user.avatar}} style={styles.avatarne}/>  : 

@@ -1,19 +1,19 @@
+import React, { useEffect, useRef, useState } from 'react';
 import { Alert, PermissionsAndroid, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import React, { useEffect, useState } from 'react';
-// import { RNCamera } from 'react-native-camera';
-import { launchImageLibrary } from 'react-native-image-picker';
+import { Camera, useCameraDevice, useCameraDevices, useFrameProcessor } from 'react-native-vision-camera';
+import { useCodeScanner } from 'react-native-vision-camera';
 import ICON from 'react-native-vector-icons/MaterialCommunityIcons';
-import RNFS from 'react-native-fs';
-import jsQR from 'jsqr';
-import { Buffer } from 'buffer';
 import SCANMODAL from '../component/scanQR-modal/Body';
 import { getUserById } from '../http/QuyetHTTP';
+
 const Scanner = () => {
   const [data, setData] = useState('');
   const [show, setShow] = useState(false);
   const [user, setUser] = useState([{}]);
-  // const [flashMode, setFlashMode] = useState(RNCamera.Constants.FlashMode.off);
-
+  const [cameraPosition, setCameraPosition] = useState('back')
+  const devices = useCameraDevice(cameraPosition);
+  const camera = useRef(null);
+  const [flashMode, setFlashMode] = useState('on');
   useEffect(() => {
     const numericData = Number(data);
     if (!isNaN(numericData) && data) {
@@ -21,7 +21,7 @@ const Scanner = () => {
       console.log('Scan nè: ' + numericData);
       setShow(true);
     } else {
-      console.log('Data is not a valid number: ' + data);
+      console.log('Data is not a valid number: ' + JSON.stringify(data));
     }
   }, [data]);
 
@@ -33,7 +33,13 @@ const Scanner = () => {
       console.error(error);
     }
   };
-
+  const toggleFlash = () => {
+    setFlashMode(prevFlashMode => 
+      prevFlashMode == 'off'
+        ? 'on'
+        : 'off'
+    );
+  };
   useEffect(() => {
     const requestCameraPermission = async () => {
       try {
@@ -58,31 +64,36 @@ const Scanner = () => {
     requestCameraPermission();
   }, []);
 
-  // const toggleFlash = () => {
-  //   setFlashMode(prevFlashMode => 
-  //     prevFlashMode === RNCamera.Constants.FlashMode.off
-  //       ? RNCamera.Constants.FlashMode.torch 
-  //       : RNCamera.Constants.FlashMode.off
-  //   );
-  // };
-
+  const codeScanner = useCodeScanner({
+    codeTypes: ['qr', 'ean-13'], // Specify the code types you want to scan
+    onCodeScanned: (codes) => {
+      if (codes.length > 0) {
+        setData(codes[0].value);  // Assuming you want the first scanned code
+      }
+    },
+  });
   return (
     <View style={styles.container}>
-      {/* <RNCamera
-        flashMode={flashMode}
-        onBarCodeRead={({ data }) => setData(data)}
-        captureAudio={false}
-        style={styles.camera}
-      />
+      {devices != null && (
+        <Camera
+          ref={camera}
+          device={devices}
+          isActive={true}
+          codeScanner={codeScanner}
+          style={styles.camera}
+          torch={flashMode} 
+          enableZoomGesture={true} 
+        />
+      )}
       <TouchableOpacity
         onPress={toggleFlash}
         style={{ position: 'absolute', end: 20, top: 15, zIndex: 99, padding: 5 }} >
         <ICON name='flash' size={24} color={'white'} />
       </TouchableOpacity>
-      <Text style={{ color: 'black', fontSize: 20, }}>Hướng Camera vào mã QR!</Text>
+      <Text style={{ color: 'black', fontSize: 20, marginTop: 20 }}>Hướng Camera vào mã QR!</Text>
       <View style={{}}>
         <SCANMODAL show={show} setShow={setShow} user={user} setData={setData} />
-      </View> */}
+      </View>
     </View>
   );
 };
@@ -95,7 +106,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     height: '90%',
     flexDirection: 'column',
-    marginTop: 0
+    marginTop: 0,
   },
   centerText: {
     fontSize: 18,

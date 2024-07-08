@@ -61,14 +61,14 @@ export const HomeRootStackScreens = [
             headerShown: false
         }
     },
-    // {
-    //     id: Math.random() + "" + Date,
-    //     name: HomeRootStackEnum.Scanner,
-    //     component: Scanner,
-    //     options: {
-    //         headerShown: true
-    //     }
-    // },
+    {
+        id: Math.random() + "" + Date,
+        name: HomeRootStackEnum.Scanner,
+        component: Scanner,
+        options: {
+            headerShown: true
+        }
+    },
     {
         id: Math.random() + "" + Date,
         name: HomeRootStackEnum.FriendProfile,
