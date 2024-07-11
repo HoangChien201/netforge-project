@@ -183,6 +183,7 @@ const StoryDetail = ({ route }) => {
                     <ModalPoup text={status} visible={showPopup} />
                 )
             ) : null}
+            
         </View>
     );
 };

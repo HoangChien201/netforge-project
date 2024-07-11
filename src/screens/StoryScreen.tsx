@@ -19,7 +19,7 @@ const DATA = [
 
 const StoryScreen = ({ index }) => {
   const route = useRoute();
-  const { list,indexfind,itemPost } = route.params;
+  const { list,indexfind } = route.params;
   const navigation = useNavigation();
   const [currentIndex, setCurrentIndex] = useState(indexfind);
   const [data1, setData1] = useState(DATA);

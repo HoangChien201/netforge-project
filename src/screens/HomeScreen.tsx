@@ -1,5 +1,5 @@
 import React, { memo, useCallback, useRef, useState, useEffect } from 'react';
-import { StyleSheet, View, Animated, Image, Text, TouchableOpacity, ScrollView } from 'react-native';
+import { StyleSheet, View, Animated, Image, Text, TouchableOpacity, ScrollView, ImageBackground } from 'react-native';
 import ListStory from '../component/storys/ListStory';
 import ListPorts from '../component/listpost/ListPorts';
 import { useNavigation, useIsFocused } from '@react-navigation/native';
@@ -107,15 +107,18 @@ const HomeScreen = () => {
                 return (
                     <ScrollView horizontal showsHorizontalScrollIndicator={false}>
                         <View style={styles.storyContainer}>
-                            <View style={styles.border}>
-                                <TouchableOpacity
-                                    style={styles.avt1}
-                                    onPress={() => {
-                                        navigation.navigate(NetworkRootStackEnum.CreateStoris);
-                                    }}
-                                >
-                                    <AntDesignIcon name='plus' size={22} style={styles.iconCenter} />
-                                </TouchableOpacity>
+                            <View style={styles.borderContainer}>
+                                <ImageBackground source={{ uri: user.avatar }} style={styles.imageBackground} imageStyle={styles.imageStyle}>
+                                    <TouchableOpacity
+                                        style={styles.avt1}
+                                        onPress={() => {
+                                            navigation.navigate(NetworkRootStackEnum.CreateStoris);
+                                        }}
+                                    >
+                                        <AntDesignIcon name='pluscircle' color={COLOR.PrimaryColor1} size={22} style={styles.iconCenter} />
+                                    </TouchableOpacity>
+                                    <Text style={{bottom:-15,color:"#fff",fontSize:13,fontWeight:'bold'}}>Tạo tin</Text>
+                                </ImageBackground>
                             </View>
                             <ListStory onRefresh={refreshing} />
                         </View>
@@ -144,18 +147,18 @@ const HomeScreen = () => {
                     <Image source={require('../media/quyet_icon/netforge1.jpg')} style={styles.logo} />
                     <Text style={styles.headerTitle}>NetForge</Text>
                 </View>
-              <View>
-                <TouchableOpacity onPress={()=>navigation.navigate(HomeRootStackEnum.ExploreScreen)}>
-                     <AntDesignIcon name='search1' size={22} color='#000' style={styles.iconCenter} />
-                </TouchableOpacity>
-              
-              </View>
+                <View>
+                    <TouchableOpacity onPress={() => navigation.navigate(HomeRootStackEnum.ExploreScreen)}>
+                        <AntDesignIcon name='search1' size={22} color='#000' style={styles.iconCenter} />
+                    </TouchableOpacity>
+
+                </View>
                 <View style={styles.headerRight}>
-                    <TouchableOpacity style={{alignItems:'center'}} onPress={handlerClick}>
+                    <TouchableOpacity style={{ alignItems: 'center' }} onPress={handlerClick}>
                         <Image source={{ uri: user.avatar }} style={styles.userAvatar} />
                         <Text style={styles.userName}>{user.fullname}</Text>
                     </TouchableOpacity>
-                 
+
                 </View>
                 {hidden && (
                     <View style={styles.hiddenMenu}>
@@ -171,6 +174,9 @@ const HomeScreen = () => {
                         </View>
                     </View>
                 )}
+            </View>
+            <View style={{marginLeft:10}}>
+                <Text style={{color:'#000',fontWeight:'bold'}}>Bảng tin</Text>
             </View>
             <View style={styles.contentContainer}>
                 <Animated.FlatList
@@ -205,7 +211,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'space-evenly',
         alignItems: 'center',
-        paddingHorizontal: 5,
+        paddingHorizontal: 15,
     },
     headerLeft: {
         flex: 1,
@@ -224,7 +230,7 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
     },
     hiddenMenu: {
-        zIndex:9999,
+        zIndex: 9999,
         borderRadius: 8,
         padding: 5,
         width: 150,
@@ -278,23 +284,42 @@ const styles = StyleSheet.create({
     contentContainer: {
         height: '90%',
         width: '100%',
+
     },
     storyContainer: {
         flexDirection: 'row',
         alignItems: 'center',
+        paddingHorizontal: 7,
+        margin: 5
     },
     border: {
         padding: 5,
+
     },
     avt1: {
         justifyContent: 'center',
         width: 70,
         height: 70,
-        borderRadius: 50,
         resizeMode: 'cover',
-        borderWidth: 2,
+
     },
     iconCenter: {
         textAlign: 'center',
     },
+    borderContainer: {
+        width: 100, 
+        height: 148,
+        borderRadius: 7, 
+        overflow: 'hidden', 
+        borderWidth:2,
+        borderColor:COLOR.PrimaryColor
+      },
+      imageBackground: {
+        flex: 1, 
+        justifyContent: 'center', 
+        alignItems: 'center', 
+      },
+      imageStyle: {
+        borderRadius: 6, 
+      },
 });

@@ -19,6 +19,7 @@ const ProgressBarScreen = ({ listpostStory, setCurrentIndex, currentIndex, dataL
     const spinValue = useRef(new Animated.Value(0)).current;
     const navigation = useNavigation();
 
+console.log("dsadfa",data);
 
     const handleImagePressR = () => {
         if (check) {
@@ -107,13 +108,13 @@ const ProgressBarScreen = ({ listpostStory, setCurrentIndex, currentIndex, dataL
 
     return (
         <View style={styles.container}>
-             <TouchableOpacity onPress={handleClick} style={{  position: 'absolute', top: '2%', left: '35%',zIndex:3132 }}>
-                         <AntDesign name='ellipsis1' size={25} color='#fff' />
+             <TouchableOpacity onPress={handleClick} style={{  position: 'absolute', top: '2.5%', right: '13%',zIndex:3132 }}>
+                         <AntDesign name='ellipsis1' size={25} color='#000' />
             </TouchableOpacity>
           {
-            hidden &&   <View style={{  padding:4,width:80,height:30,backgroundColor:"#E9E6E6",position: 'absolute', top: '5%', left: '45%',zIndex:3132 }}>
+            hidden &&   <View style={{  padding:4,width:80,height:30,backgroundColor:"#E9E6E6",position: 'absolute', top: '5%', right: '5%',zIndex:3132 }}>
             <TouchableOpacity onPress={handleDeletePost} style={{borderColor:'#fff',borderWidth:1,borderRadius:2,backgroundColor:'#fff',height:"100%",width:"100%"}} >
-                <Text style={{color:'#000',fontWeight:'bold',textAlign:'center'}}>xoa</Text>
+                <Text style={{color:'#000',fontWeight:'bold',textAlign:'center'}}>Xóa</Text>
             </TouchableOpacity>
         </View>
           }
@@ -159,7 +160,7 @@ const ProgressBarScreen = ({ listpostStory, setCurrentIndex, currentIndex, dataL
                         outputRange: ['0%', '80%'],
                     })
                 }]}>
-                    <Reaction />
+                    <Reaction postID={data[activeIndex].id} reactions={data[activeIndex].reaction} />
                 </Animated.View>
                 <TouchableOpacity onPress={() => {
                     spin();

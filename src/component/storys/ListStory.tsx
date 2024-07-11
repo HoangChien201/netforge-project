@@ -19,12 +19,11 @@ const ListStory = memo(({ onrefresh }) => {
   const getAllPost = useCallback(async () => {
     const token = await AsyncStorage.getItem('userToken');
     try {
-      const response:any = await getAll(token);
+      const response = await getAll(token);
       if (response.length > 0) {
         const createrMap = new Map();
         response.forEach((post) => {
           if (post.type === 2) {
-        
             const createdAtDate = new Date(post.create_at);
             const currentDate = new Date();
             const differenceInMilliseconds = currentDate - createdAtDate;
@@ -38,9 +37,8 @@ const ListStory = memo(({ onrefresh }) => {
                 } catch (error) {
                   console.error(`Lỗi khi xóa bài đăng ${post.id}:`, error);
                 }
-              }, 500); 
+              }, 500);
             } else {
-       
               if (!createrMap.has(post.creater.id)) {
                 createrMap.set(post.creater.id, {
                   creater_id: post.creater.id,
@@ -54,18 +52,27 @@ const ListStory = memo(({ onrefresh }) => {
           }
         });
 
-     
         const groupedPosts = Array.from(createrMap.values());
-        setData([...groupedPosts]);
+        setData(groupedPosts);
       }
     } catch (error) {
       console.error(error);
     }
-  }, [setData]);
+  }, []);
 
   useEffect(() => {
     getAllPost();
-  }, [getAllPost, onrefresh,data]);
+  }, [getAllPost, onrefresh]);
+
+  const renderItem = useCallback(({ item, index: findindex }) => (
+    <ItemStory
+      list={data}
+      data={item}
+      setIndex={setIndex}
+      index={index}
+      indexfind={findindex}
+    />
+  ), [data, index,onrefresh]);
 
   return (
     <View style={{ flex: 0 }}>
@@ -75,16 +82,8 @@ const ListStory = memo(({ onrefresh }) => {
         style={{ flexGrow: 0 }}
         initialScrollIndex={index}
         data={data}
-        renderItem={({ item, index: findindex }) => (
-          <ItemStory
-            list={data}
-            data={item}
-            setIndex={setIndex}
-            index={index}
-            indexfind={findindex}
-          />
-        )}
-        keyExtractor={(item, index) => index.toString()}
+        renderItem={renderItem}
+        keyExtractor={(item, index) => item.creater_id.toString()}
         horizontal
         showsHorizontalScrollIndicator={false}
       />

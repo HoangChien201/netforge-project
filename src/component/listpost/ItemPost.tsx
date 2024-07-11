@@ -78,7 +78,7 @@ const ItemPost = memo(({ index, data,onrefresh, userId, onPressProfile  }) => {
     const formatContents = useMemo(() => {
         const format = postsShares?.content?.split(/@\[([^\]]+)\]\(\d+\)/g);
         return (
-            <View style={{ marginHorizontal: 20, paddingBottom:  postsShares?.media?.length ? 0 : 20, flexDirection: 'row', flexWrap: 'wrap' }}>
+            <View style={{ marginHorizontal: 20, paddingBottom:  postsShares?.media?.length ? 0 : 10, flexDirection: 'row', flexWrap: 'wrap' }}>
                 {format?.map((fomat, index) => (
                     <Text
                         key={`${fomat}-${index}`}
@@ -163,9 +163,11 @@ const ItemPost = memo(({ index, data,onrefresh, userId, onPressProfile  }) => {
                             )}
                         </View>
                     </View>
-                    <View style={styles.sharedContent}>
-                        {formatContent}
-                    </View>
+                   {
+                    content.length > 0 &&  <View style={styles.sharedContent}>
+                    {formatContent}
+                </View>
+                   }
                     <View style={styles.sharedPost}>
                         <View style={styles.home}>
                             <View style={styles.containerAvt}>
@@ -173,21 +175,25 @@ const ItemPost = memo(({ index, data,onrefresh, userId, onPressProfile  }) => {
                                {postsShares?.creater?.avatar ? (
                                     <Image source={{ uri: postsShares?.creater?.avatar }} style={styles.avt} />
                                 ) : (
-                                    <Image source={require('../../media/icon/phuking.jpg')} style={styles.avt} />
+                                    <Image source={require('../../media/Dicons/nguoidung.jpg')} style={styles.avt} />
                                 )}
                                 <View>
-                                    <Text style={styles.nameUser}>{postsShares?.creater?.fullname || "Người dùng"}</Text>
+                                    <Text style={[styles.nameUser,{marginTop:postsShares?.creater?.fullname ? 0 : 15}]}>{postsShares?.creater?.fullname || "Người dùng"}</Text>
                                     <View style={styles.postInfo}>
-                                        <Text style={styles.postDate}>{DateOfTimePost(postsShares?.create_at)}</Text>
-                                        <Image source={require('../../media/icon/icon-hour-light.png')} />
+                                        <Text style={styles.postDate}>{postsShares?.create_at ? DateOfTimePost(postsShares?.create_at):null}</Text>
+                                        {postsShares?.create_at ? <Image source={require('../../media/icon/icon-hour-light.png')} />:null} 
                                     </View>
                                 </View>
                                </TouchableOpacity>
                             </View>
                         </View>
-                        <View style={styles.sharedPostContainer}>
-                            {formatContents}
-                        </View>
+                       {
+                        postsShares?.content?.length > 0 ?  <View style={styles.sharedPostContainer}>
+                        {formatContents}
+                    </View>:<View style={{padding:5}}>
+                        <Text style={{textAlign:'center'}}> Bài viết này đã được xóa </Text>
+                    </View>
+                       }
                         {postsShares?.media?.length > 0 && <ItemImg image={postsShares?.media} />}
                     </View>
                     <ActionBar checkLike={checkLike} setCheckLike={setCheckLike} postId={id} type={reaction} comment_count={comment_count} share_count={share_count} like_count={like_count} />
