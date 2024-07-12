@@ -12,6 +12,7 @@ import {
   StatusBar,
   Text,
   View,
+  LogBox
 } from 'react-native';
 import ManageNavigation from './src/component/navigation/ManageNavigation';
 import { UserProvider } from './src/component/navigation/UserContext';

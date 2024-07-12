@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, Image, TouchableOpacity, StyleSheet, Modal } from 'react-native';
+import { View, Text, Image, TouchableOpacity, StyleSheet, Modal, Pressable } from 'react-native';
 import Video from 'react-native-video';
 import { getReplyComments, deleteComments, deleteLikeComments } from "../../http/TuongHttp"
 import { DateOfTimePost } from '../../format/DateOfTimePost';
@@ -13,13 +13,18 @@ import { ProfileRootStackEnum } from '../stack/ProfileRootStackParams';
 import { useNavigation } from '@react-navigation/native';
 import { navigationType } from '../stack/UserStack';
 import { reaction } from '../../constant/emoji';
+import Reaction from './Reaction';
 
-const CommentItem = ({ comment, onReply, depth = 0, render, parent, setText, setUserId }) => {
+
+const CommentItem = ({ comment, onReply, depth = 0, render, parent, setText, setUserId}) => {
     const { user } = useMyContext();
     const navigation = useNavigation<navigationType>()
     const [modalReactionVisible, setModaReactionlVisible] = useState(false);
     const [likeIcon, setLikeIcon] = useState(null);
     const [replies, setReplies] = useState([]);
+    const [checkLike,setCheckLike] = useState(false)
+    
+
 
     // phóng to image
     const [selectedMedia, setSelectedMedia] = useState(null); // Đường dẫn hình ảnh được chọn
@@ -29,55 +34,18 @@ const CommentItem = ({ comment, onReply, depth = 0, render, parent, setText, set
     const [isHide, setIsHide] = useState(false);
     //render
     useEffect(() => {
-        if (comment.id) { // Lòng bình luận 2 cấp
+        if (comment.id) {
             fetchReplies(comment.id);
         }
+        // if(checkReaction){
+        //     setCheckReaction(false)
+        //     console.log('check', checkReaction);
+            
+        // } else{
+        //     setCheckReaction(true)
+        // }
 
     }, [comment]);
-    useEffect(() => {
-        const loadReaction = async () => {
-            try {
-                const savedReaction = await AsyncStorage.getItem(`comment_${comment.id}_user_${user.id}_reaction`);
-                if (savedReaction) {
-                    setLikeIcon(JSON.parse(savedReaction));
-                    console.log('savene', JSON.parse(savedReaction));
-
-                }
-            } catch (error) {
-                console.log('Lỗi khi lấy Icon:', error);
-            }
-        };
-        loadReaction();
-    }, [comment.id]);
-
-    //handle hủy like
-    const handleCancelLike = async () => {
-        //call api cancelLike and setLikeIcon =null
-        setLikeIcon(null);
-        // console.log('delete like nè');
-        // console.log('idcomment', comment.id);
-        // console.log(comment.user.id);
-        try {
-            const reponse = await deleteLikeComments(comment.id, comment.user.id)
-            await AsyncStorage.removeItem(`comment_${comment.id}_user_${user.id}_reaction`);
-            console.log('delete like thành công:', reponse);
-
-        } catch (error) {
-            console.log(error);
-
-        }
-    }
-    // handle setIcon
-    const handleSelectReaction = async (reaction) => {
-        setModaReactionlVisible(false);
-        setLikeIcon(reaction.source)
-        try {
-            await AsyncStorage.setItem(`comment_${comment.id}_user_${user.id}_reaction`, JSON.stringify(reaction.source));
-            console.log('Icon đã chọn:', reaction);
-        } catch (error) {
-            console.log('Lỗi khi lưu Icon:', error);
-        }
-    };
     const handleImagePress = (media) => {
         if (typeof media === 'string') {
             setSelectedMedia(media);
@@ -118,7 +86,8 @@ const CommentItem = ({ comment, onReply, depth = 0, render, parent, setText, set
     };
     // handle trả lời bình luận
     const handleReply = () => {
-
+        //close reaction
+        setCheckLike(false)
         onReply(comment.id)
         // lấy name của bình luận cha và set vào innputComment
         setText(comment.user.fullname);
@@ -141,6 +110,7 @@ const CommentItem = ({ comment, onReply, depth = 0, render, parent, setText, set
                             render={render}
                             setText={setText}
                             setUserId={setUserId}
+                         
                         />
                     ))}
                 </View>
@@ -158,6 +128,7 @@ const CommentItem = ({ comment, onReply, depth = 0, render, parent, setText, set
                             render={render}
                             setText={setText}
                             setUserId={setUserId}
+                            
                         />
                     ))}
                 </View>
@@ -177,8 +148,12 @@ const CommentItem = ({ comment, onReply, depth = 0, render, parent, setText, set
             navigation.navigate(ProfileRootStackEnum.FriendProfile, { userId });
         }
     };
+    const handleCheck = () => {
+        setCheckLike(false)
+        
+    }
     return (
-        <View style={[
+        <Pressable onPress={handleCheck} style={[
             styles.commentContainer,
             {
                 padding: depth < 1 ? 0 : 0,
@@ -188,39 +163,39 @@ const CommentItem = ({ comment, onReply, depth = 0, render, parent, setText, set
             <View style={{ flexDirection: 'row' }}>
                 <View style={{ flex: 1 }}>
                     <View style={styles.userContainer}>
-                        <TouchableOpacity onPress={handleToProfile}>
+                        <Pressable onPress={handleToProfile}>
                             <Image source={{ uri: comment.user.avatar }} style={styles.avatar} />
-                        </TouchableOpacity>
+                        </Pressable>
 
-                        <TouchableOpacity style={styles.BackgroundComment} onLongPress={() => handleCommentPress()}>
+                        <Pressable style={styles.BackgroundComment} onLongPress={() => handleCommentPress()}>
                             <View style={{ padding: 10, flexDirection: 'column' }}>
-                                <TouchableOpacity>
+                                <Pressable >
                                     <Text style={styles.fullname}>{comment.user.fullname}</Text>
-                                </TouchableOpacity>
+                                </Pressable>
                                 {comment.content ? (
                                     <Text style={styles.content}>{comment.content}</Text>
                                 ) : null}
                                 <View style={{ marginTop: 5, alignItems: 'center' }}>
                                     {comment.image ? (
                                         comment.image.endsWith('.mp4') ? (
-                                            <TouchableOpacity style={{ width: 100, height: 150, }} onPress={() => handleImagePress(comment.image)}>
+                                            <Pressable style={{ width: 100, height: 150, }} onPress={() => handleImagePress(comment.image)}>
                                                 <Video source={{ uri: comment.image }} style={styles.media} resizeMode='cover' />
-                                            </TouchableOpacity>
+                                            </Pressable>
 
                                         ) : (
-                                            <TouchableOpacity style={{ width: 100, height: 150, }} onPress={() => handleImagePress(comment.image)}>
+                                            <Pressable style={{ width: 100, height: 150, }} onPress={() => handleImagePress(comment.image)}>
                                                 <Image source={{ uri: comment.image }} style={styles.media} />
-                                            </TouchableOpacity>
+                                            </Pressable>
 
                                         )
                                     ) : null}
                                 </View>
                             </View>
-                        </TouchableOpacity>
+                        </Pressable>
                     </View>
-                    <View style={{ flexDirection: "row", alignItems: 'center', marginStart: 55 }}>
+                    <View style={{ flexDirection: "row", alignItems: 'center', marginStart: 55, marginTop: 3 }}>
                         <Text style={{ marginRight: 5, fontWeight: 'bold', fontSize: 14 }}>{DateOfTimePost(comment.create_at)}</Text>
-                        {
+                        {/* {
                             !comment.parent &&
                             <>
                                 <Text style={{ fontWeight: 'bold', fontSize: 14, color: 'black', }}>᛫</Text>
@@ -228,43 +203,16 @@ const CommentItem = ({ comment, onReply, depth = 0, render, parent, setText, set
                                     <Text style={{ fontWeight: 'bold', fontSize: 13 }}>Trả lời</Text>
                                 </TouchableOpacity>
                             </>
-                        }
+                        } */}
+                          <>
+                                <Text style={{ fontWeight: 'bold', fontSize: 14, color: 'black', }}>᛫</Text>
+                                <TouchableOpacity onPress={handleReply} style={styles.replyButton}>
+                                    <Text style={{ fontWeight: 'bold', fontSize: 13 }}>Trả lời</Text>
+                                </TouchableOpacity>
+                            </>
 
                         <Text style={{ fontWeight: 'bold', fontSize: 14, color: 'black', marginLeft: 5 }}>᛫</Text>
-
-                        {
-                            modalReactionVisible && (
-                                
-                                    <ReactionButton
-                                        render={render}
-                                        comment={comment}
-                                        isVisible={modalReactionVisible}
-                                        onSelectReaction={handleSelectReaction}
-                                        onClose={() => setModaReactionlVisible(false)}
-
-                                    />
-                            
-
-                            )
-                        }
-                        <TouchableOpacity style={styles.replyButton} onLongPress={() => setModaReactionlVisible(true)}>
-                            {likeIcon ?
-                                (<View style={{ flexDirection: 'row' }}>
-                                    <TouchableOpacity onPress={handleCancelLike} onLongPress={() => setModaReactionlVisible(true)}>
-                                        <Image source={likeIcon} style={styles.likeIcon} />
-                                    </TouchableOpacity>
-                                    <Text style={{ marginLeft: 5, fontSize: 14 }}>{comment.like_count}</Text>
-                                </View>
-                                )
-                                :
-                                ( 
-                                         <Text style={{ fontWeight: 'bold', fontSize: 14 }}>Thích</Text>
-                            
-                                )
-                            }
-
-                        </TouchableOpacity>
-
+                        <Reaction like_count = {comment.like_count} type={comment.reaction} commentId={comment.id} checkReaction = {checkLike} setCheckReaction = {setCheckLike} render={render}/>
 
                     </View>
                 </View>
@@ -275,7 +223,7 @@ const CommentItem = ({ comment, onReply, depth = 0, render, parent, setText, set
                 !isHide && !comment.parent ?
                     replies.length > 0 && (
                         <View style={{ left: 50, marginTop: 7 }}>
-                            <TouchableOpacity onPress={() => setIsHide(true)}>
+                            <Pressable onPress={() => setIsHide(true)}>
                                 <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                                     <Image source={{ uri: replies[0].user.avatar }} style={{ width: 25, height: 25, borderRadius: 100 }} />
                                     <Text style={{ fontSize: 13, fontWeight: '700', color: '#000', marginLeft: 5 }}>{replies[0].user.fullname}</Text>
@@ -285,7 +233,7 @@ const CommentItem = ({ comment, onReply, depth = 0, render, parent, setText, set
 
                                 </View>
 
-                            </TouchableOpacity>
+                            </Pressable>
                         </View>
                     )
                     :
@@ -301,13 +249,11 @@ const CommentItem = ({ comment, onReply, depth = 0, render, parent, setText, set
                 isVisible={isDleteVisible}
                 onConfirm={handleConfirmDelete}
                 onCancel={() => setIsDleteVisible(false)} />
-            {/* Modal reaction comments*/}
-
             {/* Modal Otherdelete comments*/}
             <ModalOtherDelete
                 isVisible={isOtherDleteVisible}
                 onCancel={() => setIsOtherDleteVisible(false)} />
-        </View>
+        </Pressable>
     );
 };
 
