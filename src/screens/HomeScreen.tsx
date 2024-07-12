@@ -144,27 +144,31 @@ const HomeScreen = () => {
                     <Image source={require('../media/quyet_icon/netforge1.jpg')} style={styles.logo} />
                     <Text style={styles.headerTitle}>NetForge</Text>
                 </View>
-              <View>
-                <TouchableOpacity onPress={()=>navigation.navigate(HomeRootStackEnum.ExploreScreen)}>
-                     <AntDesignIcon name='search1' size={22} color='#000' style={styles.iconCenter} />
-                </TouchableOpacity>
-              
-              </View>
-                <View style={styles.headerRight}>
-                    <TouchableOpacity style={{alignItems:'center'}} onPress={handlerClick}>
-                        <Image source={{ uri: user.avatar }} style={styles.userAvatar} />
-                        <Text style={styles.userName}>{user.fullname}</Text>
+                <View>
+                    <TouchableOpacity onPress={() => navigation.navigate(HomeRootStackEnum.ExploreScreen)}>
+                        <AntDesignIcon name='search1' size={22} color='#000' style={styles.iconCenter} />
                     </TouchableOpacity>
-                 
+
+                </View>
+                <View style={styles.headerRight}>
+                    <TouchableOpacity style={{ alignItems: 'center' }} onPress={handlerClick}>
+                        <Image source={{ uri: user.avatar }} style={styles.userAvatar} />
+                        {/* <Text style={styles.userName}>{user.fullname}</Text> */}
+                    </TouchableOpacity>
+
                 </View>
                 {hidden && (
                     <View style={styles.hiddenMenu}>
                         <View style={styles.hiddenMenuContent}>
-                            <TouchableOpacity style={styles.hiddenMenuItem}>
+                            <TouchableOpacity style={styles.hiddenMenuItem}
+                                onPress={() => navigation.navigate('Scanner')}
+                            >
                                 <MaterialCommunityIcons name='qrcode-scan' size={25} />
                                 <Text style={styles.hiddenMenuText}>Mở máy ảnh</Text>
                             </TouchableOpacity>
-                            <TouchableOpacity style={styles.hiddenMenuItem}>
+                            <TouchableOpacity style={styles.hiddenMenuItem}
+                            onPress={() => navigation.navigate('QRcodeScreen')}
+                            >
                                 <MaterialCommunityIcons name='qrcode' size={25} />
                                 <Text style={styles.hiddenMenuText}>Mã QR của tôi</Text>
                             </TouchableOpacity>
@@ -224,7 +228,7 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
     },
     hiddenMenu: {
-        zIndex:9999,
+        zIndex: 9999,
         borderRadius: 8,
         padding: 5,
         width: 150,

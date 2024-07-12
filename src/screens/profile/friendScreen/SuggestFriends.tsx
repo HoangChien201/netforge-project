@@ -1,6 +1,6 @@
 import React, { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { StyleSheet, Text, View, TouchableOpacity, Image, LogBox } from 'react-native';
-import BottomSheet, { BottomSheetModal, BottomSheetModalProvider, BottomSheetView, BottomSheetScrollView } from '@gorhom/bottom-sheet';
+import BottomSheet, { BottomSheetScrollView, BottomSheetView } from '@gorhom/bottom-sheet';
 import uuid from 'react-native-uuid';
 import { COLOR } from '../../../constant/color';
 import { sendRequest } from '../../../http/QuyetHTTP';
@@ -67,10 +67,6 @@ const SuggestFriends: React.FC<Suggest> = ({ data, setData }) => {
 
     </BottomSheet>
 
-
-
-
-
   }
   return (
     <BottomSheet
@@ -105,6 +101,9 @@ const SuggestFriends: React.FC<Suggest> = ({ data, setData }) => {
         ))}
       </BottomSheetScrollView>
     </BottomSheet>
+    // <View>
+    //   <Text>hello</Text>
+    // </View>
   );
 };
 

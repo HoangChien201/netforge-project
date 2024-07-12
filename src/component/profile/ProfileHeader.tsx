@@ -101,7 +101,7 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({ fullname, userId, loggedI
     }
   };
   const checkFiend = () => {
-    if (relationship == null || relationship.status == null || change) {
+    if (relationship === null || relationship?.status == null || change) {
       return (
         <View>
           <TouchableOpacity style={styles.btnAddFriend}

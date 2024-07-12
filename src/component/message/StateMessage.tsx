@@ -8,18 +8,18 @@ import { useMyContext } from '../navigation/UserContext'
 import { StateMessageFormat } from './format/StatusMessage'
 export type StateMessageType = {
   message: messageType,
-  group_id: number,
+  group_id: number | null,
   sender: boolean,
-  lastMessage:boolean
+  lastMessage: boolean
 }
 const STATUS_SENDING = 0;
 const STATUS_SEND = 1;
 const STATUS_SEEN = 2;
 
-const StateMessage: React.FC<StateMessageType> = ({ message, group_id, sender,lastMessage }) => {
+const StateMessage: React.FC<StateMessageType> = ({ message, group_id, sender, lastMessage }) => {
   const [state, setState] = useState(message.state)
   const [seens, setSeens] = useState(message.reads)
-  
+
   const { user } = useMyContext()
   //
   useEffect(() => {
@@ -28,38 +28,49 @@ const StateMessage: React.FC<StateMessageType> = ({ message, group_id, sender,la
     }
   }, [message.state])
 
-  useEffect(()=>{
-    
-    socket.on(`read-message-${message.id}`,(m:any)=>{
+  useEffect(() => {
+
+    socket.on(`read-message-${message.id}`, (m: any) => {
       setSeens(
-        prev=>{
-          return [...prev,m.user]
+        prev => {
+          return [...prev, m.user]
         }
       )
     })
-  },[])
+  }, [])
 
   async function addMessage() {
-    switch (message.type) {
+    if (group_id) {
+      switch (message.type) {
 
-      case 'text':
-        message.state = STATUS_SEND;
-        message['group'] = group_id
-        if(message.parent){
-          message.parent=typeof message.parent === 'object' ? message.parent.id : message.parent
-        }
-        const messageCreate = await addMessageAPI(message)
-        if (messageCreate) {
-          socket.emit(`message`, messageCreate)
-          setState(messageCreate.state)
-        }
-        break;
+        case 'text':
 
-      default:
-        messgeMedia(message)
 
-        break;
+          let messageCreate = {
+            ...message,
+            state: STATUS_SEND,
+            group: group_id
+          }
+
+          if (message.parent) {
+
+            messageCreate.parent = typeof message.parent === 'object' ? message.parent.id : message.parent
+          }
+
+          const messageNew = await addMessageAPI(messageCreate)
+          if (messageNew) {
+            socket.emit(`message`, messageNew)
+            setState(messageNew.state)
+          }
+          break;
+
+        default:
+          messgeMedia(message)
+
+          break;
+      }
     }
+
   }
 
   async function messgeMedia(message: messageType) {
@@ -76,15 +87,17 @@ const StateMessage: React.FC<StateMessageType> = ({ message, group_id, sender,la
       // Kiểm tra cấu trúc phản hồi từ API uploadImage
       // Kiểm tra xem phản hồi có phải là một mảng và có ít nhất một phần tử không
       if (Array.isArray(resultImage) && resultImage.length > 0) {
-        message.state = 1;
-        message.message = resultImage[0].url
-        message['group'] = group_id
+        let messageCreate = {
+          ...message,
+          state: STATUS_SEND,
+          group: group_id,
+          message: resultImage[0].url
+        }
+        const messageNew = await addMessageAPI(messageCreate)
+        if (messageNew) {
+          socket.emit(`message`, messageNew)
 
-        const messageCreate = await addMessageAPI(message)
-        if (messageCreate) {
-          socket.emit(`message`, messageCreate)
-
-          setState(messageCreate.state)
+          setState(messageNew.state)
         }
 
       } else {
@@ -113,6 +126,6 @@ const styles = StyleSheet.create({
   },
   container: {
     alignSelf: 'flex-end',
-    marginTop:10
+    marginTop: 10
   }
 })

@@ -6,22 +6,24 @@ import { COLOR } from '../../constant/color';
 import ICON from 'react-native-vector-icons/AntDesign'
 import ImagePicker from 'react-native-image-picker';
 
-export type fileType={
-    fileName:string,
-    uri:string,
-    type:string
+export type fileType = {
+    fileName: string,
+    uri: string,
+    type: string
 }
-type Op={
-    onSelectMedia:(value:any)=>void,
-    onSelectEmoji:(value:any)=>void
+type Op = {
+    onSelectMedia: (value: any) => void,
+    onSelectEmoji: (value: any) => void,
+    setShowAI: (value: any) => void,
+    imageUrl: any
 }
 
-const Options:React.FC<Op> = ({ onSelectMedia, onSelectEmoji }) => {
+const Options: React.FC<Op> = ({ onSelectMedia, onSelectEmoji, setShowAI, imageUrl }) => {
     const [showEmojiModal, setShowEmojiModal] = useState(false);
-    useEffect(()=>{
+    useEffect(() => {
         //openLibrary();
 
-    },[])
+    }, [])
     // camera
     const openCamera = useCallback(async () => {
         const options = {
@@ -48,19 +50,19 @@ const Options:React.FC<Op> = ({ onSelectMedia, onSelectEmoji }) => {
         if (response.errorCode) return;
         if (response.errorMessage) return;
         if (response.assets && response.assets.length > 0) {
-            const newImages:fileType = response.assets.map(asset =>{
-                const {type,fileName,uri}= asset
-               return {
-                type,
-                fileName,
-                uri
-               }
-                
-            } );
+            const newImages: fileType = response.assets.map(asset => {
+                const { type, fileName, uri } = asset
+                return {
+                    type,
+                    fileName,
+                    uri
+                }
+
+            });
 
             onSelectMedia(newImages);
             //console.log('newImages: ' + JSON.stringify(newImages));
-            
+
         }
     }, []);
     const handleEmojiSelect = (emoji: any) => {
@@ -73,15 +75,25 @@ const Options:React.FC<Op> = ({ onSelectMedia, onSelectEmoji }) => {
         <View style={styles.container}>
             <TouchableOpacity style={styles.button} onPress={openLibrary}>
                 {/* <Image style={styles.icon} source={require('../../media/quyet_icon/folder_p.png')} /> */}
-                <ICON name='folderopen' size={30} color={'#00CC33'}/>
+                <ICON name='folderopen' size={30} color={'#00CC33'} />
             </TouchableOpacity>
             <TouchableOpacity style={styles.button} onPress={openCamera}>
                 {/* <Image style={styles.icon} source={require('../../media/quyet_icon/camera_p.png')} /> */}
-                <ICON name='camerao' size={30} color={'#0033FF'}/>
+                <ICON name='camerao' size={30} color={'#0033FF'} />
             </TouchableOpacity>
             <TouchableOpacity style={styles.button} onPress={() => setShowEmojiModal(true)}>
                 {/* <Image style={styles.icon} source={require('../../media/quyet_icon/smile_p.png')} /> */}
-                <ICON name='smileo' size={28} color={'#FF6600'}/>
+                <ICON name='smileo' size={28} color={'#FF6600'} />
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.button} onPress={() => setShowAI(true)}>
+                {/* <Image style={styles.icon} source={require('../../media/quyet_icon/smile_p.png')} /> */}
+                <Text style={{ fontSize: 18, fontWeight: 'bold', color: COLOR.PrimaryColor }}>AI</Text>
+                {imageUrl ?
+                    <View style={{height:6,width:6, position:'absolute', top:2, end:2, backgroundColor:'red',borderRadius:50}}></View>
+                    :
+                    null
+                }
+
             </TouchableOpacity>
             <Modal visible={showEmojiModal} animationType="slide" transparent={true}>
                 <View style={styles.modalContainer}>
@@ -103,8 +115,8 @@ const styles = StyleSheet.create({
         height: 40,
         width: '100%',
         alignItems: 'center',
-        borderTopWidth:1,
-        borderColor:'#b9babc'
+        borderTopWidth: 1,
+        borderColor: '#b9babc'
     },
     icon: {
         height: 30,
@@ -130,8 +142,9 @@ const styles = StyleSheet.create({
         elevation: 5,
         height: 40,
         width: 40,
-        marginTop:20,
-        
+        marginTop: 20,
+        justifyContent: 'center'
+
     },
     media: {
         fontSize: 24,
