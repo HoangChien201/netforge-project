@@ -44,39 +44,38 @@ const NotificationScreen = () => {
     return () => {
       socket.off(`notification-${userId}`);
     };
-  }, [userId]);
+  }, [userId, notifications]);  // Include notifications in dependencies to ensure up-to-date check
 
+  const handleSendReaction = () => {
+    const data = {
+      id: uuid.v4(), // id Notify
+      // import uuid from 'react-native-uuid';
+      type: 6, // 1 thả cảm xúc - 2 comment - 3 add friend - 4 tạo mới bài viết + history - 5 share bài viết - 6 nhắn tin
+      postId: "80", // sử dụng cho đăng + thả emoji bài viết/story + share
+      commentId: "80", // sử dụng cho like comment - trả lời comment
+      messId: "80",// sử dụng cho nhắn tin
+      title: `${user.fullname} gửi một tin nhắn`,
+      // gửi tin nhắn mới || trả lời bình luận ${content}||chia sẻ bài viết ${content}
+      // bày tỏ cảm xúc với bài viết ${content} || bày tỏ cảm xúc với comment${content}
+      // ${content} thuộc về người nhận thông báo || nếu không lấy được bỏ qua
+      //----------------------------------------------
+      body: "ủa là sao bạn?", // nội dung hiển thị trên thông báo / tùy chỉnh (thuộc về người gửi) 
+      userInfo: {
+        receiver: 8, // id người nhận
+        sender: `${user.id}`, // id người đăng nhập
+        fullname: `${user.fullname}`, // tên người đăng nhập
+        avatar: `${user.avatar}`, // ảnh người đăng nhập
+        mutiple: false // true = gửi cho tất cả bạn bè (dùng trong tạo bài viết + history)
+      },
+      reaction: {
+        type: 2 // 1 thích - 2 ha ha - 3 thương thương - 4 yêu thích - 5 tức giận
+      },
+      timestamp: new Date().toISOString()
+    };
 
-  useEffect(() => {
-    if (notifications.length > 0) {
-      const grouped = notifications.reduce((acc, notification) => {
-        const { type, postId, commentId, messId, friendId } = notification;
-        const id = postId || commentId || friendId || messId;
-        let foundIndex = acc.findIndex(item => item.id === id && item.type === type);
-        if (foundIndex === -1) {
-          acc.unshift({
-            id:id,
-            type:type,
-            data: [notification],
-            idv4: uuid.v4()
-          });
-        } else {
-          const updatedItem = {
-            ...acc[foundIndex],
-            data: [notification, ...acc[foundIndex].data]
-          };
-          acc.splice(foundIndex, 1); // Remove the old item
-          acc.unshift(updatedItem);
-        }
-        return acc;
-
-      }, []);
-      setGroupedNotifications(grouped);
-      console.log('dulieumoi:' + JSON.stringify(grouped));
-      
-    }
-  }, [ notifications]);
-
+    socket.emit('notification', data);
+    console.log('Sent notification data:', data);
+  };
   const addNotification = async (newNotification) => {
     try {
       const oldNotifications = await AsyncStorage.getItem('notifications');
@@ -170,7 +169,7 @@ const NotificationScreen = () => {
     <View style={styles.container}>
       <View style={styles.header}>
         <Text style={styles.headerText}>Thông báo</Text>
-        <TouchableOpacity
+        {/* <TouchableOpacity
           style={styles.button}
           onPress={() => setShowModalEdit(true)}
         >
@@ -181,7 +180,7 @@ const NotificationScreen = () => {
           onPress={handleSendNotification}
         >
           <Text>Send NO</Text>
-        </TouchableOpacity>
+        </TouchableOpacity> */}
       </View>
       <TouchableOpacity onPress={() => setShowModalFriend(true)}>
         <REQFriend />
