@@ -63,8 +63,6 @@ export const HomeRootStackScreens = [
     },
     {
         id: Math.random() + "" + Date,
-        name: HomeRootStackEnum.ProfileScreen,
-        component: ProfileScreen,
         name: HomeRootStackEnum.Scanner,
         component: Scanner,
         options: {

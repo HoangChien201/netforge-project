@@ -1,8 +1,9 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import AxiosInstance from "../AxiosInstance";
-export const getAll = async (token:any) => {
+export const getAll = async (token:any,id?:number) => {
     try {
         const axioInstance = AxiosInstance();
+        const url1 = `/posts/get-by-user/${id}`;
         const url = `/posts/get-by-user-request`;
        
         const headers = {
@@ -18,6 +19,24 @@ export const getAll = async (token:any) => {
     }
   
 }
+export const SharePost = async (idShare:number) => {
+    try {
+        const token = await AsyncStorage.getItem('token');
+        const url = `/posts/find-one/${idShare}`;
+        const result = await AxiosInstance().get(url, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        });
+        console.log('Server response:', result); // Logging toàn bộ phản hồi từ server
+        return result;
+    } catch (error) {
+        console.error(error);
+        throw error;
+    }
+  
+}
+
 export const likePost = async(postId:number,reaction:number) =>{
     try {
         const axioInstance = AxiosInstance();
@@ -60,5 +79,16 @@ export const updateLikePost = async (postId:number, userId:number,reaction:numbe
         console.log('Response:', response);
     } catch (error) {
         console.log("Lỗi get",error);
+    }
+};
+export const deletePost = async (postId: number) => {
+    try {
+        const axioInstance = AxiosInstance();
+        const url = `/posts/delete/${postId}`;
+        const response = await axioInstance.delete(url);
+        console.log('Response:', response);
+    } catch (error) {
+        console.error(error);
+        throw error;
     }
 };

@@ -4,7 +4,7 @@ import PushNotification, { Importance } from 'react-native-push-notification';
 import { PermissionsAndroid } from 'react-native';
 import uuid from 'react-native-uuid';
 
-
+import {useSendNotification} from '../constant/notify'
 import { socket } from '../http/SocketHandle'
 import BODYMODAL from '../component/edit-post-modal/Body'
 import { COLOR } from '../constant/color'
@@ -21,98 +21,30 @@ import ItemNewPost from '../component/notificationes/ItemNewPost';
 const NotificationScreen = () => {
   const [showModalEdit, setShowModalEdit] = useState(false);
   const [showModalFriend, setShowModalFriend] = useState(false);
-  const [showModalHistories, setShowModalHistories] = useState(false);
   const [status, setStatus] = useState('');
   const [showPopup, setShowPopup] = useState(false);
   const [isError, setIsError] = useState(false);
   const [reload, setReload] = useState(false);
-  const [dot, setDot] = useState(Number);
+  const [dot, setDot] = useState(0);
   const [notifications, setNotifications] = useState([]);
   const { user } = useMyContext();
-  const id = user.id;
-  const ShowModalEdit = () => {
-    setShowModalEdit(true);
-  }
-  const ShowModalFriend = () => {
-    setShowModalFriend(true);
-  }
+  const [groupedNotifications, setGroupedNotifications] = useState<any>([]);
+  const userId = user.id;
+  const {sendNCommentPost} = useSendNotification();
   useEffect(() => {
-    PushNotification.configure({
-      onNotification: function (notification) {
-        console.log('LOCAL NOTIFICATION ==>', notification);
-      },
-      requestPermissions: false,
-    });
-    const fetchData = async () => {
-      try {
-        const storedNotifications = await AsyncStorage.getItem('notifications');
-        if (storedNotifications) {
-          setNotifications(JSON.parse(storedNotifications));
-        }
-      } catch (error) {
-        console.error('Error loading notifications:', error);
-      }
-    };
     fetchData();
-    createChannelNotify();
-    requestNotificationPermission();
-  }, []);
-  const requestNotificationPermission = async () => {
-    try {
-      const granted = await PermissionsAndroid.request(
-        PermissionsAndroid.PERMISSIONS.POST_NOTIFICATIONS,
-        {
-          title: "Notification Permission",
-          message: "This app needs access to show notifications.",
-          buttonNeutral: "Ask Me Later",
-          buttonNegative: "Cancel",
-          buttonPositive: "OK",
-        }
-      );
-      if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-        console.log("You can use the notifications");
-      } else {
-        console.log("Notification permission denied");
-      }
-    } catch (err) {
-      console.warn(err);
-    }
-  };
-  const createChannelNotify = async () => {
-    PushNotification.createChannel(
-      {
-        channelId: "channel-id-1",
-        channelName: "My channel",
-        channelDescription: "A channel to categorise your notifications",
-        playSound: true,
-        soundName: "default",
-        importance: Importance.HIGH,
-        vibrate: true,
-      },
-      (created) => console.log(`createChannel returned '${created}'`)
-    );
-  }
-
-  useEffect(() => {
-    console.log('Socket connected:', socket.connected);
-
-    socket.on(`notification-${id}`, (data) => {
+    socket.on(`notification-${userId}`, (data) => {
       console.log('Notification received:', data);
-
-      // Check if the notification already exists in notifications
       const exists = notifications.some(notification => notification.id === data.id);
-
-      // Add notification only if it doesn't already exist
       if (!exists) {
+        showLocalNotification(data);
         addNotification(data);
-        showLocal(data);
       }
     });
-
     return () => {
-      socket.off(`notification-${id}`);
+      socket.off(`notification-${userId}`);
     };
-  }, [id, notifications]);  // Include notifications in dependencies to ensure up-to-date check
+  }, [userId, notifications]);  // Include notifications in dependencies to ensure up-to-date check
 
   const handleSendReaction = () => {
     const data = {
@@ -129,7 +61,7 @@ const NotificationScreen = () => {
       //----------------------------------------------
       body: "ủa là sao bạn?", // nội dung hiển thị trên thông báo / tùy chỉnh (thuộc về người gửi) 
       userInfo: {
-        receiver: `${user.id}`, // id người nhận
+        receiver: 8, // id người nhận
         sender: `${user.id}`, // id người đăng nhập
         fullname: `${user.fullname}`, // tên người đăng nhập
         avatar: `${user.avatar}`, // ảnh người đăng nhập
@@ -146,30 +78,75 @@ const NotificationScreen = () => {
   };
   const addNotification = async (newNotification) => {
     try {
-      const updatedNotifications = [...notifications, newNotification];
+      const oldNotifications = await AsyncStorage.getItem('notifications');
+      const parsedOldNotifications = oldNotifications ? JSON.parse(oldNotifications) : [];
+      const updatedNotifications = Array.isArray(newNotification)
+        ? [...parsedOldNotifications, ...newNotification]
+        : [...parsedOldNotifications, newNotification];
+
       setNotifications(updatedNotifications);
       await AsyncStorage.setItem('notifications', JSON.stringify(updatedNotifications));
-      console.log('Notification added and saved:', newNotification);
+      console.log('Notification added and saved:', JSON.stringify(updatedNotifications));
     } catch (error) {
       console.error('Error adding notification:', error);
     }
   };
 
-  const showLocal = (notification: { notification?: any; body?: any; title?: any; }) => {
+    const fetchData = async () => {
+      try {
+        const oldNotifications = await AsyncStorage.getItem('notifications');
+        if(oldNotifications){
+          console.log('AsyncStorage:', oldNotifications);
+          const parsedNotifications = JSON.parse(oldNotifications);
+          if (parsedNotifications && Array.isArray(parsedNotifications)) {
+            setNotifications(parsedNotifications);
+          }
+        }
+        
+      } catch (error) {
+        console.error('AsyncStorage:', error);
+      }
+    };
+
+
+  const showLocalNotification = (notification) => {
     PushNotification.localNotification({
       channelId: "channel-id-1",
       autoCancel: true,
-      bigText: notification.body || "Không rõ nội dung",
-      title: notification.title || " Thông báo mới",
-      message: notification.body || "Không rõ nội dung",
+      bigText: notification.body || "",
+      title: notification.title || "Thông báo mới",
+      message: notification.body || "",
       vibrate: true,
       vibration: 300,
       playSound: true,
       soundName: "default",
     });
-
   };
 
+  const handleSendNotification = () => {
+
+    const data = {
+      postId:80,
+      body:'tôi không còn gì để nói',
+      receiver:8
+    }
+    sendNCommentPost(data)
+  };
+
+  const loadFlatList = () => {
+    if (groupedNotifications.length > 0) {
+      return <FlatList
+        data={groupedNotifications}
+        keyExtractor={(item) => item.idv4}
+        renderItem={renderItem}
+        style={styles.list}
+      />
+    } else {
+      return <View style={styles.emptyContainer}>
+        <Text style={styles.emptyText}>Không có thông báo!</Text>
+      </View>
+    }
+  };
   const renderItem = ({ item }) => {
     switch (item.type) {
       case 1:
@@ -190,41 +167,45 @@ const NotificationScreen = () => {
   };
   return (
     <View style={styles.container}>
-
       <View style={styles.header}>
         <Text style={styles.headerText}>Thông báo</Text>
-        <TouchableOpacity style={{ height: 20, width: 60, backgroundColor: 'white', borderRadius: 10, alignItems: 'center' }}
-          onPress={ShowModalEdit}>
-          <Text>edit Post</Text>
+        {/* <TouchableOpacity
+          style={styles.button}
+          onPress={() => setShowModalEdit(true)}
+        >
+          <Text>Edit Post</Text>
         </TouchableOpacity>
         <TouchableOpacity
-          style={{ height: 20, width: 60, backgroundColor: 'white', borderRadius: 10, alignItems: 'center' }}
-          onPress={handleSendReaction}
+          style={styles.button}
+          onPress={handleSendNotification}
         >
-          <Text>send NO</Text>
-        </TouchableOpacity>
+          <Text>Send NO</Text>
+        </TouchableOpacity> */}
       </View>
-      <TouchableOpacity onPress={ShowModalFriend}>
+      <TouchableOpacity onPress={() => setShowModalFriend(true)}>
         <REQFriend />
-        {dot > 0 ? <View style={styles.dot}>
-          <Text style={{ color: COLOR.PrimaryColor1, fontSize: 16 }}>{dot}</Text>
-        </View> : null}
+        {dot > 0 && (
+          <View style={styles.dot}>
+            <Text style={{ color: 'red', fontSize: 16 }}>{dot}</Text>
+          </View>
+        )}
       </TouchableOpacity>
       <View style={{ flexDirection: 'column' }}>
-        {notifications ?
-          <FlatList
-            data={notifications}
-            keyExtractor={(item) => item.timestamp}
-            renderItem={renderItem}
-            style={styles.list}
-          />
-          :
-          <View style={{ width: '100%', alignItems: 'center', justifyContent: 'center' }}>
-            <Text style={styles.emptyText}>Không có thông báo!</Text>
-          </View>
-        }
-
+      <FlatList
+        data={groupedNotifications}
+        keyExtractor={(item) => item.idv4}
+        renderItem={renderItem}
+        style={styles.list}
+      />
+      {groupedNotifications?.length>0?
+  null
+        :
+        <View style={{alignItems:'center'}}>
+          <Text style={styles.emptyText}>Không có thông báo</Text>
+        </View>
+      }
       </View>
+    
       <BODYMODAL
         showModalEdit={showModalEdit}
         setShowModalEdit={setShowModalEdit}
@@ -237,16 +218,15 @@ const NotificationScreen = () => {
         setReload={setReload}
       />
     </View>
+  );
+};
 
-  )
-}
-
-export default NotificationScreen
+export default NotificationScreen;
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor:COLOR.primary300,
-    flex:1
+    backgroundColor: COLOR.primary300,
+    flex: 1
   },
   header: {
     height: 40,
@@ -281,8 +261,355 @@ const styles = StyleSheet.create({
     color: COLOR.PrimaryColor
 
   },
-  list:{
-    marginTop:5,
-    backgroundColor:COLOR.primary300,
+  list: {
+    marginTop: 5,
+    backgroundColor: COLOR.primary300,
   }
 })
+const data = [
+  {
+    id: 1,
+    type: 2,
+    postId: 80,
+    //commentId: 81,
+    //messId: 82,
+    //friendId,
+    title: "name bình luận bài viết",
+    body: "ủa là sao bạn?",
+    userInfo: {
+      receiver: 8,
+      sender: 8,
+      fullname: "name",
+      avatar: "http://res.cloudinary.com/delivery-food/image/upload/v1720027441/wowcr2pkeuwxizwtqtx7.jpg",
+      mutiple: false
+    },
+    reaction: {
+      type: 2
+    },
+    timestamp: "2024-07-03T17:24:02.561Z"
+  },
+  {
+    id: 2,
+    type: 2,
+    postId: 80,
+    commentId: 82,
+    //messId
+    title: "name1 bình luận bài viết",
+    body: "ủa là sao bạn?",
+    userInfo: {
+      receiver: 8,
+      sender: 8,
+      fullname: "name1",
+      avatar: "http://res.cloudinary.com/delivery-food/image/upload/v1718983274/cwow3twij10mb5r4nqzt.jpg",
+      mutiple: false
+    },
+    reaction: {
+      type: 2
+    },
+    timestamp: "2024-07-03T17:30:02.561Z"
+  },
+  {
+    id: 3,
+    type: 2,
+    postId: 80,
+    commentId: 85,
+    title: "name1 bình luận bài viết",
+    body: "ủa là sao bạn?",
+    userInfo: {
+      receiver: 8,
+      sender: 8,
+      fullname: "name1",
+      avatar: "http://res.cloudinary.com/delivery-food/image/upload/v1718983274/cwow3twij10mb5r4nqzt.jpg",
+      mutiple: false
+    },
+    reaction: {
+      type: 2
+    },
+    timestamp: "2024-07-03T17:30:02.561Z"
+  },
+  {
+    id: 4,
+    type: 2,
+    postId: 80,
+    commentId: 89,
+    title: "name1 bình luận bài viết",
+    body: "ủa là sao bạn?",
+    userInfo: {
+      receiver: 8,
+      sender: 8,
+      fullname: "name1",
+      avatar: "http://res.cloudinary.com/delivery-food/image/upload/v1718983274/cwow3twij10mb5r4nqzt.jpg",
+      mutiple: false
+    },
+    reaction: {
+      type: 2
+    },
+    timestamp: "2024-07-03T17:30:02.561Z"
+  },
+  {
+    id: 5,
+    type: 2,
+    postId: 80,
+    commentId: 99,
+    title: "name1 bình luận bài viết",
+    body: "ủa là sao bạn?",
+    userInfo: {
+      receiver: 8,
+      sender: 8,
+      fullname: "name1",
+      avatar: "http://res.cloudinary.com/delivery-food/image/upload/v1718983274/cwow3twij10mb5r4nqzt.jpg",
+      mutiple: false
+    },
+    reaction: {
+      type: 2
+    },
+    timestamp: "2024-07-03T16:30:02.561Z"
+  },
+  {
+    id: 6,
+    type: 2,
+    postId: 80,
+    commentId: 100,
+    title: "name1 bình luận bài viết",
+    body: "ủa là sao bạn?",
+    userInfo: {
+      receiver: 8,
+      sender: 8,
+      fullname: "name1",
+      avatar: "http://res.cloudinary.com/delivery-food/image/upload/v1718983274/cwow3twij10mb5r4nqzt.jpg",
+      mutiple: false
+    },
+    reaction: {
+      type: 2
+    },
+    timestamp: "2024-07-03T16:30:02.561Z"
+  }, {
+    id: 7,
+    type: 2,
+    postId: 81,
+    commentId: 70,
+    title: "name3 bình luận bài viết khác",
+    body: "ủa là sao bạn?",
+    userInfo: {
+      receiver: 8,
+      sender: 8,
+      fullname: "name3",
+      avatar: "http://res.cloudinary.com/delivery-food/image/upload/v1719339803/jm7pruogzeprd7d41gwj.jpg",
+      mutiple: false
+    },
+    reaction: {
+      type: 2
+    },
+    timestamp: "2024-07-03T17:35:02.561Z"
+  },
+  {
+    id: 8,
+    type: 2,
+    postId: 81,
+    commentId: 83,
+    title: "name3 bình luận bài viết khác",
+    body: "ủa là sao bạn?",
+    userInfo: {
+      receiver: 8,
+      sender: 8,
+      fullname: "name3",
+      avatar: "http://res.cloudinary.com/delivery-food/image/upload/v1718983274/cwow3twij10mb5r4nqzt.jpg",
+      mutiple: false
+    },
+    reaction: {
+      type: 2
+    },
+    timestamp: "2024-07-03T17:35:02.561Z"
+  },
+  {
+    id: 10,
+    type: 1,
+    postId: 81,
+    title: "like đã bày tỏ cảm xúc post",
+    body: "bày tỏ cảm xúc 1",
+    userInfo: {
+      receiver: 8,
+      sender: 8,
+      fullname: "like",
+      avatar: "http://res.cloudinary.com/delivery-food/image/upload/v1718983274/cwow3twij10mb5r4nqzt.jpg",
+      mutiple: false
+    },
+    reaction: {
+      type: 2
+    },
+    timestamp: "2024-07-03T17:35:02.561Z"
+  },
+  {
+    id: 101,
+    type: 1,
+    postId: 81,
+    title: "like đã bày tỏ cảm xúc post",
+    body: "bày tỏ cảm xúc 2",
+    userInfo: {
+      receiver: 8,
+      sender: 8,
+      fullname: "like",
+      avatar: "http://res.cloudinary.com/delivery-food/image/upload/v1718983274/cwow3twij10mb5r4nqzt.jpg",
+      mutiple: false
+    },
+    reaction: {
+      type: 2
+    },
+    timestamp: "2024-07-03T17:35:02.561Z"
+  },
+  {
+    id: 1011,
+    type: 1,
+    commentId: 83,
+    postId1: 81,
+    title: "like đã bày tỏ cảm xúc comment",
+    body: "bày tỏ cảm xúc 2",
+    userInfo: {
+      receiver: 8,
+      sender: 8,
+      fullname: "like",
+      avatar: "http://res.cloudinary.com/delivery-food/image/upload/v1718983274/cwow3twij10mb5r4nqzt.jpg",
+      mutiple: false
+    },
+    reaction: {
+      type: 2
+    },
+    timestamp: "2024-07-03T17:35:02.561Z"
+  },
+  {
+    id: 11,
+    type: 3,
+    friendId: 8,
+    title: "đã gửi lời mời kết bạn",
+    body: "",
+    userInfo: {
+      receiver: 8,
+      sender: 8,
+      fullname: "like",
+      avatar: "http://res.cloudinary.com/delivery-food/image/upload/v1718983274/cwow3twij10mb5r4nqzt.jpg",
+      mutiple: false
+    },
+    reaction: {
+      type: 2
+    },
+    timestamp: "2024-07-03T17:35:02.561Z"
+  },
+  {
+    id: 12,
+    type: 4,
+    postId: 8,
+    title: "tạo bài viết mới",
+    body: "đây là body",
+    userInfo: {
+      receiver: 8,
+      sender: 8,
+      fullname: "like",
+      avatar: "http://res.cloudinary.com/delivery-food/image/upload/v1718983274/cwow3twij10mb5r4nqzt.jpg",
+      mutiple: false
+    },
+    reaction: {
+      type: 2
+    },
+    timestamp: "2024-07-03T17:35:02.561Z"
+  },
+  {
+    id: 13,
+    type: 5,
+    postId: 8,
+    title: "share bài viết",
+    body: "",
+    userInfo: {
+      receiver: 8,
+      sender: 8,
+      fullname: "like",
+      avatar: "http://res.cloudinary.com/delivery-food/image/upload/v1718983274/cwow3twij10mb5r4nqzt.jpg",
+      mutiple: false
+    },
+    reaction: {
+      type: 2
+    },
+    timestamp: "2024-07-03T17:35:02.561Z"
+  },
+  {
+    id: 13,
+    type: 5,
+    postId: 8,
+    title: "share bài viết ",
+    body: " share 2",
+    userInfo: {
+      receiver: 8,
+      sender: 8,
+      fullname: "like",
+      avatar: "http://res.cloudinary.com/delivery-food/image/upload/v1718983274/cwow3twij10mb5r4nqzt.jpg",
+      mutiple: false
+    },
+    reaction: {
+      type: 2
+    },
+    timestamp: "2024-07-03T17:35:02.561Z"
+  },
+  {
+    id: 13,
+    type: 6,
+    messId: 8,
+    title: "gửi một tin nhắn",
+    body: "tin nhắn thứ 1",
+    userInfo: {
+      receiver: 8,
+      sender: 8,
+      fullname: "like",
+      avatar: "http://res.cloudinary.com/delivery-food/image/upload/v1718983274/cwow3twij10mb5r4nqzt.jpg",
+      mutiple: false
+    },
+    reaction: {
+      type: 2
+    },
+    timestamp: "2024-07-03T17:35:02.561Z"
+  },
+  {
+    id: 14,
+    type: 6,
+    messId: 8,
+    title: "gửi một tin nhắn",
+    body: "tin nhắn thứ 2 tôi đang cố làm cho nó dài thêm thật dài dài vãi cả l",
+    userInfo: {
+      receiver: 8,
+      sender: 8,
+      fullname: "like",
+      avatar: "http://res.cloudinary.com/delivery-food/image/upload/v1718983274/cwow3twij10mb5r4nqzt.jpg",
+      mutiple: false
+    },
+    reaction: {
+      type: 2
+    },
+    timestamp: "2024-07-03T17:35:02.561Z"
+  },
+];
+type daaata = {
+  id: number, // import uuid from 'react-native-uuid';
+  type: Number, // 1 thả cảm xúc - 2 comment - 3 add friend - 4 tạo mới bài viết + history - 5 share bài viết - 6 nhắn tin
+  postId: number, // sử dụng cho đăng + thả emoji bài viết/story + share
+  postId1: number, // chỉ sử dụng cho thả cảm xúc bình luận
+  commentId: number, // sử dụng cho like comment - trả lời comment
+  friendId: number, // sử dụng cho kết bạn
+  messId: number,// sử dụng cho nhắn tin
+  title: string,
+  // ${user.fullname} đã gửi tin nhắn mới 
+  // ${user.fullname} đã trả lời bình luận 
+  // ${user.fullname} đã chia sẻ bài viết
+  // ${user.fullname} bày tỏ cảm xúc với bài viết 
+  // ${user.fullname} đã bày tỏ cảm xúc với bình luận
+  body: string, // nội dung hiển thị trên thông báo 
+  // content || message || comment 
+  userInfo: {
+    receiver: number, // id người nhận
+    sender: number, // id người đăng nhập
+    fullname: string, // tên người đăng nhập
+    avatar: string, // link ảnh người đăng nhập
+    mutiple: false // true = gửi cho tất cả bạn bè (dùng trong tạo bài viết + history)
+  },
+  reaction: {
+    type: number
+    // 1 thích - 2 ha ha - 3 thương thương - 4 yêu thích - 5 tức giận
+  },
+}

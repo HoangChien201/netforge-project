@@ -6,9 +6,10 @@ import { COLOR } from '../../../constant/color';
 import { sendRequest } from '../../../http/QuyetHTTP';
 import { useMyContext } from '../../../component/navigation/UserContext';
 import { socket } from '../../../http/SocketHandle';
+import { useSendNotification } from '../../../constant/notify';
 type Suggest = {
   data: any,
-  setData: ()=> void,
+  setData: () => void,
 }
 const SuggestFriends: React.FC<Suggest> = ({ data, setData }) => {
   const snapPoints = useMemo(() => ['15%', '50%', '100%'], []);
@@ -16,26 +17,16 @@ const SuggestFriends: React.FC<Suggest> = ({ data, setData }) => {
   const bottomSheetRef = useRef<BottomSheet>(null);
   const [textReqState, setTextReqState] = useState({});
   const [disabledButtons, setDisabledButtons] = useState({});
-  const {user} = useMyContext()
+  const { user } = useMyContext();
+  const { sendNRequestFriend } = useSendNotification();
   LogBox.ignoreLogs([
     '[Reanimated] Reduced motion setting is enabled on this device.',
   ]);
-  const handleSendReaction = (id:any) => {
+  const handleSendReaction = (id: any) => {
     const data = {
-      id: uuid.v4(),
-      type: 3,
-      title: `${user.fullname} đã gửi cho bạn lời mời kết bạn`,
-      userInfo: {
-        receiver: id,
-        sender: `${user.id}`,
-        fullname: `${user.fullname}`, 
-        avatar: `${user.avatar}`, 
-      },
-      timestamp: new Date().toISOString()
+      receiver:id
     };
-
-    socket.emit('notification', data);
-    console.log('Sent notification data:', data);
+    sendNRequestFriend(data)
   };
   // gửi yêu cầu kết bạn
   const status = 1;
@@ -87,8 +78,8 @@ const SuggestFriends: React.FC<Suggest> = ({ data, setData }) => {
       snapPoints={snapPoints}
     >
       <BottomSheetScrollView style={styles.contentContainer}>
-        <View style={{alignItems:'center', justifyContent:'center'}}>
-        <Text style={styles.text}>Danh sách gợi ý 🎉</Text>
+        <View style={{ alignItems: 'center', justifyContent: 'center' }}>
+          <Text style={styles.text}>Danh sách gợi ý 🎉</Text>
         </View>
 
         {data?.map((friend: { user: { id: string | number; avatar: any; fullname: string | number | boolean | React.ReactElement<any, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | React.ReactPortal | null | undefined } }) => (
@@ -136,7 +127,7 @@ const styles = StyleSheet.create({
     fontSize: 18,
     color: 'black',
     fontWeight: '500',
-    marginVertical:5
+    marginVertical: 5
   },
   itemWA: {
     flexDirection: 'row',

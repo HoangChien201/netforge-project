@@ -2,6 +2,9 @@ import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { useMyContext } from '../navigation/UserContext'
 import { sendRequest } from '../../http/QuyetHTTP'
+import { socket } from '../../http/SocketHandle'
+import uuid from 'react-native-uuid';
+import { useSendNotification } from '../../constant/notify'
 type Fri = {
   id: number
 }
@@ -11,6 +14,7 @@ const Friend: React.FC<Fri> = ({ id }) => {
   const [isYou, setIsYou] = useState(false);
   const status = 1;
   const { user } = useMyContext();
+  const {sendNRequestFriend} = useSendNotification();
   useEffect(() => {
     if (user.id == id) {
       setIsYou(true);
@@ -26,6 +30,7 @@ const Friend: React.FC<Fri> = ({ id }) => {
       // console.log('đã gửi lời mời');
       // console.log('id: '+ id + 'status: ' + status);
       if (result) {
+        handleSendReaction(id);
         setTextReqState((prevState) => ({
           ...prevState,
           [id]: 'Đã gửi lời mời'
@@ -37,7 +42,13 @@ const Friend: React.FC<Fri> = ({ id }) => {
         [id]: false,
       }));
     }
-  }
+  };
+  const handleSendReaction = (id:any) => {
+    const data = {
+      receiver:id
+    };
+    sendNRequestFriend(data)
+  };
   return (
     <View style={styles.container}>
       {isYou == true ?

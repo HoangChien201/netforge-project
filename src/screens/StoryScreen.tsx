@@ -7,7 +7,8 @@ import TestProgress from '../component/storys/ProgressBarScreen';
 import ProgressBarr from '../component/storys/ProgressBarr';
 import { reaction } from '../constant/emoji';
 import Reaction from '../component/storys/Reaction';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useRoute } from '@react-navigation/native';
+import { DateOfTimePost } from '../format/DateOfTimePost';
 
 const DATA = [
   { id: '1', title: 'Item 1' },
@@ -17,22 +18,21 @@ const DATA = [
 ];
 
 const StoryScreen = ({ index }) => {
+  const route = useRoute();
+  const { list,indexfind,itemPost } = route.params;
   const navigation = useNavigation();
-  const [currentIndex, setCurrentIndex] = useState(0);
-  const [data, setData] = useState(DATA);
+  const [currentIndex, setCurrentIndex] = useState(indexfind);
+  const [data1, setData1] = useState(DATA);
   const scrollViewRef = useRef<ScrollView>(null);
 
-  const onViewableItemsChanged = useCallback(({ viewableItems }) => {
-    if (viewableItems && viewableItems.length > 0) {
-      const currentItemId = viewableItems[0].index;
-      setCurrentIndex(currentItemId);
-    }
-  }, []);
+
+
+
 
   useEffect(() => {
     scrollViewRef.current?.scrollTo({
       x: Dimensions.get('window').width * currentIndex,
-      animated: true,
+      animated: false,
     });
   }, [currentIndex]);
 
@@ -50,24 +50,23 @@ const StoryScreen = ({ index }) => {
           setCurrentIndex(index);
         }}
       >
-        {data.map((item, index) => (
-          <Item navigate={navigation} key={item.id} index={index} currentIndex={currentIndex} setCurrentIndex={setCurrentIndex} dataLength={data.length - 1} title={item.title} />
+        {list?.map((item: any | null | undefined, index: any) => (
+          <Item posts={item} navigate={navigation} key={index} index={index} currentIndex={currentIndex} setCurrentIndex={setCurrentIndex} dataLength={list.length - 1}  />
         ))}
       </ScrollView>
     </GestureHandlerRootView>
   );
 };
 
-const Item = ({ navigate, index, currentIndex, setCurrentIndex, dataLength }) => {
+const Item = ({ navigate, index, currentIndex, setCurrentIndex, dataLength,posts }) => {
   return (
     <View style={{ width: Dimensions.get('window').width }}>
       <View style={{ position: 'absolute', zIndex: 1, height: 100, margin: 20, width: '90%', flexDirection: 'row',justifyContent:'space-between' }}>
 
         <View style={{ flexDirection: 'row' }}>
-          <Image source={require('../media/icon/phuking.jpg')} style={styles.avt} />
+          <Image source={{uri:posts.avatar}} style={styles.avt} />
           <View>
-            <Text style={{ color: 'white', fontWeight: 'bold' }}>Lục thiên phú</Text>
-            <Text style={{ color: 'white' }}>20 giờ</Text>
+            <Text style={{ color: 'white', fontWeight: 'bold' }}>{posts.fullname}</Text>
           </View>
         </View>
         <View>
@@ -77,7 +76,7 @@ const Item = ({ navigate, index, currentIndex, setCurrentIndex, dataLength }) =>
         </View>
       </View>
 
-      {currentIndex === index ? <TestProgress dataLength={dataLength} setCurrentIndex={setCurrentIndex} currentIndex={currentIndex} /> : <ProgressBarr />}
+      {currentIndex === index ? <TestProgress listpostStory={posts.posts} dataLength={dataLength} setCurrentIndex={setCurrentIndex} currentIndex={currentIndex} /> : <ProgressBarr listpostStory={posts.posts} />}
     </View>
   );
 };

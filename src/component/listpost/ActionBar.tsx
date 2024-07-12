@@ -154,7 +154,7 @@ const ActionBar = memo(({onPressProfile, like_count,type, postId, comment_count,
                             <TouchableOpacity key={index} style={{ paddingHorizontal: 8 }} onPress={() => {
                                 setNumber(item.type);
                                 setIsLike(false)
-                                numberLike === null ? setNumberLike(1) : setNumberLike(pre=>pre+1) 
+                                numberLike === null ? setNumberLike(1) : (numberLike === 0 && setNumberLike(pre=>pre+1) ) 
                                number === null ? likepost(postId, item.type):updatePost(postId,item.type)
                             }}>
                                 <Image source={item.Emoji} style={{ width: 23, height: 23, marginVertical: 6 }} />

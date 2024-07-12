@@ -41,6 +41,7 @@ const ListMessageScreen = () => {
 
   
   return (
+    
     <View style={styles.container}>
       <View style={styles.headerContainer}>
         <Text style={styles.header}>Nhắn tin</Text>

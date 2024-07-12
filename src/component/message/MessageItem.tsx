@@ -64,7 +64,7 @@ export type reactionType = {
 interface MessageItemProp {
   message: messageType,
   sender: boolean,
-  group_id: number,
+  group_id: number | null,
   setMessageReactionsSelected: any,
   deleteMessage: any,
   setReply: any,
