@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { View, Image, TouchableOpacity, StyleSheet, Animated, Easing, Text } from 'react-native';
 import ProgressBar from './ProgressBar';
 import Reaction from './Reaction';
@@ -8,38 +8,38 @@ import AntDesign from 'react-native-vector-icons/AntDesign';
 import { DateOfTimePost } from '../../format/DateOfTimePost';
 import { deletePost } from '../../http/userHttp/getpost';
 import { useNavigation } from '@react-navigation/native';
+import { useMyContext } from '../navigation/UserContext';
 
 const ProgressBarScreen = ({ listpostStory, setCurrentIndex, currentIndex, dataLength }) => {
     const [activeIndex, setActiveIndex] = useState(0);
     const [check, setCheck] = useState(false);
-    const [data, setData] = useState(listpostStory);
     const [paused, setPaused] = useState(false);
-    const[hidden,setHidden]= useState(false);
-    const [showReactions, setShowReactions] = useState(new Animated.Value(0));
+    const [hidden, setHidden] = useState(false);
+    const showReactions = useRef(new Animated.Value(0)).current;
     const spinValue = useRef(new Animated.Value(0)).current;
     const navigation = useNavigation();
+    const { user } = useMyContext();
 
+    useEffect(() => {
+        console.log("ProgressBarScreen");
+    }, []);
 
-    const handleImagePressR = () => {
-        if (check) {
-            return;
-        } else {
-            if (activeIndex === data.length - 1) {
+    const handleImagePressR = useCallback(() => {
+        if (!check) {
+            if (activeIndex === listpostStory.length - 1) {
                 if (currentIndex === dataLength) {
                     return;
                 } else {
                     setCurrentIndex(currentIndex + 1);
                 }
             } else {
-                setActiveIndex((prevIndex) => prevIndex + 1);
+                setActiveIndex(prevIndex => prevIndex + 1);
             }
         }
-    };
+    }, [check, activeIndex, currentIndex, dataLength, setCurrentIndex]);
 
-    const handleImagePressL = () => {
-        if (check) {
-            return;
-        } else {
+    const handleImagePressL = useCallback(() => {
+        if (!check) {
             if (activeIndex === 0) {
                 if (currentIndex === 0) {
                     return;
@@ -47,92 +47,87 @@ const ProgressBarScreen = ({ listpostStory, setCurrentIndex, currentIndex, dataL
                     setCurrentIndex(currentIndex - 1);
                 }
             } else {
-                setActiveIndex((prevIndex) => prevIndex - 1);
+                setActiveIndex(prevIndex => prevIndex - 1);
             }
         }
-    };
+    }, [check, activeIndex, currentIndex, setCurrentIndex]);
 
-    const PressIn = () => {
+    const PressIn = useCallback(() => {
         setCheck(true);
         setPaused(true);
-    };
+    }, []);
 
-    const PressOut = () => {
+    const PressOut = useCallback(() => {
         setCheck(false);
         setPaused(false);
-    };
+    }, []);
 
-    const toggleReactions = () => {
+    const toggleReactions = useCallback(() => {
         Animated.timing(showReactions, {
             toValue: showReactions._value === 0 ? 1 : 0,
             duration: 250,
             easing: Easing.linear,
             useNativeDriver: false,
         }).start();
-    };
+    }, [showReactions]);
 
-    const spin = () => {
-        Animated.timing(
-            spinValue,
-            {
-                toValue: 1,
-                duration: 250,
-                easing: Easing.linear,
-                useNativeDriver: true,
-            }
-        ).start(() => {
+    const spin = useCallback(() => {
+        Animated.timing(spinValue, {
+            toValue: 1,
+            duration: 250,
+            easing: Easing.linear,
+            useNativeDriver: true,
+        }).start(() => {
             spinValue.setValue(0);
         });
-    };
+    }, [spinValue]);
 
     const spinAnimation = spinValue.interpolate({
         inputRange: [0, 1],
         outputRange: ['0deg', '360deg'],
     });
-    const handleClick = ()=>{
-        console.log("dkfjds",data[activeIndex].id);
-        setHidden(pre=>!pre);
-        
-    }
-    const handleDeletePost = async ()=>{
-       try {
-            const result = await deletePost(data[activeIndex].id);        
-                navigation.goBack();
-            
-         
-       } catch (error) {
-            throw error;
-       }
-    }
+
+    const handleClick = useCallback(() => {
+        setHidden(pre => !pre);
+    }, []);
+
+    const handleDeletePost = useCallback(async () => {
+        try {
+            await deletePost(listpostStory[activeIndex].id);
+            navigation.goBack();
+        } catch (error) {
+            console.error(error);
+        }
+    }, [activeIndex, listpostStory, navigation]);
 
     return (
         <View style={styles.container}>
-             <TouchableOpacity onPress={handleClick} style={{  position: 'absolute', top: '2%', left: '35%',zIndex:3132 }}>
-                         <AntDesign name='ellipsis1' size={25} color='#fff' />
-            </TouchableOpacity>
-          {
-            hidden &&   <View style={{  padding:4,width:80,height:30,backgroundColor:"#E9E6E6",position: 'absolute', top: '5%', left: '45%',zIndex:3132 }}>
-            <TouchableOpacity onPress={handleDeletePost} style={{borderColor:'#fff',borderWidth:1,borderRadius:2,backgroundColor:'#fff',height:"100%",width:"100%"}} >
-                <Text style={{color:'#000',fontWeight:'bold',textAlign:'center'}}>xoa</Text>
-            </TouchableOpacity>
-        </View>
-          }
-            {
-                data[activeIndex]?.media[0]?.url ?
-                  <>
-                    <Image source={{ uri: data[activeIndex]?.media[0]?.url }} style={styles.fullscreenImage} />
-                    <Text style={{ fontSize: 30, color: '#fff', position: 'absolute', top: '50%', left: '25%' }}>{data[activeIndex]?.content}</Text>
-                    <Text style={{ color: 'white', position: 'absolute', top: '5%', left: '20%' }}>{DateOfTimePost(data[activeIndex].create_at)}</Text>
-                   
-                  </> : <View style={styles.fullscreenImage1}>
-                    
-                        <Text style={{ fontSize: 30, color: "#000", position: 'absolute', top: '40%', left: '25%' }}>{data[activeIndex]?.content}</Text>
-                        <Text style={{ color: 'white', position: 'absolute', top: '5%', left: '20%' }}>{DateOfTimePost(data[activeIndex].create_at)}</Text>
-                    </View>
-            }
-
+            {listpostStory[activeIndex]?.creater.id === user.id && (
+                <TouchableOpacity onPress={handleClick} style={styles.ellipsisButton}>
+                    <AntDesign name='ellipsis1' size={25} color='#000' />
+                </TouchableOpacity>
+            )}
+            {hidden && (
+                <View style={styles.deleteButtonContainer}>
+                    <TouchableOpacity onPress={handleDeletePost} style={styles.deleteButton}>
+                        <Text style={styles.deleteButtonText}>Xóa</Text>
+                    </TouchableOpacity>
+                </View>
+            )}
+            {listpostStory[activeIndex]?.media[0]?.url ? (
+                <>
+                    <Image source={{ uri: listpostStory[activeIndex]?.media[0]?.url }} style={styles.fullscreenImage} />
+                    <Text style={styles.imageContent}>{listpostStory[activeIndex]?.content}</Text>
+                    <Text style={styles.dateText}>{DateOfTimePost(listpostStory[activeIndex].create_at)}</Text>
+                </>
+            ) : (
+                <View style={styles.fullscreenImage1}>
+                    <Text style={styles.textContent}>{listpostStory[activeIndex]?.content}</Text>
+                    <Text style={styles.dateText}>{DateOfTimePost(listpostStory[activeIndex].create_at)}</Text>
+                </View>
+            )}
             <View style={styles.progressBarContainer}>
-                {data.map((item, index) => (
+                {listpostStory.map((item, index) => (
                     <ProgressBar
                         paused={paused}
                         dataLength={dataLength}
@@ -142,35 +137,32 @@ const ProgressBarScreen = ({ listpostStory, setCurrentIndex, currentIndex, dataL
                         index={index}
                         active={activeIndex}
                         setActi={setActiveIndex}
-                        length={data.length - 1}
+                        length={listpostStory.length - 1}
                     />
                 ))}
             </View>
-
-            <View style={{ flexDirection: 'row', position: 'absolute', height: '100%', backgroundColor: 'rgba(0, 0, 0, 0)', width: '100%' }}>
+            <View style={styles.touchableOverlay}>
                 <TouchableOpacity style={styles.button} onLongPress={PressIn} onPressOut={PressOut} onPress={handleImagePressL} />
                 <TouchableOpacity style={styles.button} onLongPress={PressIn} onPressOut={PressOut} onPress={handleImagePressR} />
             </View>
-
-            <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-around', position: 'absolute', bottom: 10, right: 10 }}>
-                <Animated.View style={[styles.reactionContainer, {
+            <View style={styles.reactionContainer}>
+                <Animated.View style={[styles.reactionSubContainer, {
                     width: showReactions.interpolate({
                         inputRange: [0, 1],
                         outputRange: ['0%', '80%'],
                     })
                 }]}>
-                    <Reaction />
+                    <Reaction postID={listpostStory[activeIndex].id} reactions={listpostStory[activeIndex].reaction} />
                 </Animated.View>
                 <TouchableOpacity onPress={() => {
                     spin();
                     toggleReactions();
                 }}>
                     <Animated.View style={{ transform: [{ rotate: spinAnimation }] }}>
-                        <FontAwesome6 name='face-smile' size={30} color="black" style={{ marginHorizontal: 10 }} />
+                        <FontAwesome6 name='face-smile' size={30} color="black" style={styles.smileIcon} />
                     </Animated.View>
                 </TouchableOpacity>
             </View>
-
         </View>
     );
 };
@@ -202,6 +194,14 @@ const styles = StyleSheet.create({
         backgroundColor: 'rgba(0, 0, 0, 0)',
     },
     reactionContainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-around',
+        position: 'absolute',
+        bottom: 10,
+        right: 10,
+    },
+    reactionSubContainer: {
         height: 50,
         paddingTop: 15,
         flexDirection: 'row',
@@ -210,6 +210,65 @@ const styles = StyleSheet.create({
         justifyContent: 'space-evenly',
         backgroundColor: 'rgba(105,105,105,0.5)',
         overflow: 'hidden',
+    },
+    ellipsisButton: {
+        position: 'absolute',
+        top: '2.5%',
+        right: '13%',
+        zIndex: 3132,
+    },
+    deleteButtonContainer: {
+        padding: 4,
+        width: 80,
+        height: 30,
+        backgroundColor: "#E9E6E6",
+        position: 'absolute',
+        top: '5%',
+        right: '5%',
+        zIndex: 3132,
+    },
+    deleteButton: {
+        borderColor: '#fff',
+        borderWidth: 1,
+        borderRadius: 2,
+        backgroundColor: '#fff',
+        height: "100%",
+        width: "100%",
+    },
+    deleteButtonText: {
+        color: '#000',
+        fontWeight: 'bold',
+        textAlign: 'center',
+    },
+    imageContent: {
+        fontSize: 30,
+        color: '#fff',
+        position: 'absolute',
+        top: '50%',
+        left: '25%',
+    },
+    textContent: {
+        fontSize: 30,
+        color: "#000",
+        position: 'absolute',
+        top: '40%',
+        left: '25%',
+    },
+    dateText: {
+        color: 'white',
+        position: 'absolute',
+        top: '5%',
+        left: '20%',
+    },
+    touchableOverlay: {
+        flexDirection: 'row',
+        position: 'absolute',
+        height: '100%',
+        backgroundColor: 'rgba(0, 0, 0, 0)',
+        width: '100%',
+    },
+    smileIcon: {
+        marginHorizontal: 10,
     },
 });
 

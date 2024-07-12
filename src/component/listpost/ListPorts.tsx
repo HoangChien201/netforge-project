@@ -16,15 +16,20 @@ const ListPorts = memo(({ onrefresh }: { onrefresh: boolean }) => {
   const [loading, setLoading] = useState(false);
   const [loadingMore, setLoadingMore] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
+
   const [showModalEdit, setShowModalEdit] = useState(false);
   const [showDelete,setShowDelete] = useState(false);
   const [selectedId, setSelectedId] = useState(null); 
+
   const navigation: NavigationProp<ParamListBase> = useNavigation();
   const PAGE_SIZE = 10;
   const getAllPost = useCallback(async () => {
     const token = await AsyncStorage.getItem('userToken');
 
+   if(allData.length < 0){
     setLoading(true);
+   }
+   
     try {
       const response: any = await getAll(token, user.id);
 
@@ -43,17 +48,13 @@ const ListPorts = memo(({ onrefresh }: { onrefresh: boolean }) => {
   useEffect(() => {
 
     getAllPost();
-  }, [getAllPost, onrefresh || showModalEdit||showDelete]);
+  }, [getAllPost, onrefresh]);
+  
   useFocusEffect(
     useCallback(() => {
       getAllPost();
-
-      return () => {
-        // Cleanup nếu cần khi màn hình mất focus
-        console.log('Screen unfocused');
-      };
+    }, [getAllPost])
     }, [])
-  );
 
 
   const loadMoreData = () => {
@@ -94,10 +95,11 @@ const ListPorts = memo(({ onrefresh }: { onrefresh: boolean }) => {
     }
   };
   return (
+    <>
+    <View style={{ flex:1,backgroundColor: 'rgba(155,155,155,0.2)',zIndex:999999 }}>
+      
 
-    <View style={{ flex: 1, backgroundColor: 'rgba(155,155,155,0.2)' }}>
-
-      <Loading isLoading={loading} />
+<!--       <Loading isLoading={loading} />
       <BODYMODAL
         showModalEdit={showModalEdit}
         setShowModalEdit={setShowModalEdit}
@@ -108,7 +110,7 @@ const ListPorts = memo(({ onrefresh }: { onrefresh: boolean }) => {
       setShowDelete={setShowDelete}
       postId={selectedId} 
 
-      />
+      /> -->
       {
 
         allData.length > 0 ?
@@ -136,6 +138,8 @@ const ListPorts = memo(({ onrefresh }: { onrefresh: boolean }) => {
 
 
     </View>
+    <Loading isLoading={loading} /> 
+    </>
   );
 });
 

@@ -19,6 +19,7 @@ const ListPortsByUser:React.FC<ListPortsByUserProps> = memo(({ userId, onRefresh
   const [loadingMore, setLoadingMore] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const navigation: NavigationProp<ParamListBase> = useNavigation();
+console.log("ListPortsByUser");
 
 
   const PAGE_SIZE = 10;

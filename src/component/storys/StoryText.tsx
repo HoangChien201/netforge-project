@@ -21,7 +21,7 @@ const StoryText = () => {
     const [keyboardVisible, setKeyboardVisible] = useState(false);
     const animatedBottom = useRef(new Animated.Value(50)).current;
     const animatedWidth = useRef(new Animated.Value(1)).current;
-
+    console.log("StoryText");
     useEffect(() => {
         const keyboardDidShowListener = Keyboard.addListener(
             'keyboardDidShow',

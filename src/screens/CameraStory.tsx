@@ -11,11 +11,15 @@ const CameraStory = () => {
   const navigation: NavigationProp<ParamListBase> = useNavigation();
   const takePicture = async () => {
     if (cameraRef.current) {
-      const options = { quality: 0.5, base64: true };
-      const data = await cameraRef.current?.takePictureAsync(options);
-      const uri = data.uri;
-      console.log(data.uri);
-      navigation.navigate(NetworkRootStackEnum.StoryDetail, { uri });
+      try {
+        const options = { quality: 0.5, base64: true };
+        const data = await cameraRef.current?.takePictureAsync(options);
+        const uri = data.uri;
+        console.log(data.uri);
+        navigation.navigate(NetworkRootStackEnum.StoryDetail, { uri });
+      } catch (error) {
+        console.error('Error taking picture:', error);
+      }
     }
   };
 
@@ -30,8 +34,6 @@ const CameraStory = () => {
       {/* <RNCamera
         ref={cameraRef}
         style={styles.preview}
-        type={RNCamera.Constants.Type.back}
-        flashMode={RNCamera.Constants.FlashMode.on}
         androidCameraPermissionOptions={{
           title: 'Quyền sử dụng camera',
           message: 'Chúng tôi cần quyền để sử dụng camera của bạn',
