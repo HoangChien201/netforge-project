@@ -10,14 +10,15 @@ import CommentsScreen from "../../screens/CommentsScreen"
 import MenuScreen from "../../screens/MenuScreen"
 import ProfileStack from "../stack/ProfileStack"
 import MessageStack from "../stack/MessageStack"
-
+import CreatePostStack from "../stack/CreatePostStack"
 
 enum NetworkRootBottomTabEnum {
     HomeStack = 'HomeStack',
     NotificationScreen = 'NotificationScreen',
     CreatePostScreen = 'CreatePostScreen',
     MessageStack = 'MessageStack',
-    ProfileStack = 'ProfileStack'
+    ProfileStack = 'ProfileStack',
+    CreatePostStack = 'CreatePostStack' //phu update liveStream
 }
 
 export type NetworkRootBottomTabParams = {
@@ -25,7 +26,8 @@ export type NetworkRootBottomTabParams = {
     NotificationScreen: undefined,
     CreatePostScreen: undefined,
     MessageStack: undefined,
-    ProfileStack: undefined
+    ProfileStack: undefined,
+    CreatePostStack: undefined
 }
 
 export const NetworkRootBottomTabScreens = [
@@ -51,8 +53,8 @@ export const NetworkRootBottomTabScreens = [
         }
     }, {
         id: Math.random() + "" + Date,
-        name: NetworkRootBottomTabEnum.CreatePostScreen,
-        component: CreatePostScreen,
+        name: NetworkRootBottomTabEnum.CreatePostStack, //phu update liveStream
+        component: CreatePostStack,
         options: {
             tabBarShowLabel: false,
             tabBarIcon: ({ focused }: { focused: boolean }) => {

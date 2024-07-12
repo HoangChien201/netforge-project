@@ -8,8 +8,9 @@ import { deleteLikePost, likePost, updateLikePost } from '../../http/userHttp/ge
 import { useMyContext } from '../navigation/UserContext';
 import ModalShare from '../share-post/ModalShare';
 
-const ActionBar = memo(({onPressProfile, like_count,type, postId, comment_count, share_count,checkLike,setCheckLike }: {setCheckLike:(Value:boolean)=>void,checkLike?:boolean,type: number, postId?: number, comment_count?: number, share_count?: number,like_count?:number }) => {
+const ActionBar = memo(({onPressProfile, like_count,type, postId, comment_count, share_count,checkLike,setCheckLike, share }: {setCheckLike:(Value:boolean)=>void,checkLike?:boolean,type: number, postId?: number, comment_count?: number, share_count?: number,like_count?:number,share?: number }) => {
     const [islike, setIsLike] = useState(false);
+    const [shares, setShare] = useState(share);
     const navigation = useNavigation();
     const {user}= useMyContext()
     const [numberLike, setNumberLike] = useState<number>(like_count);
@@ -19,6 +20,7 @@ const ActionBar = memo(({onPressProfile, like_count,type, postId, comment_count,
 
     const toggleModal = () => {
       setModalVisible(!isModalVisible);
+      setShare(share)
     };
     function navigationScreen(screen: string) {
         navigation.navigate(`${screen}`)
@@ -138,7 +140,7 @@ const ActionBar = memo(({onPressProfile, like_count,type, postId, comment_count,
                     <AntDesignIcon name='sharealt' size={22} color='#000' style={styles.comment} />
                     <Text style={styles.text}>{share_count ? share_count : 0}</Text>
                 </TouchableOpacity>
-                <ModalShare isVisible={isModalVisible} onClose={toggleModal} idPost={postId}/>
+                <ModalShare isVisible={isModalVisible} onClose={toggleModal} idPost={postId} share= {shares}/>
             </View>
             {(islike && checkLike)  &&
            

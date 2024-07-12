@@ -1,9 +1,9 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { SafeAreaView, StyleSheet, Text, View, Image, Dimensions, FlatList } from 'react-native';
 import Swiper from 'react-native-swiper';
 import Video from 'react-native-video';
-import { getPostByUser } from '../../http/PhuHTTP';
 import Loading from '../Modal/Loading';
+import { UseFetchPostByUser } from '../listpost/UseFetchPostByUser';
 
 interface MediaOfUserProps {
   userId: any;
@@ -30,31 +30,24 @@ const renderPagination = (index: any, total: any) => {
   );
 }
 
-const MediaOfUser: React.FC<MediaOfUserProps> = ({ userId, onRefresh }) => {
-  const [posts, setPosts] = useState<Post[]>([]);
-  const [loading, setLoading] = useState(false);
-
-  const getPostUser = useCallback(async () => {
-    try {
-      setLoading(true);
-      const response: any = await getPostByUser(userId);
-
-      if (response && Array.isArray(response)) {
-        const filteredPosts = response.filter((post: Post) => post.media && post.media.length > 0);
-        const sortedPosts = filteredPosts.sort((a: Post, b: Post) => new Date(b.create_at).getTime() - new Date(a.create_at).getTime());
-
-        setPosts([...sortedPosts]);
-        setLoading(false);
-      }
-    } catch (error) {
-      console.error(error);
-      setLoading(false);
-    }
-  }, [userId]);
+const MediaOfUser: React.FC<MediaOfUserProps> =  React.memo(({ userId, onRefresh }) => {
+  const { medias, fetchPosts, loading } = UseFetchPostByUser();
+  const [isFetching, setIsFetching] = useState(true); // Thêm biến trạng thái để kiểm soát hiển thị
 
   useEffect(() => {
-    getPostUser();
-  }, [getPostUser, onRefresh]);
+    const fetchData = async () => {
+      setIsFetching(true);
+      await fetchPosts(userId);
+      setIsFetching(false);
+    };
+    fetchData();
+  }, [fetchPosts, userId, onRefresh]);
+
+  // const logCount = useRef(0);  // Biến đếm số lần log
+  // useEffect(() => {
+  //   logCount.current += 1;
+  //   console.log(`MediaOfUser lần thứ ${logCount.current}: `, medias);
+  // }, [medias]);
 
   const renderMediaItem = (mediaItem: MediaItem) => {
     if (mediaItem.resource_type === 'image') {
@@ -78,11 +71,6 @@ const MediaOfUser: React.FC<MediaOfUserProps> = ({ userId, onRefresh }) => {
               </View>
             ))}
           </Swiper>
-          {/* {item.media.length > 4 && (
-            <View style={styles.overlay}>
-              <Text style={styles.overlayText}>+{item.media.length - 4}</Text>
-            </View>
-          )} */}
         </View>
       );
     } else {
@@ -90,25 +78,28 @@ const MediaOfUser: React.FC<MediaOfUserProps> = ({ userId, onRefresh }) => {
     }
   };
 
-  if (loading) {
-    return <Loading isLoading={true} />;
-  }
 
   return (
     <SafeAreaView style={styles.container}>
-      {posts.length > 0 ? (
+    {isFetching ? (
+        <Loading isLoading={true} />
+      ) : (
+      medias.length > 0 ? (
         <FlatList
-          data={posts}
+          data={medias}
           renderItem={renderItem}
           keyExtractor={(item) => item.id.toString()}
-          //ListEmptyComponent={<Text style={styles.noPhotos}>No posts found</Text>}
         />
       ) : (
-        <Text style={styles.noPhotos}>Không có ảnh nào để hiển thị</Text>
-      )}
-    </SafeAreaView>
+        <View style={styles.noPhotosContainer}>
+          <Image source={require('../../media/icon/no_image.png')} style={styles.noImage} />
+          <Text style={styles.noPhotos}>Hãy lưu lại những khoảnh khắc đẹp nào!</Text>
+        </View>
+      )
+    )}
+  </SafeAreaView>
   );
-};
+});
 
 export default MediaOfUser;
 const styles = StyleSheet.create({
@@ -155,11 +146,20 @@ const styles = StyleSheet.create({
     paddingVertical: 4,
     fontSize: 14,
   },
+  noPhotosContainer:{
+    alignItems:'center',
+    justifyContent:'center'
+  },
+  noImage: {
+    width:80,
+    height:80
+  },
   noPhotos: {
     fontSize: 18,
     color: '#6c757d',
     textAlign: 'center',
     marginTop: 20,
+    fontWeight:'700'
   },
   overlay: {
     height: 70,

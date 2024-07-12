@@ -5,6 +5,8 @@ import EmojiList from './EmojiList';
 import { COLOR } from '../../constant/color';
 import ICON from 'react-native-vector-icons/AntDesign'
 import ImagePicker from 'react-native-image-picker';
+import { useNavigation } from '@react-navigation/native';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
 
 export type fileType={
     fileName:string,
@@ -17,7 +19,9 @@ type Op={
 }
 
 const Options:React.FC<Op> = ({ onSelectMedia, onSelectEmoji }) => {
+    const navigation = useNavigation();
     const [showEmojiModal, setShowEmojiModal] = useState(false);
+    
     useEffect(()=>{
         //openLibrary();
 
@@ -68,6 +72,13 @@ const Options:React.FC<Op> = ({ onSelectMedia, onSelectEmoji }) => {
         //setShowEmojiModal(false);
     };
 
+    /*
+    phu update
+    */
+    const handleToLiveStream = () => {
+        navigation.navigate('LiveStack' as never);
+    };
+    //
 
     return (
         <View style={styles.container}>
@@ -83,6 +94,12 @@ const Options:React.FC<Op> = ({ onSelectMedia, onSelectEmoji }) => {
                 {/* <Image style={styles.icon} source={require('../../media/quyet_icon/smile_p.png')} /> */}
                 <ICON name='smileo' size={28} color={'#FF6600'}/>
             </TouchableOpacity>
+            {/* phu update */}
+            <TouchableOpacity style={styles.button} onPress={handleToLiveStream}>
+                {/* <Image style={styles.icon} source={require('../../media/quyet_icon/smile_p.png')} /> */}
+                <MaterialIcons name='live-tv' size={28} color={'#FF6600'}/>
+            </TouchableOpacity>
+            {/* phu update */}
             <Modal visible={showEmojiModal} animationType="slide" transparent={true}>
                 <View style={styles.modalContainer}>
                     <View style={styles.modalContent}>

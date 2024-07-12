@@ -6,6 +6,10 @@ import { useMyContext } from '../../component/navigation/UserContext';
 
 const LiveWithZego: React.FC = () => {
   const navigation = useNavigation();
+  useEffect(() => {
+    navigation.getParent()?.setOptions({ tabBarStyle: { display: 'none' } });
+  }, []);
+  
   const {user} = useMyContext();
   const name = user.fullname;
   const onJoinPress = (isHost: boolean) => {
@@ -30,10 +34,10 @@ const LiveWithZego: React.FC = () => {
         styles.container,
         {paddingTop: insets.top, paddingBottom: insets.bottom},
       ]}>
-      <Text style={styles.userID}>Your User ID: {userID}</Text>
+      {/* <Text style={styles.userID}>ID của bạn: {userID}</Text> */}
       <Text style={[styles.liveID, styles.leftPadding]}>Live ID:</Text>
       <TextInput
-        placeholder="Enter the Live ID. e.g. 6666"
+        placeholder="Nhập ID Live"
         style={[styles.input]}
         onChangeText={text => setLiveID(text.replace(/[^0-9A-Za-z_]/g, ''))}
         maxLength={4}
@@ -42,13 +46,13 @@ const LiveWithZego: React.FC = () => {
       <View style={[styles.buttonLine, styles.leftPadding]}>
         <Button
           disabled={liveID.length === 0}
-          title="Start a live"
+          title="Phát trưc tiếp"
           onPress={() => onJoinPress(true)}
         />
         <View style={styles.buttonSpacing} />
         <Button
           disabled={liveID.length === 0}
-          title="Watch a live"
+          title="Xem trực tiếp"
           onPress={() => onJoinPress(false)}
         />
       </View>
@@ -95,7 +99,8 @@ const styles = StyleSheet.create({
   liveID: {
     fontSize: 14,
     color: '#2A2A2A',
-    marginBottom: 5,
+    marginBottom: 10,
+    marginTop:30
   },
   leftPadding: {
     paddingLeft: 35,

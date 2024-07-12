@@ -1,18 +1,21 @@
 import React, { useEffect, useState } from 'react';
-import { StyleSheet, Text, View, TextInput, Modal, TouchableOpacity, Keyboard } from 'react-native';
+import { StyleSheet, Text, View, TextInput, Modal, TouchableOpacity, Keyboard, ToastAndroid, Pressable } from 'react-native';
 import Icon from 'react-native-vector-icons/AntDesign';
 import User from '../create-post-screen/User';
 import { COLOR } from '../../constant/color';
 import { createNewPost, getPostById } from '../../http/QuyetHTTP';
 import { sharePost } from '../../http/PhuHTTP';
+import TextArea from '../create-post-screen/TextArea';
+
 
 interface ModalShareProps{
     isVisible: boolean,
     onClose: () => void, 
-    idPost :any
+    idPost :any,
+    share: any
 }
 
-const ModalShare:React.FC<ModalShareProps> = ({ isVisible, onClose, idPost }) => {
+const ModalShare:React.FC<ModalShareProps> = ({ isVisible, onClose, idPost, share }) => {
     const [content, setContent] = useState<string | null>('');
     const [permission, setPermission] = useState(1);
     const [images, setImages] = useState<any[]>([]);
@@ -21,63 +24,62 @@ const ModalShare:React.FC<ModalShareProps> = ({ isVisible, onClose, idPost }) =>
     const [friends, setFriends] = useState([]);
     const tags = friends.map(id => ({ user: String(id) }));
     
-      // lấy thông tin bài viết
-    // const getOnePost = async () => {
-    //     try {
-    //         const result = await getPostById(idPost);
-    //         // console.log('Bài viết đã được lấy thành công', result); // Logging kết quả
-
-    //         // Kiểm tra và cập nhật state chỉ khi kết quả không phải là undefined
-    //         if (result || result.length > 0) {
-    //             setContent(result.content);
-    //             const mediaUrls = result.media.map(item => item.url);
-    //             const mediaItem = result.media.map(item => item);
-    //             setImages(mediaItem)
-    //             setMedia(mediaUrls);
-    //             setPermission(result.permission);
-    //             //setFriends(result.tags)
-    //             console.log('lấy 1 post nè: ', result);
-    //         }
-    //     } catch (error) {
-    //         console.log('get one post error: ', error);
-    //         throw error;
-    //     }
-    // };
-
-    const handleShare = async () => {
-        console.log(idPost);
-        try {
-            const response = await sharePost(idPost, content, permission, type);
-            console.log('Share:', response);
-        } catch (error) {
-            
+    useEffect(() => {
+        if (isVisible) {
+            // Mở modal khi isVisible là true
+            setContent('');
         }
-    };
-
+    }, [isVisible]);
+    
     const handleClose = () => {
         onClose();
         setContent('');
         Keyboard.dismiss(); // Ẩn bàn phím
     }
 
+    const handleShare = async () => {
+        //console.log(idPost);
+        try {
+            if(share) {
+                const response = await sharePost(share, content, permission, type);
+                //console.log('Share:',share);
+                handleClose()
+                ToastAndroid.show('Chia sẻ bài viết thành công', ToastAndroid.SHORT);
+            } else{
+                const response = await sharePost(idPost, content, permission, type);
+                //console.log('Share idPost:');
+                handleClose()
+                ToastAndroid.show('Chia sẻ bài viết thành công', ToastAndroid.SHORT);
+            }
+           
+        } catch (error) {
+            
+        }
+    };
+
+   
+
 return (
     <Modal
         visible={isVisible}
         animationType="slide"
         transparent={true}
-        onRequestClose={onClose}>
-        <View style={styles.overlay}>
+        onRequestClose={handleClose}>
+        <Pressable style={styles.overlay} onPress={handleClose}>
             <View style={styles.modalContainer}>
                 <TouchableOpacity style={styles.iconClose} onPress={handleClose}>
                     <Icon name="minus" size={30} color="#000" />
                 </TouchableOpacity>
-                <View style={styles.modalContent}>
+                <View style={[styles.modalContent]}>
                 <User setPermission={setPermission} />
-                    <TextInput
+                    <View  style={styles.input}>
+                        <TextArea content={content} setContent={setContent} setFriends={setFriends} friends={friends}/>
+                    </View>
+                    {/* <TextInput
                         style={styles.input}
                         placeholder="Hãy nhập nội dung bạn muốn chia sẻ"
                         value={content}
-                        onChangeText={setContent}/>
+                        onChangeText={setContent}/> */}
                     <View style={styles.buttonContainer}>
                         <TouchableOpacity style={styles.button} onPress={handleShare} >
                             <Text style={styles.txtShare}>Chia sẻ ngay</Text>
@@ -85,7 +87,7 @@ return (
                     </View>
                 </View>
             </View>
-        </View>
+        </Pressable>
     </Modal>
     );
 };
@@ -117,7 +119,6 @@ const styles = StyleSheet.create({
     input: {
         borderWidth: 1,
         borderColor: '#ddd',
-        padding: 10,
         borderRadius: 5,
         marginBottom: 10,
         marginHorizontal:20,
@@ -140,5 +141,6 @@ const styles = StyleSheet.create({
     },
     iconClose: {
         alignItems:'center'
-    }
+    },
+    
 });

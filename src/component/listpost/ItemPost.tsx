@@ -96,19 +96,7 @@ const ItemPost = memo(({ index, data,onrefresh, userId, onPressProfile  }) => {
         setCheckLike(false);
     };
 
-    // const handleToProfile = () => {
-    //     userId =creater.id;
-    //     setSelectedUserId(creater.id);
-    //     console.log("userID: ",creater.id);
-    //     if (creater.id === loggedInUserId) {
-    //         setIsModalVisible(false);
-    //         navigation.navigate(ProfileRootStackEnum.ProfileScreen);
-    //     } else {
-    //         setIsModalVisible(true);
-    //     } 
-    // };
     const handleToProfile = (userId: React.SetStateAction<null>) => {
-        //console.log("userID: ",userId);
         if (userId === loggedInUserId) {
           navigation.navigate(ProfileRootStackEnum.ProfileScreen);
         } else {
@@ -190,7 +178,7 @@ const ItemPost = memo(({ index, data,onrefresh, userId, onPressProfile  }) => {
                         </View>
                         {postsShares?.media?.length > 0 && <ItemImg image={postsShares?.media} />}
                     </View>
-                    <ActionBar checkLike={checkLike} setCheckLike={setCheckLike} postId={id} type={reaction} comment_count={comment_count} share_count={share_count} like_count={like_count} />
+                    <ActionBar share={share.id} checkLike={checkLike} setCheckLike={setCheckLike} postId={id} type={reaction} comment_count={comment_count} share_count={share_count} like_count={like_count} />
                 </>
             ) : (
                 <>

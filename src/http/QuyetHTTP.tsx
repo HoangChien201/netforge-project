@@ -27,7 +27,7 @@ export const getPostById = async (postId: any) => {
 export const upLoadMedia = async (formData: any) => {
     try {
         const response = await axios.post(
-            "https://network-social-sever.onrender.com/image/uploads/",
+            "https://network-sever.onrender.com/image/uploads/",
             formData,
             { headers: { "Content-Type": "multipart/form-data" } }
         );

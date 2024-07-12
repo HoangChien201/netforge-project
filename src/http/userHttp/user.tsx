@@ -1,6 +1,6 @@
 import axios from "axios";
 import AxiosInstance from "../AxiosInstance";
-import { role } from "@stream-io/video-react-native-sdk";
+// import { role } from "@stream-io/video-react-native-sdk";
 
 export const login = async (email: string, password: string) => {
     try {
