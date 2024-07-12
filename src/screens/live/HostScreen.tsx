@@ -1,11 +1,12 @@
-import React, { useRef } from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import React, { useEffect, useRef } from 'react';
+import { StyleSheet, Text, View, Image } from 'react-native';
 import ZegoUIKitPrebuiltLiveStreaming, {
   HOST_DEFAULT_CONFIG, ZegoMenuBarButtonName
 } from '@zegocloud/zego-uikit-prebuilt-live-streaming-rn';
 import KeyCenter from './KeyCenter';
 import { useNavigation, NavigationProp, RouteProp } from '@react-navigation/native';
 import { useMyContext } from '../../component/navigation/UserContext';
+
 //import { ZegoToastType } from '@zegocloud/zego-uikit-prebuilt-live-streaming-rn/lib/typescript/services/defines';
 //import * as ZIM from 'zego-zim-react-native';
 
@@ -17,10 +18,6 @@ type HostScreenRouteProp = RouteProp<{
   };
 }, 'Host'>;
 
-type RootStackParamList = {
-  Home: undefined;
-};
-
 type Props = {
   route: HostScreenRouteProp;
 };
@@ -28,12 +25,25 @@ type Props = {
 const HostScreen: React.FC<Props> = ({ route }) => {
   const prebuiltRef = useRef<any>();
   const { userID, userName, liveID } = route.params;
-  const navigation = useNavigation<NavigationProp<RootStackParamList>>();
+  //const navigation = useNavigation<NavigationProp<RootStackParamList>>();
+  const navigation=useNavigation()
+  useEffect(() => {
+    navigation.getParent()?.setOptions({ tabBarStyle: {display:'none'}});
+  }, []);
   const { user } = useMyContext();
 
   const handleLeaveLiveStreaming = () => {
     navigation.navigate('LiveWithZego' as never);
   };
+  const foregroundBuilder = ({ userInfo }: { userInfo: any }) => (
+    <View style={styles.foreground}>
+      <Image
+        style={styles.avatar}
+        source={{ uri: userInfo.avatarUrl }}
+      />
+      <Text style={styles.userName}>{userInfo.userName}</Text>
+    </View>
+  );
 
   return (
     <View style={styles.container}>
@@ -47,34 +57,45 @@ const HostScreen: React.FC<Props> = ({ route }) => {
         liveID={liveID}
         config={{
           ...HOST_DEFAULT_CONFIG,
+          foregroundBuilder: foregroundBuilder,
           textStyle: {
-            color: 'blue', // Example: Change text color to red
+            color: 'blue',
           },
           topMenuBarConfig: {
             buttons: [
-                ZegoMenuBarButtonName.minimizingButton,
+                // ZegoMenuBarButtonName.minimizingButton,
                 ZegoMenuBarButtonName.leaveButton,
                 
             ],
             styles: {
-                color: 'red', // Ví dụ: Đổi màu chữ của các nút thành màu đỏ
+                color: 'red',
               },
         },
+        confirmDialogInfo: {
+          title: "Xác nhận kết thúc?",
+          message: "Bạn muốn kết thúc phát trực tiếp?",
+          cancelButtonName: "Hủy",
+          confirmButtonName: "Đồng ý"
+      },
         onLiveStreamingEnded: handleLeaveLiveStreaming,
         onLeaveLiveStreaming: handleLeaveLiveStreaming,
-        onWindowMinimized: () => {
-            // Navigate to a specific page, such as the homepage
-            navigation.navigate('LiveWithZego' as never);
+        // onWindowMinimized: () => {
+        //     navigation.navigate('LiveWithZego' as never);
+        // },
+        // onWindowMaximized: () => {
+        //     navigation.navigate('HostScreen', { userID, userName, liveID });
+        // },
+        translationText: {
+          startLiveStreamingButton: 'Bắt đầu',
+          noHostOnline: "Hiện không có phiên live này!",
         },
-        onWindowMaximized: () => {
-            // Navigate to the current page, but be sure to include the original parameters of the page. If the current page has no parameters, they can be ignored
-            navigation.navigate('HostScreen', { userID, userName, liveID });
+        audioVideoViewConfig: {
+          showSoundWavesInAudioMode: true,
         },
-        
           durationConfig: {
             isVisible: true,
             onDurationUpdate: (duration: number) => {
-                if (duration === 5 * 60) {
+                if (duration === 10 * 60) {
                     prebuiltRef.current.leave();
                 }
             }
@@ -93,13 +114,17 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     zIndex: 0,
   },
+  btnContainer:{
+    backgroundColor:'#07A3B2'
+  },
   liveIDText: {
     fontSize: 16,
     fontWeight: 'bold',
     marginBottom: 10,
     zIndex:1,
     position:'absolute',
-    top:0
+    top:0,
+    left:20
   },
   avView: {
     flex: 1,
@@ -131,7 +156,25 @@ ctrlBtn: {
 }
 ,text: {
     color:'blue'
-}
+},
+foreground: {
+  position: 'absolute',
+  top: 20,
+  left: 20,
+  flexDirection: 'row',
+  alignItems: 'center',
+},
+avatar: {
+  width: 50,
+  height: 50,
+  borderRadius: 25,
+},
+userName: {
+  marginLeft: 10,
+  fontSize: 16,
+  fontWeight: 'bold',
+  color: 'white',
+},
 });
 
 export default HostScreen;

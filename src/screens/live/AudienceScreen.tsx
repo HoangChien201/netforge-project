@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import {StyleSheet, View} from 'react-native';
 import ZegoUIKitPrebuiltLiveStreaming, {
   AUDIENCE_DEFAULT_CONFIG,
@@ -7,7 +7,6 @@ import KeyCenter from './KeyCenter';
 import {useNavigation, NavigationProp, RouteProp} from '@react-navigation/native';
 import { useMyContext } from '../../component/navigation/UserContext';
 
-// Định nghĩa kiểu dữ liệu cho các tham số của route
 type AudienceScreenRouteProp = RouteProp<{
   Audience: {
     userID: string;
@@ -16,7 +15,6 @@ type AudienceScreenRouteProp = RouteProp<{
   };
 }, 'Audience'>;
 
-// Định nghĩa kiểu dữ liệu cho navigation
 type RootStackParamList = {
   Home: undefined;
 };
@@ -27,7 +25,11 @@ type Props = {
 
 const AudienceScreen: React.FC<Props> = ({route}) => {
   const {userID, userName, liveID} = route.params;
-  const navigation = useNavigation<NavigationProp<RootStackParamList>>();
+  //const navigation = useNavigation<NavigationProp<RootStackParamList>>();
+  const navigation=useNavigation()
+  useEffect(() => {
+    navigation.getParent()?.setOptions({ tabBarStyle: {display:'none'}});
+  }, []);
   const {user} = useMyContext();
 
   const handleLeaveLiveStreaming = () => {
@@ -46,7 +48,20 @@ const AudienceScreen: React.FC<Props> = ({route}) => {
         liveID={liveID}
         config={{
           ...AUDIENCE_DEFAULT_CONFIG,
+          confirmDialogInfo: {
+            title: "Xác nhận rời đi?",
+            message: "Bạn muốn rời khỏi phiên phát trực tiếp này?",
+            cancelButtonName: "Hủy",
+            confirmButtonName: "Đồng ý"
+        },
           onLeaveLiveStreaming: handleLeaveLiveStreaming,
+          translationText: {
+            startLiveStreamingButton: 'Bắt đầu',
+            noHostOnline: "Hiện không có phiên live này!",
+          },
+          audioVideoViewConfig: {
+            showSoundWavesInAudioMode: true,
+          },
           // onLeaveLiveStreaming: () => {
           //   navigation.navigate('LiveWithZego');
           // },

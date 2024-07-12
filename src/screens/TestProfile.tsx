@@ -19,7 +19,7 @@ const TestProfile = () => {
   const { user } = useMyContext();
   const navigation = useNavigation();
   const scrollOffsetY = useRef(new Animated.Value(0)).current;
-  const headerHeight = 400; // Chiều cao của header
+  const headerHeight = 420; // Chiều cao của header
   const tabBarHeight = 80; // Chiều cao của tab bar
   const [currentTab, setCurrentTab] = useState('MyPost'); // Khởi tạo tab mặc định
   const [tabBarPosition, setTabBarPosition] = useState(headerHeight);
@@ -45,6 +45,7 @@ const TestProfile = () => {
           const response = await getUSerByID(userID, token);
           setUserData(response);
           dateOfBirth = response.dateOfBirth;
+          console.log("ProfileDetailData: ", response)
         } catch (error) {
           console.log(error);
         }
@@ -53,7 +54,7 @@ const TestProfile = () => {
     }, [setUserData])
   );
 
-
+  
   useEffect(() => {
     navigation.getParent()?.setOptions({ tabBarStyle: { display: 'none' } });
   }, [user]);
@@ -73,11 +74,12 @@ const TestProfile = () => {
     return (
       <>
         <HeaderBanner value={scrollOffsetY} userId={user.id} />
-        <View style={{marginTop:220}}></View>
+        <View style={{marginTop:260}}></View>
           <ProfileHeader
           fullname={userData.fullname}
-          userId={user.id} 
-          loggedInUserId={user.id}/>
+          userId={user.id}
+          loggedInUserId={user.id} 
+          relationship={undefined}/>
       </>
     );
   }, [userData, scrollOffsetY, navigation]);
@@ -94,8 +96,8 @@ const TestProfile = () => {
   const handleTabChange = (tab: any) => {
     if (currentTab !== tab) {
       setCurrentTab(tab);
-      console.log(tabBarPosition)
-      console.log(scrollOffsetY._value);
+      // console.log(tabBarPosition)
+      // console.log(scrollOffsetY._value);
       if (tabBarPosition === 0) {
         setTabBarPosition(0);
       } else {
@@ -245,7 +247,7 @@ const styles = StyleSheet.create({
     borderTopWidth: 1,
     zIndex: 1,
     borderBottomWidth:1,
-    borderColor:'#dddddd'
+    borderColor:'#dddddd',
     //elevation: 8,
   },
   tabBar: {

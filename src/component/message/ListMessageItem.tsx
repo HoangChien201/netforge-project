@@ -12,7 +12,7 @@ export type GroupChatType = {
     "image": string | null,
     "members": Array<{
         user: {
-            id: number,
+            id: string,
             fullname: string,
             avatar: string
         }
@@ -23,11 +23,11 @@ export type GroupChatType = {
 const STATUS_SEEN = 2
 const ListMessageItem = ({ group }: { group: GroupChatType }) => {
     const { user } = useMyContext()
-    // console.log('user',user.id);
     const navigation: MessageScreenNavigationProp = useNavigation()
 
     let avatar = ''
     let name = ''
+
     let id_user = null
     if (group.type === 'group') {
         avatar = group.image ? group.image : '';

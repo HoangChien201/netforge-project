@@ -28,7 +28,8 @@ export const SharePost = async (idShare:number) => {
                 Authorization: `Bearer ${token}`
             }
         });
-    
+        //console.log('Server response:', result); // Logging toàn bộ phản hồi từ server
+
         return result;
     } catch (error) {
         console.error(error);

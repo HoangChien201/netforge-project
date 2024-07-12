@@ -27,7 +27,7 @@ const FriendProfile:React.FC<ModalFriendProfileProps> = () => {
   const { user } = useMyContext() as ContextType;
   const navigation = useNavigation();
   const scrollOffsetY = useRef(new Animated.Value(0)).current;
-  const headerHeight = 400; // Chiều cao của header
+  const headerHeight = 420; // Chiều cao của header
   const tabBarHeight = 80; // Chiều cao của tab bar
   const [currentTab, setCurrentTab] = useState('MyPost'); // Khởi tạo tab mặc định
   const [tabBarPosition, setTabBarPosition] = useState(headerHeight);
@@ -67,7 +67,7 @@ const FriendProfile:React.FC<ModalFriendProfileProps> = () => {
     return (
       <>
         <HeaderBanner value={scrollOffsetY} userId={userId} />
-        <View style={{ marginTop: 220 }}></View>
+        <View style={{ marginTop: 260 }}></View>
         <ProfileHeader
                 fullname={userData.fullname}
                 userId={userId} 

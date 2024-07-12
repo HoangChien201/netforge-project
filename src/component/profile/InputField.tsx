@@ -41,7 +41,7 @@ const InputField: React.FC<InputFieldProps> = ({ label, value, onChangeText, onB
           style={[
             styles.input,
             invalid ? styles.validation : null,
-            isFocused ? { borderColor: COLOR.primary200, borderBottomWidth: 1 } : { borderColor: '#DDDDDD' },
+            isFocused ? { borderColor: COLOR.PrimaryColor, borderBottomWidth: 1 } : { borderColor: '#DDDDDD' },
           ]}          
           onFocus={handleFocus}
           onChangeText={onChangeText}
@@ -57,7 +57,7 @@ const InputField: React.FC<InputFieldProps> = ({ label, value, onChangeText, onB
             size={20}
             style={[
               styles.icon,
-              { color: isFocused ? COLOR.primary200 : '#000' },
+              { color: isFocused ? COLOR.PrimaryColor : '#000' },
             ]}
           />
         )}
@@ -73,12 +73,6 @@ const styles = StyleSheet.create({
     margin: 9,
   },
   input: {
-    // borderRadius: 6,
-    // borderWidth: 1,
-    // borderColor: '#DDDDDD',
-    // height: 60,
-    // paddingLeft: 40,
-    // backgroundColor: '#F5F5F5',
     borderBottomWidth: 1,
     borderColor: '#DDDDDD',
     height: 60,
@@ -91,16 +85,12 @@ const styles = StyleSheet.create({
     color: 'red',
   },
   validation: {
-    // borderRadius: 6,
-    // borderColor: '#C30052',
-    // borderWidth: 1,
     height: 60,
     paddingLeft: 40,
     borderBottomWidth: 1,
     borderColor: '#DDDDDD',
   },
   icon: {
-   
     position: 'absolute',
     top: 20,
     left: 10,

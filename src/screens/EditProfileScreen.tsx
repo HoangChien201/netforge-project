@@ -40,12 +40,11 @@ const validationSchema = yup.object().shape({
   fullname: yup.string()
     .matches(fullNamePattern, 'Tên không hợp lệ!')
     .required('Tên là bắt buộc'),
-  address: yup.string().nonNullable(),
-  gender: yup.string().oneOf(['--', 'Nam', 'Nữ', 'Khác'])
+  // address: yup.string().nonNullable(),
+  // gender: yup.string().oneOf(['--', 'Nam', 'Nữ', 'Khác'])
 });
 
   const EditProfileScreen:React.FC = () => {
-  // const navigation:NavigationProp<ParamListBase> = useNavigation();
   const navigation=useNavigation()
   useEffect(() => {
     navigation.getParent()?.setOptions({ tabBarStyle: {display:'none'}});
@@ -86,15 +85,10 @@ const validationSchema = yup.object().shape({
           console.log(error);
       };
       fetchUserData();
-           }
+      }
  }, [setUserData, user])
   );
 
-  // useEffect(() => {
-  //   console.log("Updated user:", user); 
-  // }, [user]);
-
-  //console.log("initialAvatar: ", initialAvatar);
 
   useEffect(() => {
     if (userData && userData.address ) {
@@ -113,7 +107,6 @@ const validationSchema = yup.object().shape({
     setAvatarPath(imagePath);
   };
 
-//console.log("avatarPath nè: ", avatarPath);
 
   const [initialDate, setInitialDate] = useState(user.dateOfBirth);
 

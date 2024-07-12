@@ -2,28 +2,19 @@ import React, { useEffect, useState } from 'react'
 import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons'
 import { COLOR } from '../../constant/color'
-import { useNavigation } from '@react-navigation/native'
+import { useNavigation, useRoute } from '@react-navigation/native'
 import { postLocalNotification } from '../../notifications/Events'
-import { onUserLogin } from '../../screens/call-video/Utils';
+import { onUserLogin,  onUserLogout } from '../../screens/call-video/Utils';
 // @ts-ignore
 import  ZegoUIKitPrebuiltCallService,{ ZegoSendCallInvitationButton,ZegoMenuBarButtonName } from '@zegocloud/zego-uikit-prebuilt-call-rn';
-import KeyCenter from '../../screens/call-video/KeyCenter'
-import * as ZIM from 'zego-zim-react-native';
 import { socket } from '../../http/SocketHandle'
 import { multiply } from 'lodash'
+import { useMyContext } from '../navigation/UserContext'
 
 const HeaderMessageComponent = ({ partner }: { partner: any }) => {
     const navigation = useNavigation()
-    const [invitees, setInvitees] = useState<string>();
-    const [userID, setUserID] = useState('');
-    
-
-    // useEffect(() => {
-    //     onUserLogin(partner.id, partner.fullname);
-    //     return () => {
-    //         onUserLogout();
-    //     };
-    // }, []);
+    // const [invitees, setInvitees] = useState<string>();
+    // const [userID, setUserID] = useState('');
 
     function IconButton({ name, size, color, type }: { name: string, size: number, color: string, onPress?: any, type: string }) {
         function OptionOnPress() {
@@ -64,6 +55,30 @@ const HeaderMessageComponent = ({ partner }: { partner: any }) => {
         )
     }
 
+    const route = useRoute();
+    const { id, fullname, avatar } = route.params;
+    const user_id = id.toString();
+    const [invitees, setInvitees] = useState([]);
+    const { user } = useMyContext()
+    console.log(user_id)
+
+    useEffect(() => {
+        setInvitees([{ userID: user_id, userName: fullname}]);
+        const initializeCallService = async () => {
+            try {
+                await onUserLogin(user.id, user.fullname, avatar);
+                console.log("User logged in successfully:", user.id, user.fullname);
+            } catch (error) {
+                console.error("Error logging in user headerMessage:", error);
+            }
+        };
+        initializeCallService();
+        return () => {
+            onUserLogout();
+            console.log("User logged out");
+        };
+    }, [user_id, fullname]);
+
     return (
         <View style={styles.container}>
             <View style={{
@@ -85,22 +100,22 @@ const HeaderMessageComponent = ({ partner }: { partner: any }) => {
                 </View>
 
                 <View style={styles.options}>
-                    <IconButton name='phone-in-talk' size={20} color='#fff' type='call' />
-                    <IconButton name='video-call' size={20} color='#fff' type='video' />
-                    {/* <ZegoSendCallInvitationButton
-                        invitees={[{ userID: partner.id, userName: partner.fullname }]}
+                    {/* <IconButton name='phone-in-talk' size={20} color='#fff' type='call' />
+                    <IconButton name='video-call' size={20} color='#fff' type='video' /> */}
+                    
+                    <ZegoSendCallInvitationButton
+                        invitees={invitees}
                         isVideoCall={false}
-                        resourceID={"Zego_call"}
+                        resourceID={"zego_call"}
                         backgroundColor={'rgba(255,255,255,0.2)'}
-                        
-                        
                     />
                     <ZegoSendCallInvitationButton
-                        invitees={[{ userID: partner.id, userName: partner.fullname }]}
+                        invitees={invitees}
                         isVideoCall={true}
                         backgroundColor={'rgba(255,255,255,0.2)'}
+                        resourceID={"zego_call"}
                         //icon={require('../../media/icon/video_call.png')}
-                    /> */}
+                    />
                 </View>
             </View>
         </View>
@@ -155,6 +170,4 @@ const styles = StyleSheet.create({
     }
 })
 
-function onUserLogout() {
-    throw new Error('Function not implemented.')
-}
+
