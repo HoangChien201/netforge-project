@@ -50,6 +50,7 @@
     "react-native-background-timer": "^2.4.1",
     "react-native-calendar-picker": "^6.1.5",
     "react-native-calendars": "^1.1303.0",
+    "react-native-camera": "^4.2.1",
     "react-native-controlled-mentions": "^2.2.5",
     "react-native-date-picker": "^4.3.6",
     "react-native-encrypted-storage": "^4.0.3",

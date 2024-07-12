@@ -10,6 +10,7 @@ import ProfileScreen from "../../screens/ProfileScreen";
 import EditProfileScreen from "../../screens/EditProfileScreen";
 import ProfileStack from "./ProfileStack";
 import FriendProfile from "../profile/FriendProfile";
+import Birtday from "../../birtday/Birtday";
 
 
 export enum HomeRootStackEnum {
@@ -22,6 +23,8 @@ export enum HomeRootStackEnum {
     ProfileStack = 'ProfileStack',
     EditProfileScreen = 'EditProfileScreen',
     FriendProfile = 'FriendProfile',
+    Birtday = 'Birtday',
+
 
 }
 
@@ -33,6 +36,7 @@ export type HomeRootStackParams = {
     ProfileStack: undefined,
     EditProfileScreen: undefined,
     FriendProfile: undefined,
+    Birtday: undefined
 
 }
 
