@@ -1,20 +1,23 @@
-import { ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
+import { ScrollView, StyleSheet, TouchableOpacity, View, Image } from 'react-native';
 import React, { useEffect, useState, useMemo } from 'react';
 import { reaction } from '../../constant/emoji';
-import { Image } from 'react-native';
 import { likePost, updateLikePost } from '../../http/userHttp/getpost';
 import { useMyContext } from '../navigation/UserContext';
-
+import ExplosionModal from './ExplosionModal '
 const Reaction = ({ postID, reactions }: { postID: number, reactions?: number | null }) => {
   const [indexPress, setIndexPress] = useState(reactions);
+  const [modalVisible, setModalVisible] = useState(false);
+  const [selectedEmoji, setSelectedEmoji] = useState(null);
   const { user } = useMyContext();
 
   useEffect(() => {
     setIndexPress(reactions);
   }, [reactions]);
 
-  const handleReaction = async (type: number, index: number) => {
+  const handleReaction = async (type: number, index: number, emoji) => {
     setIndexPress(index);
+    setSelectedEmoji(emoji);
+    setModalVisible(true);
     try {
       if (indexPress !== null) {
         return await updateLikePost(postID, user.id, type);
@@ -32,7 +35,7 @@ const Reaction = ({ postID, reactions }: { postID: number, reactions?: number | 
 
     return (
       <View key={id.toString()} style={styles.emojiContainer}>
-        <TouchableOpacity onPress={() => handleReaction(type, index)}>
+        <TouchableOpacity onPress={() => handleReaction(type, index, Emoji)}>
           <View style={{ marginTop: 10 }}>
             <Image
               source={Emoji}
@@ -58,6 +61,7 @@ const Reaction = ({ postID, reactions }: { postID: number, reactions?: number | 
           <RenderItem key={item.id} val={item} index={item.type} />
         ))}
       </ScrollView>
+      <ExplosionModal visible={modalVisible} onClose={() => setModalVisible(false)} emoji={selectedEmoji} />
     </View>
   );
 };
