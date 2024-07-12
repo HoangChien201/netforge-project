@@ -13,12 +13,12 @@ import NetworkBottomTab from '../component/bottom-stack/NetworkBottomTab'
 import { socket } from '../http/SocketHandle'
 import uuid from 'react-native-uuid';
 import { useSendNotification } from '../constant/notify'
-
+import GenerImageAI from '../component/create-post-screen/GenerImageAI'
 const CreatePostScreen = () => {
   const [status, setStatus] = useState('');
   const [showPopup, setShowPopup] = useState(false);
   const [isError, setIsError] = useState(false);
-  const { user} = useMyContext();
+  const { user } = useMyContext();
   const [friends, setFriends] = useState([]);
   const [content, setContent] = useState('');
   // const [tags, setTags] = useState([]);
@@ -27,11 +27,17 @@ const CreatePostScreen = () => {
   const type = 1;
   const [permission, setPermission] = useState(1);
   const [sendAll, setSendAll] = useState(true);
-  const {sendNCreateNewPostHistory} = useSendNotification();
+  const { sendNCreateNewPostHistory } = useSendNotification();
+  const [showAI, setShowAI] = useState(false);
+  const [imageUrl, setImageUrl] = useState('')
+  // const [imageUrl, setImageUrl] = useState('https://oaidalleapiprodscus.blob.core.windows.net/private/org-xPqRqNjg7rhJctL5M8HgZuVW/user-7aLXFzohKCutW9RLwKG25OxW/img-OV7ku7s8LUd6BUMEu0hbXT4v.png?st=2024-07-11T14%3A47%3A14Z&se=2024-07-11T16%3A47%3A14Z&sp=r&sv=2023-11-03&sr=b&rscd=inline&rsct=image/png&skoid=6aaadede-4fb3-4698-a8f6-684d7786b067&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2024-07-10T23%3A22%3A00Z&ske=2024-07-11T23%3A22%3A00Z&sks=b&skv=2023-11-03&sig=5g5HtkuVSHgbNk%2By60LIx7FLtyaxDdXcR%2BenAaz3CCA%3D');
+
+
   const clear = () => {
     setContent('');
     setMedia([]);
     setPermission(1);
+    setImageUrl('');
   };
   const tags = friends.map(id => ({ user: String(id) }));
   const uploadPost = async () => {
@@ -59,10 +65,17 @@ const CreatePostScreen = () => {
         } else {
           console.error('uploadedMedias is not an array or is undefined');
         }
+        // if (imageUrl) {
+        //   medias.push({
+        //     url: imageUrl,
+        //     resource_type: 'image/jpeg'
+        //   });
+        //   console.log('Added imageUrl to media paths:', medias);
+        // }
         //Create new post with the uploaded media paths
         const newPost = await createNewPost({ content, type, tags, medias, permission });
         console.log('Bài viết đã được tạo:', JSON.stringify(newPost));
-        if(newPost && permission == 1){
+        if (newPost && permission == 1) {
           handleSendReaction(newPost);
         }
         setTimeout(() => {
@@ -79,10 +92,18 @@ const CreatePostScreen = () => {
         }, 1000);
       } else if (content.length > 0) {
         // upload post withought media
+        let medias: { url: any; resource_type: any }[] = [];
+        if (imageUrl) {
+          medias.push({
+            url: imageUrl,
+            resource_type: 'image'
+          });
+          console.log('Added imageUrl to media paths:', medias);
+        }
         console.log('here: ' + JSON.stringify(media));
-        const newPost = await createNewPost({ content, type, tags, permission });
+        const newPost = await createNewPost({ content, type, tags, medias,permission });
         console.log('Bài viết đã được tạo không medias:', newPost);
-        if(newPost && permission == 1){
+        if (newPost && permission == 1) {
           handleSendReaction(newPost);
         }
         setTimeout(() => {
@@ -108,7 +129,7 @@ const CreatePostScreen = () => {
           }, 1500);
         }, 1000);
       }
-      
+
     } catch (error) {
       console.error('Lỗi khi tạo bài viết:', error);
       setTimeout(() => {
@@ -124,16 +145,16 @@ const CreatePostScreen = () => {
     }
   };
 
-  const handleSendReaction = (post:any) => {
+  const handleSendReaction = (post: any) => {
     const data = {
-      postId:post.id,
-      body:post.contain
+      postId: post.id,
+      body: post.contain
     };
     sendNCreateNewPostHistory(data);
   };
   const log = () => {
 
-    console.log(content, media, type, permission, tags);
+    console.log(content, media, type, permission, tags,imageUrl);
 
   }
 
@@ -141,6 +162,7 @@ const CreatePostScreen = () => {
 
   return (
     <KeyboardAvoidingView style={styles.container}>
+
       <Loading isLoading={isLoading} />
       <View style={styles.header} >
         <Text style={styles.headerText}>Tạo bài viết</Text>
@@ -158,7 +180,8 @@ const CreatePostScreen = () => {
         setShowPopup={setShowPopup}
         friends={friends}
         setFriends={setFriends}
-
+        setShowAI={setShowAI}
+        imageUrl={imageUrl}
       />
       {showPopup ? (
         isError ? (
@@ -167,6 +190,7 @@ const CreatePostScreen = () => {
           <ModalPoup text={status} visible={showPopup} />
         )
       ) : null}
+      <GenerImageAI showAI={showAI} setShowAI={setShowAI} imageUrl={imageUrl} setImageUrl={setImageUrl} />
     </KeyboardAvoidingView>
   )
 };

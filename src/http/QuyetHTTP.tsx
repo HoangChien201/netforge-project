@@ -1,7 +1,9 @@
 import axios from "axios";
 import AxiosInstance from "./AxiosInstance";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { url } from "../constant/url";
+
+import {url} from '../constant/url'
+
 //getOnePost
 //
 // https://network-social-sever.onrender.com
