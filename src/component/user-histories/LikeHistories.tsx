@@ -96,7 +96,7 @@ const LikeHistories: React.FC<Like> = ({ data }) => {
                 </View>
                 <View style={styles.contain}>
                     {item.posts ? (
-                        <Text>
+                        <Text numberOfLines={2} ellipsizeMode="tail" >
                             <Text style={styles.text}>Bạn đã bày tỏ </Text>
                             <Text style={styles.text}>{text}</Text>
                             <Text style={styles.text1}>bài viết</Text>
@@ -104,7 +104,7 @@ const LikeHistories: React.FC<Like> = ({ data }) => {
                             <Text style={styles.text1}>{item.posts?.creater.fullname}</Text>
                         </Text>
                     ) : (
-                        <Text>
+                        <Text numberOfLines={2} ellipsizeMode="tail" >
                             <Text style={styles.text}>Bạn đã </Text>
                             <Text style={styles.text1}>{text}</Text>
                             <Text style={styles.text}>bình luận</Text>

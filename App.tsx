@@ -8,9 +8,11 @@ import 'react-native-gesture-handler';
 import React, { createContext, useEffect, useState } from 'react';
 import {
 
+  LogBox,
   StatusBar,
   Text,
   View,
+  LogBox
 } from 'react-native';
 import ManageNavigation from './src/component/navigation/ManageNavigation';
 import { UserProvider } from './src/component/navigation/UserContext';

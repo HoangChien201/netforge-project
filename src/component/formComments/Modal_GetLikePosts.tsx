@@ -5,6 +5,7 @@ import {
     BottomSheetModal,
     BottomSheetView,
     BottomSheetModalProvider,
+    BottomSheetBackdrop
 } from '@gorhom/bottom-sheet';
 const LikeItem = ({ like }) => {
     const renderReactionImage = () => {
@@ -54,9 +55,9 @@ const LikeItem = ({ like }) => {
         }
     };
     return (
-        <View style={{ justifyContent: 'center', }}>
+        <View style={{ justifyContent: 'center', marginLeft: 10}}>
             <View style={styles.likeItemContainer} >
-                <Image source={{ uri: like.user.avatar }} style={styles.avatar} />
+                <Image source={{ uri: like.user.avatar }} style={styles.avatar}/>
                 {renderReactionImage()}
                 <Text style={styles.username}>{like.user.fullname}</Text>
             </View>
@@ -71,7 +72,7 @@ const Modal_GetLikePosts = ({ isVisible, onClose, postId }) => {
     // ref
     const bottomSheetModalRef = useRef<BottomSheetModal>(null);
     // variables
-    const snapPoints = useMemo(() => ['25%', '70%'], []);
+    const snapPoints = useMemo(() => ['25%', '50%'], []);
     const fecthGetLikePost = useCallback(
         async () => {
             try {
@@ -98,13 +99,20 @@ const Modal_GetLikePosts = ({ isVisible, onClose, postId }) => {
         }
     }, [onClose]);
     return (
-        <BottomSheetModalProvider >
+        <BottomSheetModalProvider>
             <BottomSheetModal
                 ref={bottomSheetModalRef}
                 index={1}
                 snapPoints={snapPoints}
                 onChange={handleSheetChanges}
-                
+                backdropComponent={(props) => (
+                    <BottomSheetBackdrop
+                        {...props}
+                        appearsOnIndex={0}
+                        disappearsOnIndex={-1}
+                        opacity={0.7}
+                    />
+                )}
             >
                 <BottomSheetView style={styles.contentContainer}>
                     <Text style={styles.modalTitle}>Danh Sách Lượt Thích</Text>
@@ -114,9 +122,6 @@ const Modal_GetLikePosts = ({ isVisible, onClose, postId }) => {
                         keyExtractor={(item) => item.user.id.toString()}
                         contentContainerStyle={styles.listContainer}
                     />
-                    {/* <TouchableOpacity onPress={() => bottomSheetModalRef.current?.dismiss()} style={styles.closeButton}>
-                    <Text style={styles.closeButtonText}>Đóng</Text>
-                </TouchableOpacity> */}
                 </BottomSheetView>
             </BottomSheetModal>
         </BottomSheetModalProvider>
@@ -126,22 +131,13 @@ const Modal_GetLikePosts = ({ isVisible, onClose, postId }) => {
 export default Modal_GetLikePosts
 
 const styles = StyleSheet.create({
-    linene: {
-        marginTop: 5,
-        justifyContent: 'center',
-        width: 350,
-        height: 1,
-        backgroundColor: '#F6F5F5',
-        alignItems: 'center'
-    },
     reactionImage: {
-        top: 15,
-        right: 15,
+        top: 12,
+       right: 12,
         width: 18,
         height: 18
     },
     contentContainer: {
-        
         flex: 1,
         alignItems: 'center',
         padding: 20,
@@ -155,14 +151,11 @@ const styles = StyleSheet.create({
     },
     listContainer: {
         width: '100%',
-
     },
     likeItemContainer: {
         flexDirection: 'row',
         alignItems: 'center',
-
         height: 55
-
     },
     avatar: {
         width: 38,
@@ -171,7 +164,6 @@ const styles = StyleSheet.create({
     },
     username: {
         fontSize: 14,
-        right: 10,
         fontWeight: '400',
         color: '#000'
     },
@@ -185,5 +177,13 @@ const styles = StyleSheet.create({
     closeButtonText: {
         color: 'white',
         fontSize: 16,
+    },
+    linene: {
+        marginTop: 5,
+        justifyContent: 'center',
+        width: 350,
+        height: 1,
+        backgroundColor: '#F6F5F5',
+        alignItems: 'center'
     },
 })

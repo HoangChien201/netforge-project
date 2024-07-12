@@ -9,14 +9,14 @@ import { getAllUser, getFriends, getSuggest } from '../../http/QuyetHTTP';
 import Friends from './friendScreen/Friends';
 import RequestFriends from './friendScreen/RequestFriends';
 import SuggestFriends from './friendScreen/SuggestFriends';
-import { BounceIn, FadeIn, ReduceMotion, useReducedMotion } from 'react-native-reanimated';
+// import { BounceIn, FadeIn, ReduceMotion, useReducedMotion } from 'react-native-reanimated';
 type Friends = {
 }
 const FriendScreen: React.FC<Friends> = () => {
-  const reduceMotion = useReducedMotion();
-  const entering = reduceMotion
-  ? FadeIn.reduceMotion(ReduceMotion.Never)
-  : BounceIn;
+  //const reduceMotion = useReducedMotion();
+  // const entering = reduceMotion
+  // ? FadeIn.reduceMotion(ReduceMotion.Never)
+  // : BounceIn;
   const navigation = useNavigation()
   const isFocus = useIsFocused()
   const [friends, setFriends] = useState<any[]>([]);

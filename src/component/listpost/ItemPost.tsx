@@ -9,10 +9,12 @@ import { SharePost } from '../../http/userHttp/getpost';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import ModalFriendProfile from '../profile/FriendProfile';
 import { NavigationProp, ParamListBase, useNavigation } from '@react-navigation/native';
-
 import { ProfileRootStackEnum } from '../stack/ProfileRootStackParams';
    
 const ItemPost = memo(({ index, data,onrefreshs, userId, onPressProfile  }) => {
+import { deletePost } from '../../http/QuyetHTTP'
+import AxiosInstance from '../../http/AxiosInstance';
+const ItemPost = memo(({ index, data, onrefresh, userId, onPressProfile, setShowModalEdit, setSelectedId, showDelete, setShowDelete }) => {
     const { creater, share_count, reaction, content, media, comment_count, create_at, id, like_count, share } = data;
     const [checkLike, setCheckLike] = useState(false);
     const [shareId, setshareId] = useState(null);
@@ -26,9 +28,7 @@ const ItemPost = memo(({ index, data,onrefreshs, userId, onPressProfile  }) => {
       const [isModalVisible, setIsModalVisible] = useState(false);
       const [selectedUserId, setSelectedUserId] = useState(null);
       const loggedInUserId = user.id;
-     
 
-      
     useEffect(() => {
         if (share) {
             setshareId(share);
@@ -36,7 +36,7 @@ const ItemPost = memo(({ index, data,onrefreshs, userId, onPressProfile  }) => {
                 const token = await AsyncStorage.getItem('userToken');
                 const result = await SharePost(share.id);
                 setPostShare(result);
-            
+
             }
             getPostShare();
         }
@@ -62,7 +62,7 @@ const ItemPost = memo(({ index, data,onrefreshs, userId, onPressProfile  }) => {
     const formatContent = useMemo(() => {
         const format = content?.split(/@\[([^\]]+)\]\(\d+\)/g);
         return (
-            <View style={{ marginHorizontal: 20, paddingBottom: media.length > 0  ? 0 : 10, flexDirection: 'row', flexWrap: 'wrap' }}>
+            <View style={{ marginHorizontal: 20, paddingBottom: media.length > 0 ? 0 : 10, flexDirection: 'row', flexWrap: 'wrap' }}>
                 {format?.map((fomat, index) => (
                     <Text
                         key={`${fomat}-${index}`}
@@ -110,34 +110,41 @@ const ItemPost = memo(({ index, data,onrefreshs, userId, onPressProfile  }) => {
     const handleToProfile = (userId: React.SetStateAction<null>) => {
         //console.log("userID: ",userId);
         if (userId === loggedInUserId) {
-          navigation.navigate(ProfileRootStackEnum.ProfileScreen);
+            navigation.navigate(ProfileRootStackEnum.ProfileScreen);
         } else {
-          navigation.navigate(ProfileRootStackEnum.FriendProfile, { userId});
-        } 
-      };
+            navigation.navigate(ProfileRootStackEnum.FriendProfile, { userId });
+        }
+    };
 
-  
 
+    const handleEdit = () => {
+        setSelectedId(id);
+        setShowModalEdit(true);
+    };
+    const handleDelete = () => {
+        setSelectedId(id);
+        setShowDelete(true);
+    };
     return (
         <Pressable onPress={handleItemPress} style={{ margin: 5, marginBottom: 6, backgroundColor: "#fff" }}>
             {shareId ? (
                 <>
                     <View style={styles.home1}>
                         <View style={styles.containerAvt}>
-                          <TouchableOpacity onPress={()=>handleToProfile(creater.id)} style={styles.containerAvt}>
-                          {creater.avatar ? (
-                                <Image source={{ uri: creater.avatar }} style={styles.avt} />
-                            ) : (
-                                <Image source={require('../../media/icon/phuking.jpg')} style={styles.avt} />
-                            )}
-                            <View>
-                                <Text style={styles.nameUser}>{creater.fullname === null ? "Người dùng" : creater.fullname}</Text>
-                                <View style={{ flexDirection: 'row', alignItems: 'center', marginVertical: 3 }}>
-                                    <Text style={{ marginRight: 10 }}>{DateOfTimePost(create_at)}</Text>
-                                    <Image source={require('../../media/icon/icon-hour-light.png')} />
+                            <TouchableOpacity onPress={() => handleToProfile(creater.id)} style={styles.containerAvt}>
+                                {creater.avatar ? (
+                                    <Image source={{ uri: creater.avatar }} style={styles.avt} />
+                                ) : (
+                                    <Image source={require('../../media/icon/phuking.jpg')} style={styles.avt} />
+                                )}
+                                <View>
+                                    <Text style={styles.nameUser}>{creater.fullname === null ? "Người dùng" : creater.fullname}</Text>
+                                    <View style={{ flexDirection: 'row', alignItems: 'center', marginVertical: 3 }}>
+                                        <Text style={{ marginRight: 10 }}>{DateOfTimePost(create_at)}</Text>
+                                        <Image source={require('../../media/icon/icon-hour-light.png')} />
+                                    </View>
                                 </View>
-                            </View>
-                          </TouchableOpacity>
+                            </TouchableOpacity>
                         </View>
                         <View>
                             {user.id === creater.id && (
@@ -146,19 +153,23 @@ const ItemPost = memo(({ index, data,onrefreshs, userId, onPressProfile  }) => {
                                 </TouchableOpacity>
                             )}
                             {hidden && (
-                                <Animated.View style={[styles.menu,{ transform: [{ translateY: menu }],}]}>
-                                   <View style={{height:'100%',width:'100%',backgroundColor:'#fff',padding:2,borderRadius:5,borderWidth:0.5,borderColor:'#fff'}}>
-                                   <TouchableOpacity style={[styles.buttonMenu]}>
-                                        <Text style={styles.textMenu}>Xóa</Text>
-                                        <AntDesignIcon name='close' size={18} color="black" />
-                                    </TouchableOpacity>
-                                    <TouchableOpacity style={styles.buttonMenu}>
-                                        <Text style={styles.textMenu}>
-                                            Sửa
-                                        </Text>
-                                        <AntDesignIcon name='sync' size={18} color="black"  />
-                                    </TouchableOpacity>
-                                   </View>
+                                <Animated.View style={[styles.menu, { transform: [{ translateY: menu }], }]}>
+                                    <View style={{ height: '100%', width: '100%', backgroundColor: '#fff', padding: 2, borderRadius: 5, borderWidth: 0.5, borderColor: '#fff' }}>
+                                        <TouchableOpacity style={[styles.buttonMenu]}
+                                            onPress={handleDelete}
+                                        >
+                                            <Text style={styles.textMenu}>Xóa</Text>
+                                            <AntDesignIcon name='close' size={18} color="black" />
+                                        </TouchableOpacity>
+                                        <TouchableOpacity style={styles.buttonMenu}
+                                            onPress={handleEdit}
+                                        >
+                                            <Text style={styles.textMenu}>
+                                                Sửa
+                                            </Text>
+                                            <AntDesignIcon name='sync' size={18} color="black" />
+                                        </TouchableOpacity>
+                                    </View>
                                 </Animated.View>
                             )}
                         </View>
@@ -183,8 +194,7 @@ const ItemPost = memo(({ index, data,onrefreshs, userId, onPressProfile  }) => {
                                         <Text style={styles.postDate}>{postsShares?.create_at ? DateOfTimePost(postsShares?.create_at):null}</Text>
                                         {postsShares?.create_at ? <Image source={require('../../media/icon/icon-hour-light.png')} />:null} 
                                     </View>
-                                </View>
-                               </TouchableOpacity>
+                                </TouchableOpacity>
                             </View>
                         </View>
                        {
@@ -202,20 +212,20 @@ const ItemPost = memo(({ index, data,onrefreshs, userId, onPressProfile  }) => {
                 <>
                     <View style={styles.home}>
                         <View style={styles.containerAvt}>
-                           <TouchableOpacity style={styles.containerAvt} onPress={()=>handleToProfile(creater.id)}>
-                           {creater.avatar ? (
-                                <Image source={{ uri: creater.avatar }} style={styles.avt} />
-                            ) : (
-                                <Image source={require('../../media/icon/phuking.jpg')} style={styles.avt} />
-                            )}
-                            <View>
-                                <Text style={styles.nameUser}>{creater.fullname === null ? "Người dùng" : creater.fullname}</Text>
-                                <View style={{ flexDirection: 'row', alignItems: 'center', marginVertical: 3 }}>
-                                    <Text style={{ marginRight: 10 }}>{DateOfTimePost(create_at)}</Text>
-                                    <Image source={require('../../media/icon/icon-hour-light.png')} />
+                            <TouchableOpacity style={styles.containerAvt} onPress={() => handleToProfile(creater.id)}>
+                                {creater.avatar ? (
+                                    <Image source={{ uri: creater.avatar }} style={styles.avt} />
+                                ) : (
+                                    <Image source={require('../../media/icon/phuking.jpg')} style={styles.avt} />
+                                )}
+                                <View>
+                                    <Text style={styles.nameUser}>{creater.fullname === null ? "Người dùng" : creater.fullname}</Text>
+                                    <View style={{ flexDirection: 'row', alignItems: 'center', marginVertical: 3 }}>
+                                        <Text style={{ marginRight: 10 }}>{DateOfTimePost(create_at)}</Text>
+                                        <Image source={require('../../media/icon/icon-hour-light.png')} />
+                                    </View>
                                 </View>
-                            </View>
-                           </TouchableOpacity>
+                            </TouchableOpacity>
                         </View>
                         <View>
                             {user.id === creater.id && (
@@ -223,20 +233,24 @@ const ItemPost = memo(({ index, data,onrefreshs, userId, onPressProfile  }) => {
                                     <Image source={require('../../media/Dicons/ellipsis.png')} style={styles.ellips} />
                                 </TouchableOpacity>
                             )}
-                                  {hidden && (
-                                <Animated.View style={[styles.menu,{ transform: [{ translateY: menu }],}]}>
-                                   <View style={{height:'100%',width:'100%',backgroundColor:'#fff',padding:2,borderRadius:5,borderWidth:0.5,borderColor:'#fff'}}>
-                                   <TouchableOpacity style={[styles.buttonMenu]}>
-                                        <Text style={styles.textMenu}>Xóa</Text>
-                                        <AntDesignIcon name='close' size={18} color="black" />
-                                    </TouchableOpacity>
-                                    <TouchableOpacity style={styles.buttonMenu}>
-                                        <Text style={styles.textMenu}>
-                                            Sửa
-                                        </Text>
-                                        <AntDesignIcon name='sync' size={18} color="black"  />
-                                    </TouchableOpacity>
-                                   </View>
+                            {hidden && (
+                                <Animated.View style={[styles.menu, { transform: [{ translateY: menu }], }]}>
+                                    <View style={{ height: '100%', width: '100%', backgroundColor: '#fff', padding: 2, borderRadius: 5, borderWidth: 0.5, borderColor: '#fff' }}>
+                                        <TouchableOpacity style={[styles.buttonMenu]}
+                                            onPress={handleDelete}
+                                        >
+                                            <Text style={styles.textMenu}>Xóa</Text>
+                                            <AntDesignIcon name='close' size={18} color="black" />
+                                        </TouchableOpacity>
+                                        <TouchableOpacity style={styles.buttonMenu}
+                                            onPress={handleEdit}
+                                        >
+                                            <Text style={styles.textMenu}>
+                                                Sửa
+                                            </Text>
+                                            <AntDesignIcon name='sync' size={18} color="black" />
+                                        </TouchableOpacity>
+                                    </View>
                                 </Animated.View>
                             )}
                         </View>
@@ -246,6 +260,7 @@ const ItemPost = memo(({ index, data,onrefreshs, userId, onPressProfile  }) => {
                     <ActionBar checkLike={checkLike} setCheckLike={setCheckLike} postId={id} type={reaction} comment_count={comment_count} share_count={share_count} like_count={like_count} />
                 </>
             )}
+
         </Pressable>
     );
 });
@@ -288,24 +303,24 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         padding: 5,
         justifyContent: 'space-around',
-  
+
     },
     textMenu: {
         fontWeight: 'bold',
-        color:'black'
+        color: 'black'
     },
     menu: {
-        padding:5,
+        padding: 5,
         backgroundColor: '#E9E6E6',
         zIndex: 999,
         position: 'absolute',
         width: 100,
         height: 75,
-       
+
         right: 0,
         top: 15,
         borderWidth: 0.6,
-        
+
     },
     sharedContent: {
         margin: 0,
@@ -325,6 +340,6 @@ const styles = StyleSheet.create({
         marginRight: 10,
     },
     sharedPostContainer: {
-      
+
     },
 });

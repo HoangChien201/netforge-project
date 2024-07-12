@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { StyleSheet, Text, View, TouchableOpacity, Image, FlatList, Animated, Keyboard, Easing, KeyboardAvoidingView, TextInput } from 'react-native';
 import Video from 'react-native-video';
 import USER from './User';
@@ -7,51 +7,79 @@ import OPTIONS, { fileType } from './Options';
 import { COLOR } from '../../constant/color';
 import SwiperFlatList from 'react-native-swiper-flatlist';
 import Icon from 'react-native-vector-icons/Feather';
+import { useFocusEffect } from '@react-navigation/native';
+
 type Bpob = {
     content: any,
-    setContent: (value:any) => void,
+    setContent: (value: any) => void,
     media: any,
-    setMedia: (value:any) => void,
+    setMedia: (value: any) => void,
     permission: any,
-    setPermission: (value:any) => void,
+    setPermission: (value: any) => void,
     setStatus: any,
-    setShowPopup: (value:any) => void,
+    setShowPopup: (value: any) => void,
     friends: any,
-    setFriends: (value:any) => void
+    setFriends: (value: any) => void,
+    setShowAI: (value: any) => void,
+    imageUrl: any
 }
-const Body: React.FC<Bpob> = ({ content, setContent, media, setMedia, permission, setPermission, setStatus, setShowPopup, friends, setFriends }) => {
+const Body: React.FC<Bpob> = ({ content, setContent, media, setMedia, permission, setPermission, setStatus, setShowPopup, friends, setFriends, setShowAI, imageUrl }) => {
     //const [media, setMedia] = useState([]);
     const [playingVideo, setPlayingVideo] = useState(null);
     const [viewMore, setViewMore] = useState(false);
     const [uries, setUries] = useState<any>([])
-
+    //const [image, setImage] = useState('https://oaidalleapiprodscus.blob.core.windows.net/private/org-xPqRqNjg7rhJctL5M8HgZuVW/user-7aLXFzohKCutW9RLwKG25OxW/img-RFhiItBxeWWhJB6zSWW1fTyj.png?st=2024-07-12T10%3A13%3A46Z&se=2024-07-12T12%3A13%3A46Z&sp=r&sv=2023-11-03&sr=b&rscd=inline&rsct=image/png&skoid=6aaadede-4fb3-4698-a8f6-684d7786b067&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2024-07-11T23%3A21%3A08Z&ske=2024-07-12T23%3A21%3A08Z&sks=b&skv=2023-11-03&sig=B9SF8LnWfmVdzVpLZWRMcxdoSdMcL0xIDszFD6hkK7c%3D')
     const handleEmojiSelect = (emoji: any) => {
         setContent(content + emoji);
     };
+    useFocusEffect(
+        useCallback(() => {
+            pushAImage()
+            return () => {
+                // Cleanup nếu cần khi màn hình mất focus
+                console.log('Screen unfocused');
+            };
+        }, [])
+    );
     useEffect(() => {
         //console.log('media:', JSON.stringify(media, null, 2));
         // const uris = media.map((file: fileType) => file.uri)
         // setUries(uris);
-    }, []);
-
+        // if (image) {
+        //     media.push({
+        //         uri: image,
+        //         resource_type: 'image/jpg'
+        //     });
+        //     console.log('Added imageUrl to media paths:', media);
+        // }
+        pushAImage();
+    }, [imageUrl || media]);
+    const pushAImage =() =>{
+        if (imageUrl) {
+            media.push({
+                uri: imageUrl,
+                resource_type: 'image/jpg'
+            });
+            console.log('Added imageUrl to media paths:', media);
+        }
+        renderMedia;
+    }
     const handleMediaSelect = (newImages: any) => {
         setMedia(newImages);
-        console.log('Media selected:', JSON.stringify(newImages, null, 2));
+        console.log('Media selected:', newImages);
     };
-
     const deleteImage = (uri: any) => {
         const updatedImages = media.filter((media: { uri: any; }) => media.uri !== uri);
         setMedia(updatedImages);
         console.log(updatedImages);
         console.log(media);
 
-
     };
-    const togglePlayVideo = (uri:any) => {
+    const togglePlayVideo = (uri: any) => {
         setPlayingVideo(playingVideo === uri ? null : uri);
     };
     // View danh sách media
-    const renderMedia = (item:any) => {
+    const renderMedia = (item: any) => {
         if (!item || item.length === 0) {
             return null;
         }
@@ -59,7 +87,7 @@ const Body: React.FC<Bpob> = ({ content, setContent, media, setMedia, permission
         if (numMedia === 1) {
             return (
                 <View style={styles.oneMediaContainer}>
-                    {item.map((uri: { uri: string | null| any; }, index: { toString: () => React.Key | any | undefined; }) => (
+                    {item.map((uri: { uri: string | null | any; }, index: { toString: () => React.Key | any | undefined; }) => (
                         uri.uri.endsWith('.mp4') ? (
                             <View key={index.toString()} style={styles.mediaContainer}>
                                 <Video
@@ -360,7 +388,7 @@ const Body: React.FC<Bpob> = ({ content, setContent, media, setMedia, permission
                 }
 
                 <TEXTAREA content={content} setContent={setContent} setFriends={setFriends} friends={friends} />
-                <OPTIONS onSelectEmoji={handleEmojiSelect} onSelectMedia={handleMediaSelect} />
+                <OPTIONS onSelectEmoji={handleEmojiSelect} onSelectMedia={handleMediaSelect} setShowAI={setShowAI} imageUrl={imageUrl} />
             </View>
         </View>
     );

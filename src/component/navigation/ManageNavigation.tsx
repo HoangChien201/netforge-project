@@ -13,7 +13,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage'
 import { login } from '../../http/userHttp/user'
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import PushNotification, { Importance } from 'react-native-push-notification';
-import { PermissionsAndroid } from 'react-native';
+import { Alert, PermissionsAndroid } from 'react-native';
 import { socket } from '../../http/SocketHandle'
 
 
@@ -58,13 +58,14 @@ const ManageNavigation: React.FC = () => {
         handleAutoLogin();
         createChannelNotify();
         requestNotificationPermission();
+        requestCameraPermission();
     }, []);
-    useEffect(() => {
         const timer = setTimeout(() => {
             setShowSplash(false);
         }, 1500);
         return () => clearTimeout(timer);
     }, []);
+
     useEffect(() => {
         if (user) {
             const id = user.id;
@@ -134,6 +135,7 @@ const ManageNavigation: React.FC = () => {
             (created) => console.log(`createChannel returned '${created}'`)
         );
     };
+
     const showLocal = (notification: { notification?: any; body?: any; title?: any; }) => {
         PushNotification.localNotification({
             channelId: "channel-id-1",
@@ -148,6 +150,29 @@ const ManageNavigation: React.FC = () => {
         });
 
     };
+
+    const requestCameraPermission = async () => {
+        try {
+            const granted = await PermissionsAndroid.request(
+                PermissionsAndroid.PERMISSIONS.CAMERA,
+                {
+                    title: "Quyền truy cập Camera",
+                    message: "Chúng tôi cần cấp quyền truy cập Camera",
+                    buttonNeutral: "Hỏi tôi sau",
+                    buttonNegative: "Hủy bỏ",
+                    buttonPositive: "Chấp nhận"
+                }
+            );
+            if (granted !== PermissionsAndroid.RESULTS.GRANTED) {
+                Alert.alert('Quyền sử dụng máy ảnh bị từ chối');
+            }
+        } catch (err) {
+            console.warn(err);
+        }
+    };
+
+
+
 
     if (showSplash) {
         return <SplashScreen />;

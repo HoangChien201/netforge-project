@@ -159,18 +159,22 @@ const HomeScreen = () => {
                 <View style={styles.headerRight}>
                     <TouchableOpacity style={{ alignItems: 'center' }} onPress={handlerClick}>
                         <Image source={{ uri: user.avatar }} style={styles.userAvatar} />
-                        <Text style={styles.userName}>{user.fullname}</Text>
+                        {/* <Text style={styles.userName}>{user.fullname}</Text> */}
                     </TouchableOpacity>
 
                 </View>
                 {hidden && (
                     <View style={styles.hiddenMenu}>
                         <View style={styles.hiddenMenuContent}>
-                            <TouchableOpacity style={styles.hiddenMenuItem}>
+                            <TouchableOpacity style={styles.hiddenMenuItem}
+                                onPress={() => navigation.navigate('Scanner')}
+                            >
                                 <MaterialCommunityIcons name='qrcode-scan' size={25} />
                                 <Text style={styles.hiddenMenuText}>Mở máy ảnh</Text>
                             </TouchableOpacity>
-                            <TouchableOpacity style={styles.hiddenMenuItem}>
+                            <TouchableOpacity style={styles.hiddenMenuItem}
+                            onPress={() => navigation.navigate('QRcodeScreen')}
+                            >
                                 <MaterialCommunityIcons name='qrcode' size={25} />
                                 <Text style={styles.hiddenMenuText}>Mã QR của tôi</Text>
                             </TouchableOpacity>

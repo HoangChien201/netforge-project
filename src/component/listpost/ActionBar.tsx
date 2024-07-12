@@ -124,7 +124,8 @@ const ActionBar = memo(({onPressProfile, like_count,type, postId, comment_count,
                                     
                                     const pre1 =parseInt(numberLike)+1
                                     console.log("pre", pre1);
-                                    return pre1})
+                                    return pre1
+                                })
                                 setIsLike(false)
                             }}>
                                 <AntDesignIcon name='like2' size={22} color='#000' />
