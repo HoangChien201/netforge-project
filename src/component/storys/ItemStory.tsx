@@ -5,7 +5,7 @@ import { COLOR } from '../../constant/color';
 
 const ItemStory = ({ data, setIndex, index, indexfind, list }) => {
   const navigation: NavigationProp<ParamListBase> = useNavigation(); 
-console.log("data",data);
+
 
   return (
     <TouchableOpacity
@@ -16,7 +16,7 @@ console.log("data",data);
     >
       <View style={[styles.borderContainer,{ borderColor: indexfind === index ? COLOR.PrimaryColor1 : '#A5A3A3' }]}>
         <ImageBackground 
-          source={{ uri: data.posts[0].media[0].url }} 
+          source={{ uri: data.posts[0].media[0]?.url }} 
           style={styles.imageBackground} 
           imageStyle={styles.imageStyle}
         >

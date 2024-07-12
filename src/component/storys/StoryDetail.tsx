@@ -23,7 +23,7 @@ const StoryDetail = ({ route }) => {
     const [keyboardVisible, setKeyboardVisible] = useState(false);
     const animatedBottom = useRef(new Animated.Value(50)).current;
     const animatedWidth = useRef(new Animated.Value(1)).current;
-
+    console.log("StoryDetail");
     useEffect(() => {
         const keyboardDidShowListener = Keyboard.addListener(
             'keyboardDidShow',
@@ -82,8 +82,8 @@ const StoryDetail = ({ route }) => {
             const formData = new FormData();
             formData.append('files', {
                 uri: Platform.OS === 'android' ? uri : uri.replace('content://', ''),
-                type: 'image/jpeg', // Loại MIME thích hợp cho tệp của bạn
-                name: `photo_${Date.now()}.jpg`, // Đặt tên tệp duy nhất
+                type: 'image/jpeg', 
+                name: `photo_${Date.now()}.jpg`,
             });
 
             const uploadedMedias = await upLoadMedia(formData);

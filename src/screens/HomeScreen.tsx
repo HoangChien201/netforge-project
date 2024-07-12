@@ -28,7 +28,8 @@ const HomeScreen = () => {
     const isFocused = useIsFocused();
     const { user } = useMyContext();
     const [visible, setVisible] = useState(false);
-
+    console.log("HomeScreen");
+    
     const checkTouchIdLogin = () => {
         TouchID.isSupported()
             .then(async biometryType => {
@@ -73,17 +74,16 @@ const HomeScreen = () => {
         return () => {
             tabBarTranslateY.removeListener(listener);
         };
-    }, [navigation, tabBarTranslateY]);
-
+    }, [tabBarTranslateY]);
     const handleScroll = ({ nativeEvent }) => {
         const offsetY = nativeEvent.contentOffset.y;
-        if (offsetY > prevScrollY) {
+        if (offsetY >= prevScrollY) {
             Animated.timing(tabBarTranslateY, {
                 toValue: 100,
                 duration: 150,
                 useNativeDriver: true,
             }).start();
-        } else if (offsetY < prevScrollY) {
+        } else if (offsetY <= prevScrollY) {
             Animated.timing(tabBarTranslateY, {
                 toValue: 0,
                 duration: 150,
@@ -106,6 +106,9 @@ const HomeScreen = () => {
             if (item.key === 'stories' || item.key.startsWith('new_post')) {
                 return (
                     <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+                           {/* <View style={{marginLeft:10,position:'absolute'}}>
+                <Text style={{color:'#000',fontWeight:'bold'}}>Bảng tin</Text>
+            </View> */}
                         <View style={styles.storyContainer}>
                             <View style={styles.borderContainer}>
                                 <ImageBackground source={{ uri: user.avatar }} style={styles.imageBackground} imageStyle={styles.imageStyle}>
@@ -120,12 +123,12 @@ const HomeScreen = () => {
                                     <Text style={{bottom:-15,color:"#fff",fontSize:13,fontWeight:'bold'}}>Tạo tin</Text>
                                 </ImageBackground>
                             </View>
-                            <ListStory onRefresh={refreshing} />
+                            <ListStory onrefresh={refreshing} />
                         </View>
                     </ScrollView>
                 );
             } else if (item.key === 'posts' || item.key.startsWith('new_post')) {
-                return <ListPorts onRefresh={refreshing} />;
+                return <ListPorts onrefresh={refreshing} />;
             }
             return null;
         },
@@ -175,10 +178,9 @@ const HomeScreen = () => {
                     </View>
                 )}
             </View>
-            <View style={{marginLeft:10}}>
-                <Text style={{color:'#000',fontWeight:'bold'}}>Bảng tin</Text>
-            </View>
+         
             <View style={styles.contentContainer}>
+                
                 <Animated.FlatList
                     data={data}
                     renderItem={renderItem}

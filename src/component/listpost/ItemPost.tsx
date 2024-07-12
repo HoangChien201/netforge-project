@@ -12,7 +12,7 @@ import { NavigationProp, ParamListBase, useNavigation } from '@react-navigation/
 
 import { ProfileRootStackEnum } from '../stack/ProfileRootStackParams';
    
-const ItemPost = memo(({ index, data,onrefresh, userId, onPressProfile  }) => {
+const ItemPost = memo(({ index, data,onrefreshs, userId, onPressProfile  }) => {
     const { creater, share_count, reaction, content, media, comment_count, create_at, id, like_count, share } = data;
     const [checkLike, setCheckLike] = useState(false);
     const [shareId, setshareId] = useState(null);
@@ -20,13 +20,13 @@ const ItemPost = memo(({ index, data,onrefresh, userId, onPressProfile  }) => {
     const { user } = useMyContext();
     const menu = useRef(new Animated.Value(0)).current;
     const [hidden, setHidden] = useState(false);
-    
+    console.log("ItemPost1s");
     //
     const navigation: NavigationProp<ParamListBase> = useNavigation();
       const [isModalVisible, setIsModalVisible] = useState(false);
       const [selectedUserId, setSelectedUserId] = useState(null);
       const loggedInUserId = user.id;
-      userId =creater.id;
+     
 
       
     useEffect(() => {

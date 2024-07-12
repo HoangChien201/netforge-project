@@ -26,6 +26,7 @@ const StoryScreen = ({ index }) => {
   const scrollViewRef = useRef<ScrollView>(null);
 
 
+console.log("StoryScreen");
 
 
 

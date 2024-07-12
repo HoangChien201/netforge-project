@@ -3,7 +3,7 @@ import React, { memo,useCallback, useEffect, useState } from 'react';
 import ItemPost from './ItemPost';
 import { getAll } from '../../http/userHttp/getpost';
 import { useMyContext } from '../navigation/UserContext';
-import { NavigationProp, ParamListBase, useNavigation } from '@react-navigation/native';
+import { NavigationProp, ParamListBase, useFocusEffect, useNavigation } from '@react-navigation/native';
 import { ProfileRootStackEnum } from '../stack/ProfileRootStackParams';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Loading from '../Modal/Loading';
@@ -16,14 +16,18 @@ const ListPorts = memo(({ onrefresh }:{onrefresh:boolean}) => {
   const [loading, setLoading] = useState(false);
   const [loadingMore, setLoadingMore] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
-
+  console.log("ListImageDetail");
  
   const navigation: NavigationProp<ParamListBase> = useNavigation();
   const PAGE_SIZE = 10;
   const getAllPost = useCallback(async () => {
     const token = await AsyncStorage.getItem('userToken');
     
+  
+   if(allData.length < 0){
     setLoading(true);
+   }
+   
     try {
       const response:any = await getAll(token,user.id);
         
@@ -43,6 +47,11 @@ const ListPorts = memo(({ onrefresh }:{onrefresh:boolean}) => {
     
     getAllPost();
   }, [getAllPost, onrefresh]);
+  useFocusEffect(
+    useCallback(() => {
+      getAllPost();
+    }, [getAllPost])
+  );
 
   
 
@@ -84,10 +93,11 @@ const handleToProfile = (userId: React.SetStateAction<null>) => {
   } 
 };
   return (
-
-    <View style={{ flex:1,backgroundColor: 'rgba(155,155,155,0.2)' }}>
+    <>
+    <View style={{ flex:1,backgroundColor: 'rgba(155,155,155,0.2)',zIndex:999999 }}>
       
-        <Loading isLoading={loading} />
+      
+      
       
          {
            
@@ -113,6 +123,8 @@ const handleToProfile = (userId: React.SetStateAction<null>) => {
           }
       
     </View>
+    <Loading isLoading={loading} /> 
+    </>
   );
 });
 

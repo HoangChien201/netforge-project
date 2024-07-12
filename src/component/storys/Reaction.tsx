@@ -1,50 +1,61 @@
 import { ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
-import React, { useState } from 'react';
+import React, { useEffect, useState, useMemo } from 'react';
 import { reaction } from '../../constant/emoji';
 import { Image } from 'react-native';
 import { likePost, updateLikePost } from '../../http/userHttp/getpost';
 import { useMyContext } from '../navigation/UserContext';
 
-const Reaction = ({postID,reactions}:{postID:number,reactions?:number | null}) => {
+const Reaction = ({ postID, reactions }: { postID: number, reactions?: number | null }) => {
   const [indexPress, setIndexPress] = useState(reactions);
-  const {user}= useMyContext()
-  const handleReaction = async(type:number)=>{
-    setIndexPress(type)
+  const { user } = useMyContext();
+
+  useEffect(() => {
+    setIndexPress(reactions);
+  }, [reactions]);
+
+  const handleReaction = async (type: number, index: number) => {
+    setIndexPress(index);
     try {
-      let result;
-      if(reactions){
-        result = await updateLikePost(postID,user.id,type)
-      }else{
-        result = await likePost(postID,type);
+      if (indexPress !== null) {
+        return await updateLikePost(postID, user.id, type);
+      } else {
+        return await likePost(postID, type);
       }
-      console.log("resulene",result);
-      
     } catch (error) {
-      throw error;
+      console.error(error);
     }
-  }
-  const RenderItem = ({ val, index }) => {
-    const { Emoji, id,type } = val;
+  };
+
+  const RenderItem = useMemo(() => ({ val, index }) => {
+    const { Emoji, id, type } = val;
+    const isSelected = indexPress === index && postID === postID;
+
     return (
       <View key={id.toString()} style={styles.emojiContainer}>
-        <TouchableOpacity onPress={() => {
-         
-          handleReaction(type)
-          
-        }}>
-          <View style={{ marginTop:10 }}>
-            <Image source={Emoji} style={[{ width:indexPress === index ? 35 : 25,height: indexPress === index ? 35 : 25,marginVertical:indexPress === index ?-6:null}]} />
+        <TouchableOpacity onPress={() => handleReaction(type, index)}>
+          <View style={{ marginTop: 10 }}>
+            <Image
+              source={Emoji}
+              style={[
+                styles.emoji,
+                {
+                  width: isSelected ? 35 : 25,
+                  height: isSelected ? 35 : 25,
+                  marginVertical: isSelected ? -6 : 0
+                }
+              ]}
+            />
           </View>
         </TouchableOpacity>
       </View>
     );
-  };
+  }, [indexPress, postID]);
 
   return (
     <View style={styles.container}>
       <ScrollView nestedScrollEnabled horizontal showsHorizontalScrollIndicator={false}>
         {reaction.map((item, index) => (
-          <RenderItem key={index} val={item} index={item.type} />
+          <RenderItem key={item.id} val={item} index={item.type} />
         ))}
       </ScrollView>
     </View>
@@ -60,7 +71,7 @@ const styles = StyleSheet.create({
     bottom: -40,
     alignItems: 'center',
     justifyContent: 'center',
-    flex:1
+    flex: 1
   },
   emojiContainer: {
     margin: 10,
@@ -73,8 +84,8 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     width: "50%",
     height: 40,
-    justifyContent:'center',
-    marginLeft:10,
+    justifyContent: 'center',
+    marginLeft: 10,
     borderRadius: 30,
     paddingHorizontal: 20,
     backgroundColor: 'rgba(0, 0, 0, 0)',

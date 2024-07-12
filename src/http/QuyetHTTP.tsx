@@ -1,6 +1,7 @@
 import axios from "axios";
 import AxiosInstance from "./AxiosInstance";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { url } from "../constant/url";
 //getOnePost
 //
 // https://network-social-sever.onrender.com
@@ -27,7 +28,7 @@ export const getPostById = async (postId: any) => {
 export const upLoadMedia = async (formData: any) => {
     try {
         const response = await axios.post(
-            "https://network-social-sever.onrender.com/image/uploads/",
+            `${url}image/uploads/`,
             formData,
             { headers: { "Content-Type": "multipart/form-data" } }
         );
