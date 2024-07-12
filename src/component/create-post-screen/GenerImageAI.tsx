@@ -41,8 +41,8 @@ const GenerImageAI: React.FC<AI> = ({ showAI, setShowAI, imageUrl, setImageUrl }
       const response = await fetch("https://api.openai.com/v1/images/generations", {
         method: "POST",
         headers: {
-          "Content-Type": "application/json",
-          "Authorization": "Bearer",
+          // "Content-Type": "application/json",
+          // "Authorization": "",
         },
         body: JSON.stringify({
           prompt: textInputValue,
