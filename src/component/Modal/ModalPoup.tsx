@@ -29,11 +29,11 @@ const ModalPoup = ({ visible, text }: { visible: boolean, text: string}) => {
         <Modal transparent visible={visible}>
             <View style={styles.modalBackGround}>
                 <Animated.View style={[styles.modalContainer, { transform: [{ scale: scaleValues }] }]}>
-                    <View style={{ alignItems: "center", justifyContent: 'center' }}>
+                    <View >
                         
-                           <View style={{ alignItems: "center", justifyContent: 'center' }}>
-                                <Image source={require('../../media/Dicons/check.png')} style={{ height: 150, width: 150 }} />
-                                <Text style={{ marginVertical: 30, fontSize: 18, textAlign: "center", fontFamily: "popins" }}>{text}</Text>
+                           <View style={{ alignItems: "center",flexDirection:'row' }}>
+                                <Image source={require('../../media/Dicons/ver.png')} style={{ height: 50, width: 50,marginRight:10 }} />
+                                <Text style={{ marginVertical: 30, fontSize: 18, fontFamily: "popins",color:'#000',fontWeight:'bold' }}>{text}</Text>
                             </View> 
                         
                     </View>
@@ -50,15 +50,14 @@ export default ModalPoup
 const styles = StyleSheet.create({
     modalBackGround: {
         flex: 1,
-        backgroundColor: 'rgba(0,0,0,0.5)',
+        backgroundColor: 'rgba(0,0,0,0.1)',
         justifyContent: "center",
         alignItems: "center"
     },
     modalContainer: {
-        width: '80%',
-        backgroundColor: 'white',
+      
+        backgroundColor: '#fff',
         paddingHorizontal: 20,
-        paddingVertical: 30,
         borderRadius: 20,
         elevation: 20,
 
@@ -66,8 +65,7 @@ const styles = StyleSheet.create({
     header: {
         width: "100%",
         height: 40,
-        alignItems: "flex-end",
-        justifyContent: "center",
+        
 
     }
 })

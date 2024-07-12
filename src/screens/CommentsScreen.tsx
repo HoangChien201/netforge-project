@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, TouchableOpacity, Image, ScrollView} from 'react-native'
+import { StyleSheet, Text, View, TouchableOpacity, Image, ScrollView, Pressable } from 'react-native'
 import React, { useMemo, useState, useRef, useEffect } from 'react'
 import InputCmt from '../component/formComments/InputCmt';
 import CommentItem from '../component/formComments/CommentItem';
@@ -11,6 +11,9 @@ import Modal_GetLikePosts from '../component/formComments/Modal_GetLikePosts';
 import { ProfileRootStackEnum } from '../component/stack/ProfileRootStackParams';
 import { useMyContext } from '../component/navigation/UserContext';
 import Icon from 'react-native-vector-icons/Ionicons'
+import Loading from '../component/Modal/Loading';
+import { ActivityIndicator } from 'react-native';
+import { COLOR } from '../constant/color';
 const CommentsScreen = () => {
     const navigation = useNavigation<navigationType>()
     const { user } = useMyContext();
@@ -22,14 +25,15 @@ const CommentsScreen = () => {
     const [comment, setComments] = useState([]);
     const [imagePath, setImagePath] = useState(null);
     const [commentCount, setCommentCount] = useState(0);
+    const [loadDatda, setLoadData] = useState(false);
+    const [loaDing, setLoading] = useState(false);
     const scrollViewRef = useRef();
-
     const route = useRoute();
     const { postId } = route.params;
     const { numberLike } = route.params;
 
 
-    // console.log('postId', postId);
+    console.log('postId', postId);
     // console.log('numberLikeNe', numberLike);
     // console.log(text);
 
@@ -38,10 +42,12 @@ const CommentsScreen = () => {
         try {
             //goo
             const response: any = await getPostById(postId);
-            console.log("posts", response);
+            // console.log("posts", response);
             setPosts(response)
             fetchComments();
-            console.log("repon", response);
+            setLoadData(false)
+            setLoading(true)
+            // console.log("repon", response);
         } catch (error) {
             console.log(error);
         }
@@ -51,13 +57,14 @@ const CommentsScreen = () => {
         try {
             //goo
             const response: any = await getComments(postId);
+            
             setComments(response.reverse());
             setCommentCount(response.length);
         } catch (error) {
             console.log(error);
         }
     };
-    // Hàm xử lý khi người dùng chọn trả lời một bình luận
+    // Hàm xử lý khi người dùng chọn trả lời một bình luận  
     const handleReply = (parent) => {
         setReplyTo(parent); // Thiết lập bình luận cha để trả lời
         console.log("parent:", parent);
@@ -65,6 +72,14 @@ const CommentsScreen = () => {
     // // hàm render comments
     useEffect(() => {
         fetchPosts();
+        const timer = setTimeout(() => {
+            if (!loadDatda) {
+                setLoadData(true);
+                setLoading(false)
+            }
+        }, 3000); // Sau 5 giây nếu không có dữ liệu, dataLoaded sẽ là true
+
+        return () => clearTimeout(timer);
 
     }, []);
 
@@ -96,14 +111,16 @@ const CommentsScreen = () => {
             navigation.navigate(ProfileRootStackEnum.FriendProfile, { userId });
         }
     };
+
     return (
-        <View style={styles.container}>
+
+        <Pressable style={[styles.container]}>
             <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center', position: 'relative', height: 50, backgroundColor: '#fff' }}>
-                <TouchableOpacity onPress={()=>{navigation.goBack()}} style={{ position: 'absolute', left: 15 }}>
-                    <Icon name='arrow-back' size={28} color={'#000'}/>
-                </TouchableOpacity>
+                <Pressable onPress={() => { navigation.goBack() }} style={{ position: 'absolute', left: 15 }}>
+                    <Icon name='arrow-back' size={28} color={'#000'} />
+                </Pressable>
                 <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', }}>
-                    <Text style = {{fontSize: 20, fontWeight: '700', color: '#000'}}>Bình Luận</Text>
+                    <Text style={{ fontSize: 20, fontWeight: '700', color: '#000' }}>Bình Luận</Text>
                 </View>
             </View>
 
@@ -128,17 +145,24 @@ const CommentsScreen = () => {
                             </TouchableOpacity>
                         )
                     }
-                    {comment.length === 0 ? (
+                    {
+                        loaDing &&  comment.length == 0 && (
+                            <View style={styles.spinnerContainer}>
+                            <ActivityIndicator size="large" color={COLOR.PrimaryColor}/>
+                          </View>
+                        )
+                    }
+                    { loadDatda && comment.length === 0 ? (
                         <View style={styles.ViewNoComment}>
                             <View style={{ justifyContent: 'center', alignItems: 'center' }}>
-                                <Image style={{ width: 200, height: 200, marginBottom: 20 }} source={require('../media/icon_tuong/chat.png')} />
+                                <Image style={{ width: 150, height: 150, marginBottom: 20 }} source={require('../media/icon_tuong/chat.png')} />
                                 <Text style={styles.textNoComment1}>Chưa có bình luận nào</Text>
                                 <Text style={styles.textNoComment2}>Hãy là người đầu tiên bình luận.</Text>
                             </View>
                         </View>
                     ) : (
                         comment.map(comment => (
-                            <CommentItem key={comment.id} comment={comment} onReply={handleReply} render={fetchComments} parent={replyTo} setText={setText} setUserId={setCommentUserId} />
+                            <CommentItem key={comment.id} comment={comment} onReply={handleReply} render={fetchComments} parent={replyTo} setText={setText} setUserId={setCommentUserId}/>
                         ))
                     )
                     }
@@ -152,7 +176,6 @@ const CommentsScreen = () => {
                         postId={postId} />
                 ) : (
                     <InputCmt
-
                         comment={commentUserId}
                         setText={setText}
                         text={text}
@@ -164,13 +187,17 @@ const CommentsScreen = () => {
                     />
                 )
             }
-        </View>
+        </Pressable>
     )
 }
 
 export default CommentsScreen
 
 const styles = StyleSheet.create({
+    spinnerContainer:{
+        top: 150,
+        height: 300
+    },
     ViewPostLike: {
         alignItems: 'center',
         flexDirection: 'row',

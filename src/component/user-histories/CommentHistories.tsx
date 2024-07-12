@@ -1,5 +1,5 @@
 import { ActivityIndicator, FlatList, Image, Modal, Pressable, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import Icon from 'react-native-vector-icons/AntDesign';
 import { GetTimeComment } from '../../format/FormatDate'
 import { useMyContext } from '../navigation/UserContext'
@@ -9,7 +9,7 @@ type Comment = {
     dataComment: any
 }
 const CommentHistories: React.FC<Comment> = ({ dataComment }) => {
-    const [sortedData, setSortedData] = useState<any[]>([]);
+    // const [sortedData, setSortedData] = useState<any[]>([]);
     const [showModal, setShowModal] = useState(false);
     const navigation = useNavigation();
     const { user } = useMyContext();
@@ -21,10 +21,8 @@ const CommentHistories: React.FC<Comment> = ({ dataComment }) => {
             </View>
         )
     }
-    useEffect(() => {
-        const sorted = [...dataComment].sort((a: { create_at: any | Date; }, b: { create_at: any | Date; }) => new Date(b.create_at) - new Date(a.create_at));
-        setSortedData(sorted);
-        //console.log(sorted);
+    const sortedData = useMemo(() => {
+        return [...dataComment].sort((a: { create_at: any | Date; }, b: { create_at: any | Date; }) => new Date(b.create_at) - new Date(a.create_at));
     }, [dataComment]);
     useEffect(() => {
         // Set a timeout to simulate loading
@@ -69,15 +67,13 @@ const CommentHistories: React.FC<Comment> = ({ dataComment }) => {
                                     }
                                     <Icon name='aliwangwang' size={18} color={'#0099FF'} style={styles.icon} />
                                 </View>
-                                <View style={styles.contain}>
+                                <Text style={styles.contain} numberOfLines={2} ellipsizeMode="tail" >
                                     <Text style={styles.text1}>Bạn đã bình luận về </Text>
-                                    <Pressable>
-                                        <Text style={styles.text}>bài viết</Text>
-                                    </Pressable>
+                                    <Text style={styles.text}>bài viết</Text>
                                     <Text style={styles.text1}> của </Text>
                                     <Text style={styles.text1}>{item.posts.creater.fullname}</Text>
                                     <Text style={styles.text1}>" {item.content} "</Text>
-                                </View>
+                                </Text>
                                 <View style={{ width: 60, height: '100%', alignItems: 'flex-end' }}>
                                     <Text style={{ color: 'gray', fontSize: 12, marginTop: 30 }}>{GetTimeComment(item.create_at)} trước</Text>
                                 </View>
@@ -131,7 +127,8 @@ const styles = StyleSheet.create({
         flex: 1,
         height: 40,
         flexDirection: 'row',
-        flexWrap: 'wrap'
+        flexWrap: 'wrap',
+        justifyContent:'space-around'
 
     },
     listContainer: {
@@ -151,6 +148,7 @@ const styles = StyleSheet.create({
     text1: {
         fontSize: 16,
         color: 'black',
+        overflow: 'hidden'
     },
     containerEmpty: {
         height: 50,

@@ -4,7 +4,7 @@ import PushNotification, { Importance } from 'react-native-push-notification';
 import { PermissionsAndroid } from 'react-native';
 import uuid from 'react-native-uuid';
 
-import {useSendNotification} from '../constant/notify'
+import { useSendNotification } from '../constant/notify'
 import { socket } from '../http/SocketHandle'
 import BODYMODAL from '../component/edit-post-modal/Body'
 import { COLOR } from '../constant/color'
@@ -18,8 +18,9 @@ import ItemFriend from '../component/notificationes/ItemFriend'
 import ItemMessage from '../component/notificationes/ItemMessage';
 import ItemShare from '../component/notificationes/ItemShare';
 import ItemNewPost from '../component/notificationes/ItemNewPost';
+import ItemBirth from '../component/notificationes/ItemShare';
 const NotificationScreen = () => {
-  const [showModalEdit, setShowModalEdit] = useState(false);
+
   const [showModalFriend, setShowModalFriend] = useState(false);
   const [status, setStatus] = useState('');
   const [showPopup, setShowPopup] = useState(false);
@@ -30,7 +31,7 @@ const NotificationScreen = () => {
   const { user } = useMyContext();
   const [groupedNotifications, setGroupedNotifications] = useState<any>([]);
   const userId = user.id;
-  const {sendNCommentPost} = useSendNotification();
+  const { sendNCommentPost } = useSendNotification();
   useEffect(() => {
     fetchData();
     socket.on(`notification-${userId}`, (data) => {
@@ -44,10 +45,39 @@ const NotificationScreen = () => {
     return () => {
       socket.off(`notification-${userId}`);
     };
-  }, [userId]);
+  }, [userId, notifications]);  // Include notifications in dependencies to ensure up-to-date check
 
-
-  useEffect(() => {
+  const handleSendReaction = () => {
+    const data = {
+      id: uuid.v4(), // id Notify
+      // import uuid from 'react-native-uuid';
+      type: 6, // 1 thả cảm xúc - 2 comment - 3 add friend - 4 tạo mới bài viết + history - 5 share bài viết - 6 nhắn tin
+      postId: "80", // sử dụng cho đăng + thả emoji bài viết/story + share
+      commentId: "80", // sử dụng cho like comment - trả lời comment
+      messId: "80",// sử dụng cho nhắn tin
+      title: `${user.fullname} gửi một tin nhắn`,
+      // gửi tin nhắn mới || trả lời bình luận ${content}||chia sẻ bài viết ${content}
+      // bày tỏ cảm xúc với bài viết ${content} || bày tỏ cảm xúc với comment${content}
+      // ${content} thuộc về người nhận thông báo || nếu không lấy được bỏ qua
+      //----------------------------------------------
+      body: "ủa là sao bạn?", // nội dung hiển thị trên thông báo / tùy chỉnh (thuộc về người gửi) 
+      userInfo: {
+        receiver: 8, // id người nhận
+        sender: `${user.id}`, // id người đăng nhập
+        fullname: `${user.fullname}`, // tên người đăng nhập
+        avatar: `${user.avatar}`, // ảnh người đăng nhập
+        mutiple: false // true = gửi cho tất cả bạn bè (dùng trong tạo bài viết + history)
+      },
+      reaction: {
+        type: 2 // 1 thích - 2 ha ha - 3 thương thương - 4 yêu thích - 5 tức giận
+      },
+      timestamp: new Date().toISOString()
+    };
+    socket.emit('notification', data);
+    console.log('Sent notification data:', data);
+  };
+  
+      useEffect(() => {
     if (notifications.length > 0) {
       const grouped = notifications.reduce((acc, notification) => {
         const { type, postId, commentId, messId, friendId } = notification;
@@ -55,8 +85,8 @@ const NotificationScreen = () => {
         let foundIndex = acc.findIndex(item => item.id === id && item.type === type);
         if (foundIndex === -1) {
           acc.unshift({
-            id:id,
-            type:type,
+            id: id,
+            type: type,
             data: [notification],
             idv4: uuid.v4()
           });
@@ -73,10 +103,10 @@ const NotificationScreen = () => {
       }, []);
       setGroupedNotifications(grouped);
       console.log('dulieumoi:' + JSON.stringify(grouped));
-      
-    }
-  }, [ notifications]);
 
+    }
+  }, [notifications]);
+  
   const addNotification = async (newNotification) => {
     try {
       const oldNotifications = await AsyncStorage.getItem('notifications');
@@ -93,21 +123,21 @@ const NotificationScreen = () => {
     }
   };
 
-    const fetchData = async () => {
-      try {
-        const oldNotifications = await AsyncStorage.getItem('notifications');
-        if(oldNotifications){
-          console.log('AsyncStorage:', oldNotifications);
-          const parsedNotifications = JSON.parse(oldNotifications);
-          if (parsedNotifications && Array.isArray(parsedNotifications)) {
-            setNotifications(parsedNotifications);
-          }
+  const fetchData = async () => {
+    try {
+      const oldNotifications = await AsyncStorage.getItem('notifications');
+      if (oldNotifications) {
+        console.log('AsyncStorage:', oldNotifications);
+        const parsedNotifications = JSON.parse(oldNotifications);
+        if (parsedNotifications && Array.isArray(parsedNotifications)) {
+          setNotifications(parsedNotifications);
         }
-        
-      } catch (error) {
-        console.error('AsyncStorage:', error);
       }
-    };
+
+    } catch (error) {
+      console.error('AsyncStorage:', error);
+    }
+  };
 
 
   const showLocalNotification = (notification) => {
@@ -127,9 +157,9 @@ const NotificationScreen = () => {
   const handleSendNotification = () => {
 
     const data = {
-      postId:80,
-      body:'tôi không còn gì để nói',
-      receiver:8
+      postId: 80,
+      body: 'tôi không còn gì để nói',
+      receiver: 8
     }
     sendNCommentPost(data)
   };
@@ -162,6 +192,8 @@ const NotificationScreen = () => {
         return <ItemShare notification={item} />;
       case 6:
         return <ItemMessage notification={item} />;
+      case 7:
+        return <ItemBirth notification={item} />;
       default:
         return null;
     }
@@ -170,18 +202,12 @@ const NotificationScreen = () => {
     <View style={styles.container}>
       <View style={styles.header}>
         <Text style={styles.headerText}>Thông báo</Text>
-        <TouchableOpacity
-          style={styles.button}
-          onPress={() => setShowModalEdit(true)}
-        >
-          <Text>Edit Post</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
+        {/* <TouchableOpacity
           style={styles.button}
           onPress={handleSendNotification}
         >
           <Text>Send NO</Text>
-        </TouchableOpacity>
+        </TouchableOpacity> */}
       </View>
       <TouchableOpacity onPress={() => setShowModalFriend(true)}>
         <REQFriend />
@@ -192,25 +218,21 @@ const NotificationScreen = () => {
         )}
       </TouchableOpacity>
       <View style={{ flexDirection: 'column' }}>
-      <FlatList
-        data={groupedNotifications}
-        keyExtractor={(item) => item.idv4}
-        renderItem={renderItem}
-        style={styles.list}
-      />
-      {groupedNotifications?.length>0?
-  null
-        :
-        <View style={{alignItems:'center'}}>
-          <Text style={styles.emptyText}>Không có thông báo</Text>
-        </View>
-      }
+        <FlatList
+          data={groupedNotifications}
+          keyExtractor={(item) => item.idv4}
+          renderItem={renderItem}
+          style={styles.list}
+        />
+        {groupedNotifications?.length > 0 ?
+          null
+          :
+          <View style={{ alignItems: 'center' }}>
+            <Text style={styles.emptyText}>Không có thông báo</Text>
+          </View>
+        }
       </View>
-    
-      <BODYMODAL
-        showModalEdit={showModalEdit}
-        setShowModalEdit={setShowModalEdit}
-      />
+
       <MODALFRIEND
         reload={reload}
         showModalFriend={showModalFriend}

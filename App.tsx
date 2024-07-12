@@ -8,6 +8,7 @@ import 'react-native-gesture-handler';
 import React, { createContext, useEffect, useState } from 'react';
 import {
 
+  LogBox,
   StatusBar,
   Text,
   View,
@@ -32,10 +33,7 @@ function App(): React.JSX.Element {
     RequestNotificationPermission()
     registerRemoteNotificationsEvent()
   });
-  LogBox.ignoreLogs([
-    '[Reanimated] Tried to modify key `reduceMotion` of an object which has been already passed to a worklet.',
-  ]);
-  LogBox.ignoreLogs(['new NativeEventEmitter']);
+
   return (
     <GestureHandlerRootView>
       <StatusBar barStyle="dark-content" backgroundColor="transparent" />

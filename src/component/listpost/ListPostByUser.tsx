@@ -21,6 +21,7 @@ const ListPortsByUser:React.FC<ListPortsByUserProps> = React.memo(({ userId, onR
   const [isFetching, setIsFetching] = useState(true); // Thêm biến trạng thái để kiểm soát hiển thị
 
 
+
   const PAGE_SIZE = 10;
   useEffect(() => {
     const fetchData = async () => {

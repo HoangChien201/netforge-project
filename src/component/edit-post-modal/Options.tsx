@@ -14,9 +14,10 @@ interface optionsProps {
     onSelectNewMedia: (permission: string) => void;
     onSelectEmoji: (permission: string) => void;
     setShowModal: (show: boolean) => void;
+    dataShare: any
 }
 
-const Options: React.FC<optionsProps> = ({ onSelectNewMedia, onSelectEmoji, setShowModal }) => {
+const Options: React.FC<optionsProps> = ({ onSelectNewMedia, onSelectEmoji, setShowModal, dataShare }) => {
     const [showEmojiModal, setShowEmojiModal] = useState(false);
 
     const openCamera = useCallback(async () => {
@@ -63,10 +64,15 @@ const Options: React.FC<optionsProps> = ({ onSelectNewMedia, onSelectEmoji, setS
     }
     return (
         <View style={styles.container}>
-            <TouchableOpacity style={styles.button} onPress={showEdit}>
-                {/* <Image style={styles.icon} source={require('../../media/quyet_icon/folder_p.png')} /> */}
-                <ICON name='folderopen' size={30} color={'#00CC33'}/>
-            </TouchableOpacity>
+            {dataShare?
+                null
+                :
+                <TouchableOpacity style={styles.button} onPress={showEdit}>
+                    {/* <Image style={styles.icon} source={require('../../media/quyet_icon/folder_p.png')} /> */}
+                    <ICON name='folderopen' size={30} color={'#00CC33'} />
+                </TouchableOpacity>
+            }
+
             {/* <TouchableOpacity style={styles.button} onPress={openCamera}>
                 <Image style={styles.icon} source={require('../../media/quyet_icon/camera_p.png')} />
             </TouchableOpacity> */}
@@ -94,9 +100,9 @@ const styles = StyleSheet.create({
         height: 40,
         width: '100%',
         alignItems: 'center',
-        borderTopWidth:1,
-        borderTopColor:'#b9babc',
-        zIndex:999
+        borderTopWidth: 1,
+        borderTopColor: '#b9babc',
+        zIndex: 999
     },
     icon: {
         height: 30,

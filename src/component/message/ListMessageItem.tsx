@@ -27,7 +27,8 @@ const ListMessageItem = ({ group }: { group: GroupChatType }) => {
 
     let avatar = ''
     let name = ''
-    let id = ''
+
+    let id_user = null
     if (group.type === 'group') {
         avatar = group.image ? group.image : '';
         name = group.name ? group.name : ''
@@ -37,7 +38,7 @@ const ListMessageItem = ({ group }: { group: GroupChatType }) => {
         if (userSend) {
             avatar = userSend?.user.avatar
             name = userSend.user.fullname
-            id=userSend.user.id
+            id_user = userSend.user.id
         }
         else {
             avatar = '../../media/quyet_icon/netforge.png';
@@ -45,12 +46,26 @@ const ListMessageItem = ({ group }: { group: GroupChatType }) => {
         }
     }
     const onPress = () => {
+        //single
+        if (id_user) {
+
+            navigation.navigate('MessageScreen', {
+                group_id: group.id,
+                fullname: name,
+                avatar: avatar,
+                messages: group.messages,
+                id: id_user
+            })
+
+            return 
+        }
+ 
+        //group
         navigation.navigate('MessageScreen', {
             group_id: group.id,
             fullname: name,
             avatar: avatar,
             messages: group.messages,
-            id:id
         })
     }
     const messageLastest = group.messages[0]
@@ -70,11 +85,11 @@ const ListMessageItem = ({ group }: { group: GroupChatType }) => {
                 <View style={styles.content}>
                     <Text style={[styles.name,
                     messageUnSeen ? styles.nameUnSeen : undefined
-                    ]}>{name}</Text>
+                    ]}>{name ? name : 'Group '+ group?.id}</Text>
                     <View style={{
-                        flexDirection:"row"
+                        flexDirection: "row"
                     }}>
-                        <Text style={styles.nameSender}>{messageLastest.sender.id === user.id ? 'Bạn: ':undefined}</Text>
+                        <Text style={styles.nameSender}>{messageLastest.sender.id === user.id ? 'Bạn: ' : undefined}</Text>
                         <Text style={[styles.message,
                         messageUnSeen ? styles.textMessageUnSeen : undefined]}>
                             {messageLastest.type === 'text' ? messageLastest.message.toString() : messageLastest.type}
@@ -91,7 +106,7 @@ const ListMessageItem = ({ group }: { group: GroupChatType }) => {
 export default ListMessageItem
 
 const styles = StyleSheet.create({
-    nameSender:{
+    nameSender: {
 
     },
     nameUnSeen: {
