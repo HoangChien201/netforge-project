@@ -1,7 +1,7 @@
 import { NavigationProp, ParamListBase, useNavigation } from '@react-navigation/native';
 import React, { useRef, useState } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
-import { RNCamera } from 'react-native-camera';
+//import { RNCamera } from 'react-native-camera';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
 import { NetworkRootStackEnum } from '../component/stack/NetworkRootStackParams';
@@ -27,7 +27,7 @@ const CameraStory = () => {
       >
         <Ionicons name="close-outline" size={34} />
       </TouchableOpacity>
-      <RNCamera
+      {/* <RNCamera
         ref={cameraRef}
         style={styles.preview}
         type={RNCamera.Constants.Type.back}
@@ -44,7 +44,7 @@ const CameraStory = () => {
           buttonPositive: 'OK',
           buttonNegative: 'Hủy',
         }}
-      />
+      /> */}
 
       <View style={{ borderWidth: 1, flex: 0, flexDirection: 'row', justifyContent: 'center' }}>
         <TouchableOpacity onPress={takePicture} style={styles.capture}></TouchableOpacity>

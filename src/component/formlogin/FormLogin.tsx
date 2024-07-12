@@ -27,13 +27,13 @@ export type valid = {
 
 
 const FormLogin = ({ setModal, setStatus, setIsLoading }: { setModal: (value: boolean) => void, setStatus: (value: boolean) => void, setIsLoading: (value: boolean) => void }) => {
-  const navigation:NavigationProp<ParamListBase> = useNavigation();
+  const navigation: NavigationProp<ParamListBase> = useNavigation();
 
-  const [valueF, setValueF] = useState<user>({ email: "tuong123@gmail.com", password: "1234" })
+  const [valueF, setValueF] = useState<user>({ email: '', password: '' })
 
   const [valid, setValid] = useState<valid>({ email: true, password: true })
 
-  const { setUser} = useMyContext();
+  const { setUser } = useMyContext();
 
   function onChangText(key: string, values: string) {
     setValueF({
@@ -43,7 +43,7 @@ const FormLogin = ({ setModal, setStatus, setIsLoading }: { setModal: (value: bo
 
   }
 
-  const handleForgotPassword = ()=>{
+  const handleForgotPassword = () => {
     navigation.navigate(UserRootStackEnum.ForgotPassword);
   }
 
@@ -54,7 +54,7 @@ const FormLogin = ({ setModal, setStatus, setIsLoading }: { setModal: (value: bo
     const isValidEmail = emailPattern.test(trimmedEmail);
     const trimmedPassword = password.trim();
     const isValidPassword = trimmedPassword.length > 0;
-    
+
     if (!isValidEmail || !isValidPassword) {
       setValid({ email: isValidEmail, password: isValidPassword });
     } else {
@@ -64,18 +64,18 @@ const FormLogin = ({ setModal, setStatus, setIsLoading }: { setModal: (value: bo
 
         await AsyncStorage.setItem('email', email);
         await AsyncStorage.setItem('password', password);
-        const result = await login(email,password);
+        const result = await login(email, password);
         console.log(result);
         setIsLoading(false);
-        
+
         if (result) {
-            setUser(result.data);
-          }
-          console.log(result);
-          await AsyncStorage.setItem('userToken', result?.data.token);
-          handleLoginResult(result);
-          setIsLoading(false);
-          
+          setUser(result.data);
+        }
+        console.log(result);
+        await AsyncStorage.setItem('userToken', result?.data.token);
+        handleLoginResult(result);
+        setIsLoading(false);
+
       } catch (error) {
         setIsLoading(false);
         setValid({ email: false, password: false });
@@ -105,45 +105,45 @@ const FormLogin = ({ setModal, setStatus, setIsLoading }: { setModal: (value: bo
       }, 1000);
     }
   };
-  const handleAuthSuccess = async (isAuth:any) => {
-      const stEmail = await AsyncStorage.getItem('email');
-      const stPassword = await AsyncStorage.getItem('password');
-      if (isAuth) {
-        if(stEmail !== null && stPassword !== null){          
-            const email = String(stEmail);
-            const password = String(stPassword);
-            try {
-              const result = await login(email, password);
-              await AsyncStorage.setItem('userToken', result?.data.token);
-              handleLoginResult(result);
-             
-            } catch (error) {
-              console.log("Touch ID login error", error);
-              console.log('email: ' + JSON.stringify(stEmail) + 'pass :' + JSON.stringify(stPassword));
-            }
-        }else{
-          ToastAndroid.showWithGravity(
-            "Bạn cần đăng nhập trước",
-            ToastAndroid.SHORT,
-            ToastAndroid.CENTER)
-        }
-      }
+  const handleAuthSuccess = async (isAuth: any) => {
+    const stEmail = await AsyncStorage.getItem('email');
+    const stPassword = await AsyncStorage.getItem('password');
+    if (isAuth) {
+      if (stEmail !== null && stPassword !== null) {
+        const email = String(stEmail);
+        const password = String(stPassword);
+        try {
+          const result = await login(email, password);
+          await AsyncStorage.setItem('userToken', result?.data.token);
+          handleLoginResult(result);
 
-      
+        } catch (error) {
+          console.log("Touch ID login error", error);
+          console.log('email: ' + JSON.stringify(stEmail) + 'pass :' + JSON.stringify(stPassword));
+        }
+      } else {
+        ToastAndroid.showWithGravity(
+          "Bạn cần đăng nhập trước",
+          ToastAndroid.SHORT,
+          ToastAndroid.CENTER)
+      }
+    }
+
+
 
   };
   return (
     <View>
       <InputLogin invalid={!valid.email} label="Email" value={valueF.email} onchangText={onChangText.bind(this, 'email')} iconE />
       <InputLogin invalid={!valid.password} label="Mật khẩu" value={valueF.password} onchangText={onChangText.bind(this, 'password')} iconPass password={true} />
-      <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center",paddingHorizontal:12 }}>
+      <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center", paddingHorizontal: 12 }}>
         <Remember />
         <TouchableOpacity>
           <Text onPress={handleForgotPassword}>Quên mật khẩu?</Text>
         </TouchableOpacity>
 
       </View>
-      <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between',paddingHorizontal:14 }}>
+      <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingHorizontal: 14 }}>
         <ButtonLogin textLogin chilren='Đăng nhập' textColor='#fff' onPress={submit} />
         <TouchId onAuthSuccess={handleAuthSuccess} />
       </View>

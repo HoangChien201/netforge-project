@@ -13,7 +13,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage'
 import { login } from '../../http/userHttp/user'
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import PushNotification, { Importance } from 'react-native-push-notification';
-import { PermissionsAndroid } from 'react-native';
+import { Alert, PermissionsAndroid } from 'react-native';
 import { socket } from '../../http/SocketHandle'
 import uuid from 'react-native-uuid'
 
@@ -58,37 +58,61 @@ const ManageNavigation: React.FC = () => {
     useEffect(() => {
         handleAutoLogin();
         createChannelNotify();
+        requestCameraPermission();
         const timer = setTimeout(() => {
             setShowSplash(false);
         }, 1500);
         return () => clearTimeout(timer);
     }, []);
-const createChannelNotify = async () => {
-    PushNotification.createChannel(
-        {
-            channelId: "channel-id-1",
-            channelName: "My channel",
-            channelDescription: "A channel to categorise your notifications",
-            playSound: true,
-            soundName: "default",
-            importance: Importance.HIGH,
-            vibrate: true,
-        },
-        (created) => console.log(`createChannel returned '${created}'`)
-    );
-};
+    const createChannelNotify = async () => {
+        PushNotification.createChannel(
+            {
+                channelId: "channel-id-1",
+                channelName: "My channel",
+                channelDescription: "A channel to categorise your notifications",
+                playSound: true,
+                soundName: "default",
+                importance: Importance.HIGH,
+                vibrate: true,
+            },
+            (created) => console.log(`createChannel returned '${created}'`)
+        );
+    };
 
-if (showSplash) {
-    return <SplashScreen />;
-}
+    const requestCameraPermission = async () => {
+        try {
+            const granted = await PermissionsAndroid.request(
+                PermissionsAndroid.PERMISSIONS.CAMERA,
+                {
+                    title: "Quyền truy cập Camera",
+                    message: "Chúng tôi cần cấp quyền truy cập Camera",
+                    buttonNeutral: "Hỏi tôi sau",
+                    buttonNegative: "Hủy bỏ",
+                    buttonPositive: "Chấp nhận"
+                }
+            );
+            if (granted !== PermissionsAndroid.RESULTS.GRANTED) {
+                Alert.alert('Quyền sử dụng máy ảnh bị từ chối');
+            }
+        } catch (err) {
+            console.warn(err);
+        }
+    };
 
-return (
-    <GestureHandlerRootView>
-        <NavigationContainer>
-            {user ? <NetworkStack /> : <UserStack />}
-        </NavigationContainer>
-    </GestureHandlerRootView>
-)
+
+
+
+    if (showSplash) {
+        return <SplashScreen />;
+    }
+
+    return (
+        <GestureHandlerRootView>
+            <NavigationContainer>
+                {user ? <NetworkStack /> : <UserStack />}
+            </NavigationContainer>
+        </GestureHandlerRootView>
+    )
 }
 
 export default ManageNavigation

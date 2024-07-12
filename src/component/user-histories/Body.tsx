@@ -19,7 +19,6 @@ const Body: React.FC<BodyH> = ({ }) => {
         navigation.navigate(`${screen}`)
     };
     const getData = async () => {
-
         try {
             const result = await getUserHistories();
             setData(result);
@@ -95,7 +94,8 @@ export default Body
 const styles = StyleSheet.create({
     container: {
         flexDirection: 'column',
-        zIndex: 999
+        zIndex: 999,
+        marginBottom:100
     },
     header: {
 

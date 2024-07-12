@@ -16,38 +16,40 @@ import { useMyContext } from '../navigation/UserContext';
 import ModalFail from '../Modal/ModalFail'
 import ModalPoup from '../Modal/ModalPoup'
 import Loading from '../Modal/Loading';
+import ItemPost from '../listpost/ItemPost';
 
 interface BodyProps {
     showModalEdit: boolean;
     setShowModalEdit: (value: boolean) => void;
+    selectedId: any
 }
 export type imageType = {
     url: string,
     type: string
 }
-const Body: React.FunctionComponent<BodyProps> = ({ showModalEdit, setShowModalEdit }) => {
+const Body: React.FunctionComponent<BodyProps> = ({ showModalEdit, setShowModalEdit, selectedId }) => {
     const [content, setContent] = useState<string>('');
     const [newMedia, setNewMedia] = useState<any[]>([]);
     const [media, setMedia] = useState([]);
     const [permission, setPermission] = useState(1);
     const [showModal, setShowModal] = useState(false);
-    const postId = 86;
+    const postId = selectedId;
     const [status, setStatus] = useState('');
     const [showPopup, setShowPopup] = useState(false);
     const [isError, setIsError] = useState(false);
     const [images, setImages] = useState<any[]>([]);
-    const [friends, setFriends] = useState([])
-    const [isloading, setIsLoading] = useState(false)
+    const [friends, setFriends] = useState([]);
+    const [isloading, setIsLoading] = useState(false);
+    const [shareId, setshareId] = useState();;
+    const [dataShare, setDataShare] = useState();
     const ShowModalMedia = () => {
         setShowModal(true);
     }
     // lấy thông tin bài viết
     const getOnePost = async () => {
+        setIsLoading(true);
         try {
             const result = await getPostById(postId);
-            // console.log('Bài viết đã được lấy thành công', result); // Logging kết quả
-
-            // Kiểm tra và cập nhật state chỉ khi kết quả không phải là undefined
             if (result || result.length > 0) {
                 setContent(result.content);
                 const mediaUrls = result.media.map(item => item.url);
@@ -58,16 +60,27 @@ const Body: React.FunctionComponent<BodyProps> = ({ showModalEdit, setShowModalE
                 setMedia(mediaUrls);
                 setPermission(result.permission);
                 //setFriends(result.tags)
-
+                setIsLoading(false)
+            }
+            if(result.share?.id){
+                const result1 = await getPostById(result.share?.id);
+                setDataShare(result1)
+            }else{
+                setDataShare('')
             }
         } catch (error) {
             console.log('>>>>>>get news log', error);
             throw error;
         }
     };
+
+
     useEffect(() => {
-        getOnePost();
-    }, []);
+        if (postId) {
+            getOnePost();
+        }
+
+    }, [postId]);
 
     const handleEmojiSelect = (emoji: any) => {
         setContent(content + emoji);
@@ -161,7 +174,17 @@ const Body: React.FunctionComponent<BodyProps> = ({ showModalEdit, setShowModalE
             }, 1100);
         }
     };
-
+    const renderShare = () => {
+        if (dataShare) {
+            return (
+                <View style={styles.sharePost} pointerEvents="none">
+                    <ItemPost data={dataShare} />
+                </View>
+            )
+        } else {
+            return null;
+        }
+    }
     return (
 
         <Modal visible={showModalEdit} animationType="slide" style={styles.container}>
@@ -188,9 +211,11 @@ const Body: React.FunctionComponent<BodyProps> = ({ showModalEdit, setShowModalE
 
                 {renderMedia({ media, images, setMedia, setShowModal })}
             </View>
+
             <MediaModal showModal={showModal} setShowModal={setShowModal} media={media} setMedia={setMedia} setImages={setImages} images={images} />
             <TEXTAREA content={content} setContent={setContent} setFriends={setFriends} friends={friends} />
-            <OPTIONS onSelectEmoji={handleEmojiSelect} onSelectNewMedia={newMediaSelected} setShowModal={setShowModal} />
+            {renderShare()}
+            <OPTIONS onSelectEmoji={handleEmojiSelect} onSelectNewMedia={newMediaSelected} setShowModal={setShowModal} dataShare={dataShare} />
             {showPopup ? (
                 isError ? (
                     <ModalFail text={status} visible={showPopup} />
@@ -202,7 +227,8 @@ const Body: React.FunctionComponent<BodyProps> = ({ showModalEdit, setShowModalE
                 <Loading isLoading={isloading} />
             </View>
 
-        </Modal>
+
+        </Modal >
     )
 }
 
@@ -212,6 +238,7 @@ const styles = StyleSheet.create({
     container: {
         height: '100%',
         width: '100%',
+        zIndex: 99999
     },
     closeButton: {
         marginStart: 10,
@@ -340,4 +367,10 @@ const styles = StyleSheet.create({
         overflow: 'hidden',
         marginStart: 5
     },
+    sharePost: {
+        borderWidth: 1,
+        marginHorizontal: 2,
+        borderColor: COLOR.PrimaryColor,
+
+    }
 })

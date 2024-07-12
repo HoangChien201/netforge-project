@@ -40,30 +40,6 @@ const Scanner = () => {
         : 'off'
     );
   };
-  useEffect(() => {
-    const requestCameraPermission = async () => {
-      try {
-        const granted = await PermissionsAndroid.request(
-          PermissionsAndroid.PERMISSIONS.CAMERA,
-          {
-            title: "Quyền truy cập Camera",
-            message: "Chúng tôi cần cấp quyền truy cập Camera",
-            buttonNeutral: "Hỏi tôi sau",
-            buttonNegative: "Hủy bỏ",
-            buttonPositive: "Chấp nhận"
-          }
-        );
-        if (granted !== PermissionsAndroid.RESULTS.GRANTED) {
-          Alert.alert('Quyền sử dụng máy ảnh bị từ chối');
-        }
-      } catch (err) {
-        console.warn(err);
-      }
-    };
-
-    requestCameraPermission();
-  }, []);
-
   const codeScanner = useCodeScanner({
     codeTypes: ['qr', 'ean-13'], // Specify the code types you want to scan
     onCodeScanned: (codes) => {

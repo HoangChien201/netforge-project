@@ -4,7 +4,7 @@ import PushNotification, { Importance } from 'react-native-push-notification';
 import { PermissionsAndroid } from 'react-native';
 import uuid from 'react-native-uuid';
 
-import {useSendNotification} from '../constant/notify'
+import { useSendNotification } from '../constant/notify'
 import { socket } from '../http/SocketHandle'
 import BODYMODAL from '../component/edit-post-modal/Body'
 import { COLOR } from '../constant/color'
@@ -18,8 +18,9 @@ import ItemFriend from '../component/notificationes/ItemFriend'
 import ItemMessage from '../component/notificationes/ItemMessage';
 import ItemShare from '../component/notificationes/ItemShare';
 import ItemNewPost from '../component/notificationes/ItemNewPost';
+import ItemBirth from '../component/notificationes/ItemShare';
 const NotificationScreen = () => {
-  const [showModalEdit, setShowModalEdit] = useState(false);
+
   const [showModalFriend, setShowModalFriend] = useState(false);
   const [status, setStatus] = useState('');
   const [showPopup, setShowPopup] = useState(false);
@@ -30,7 +31,7 @@ const NotificationScreen = () => {
   const { user } = useMyContext();
   const [groupedNotifications, setGroupedNotifications] = useState<any>([]);
   const userId = user.id;
-  const {sendNCommentPost} = useSendNotification();
+  const { sendNCommentPost } = useSendNotification();
   useEffect(() => {
     fetchData();
     socket.on(`notification-${userId}`, (data) => {
@@ -55,8 +56,8 @@ const NotificationScreen = () => {
         let foundIndex = acc.findIndex(item => item.id === id && item.type === type);
         if (foundIndex === -1) {
           acc.unshift({
-            id:id,
-            type:type,
+            id: id,
+            type: type,
             data: [notification],
             idv4: uuid.v4()
           });
@@ -73,9 +74,9 @@ const NotificationScreen = () => {
       }, []);
       setGroupedNotifications(grouped);
       console.log('dulieumoi:' + JSON.stringify(grouped));
-      
+
     }
-  }, [ notifications]);
+  }, [notifications]);
 
   const addNotification = async (newNotification) => {
     try {
@@ -93,21 +94,21 @@ const NotificationScreen = () => {
     }
   };
 
-    const fetchData = async () => {
-      try {
-        const oldNotifications = await AsyncStorage.getItem('notifications');
-        if(oldNotifications){
-          console.log('AsyncStorage:', oldNotifications);
-          const parsedNotifications = JSON.parse(oldNotifications);
-          if (parsedNotifications && Array.isArray(parsedNotifications)) {
-            setNotifications(parsedNotifications);
-          }
+  const fetchData = async () => {
+    try {
+      const oldNotifications = await AsyncStorage.getItem('notifications');
+      if (oldNotifications) {
+        console.log('AsyncStorage:', oldNotifications);
+        const parsedNotifications = JSON.parse(oldNotifications);
+        if (parsedNotifications && Array.isArray(parsedNotifications)) {
+          setNotifications(parsedNotifications);
         }
-        
-      } catch (error) {
-        console.error('AsyncStorage:', error);
       }
-    };
+
+    } catch (error) {
+      console.error('AsyncStorage:', error);
+    }
+  };
 
 
   const showLocalNotification = (notification) => {
@@ -127,9 +128,9 @@ const NotificationScreen = () => {
   const handleSendNotification = () => {
 
     const data = {
-      postId:80,
-      body:'tôi không còn gì để nói',
-      receiver:8
+      postId: 80,
+      body: 'tôi không còn gì để nói',
+      receiver: 8
     }
     sendNCommentPost(data)
   };
@@ -162,6 +163,8 @@ const NotificationScreen = () => {
         return <ItemShare notification={item} />;
       case 6:
         return <ItemMessage notification={item} />;
+      case 7:
+        return <ItemBirth notification={item} />;
       default:
         return null;
     }
@@ -170,12 +173,6 @@ const NotificationScreen = () => {
     <View style={styles.container}>
       <View style={styles.header}>
         <Text style={styles.headerText}>Thông báo</Text>
-        <TouchableOpacity
-          style={styles.button}
-          onPress={() => setShowModalEdit(true)}
-        >
-          <Text>Edit Post</Text>
-        </TouchableOpacity>
         <TouchableOpacity
           style={styles.button}
           onPress={handleSendNotification}
@@ -192,25 +189,21 @@ const NotificationScreen = () => {
         )}
       </TouchableOpacity>
       <View style={{ flexDirection: 'column' }}>
-      <FlatList
-        data={groupedNotifications}
-        keyExtractor={(item) => item.idv4}
-        renderItem={renderItem}
-        style={styles.list}
-      />
-      {groupedNotifications?.length>0?
-  null
-        :
-        <View style={{alignItems:'center'}}>
-          <Text style={styles.emptyText}>Không có thông báo</Text>
-        </View>
-      }
+        <FlatList
+          data={groupedNotifications}
+          keyExtractor={(item) => item.idv4}
+          renderItem={renderItem}
+          style={styles.list}
+        />
+        {groupedNotifications?.length > 0 ?
+          null
+          :
+          <View style={{ alignItems: 'center' }}>
+            <Text style={styles.emptyText}>Không có thông báo</Text>
+          </View>
+        }
       </View>
-    
-      <BODYMODAL
-        showModalEdit={showModalEdit}
-        setShowModalEdit={setShowModalEdit}
-      />
+
       <MODALFRIEND
         reload={reload}
         showModalFriend={showModalFriend}
