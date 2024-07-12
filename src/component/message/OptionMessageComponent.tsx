@@ -7,10 +7,11 @@ import { deleteMessageAPI } from '../../http/ChienHTTP';
 import { socket } from '../../http/SocketHandle';
 import { useMyContext } from '../navigation/UserContext';
 
-const OptionMessageComponent = ({ deleteMessage, message, setReply }: { deleteMessage: any, message: messageType, setReply: any }) => {
+const OptionMessageComponent = ({ deleteMessage, message, setReply,setSelectedMessage }: { setSelectedMessage:any,deleteMessage: any, message: messageType, setReply: any }) => {
     const {user} = useMyContext()
     function ReplyHandle() {
         setReply(message)
+        setSelectedMessage(null)
     }
 
     async function DelteMessageHandle() {
@@ -21,6 +22,8 @@ const OptionMessageComponent = ({ deleteMessage, message, setReply }: { deleteMe
         socket.emit('message', message)
 
         deleteMessage(message.id)
+        setSelectedMessage(null)
+
 
     }
 

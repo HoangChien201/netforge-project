@@ -67,7 +67,7 @@ const PortalMessage: React.FC<PortalMessageProp> = (props) => {
                         position:'absolute'
                     }
                     ]}>
-                        <OptionMessageComponent deleteMessage={deleteMessage} message={selectedMessage} setReply={setReply}/>
+                        <OptionMessageComponent setSelectedMessage={setSelectedMessage} deleteMessage={deleteMessage} message={selectedMessage} setReply={setReply}/>
                     </View>
                 </TouchableOpacity>
             </BlurView>
