@@ -9,7 +9,7 @@ const Tab = createBottomTabNavigator<NetworkRootBottomTabParams>();
 export default function NetworkBottomTab(): React.JSX.Element {
     const [keyboardVisible, setKeyboardVisible] = useState(false);
     const tabBarAnimation = useRef(new Animated.Value(1)).current; // Initial opacity 1 (visible)
-
+    
     useEffect(() => {
         const keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', () => {
             setKeyboardVisible(true);

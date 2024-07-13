@@ -7,18 +7,22 @@ import * as Animatable from 'react-native-animatable';
 import { deleteLikePost, likePost, updateLikePost } from '../../http/userHttp/getpost';
 import { useMyContext } from '../navigation/UserContext';
 import ModalShare from '../share-post/ModalShare';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
-const ActionBar = memo(({onPressProfile, like_count,type, postId, comment_count, share_count,checkLike,setCheckLike }: {setCheckLike:(Value:boolean)=>void,checkLike?:boolean,type: number, postId?: number, comment_count?: number, share_count?: number,like_count?:number }) => {
+const ActionBar = memo(({onPressProfile, like_count,type, postId, comment_count, share_count,checkLike,setCheckLike, share }: {setCheckLike:(Value:boolean)=>void,checkLike?:boolean,type: number, postId?: number, comment_count?: number, share_count?: number,like_count?:number,share?: number }) => {
     const [islike, setIsLike] = useState(false);
+    const [shares, setShare] = useState(share);
     const navigation = useNavigation();
     const {user}= useMyContext()
     const [numberLike, setNumberLike] = useState<number>(like_count);
     const [number, setNumber] = useState<number | null>(type);
     const animationRef = useRef(null);
     const [isModalVisible, setModalVisible] = useState(false);
-
+    console.log("ActionBar");
+    
     const toggleModal = () => {
       setModalVisible(!isModalVisible);
+      setShare(share)
     };
     function navigationScreen(screen: string) {
         navigation.navigate(`${screen}`)
@@ -118,7 +122,12 @@ const ActionBar = memo(({onPressProfile, like_count,type, postId, comment_count,
                             <Pressable onLongPress={OnPressIcon} onPress={() => {
                                 setNumber(1);
                                 likepost(postId, 1);
-                                numberLike === null ? setNumberLike(1) : setNumberLike(pre=>pre+1)
+                                numberLike === null ? setNumberLike(1) : setNumberLike(()=>{
+                                    
+                                    const pre1 =parseInt(numberLike)+1
+                                    console.log("pre", pre1);
+                                    return pre1
+                                })
                                 setIsLike(false)
                             }}>
                                 <AntDesignIcon name='like2' size={22} color='#000' />
@@ -128,7 +137,7 @@ const ActionBar = memo(({onPressProfile, like_count,type, postId, comment_count,
                             {ViewReaction(number,postId)}
                         </View>
                     }
-                    <Text style={styles.text}>{numberLike === null ? 0 : format(numberLike)}</Text>
+                    <Text style={styles.text}>{numberLike === null ? 0 : numberLike}</Text>
                 </View>
                 <TouchableOpacity onPress={()=> navigation.navigate('CommentsScreen',{postId, numberLike, onPressProfile})} style={{ flexDirection: 'row', alignItems: 'center', marginHorizontal: 20 }}>
                     <AntDesignIcon name='message1' size={24} color='#000' style={styles.comment} />
@@ -138,7 +147,7 @@ const ActionBar = memo(({onPressProfile, like_count,type, postId, comment_count,
                     <AntDesignIcon name='sharealt' size={22} color='#000' style={styles.comment} />
                     <Text style={styles.text}>{share_count ? share_count : 0}</Text>
                 </TouchableOpacity>
-                <ModalShare isVisible={isModalVisible} onClose={toggleModal} idPost={postId}/>
+                <ModalShare isVisible={isModalVisible} onClose={toggleModal} idPost={postId} share= {shares}/>
             </View>
             {(islike && checkLike)  &&
            
@@ -186,9 +195,10 @@ const styles = StyleSheet.create({
     comment: {
         marginEnd: 5,
         marginTop: 5,
-        width: 23, height: 23,
+        width: 24, height: 23,
     },
     text: {
         marginTop: 5,
+        
     },
 });

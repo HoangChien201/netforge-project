@@ -15,19 +15,19 @@ enum MessageRootStackEnum {
 }
 
 export type MessageRootStackParams = {
-    MessageScreen:undefined;
-    ListMessageScreen:undefined;
-    CallManagement:undefined;
     ZegoUIKitPrebuiltCallWaitingScreen: undefined;
     ZegoUIKitPrebuiltCallInCallScreen: undefined;
     MessageScreen: {
-        group_id: number,
+        id:string,
+        group_id?: number,
         fullname: string,
         avatar: string,
-        messages: Array<messageType>
+        messages?: Array<messageType>,
+        id?:number
     };
     ListMessageScreen: undefined;
     CallManagement: undefined;
+    
 }
 
 export const MessageRootStackScreens = [

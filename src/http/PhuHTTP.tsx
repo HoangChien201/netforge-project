@@ -107,6 +107,18 @@ export const updateAvatar = async (id:number, avatar: string) => {
     }
 }
 
+//update background
+export const updateBackground = async (id:number, background: string) => {
+    try {
+        const url = `/user/update/${id}`;
+        const body = { background};
+        return await AxiosInstance().patch(url, body);
+    } catch (error) {
+        console.log(error);
+        throw error;
+    }
+}
+
 // get post by user
 export const getPostByUser = async (id:number) => {
     try {

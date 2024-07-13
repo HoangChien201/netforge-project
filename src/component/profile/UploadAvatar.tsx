@@ -1,5 +1,5 @@
 import React, { useState, useCallback, useRef } from 'react';
-import { StyleSheet, View, TouchableOpacity, Image, Modal, Text, Alert, Platform } from 'react-native';
+import { StyleSheet, View, TouchableOpacity, Image, Modal, Text, Alert, Platform, Pressable } from 'react-native';
 import { launchCamera, launchImageLibrary, CameraOptions, ImageLibraryOptions } from 'react-native-image-picker';
 import Icon from 'react-native-vector-icons/AntDesign';
 import FontistoIcon from 'react-native-vector-icons/Fontisto';
@@ -124,7 +124,7 @@ const UpLoadAvatar: React.FC<UpLoadAvatarProps> = ({ initialImage, onImageSelect
   const handleUpdateAvatar = async (image:string) => {
     try {
     const response = await updateAvatar(user.id, image)
-      console.log(response)
+      // console.log(response)
       if (response) {
           setShowModal(true);
           setStatus(true);
@@ -149,6 +149,16 @@ const UpLoadAvatar: React.FC<UpLoadAvatarProps> = ({ initialImage, onImageSelect
     setIsImageViewerVisible(true)
   }
 
+  const handleClose = () => {
+    setShow(false)
+  }
+
+  const handleCloseShowAvatar = () => {
+    setShow(false);
+    setIsImageViewerVisible(false);
+  }
+  
+
   return (
     <View style={styles.container}>
       {userId === user.id ? ( 
@@ -169,7 +179,7 @@ const UpLoadAvatar: React.FC<UpLoadAvatarProps> = ({ initialImage, onImageSelect
         </TouchableOpacity>
       )}
       <Modal animationType="slide" transparent={true} visible={show} onRequestClose={() => setShow(false)}>
-        <View style={styles.modalContainer}>
+        <Pressable style={styles.modalContainer} onPress={handleClose}>
           <View style={styles.modalContent}>
             <TouchableOpacity style={styles.iconClose} onPress={() => setShow(false)}>
               <Icon name="minus" size={40} color="#000" />
@@ -190,12 +200,12 @@ const UpLoadAvatar: React.FC<UpLoadAvatarProps> = ({ initialImage, onImageSelect
               <Text style={{color:"#000",fontSize:18,fontWeight:'700', marginLeft:20}}>Chọn ảnh</Text>
             </TouchableOpacity>
           </View>
-        </View>
+        </Pressable>
       </Modal>
 
       <ImageViewModal
         visible={isImageViewerVisible}
-        onClose={() => setIsImageViewerVisible(false)}
+        onClose={handleCloseShowAvatar}
         imageUri= {image}
       />
 

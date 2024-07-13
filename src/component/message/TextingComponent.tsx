@@ -26,8 +26,10 @@ const TextingComponent = ({ addMessage, reply,setReply }: { addMessage: any, rep
             "sender": user.id,
             "reactions": [],
             "reads": [],
-            "parent":reply ? reply : null
+            "parent":reply ? reply.id : null
         }
+        console.log('mes ',message);
+        
         addMessage(messageArg?.id ? messageArg : message)
         setValueInput('')
     }

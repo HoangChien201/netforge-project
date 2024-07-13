@@ -1,7 +1,8 @@
 import React, { memo, useCallback, useEffect, useRef, useState } from 'react';
 import { Dimensions, FlatList, StyleSheet, View } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { getAll, deletePost } from '../../http/userHttp/getpost'; // Import các hàm API của bạn
+import { getAll, deletePost } from '../../http/userHttp/getpost';
+import { useFocusEffect } from '@react-navigation/native';
 import ItemStory from './ItemStory';
 
 const ListStory = memo(({ onrefresh }) => {
@@ -24,7 +25,6 @@ const ListStory = memo(({ onrefresh }) => {
         const createrMap = new Map();
         response.forEach((post) => {
           if (post.type === 2) {
-        
             const createdAtDate = new Date(post.create_at);
             const currentDate = new Date();
             const differenceInMilliseconds = currentDate - createdAtDate;
@@ -38,9 +38,8 @@ const ListStory = memo(({ onrefresh }) => {
                 } catch (error) {
                   console.error(`Lỗi khi xóa bài đăng ${post.id}:`, error);
                 }
-              }, 500); 
+              }, 500);
             } else {
-       
               if (!createrMap.has(post.creater.id)) {
                 createrMap.set(post.creater.id, {
                   creater_id: post.creater.id,
@@ -54,7 +53,6 @@ const ListStory = memo(({ onrefresh }) => {
           }
         });
 
-     
         const groupedPosts = Array.from(createrMap.values());
         setData([...groupedPosts]);
       }
@@ -66,6 +64,14 @@ const ListStory = memo(({ onrefresh }) => {
   useEffect(() => {
     getAllPost();
   }, [getAllPost, onrefresh,data]);
+
+  // useFocusEffect(
+  //   useCallback(() => {
+  //     getAllPost();
+  //   }, [getAllPost])
+  // );
+
+ 
 
   return (
     <View style={{ flex: 0 }}>
@@ -84,7 +90,7 @@ const ListStory = memo(({ onrefresh }) => {
             indexfind={findindex}
           />
         )}
-        keyExtractor={(item, index) => index.toString()}
+        keyExtractor={(item, index) => item.creater_id.toString()}
         horizontal
         showsHorizontalScrollIndicator={false}
       />

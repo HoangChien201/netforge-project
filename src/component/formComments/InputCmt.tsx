@@ -17,7 +17,7 @@ const InputCmt = ({ fetchComments, onMediaSelected, parent = null , postId, text
     const [media, setMedia] = useState(null);
     const [imagePath, setImagePath] = useState(null);
     const [mediaType, setMediaType] = useState(null);
-    const inputRef = useRef(null);
+    // const inputRef = useRef(null);
     
     console.log('inputcommentid', comment);
   
@@ -34,21 +34,6 @@ const InputCmt = ({ fetchComments, onMediaSelected, parent = null , postId, text
     
 
     }, [text])
-    if (inputRef.current) {
-        inputRef.current.focus();
-        console.log('render');
-        
-    }
-    // useEffect(() => {
-    //     // Tự động gọi focus() khi component được hiển thị
-    //     if (text) {
-    //         if(inputRef.current){
-    //             inputRef.current.focus();
-    //         console.log('trả lời');
-    //         } 
-    //     } 
-    // }, [text]);
-
    
     const handleCancel =()=>{
         setParent(null)
@@ -201,7 +186,7 @@ const InputCmt = ({ fetchComments, onMediaSelected, parent = null , postId, text
                             value={comments}
                             onChangeText={text => { setComments(text) }}
                             multiline={true}
-                            ref={inputRef}>
+                            >
                         </TextInput>
                     </View>
                     <TouchableOpacity style={styles.btnSend} onPress={handleAddComment}>

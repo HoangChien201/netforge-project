@@ -1,49 +1,43 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState, memo } from 'react';
 import { View, StyleSheet, Animated, Easing } from 'react-native';
 
 const ProgressBar = ({ paused, active, index, setActi, length, setcurrentIndex, currentIndex, dataLength }) => {
     const [shouldAnimate, setShouldAnimate] = useState(false);
-    const [remainingTime, setRemainingTime] = useState(0);
     const progress = useRef(new Animated.Value(0)).current;
+    const remainingTimeRef = useRef(5000); // Thời gian còn lại khi paused
 
     useEffect(() => {
         setShouldAnimate(index === active);
-       
         progress.setValue(0);
     }, [index, active]);
-   
-    
+
     useEffect(() => {
-        let animation;
-
         if (shouldAnimate) {
-           if(!paused){
-            animation = Animated.timing(progress, {
-                toValue: 1,
-                duration: 5000,
-                easing: Easing.linear,
-                useNativeDriver: false,
-            }).start(({ finished }) => {
-                if (finished) {
-                    if (active === length) {
-                        if (currentIndex === dataLength) {
-                            return;
+            if (!paused) {
+                const duration = remainingTimeRef.current;
+                Animated.timing(progress, {
+                    toValue: 1,
+                    duration,
+                    easing: Easing.linear,
+                    useNativeDriver: false,
+                }).start(({ finished }) => {
+                    if (finished) {
+                        if (active === length) {
+                            if (currentIndex === dataLength) {
+                                return;
+                            } else {
+                                setcurrentIndex(currentIndex + 1);
+                            }
                         } else {
-                            setcurrentIndex(currentIndex + 1);
+                            setActi(active + 1);
                         }
-                    } else {
-                        setActi(active + 1);
                     }
-                }
-            });
-          
-           }
-           else{
-            Animated.timing(progress).stop();
-           }
+                });
+            } else {
+                const currentProgress = progress.__getValue();
+                remainingTimeRef.current = (1 - currentProgress) * 5000;
+            }
         }
-
-        
     }, [progress, shouldAnimate, paused]);
 
     const getProgressBar = () => {
@@ -56,7 +50,6 @@ const ProgressBar = ({ paused, active, index, setActi, length, setcurrentIndex, 
                 outputRange: ['0%', '100%'],
             });
         }
-        console.log("w");
         progress.setValue(0);
         return '0%';
     };
@@ -90,4 +83,4 @@ const styles = StyleSheet.create({
     },
 });
 
-export default ProgressBar;
+export default memo(ProgressBar);

@@ -1,13 +1,5 @@
 import {
-  Button,
-  FlatList,
-  Image,
-  ScrollView,
   StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-  SafeAreaView
 } from 'react-native';
 import React, { useState } from 'react';
 import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
@@ -22,9 +14,7 @@ const ProfileScreen: React.FC = () => {
     <SafeAreaProvider>
           <TestProfile/>
     </SafeAreaProvider>
-
   );
-
 };
 
 export default ProfileScreen;

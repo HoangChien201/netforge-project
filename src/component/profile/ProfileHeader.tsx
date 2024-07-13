@@ -34,7 +34,7 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({ fullname, userId, loggedI
     checkFiend()
   },[show])
   const handleToEditProfile = () =>  {
-  const { user } = useMyContext();
+  //const { user } = useMyContext();
   //const isOwnProfile = userId === loggedInUserId; // Kiểm tra xem đây có phải là trang cá nhân của người đang đăng nhập hay không
 
   // if (userId === loggedInUserId) {
@@ -45,7 +45,7 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({ fullname, userId, loggedI
   }
 
   const handleToCreateStory = () => {
-    navigation.navigate('LiveStack' as never);
+    //navigation.navigate('LiveStack' as never);
   }
 
   const sendRequestFriend = async (id: number, status: number) => {
@@ -80,7 +80,7 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({ fullname, userId, loggedI
   const deleteF = async (id: number) => {
     const user1 = Number(user.id);
     const user2 = Number(id);
-    console.log('click');
+    //console.log('click');
     
     try {
       const result = await deleteFriend(user1, user2);
@@ -101,7 +101,8 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({ fullname, userId, loggedI
     }
   };
   const checkFiend = () => {
-    if (relationship === null || relationship.status == null || change) {
+
+    if (relationship === null || relationship?.status == null || change) {
       return (
         <View>
           <TouchableOpacity style={styles.btnAddFriend}

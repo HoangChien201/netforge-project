@@ -6,6 +6,7 @@ import OptionProfile from '../component/menu/OptionProfile';
 // import { ProfileRootStackEnum } from '../component/stack/ProfileRootStackParams';
 import EditProfileScreen from './EditProfileScreen';
 import { useMyContext } from '../component/navigation/UserContext';
+import { COLOR } from '../constant/color';
 
 const MenuScreen = () => {
     const navigation = useNavigation()
@@ -73,7 +74,7 @@ const styles = StyleSheet.create({
         fontWeight: '700'
     },
     edit: {
-        color: '#F8774A',
+        color: COLOR.PrimaryColor,
         fontSize: 15
     },
     button: {

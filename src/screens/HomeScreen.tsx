@@ -1,5 +1,5 @@
 import React, { memo, useCallback, useRef, useState, useEffect } from 'react';
-import { StyleSheet, View, Animated, Image, Text, TouchableOpacity, ScrollView } from 'react-native';
+import { StyleSheet, View, Animated, Image, Text, TouchableOpacity, ScrollView, ImageBackground } from 'react-native';
 import ListStory from '../component/storys/ListStory';
 import ListPorts from '../component/listpost/ListPorts';
 import { useNavigation, useIsFocused } from '@react-navigation/native';
@@ -28,7 +28,8 @@ const HomeScreen = () => {
     const isFocused = useIsFocused();
     const { user } = useMyContext();
     const [visible, setVisible] = useState(false);
-
+    console.log("HomeScreen");
+    
     const checkTouchIdLogin = () => {
         TouchID.isSupported()
             .then(async biometryType => {
@@ -73,17 +74,16 @@ const HomeScreen = () => {
         return () => {
             tabBarTranslateY.removeListener(listener);
         };
-    }, [navigation, tabBarTranslateY]);
-
+    }, [tabBarTranslateY]);
     const handleScroll = ({ nativeEvent }) => {
         const offsetY = nativeEvent.contentOffset.y;
-        if (offsetY > prevScrollY) {
+        if (offsetY >= prevScrollY) {
             Animated.timing(tabBarTranslateY, {
                 toValue: 100,
                 duration: 150,
                 useNativeDriver: true,
             }).start();
-        } else if (offsetY < prevScrollY) {
+        } else if (offsetY <= prevScrollY) {
             Animated.timing(tabBarTranslateY, {
                 toValue: 0,
                 duration: 150,
@@ -106,23 +106,29 @@ const HomeScreen = () => {
             if (item.key === 'stories' || item.key.startsWith('new_post')) {
                 return (
                     <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+                           {/* <View style={{marginLeft:10,position:'absolute'}}>
+                <Text style={{color:'#000',fontWeight:'bold'}}>Bảng tin</Text>
+            </View> */}
                         <View style={styles.storyContainer}>
-                            <View style={styles.border}>
-                                <TouchableOpacity
-                                    style={styles.avt1}
-                                    onPress={() => {
-                                        navigation.navigate(NetworkRootStackEnum.CreateStoris);
-                                    }}
-                                >
-                                    <AntDesignIcon name='plus' size={22} style={styles.iconCenter} />
-                                </TouchableOpacity>
+                            <View style={styles.borderContainer}>
+                                <ImageBackground source={{ uri: user.avatar }} style={styles.imageBackground} imageStyle={styles.imageStyle}>
+                                    <TouchableOpacity
+                                        style={styles.avt1}
+                                        onPress={() => {
+                                            navigation.navigate(NetworkRootStackEnum.CreateStoris);
+                                        }}
+                                    >
+                                        <AntDesignIcon name='pluscircle' color={COLOR.PrimaryColor1} size={22} style={styles.iconCenter} />
+                                    </TouchableOpacity>
+                                    <Text style={{bottom:-15,color:"#fff",fontSize:13,fontWeight:'bold'}}>Tạo tin</Text>
+                                </ImageBackground>
                             </View>
-                            <ListStory onRefresh={refreshing} />
+                            <ListStory onrefresh={refreshing} />
                         </View>
                     </ScrollView>
                 );
             } else if (item.key === 'posts' || item.key.startsWith('new_post')) {
-                return <ListPorts onRefresh={refreshing} />;
+                return <ListPorts onrefresh={refreshing} />;
             }
             return null;
         },
@@ -176,7 +182,9 @@ const HomeScreen = () => {
                     </View>
                 )}
             </View>
+         
             <View style={styles.contentContainer}>
+                
                 <Animated.FlatList
                     data={data}
                     renderItem={renderItem}
@@ -209,7 +217,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'space-evenly',
         alignItems: 'center',
-        paddingHorizontal: 5,
+        paddingHorizontal: 15,
     },
     headerLeft: {
         flex: 1,
@@ -282,23 +290,42 @@ const styles = StyleSheet.create({
     contentContainer: {
         height: '90%',
         width: '100%',
+
     },
     storyContainer: {
         flexDirection: 'row',
         alignItems: 'center',
+        paddingHorizontal: 7,
+        margin: 5
     },
     border: {
         padding: 5,
+
     },
     avt1: {
         justifyContent: 'center',
         width: 70,
         height: 70,
-        borderRadius: 50,
         resizeMode: 'cover',
-        borderWidth: 2,
+
     },
     iconCenter: {
         textAlign: 'center',
     },
+    borderContainer: {
+        width: 100, 
+        height: 148,
+        borderRadius: 7, 
+        overflow: 'hidden', 
+        borderWidth:2,
+        borderColor:COLOR.PrimaryColor
+      },
+      imageBackground: {
+        flex: 1, 
+        justifyContent: 'center', 
+        alignItems: 'center', 
+      },
+      imageStyle: {
+        borderRadius: 6, 
+      },
 });

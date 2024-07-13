@@ -7,7 +7,7 @@ import { COLOR } from '../../constant/color'
 import TextingComponent from '../../component/message/TextingComponent'
 import { RouteProp, useIsFocused, useNavigation, useRoute } from '@react-navigation/native'
 import MessageCall from '../../component/message/MessageCall'
-import { getMessageByGroupAPI } from '../../http/ChienHTTP'
+import {  createGroupsHTTP, getMessageByGroupAPI } from '../../http/ChienHTTP'
 import { useMyContext } from '../../component/navigation/UserContext'
 import PortalMessage from '../../component/message/PortalMessage';
 import { Host } from 'react-native-portalize';
@@ -17,7 +17,7 @@ import { MessageRootStackParams } from '../../component/stack/MessageRootStackPa
 import {
   BottomSheetModal,
   BottomSheetView,
-  BottomSheetModalPraovider,
+  BottomSheetModalProvider,
 } from '@gorhom/bottom-sheet';
 import ShowReactionComponent from '../../component/message/ShowReactionComponent'
 
@@ -38,11 +38,11 @@ const MessageScreen = () => {
   const { user } = useMyContext()
   const [messages, setMessages] = useState<Array<messageType>>([])
   const [partner, setPartner] = useState({
-    fullnamename: '',
+    fullname: '',
     avatar: '',
-    group_id: null,
     id: null
   })
+  const [groupId,setGroupId]=useState<number | null>(null)
   const [reply,setReply] = useState<messageType | null>(null)
   const isFocus = useIsFocused()
 
@@ -70,12 +70,13 @@ const MessageScreen = () => {
       const { fullname, avatar, id } = route.params
       const group_id = route.params?.group_id
       getMessages(group_id)
-      setPartner(prevValue => { return { ...prevValue, fullname, avatar, group_id, id} })
-        
+      setPartner(prevValue => { return { ...prevValue, fullname, avatar, id} })
+      setGroupId(group_id)
       setMessages(route.params?.messages)
+
       socket.on(`message-${user.id}`, (message) => {
         if (isFocus) {
-          //đọc tin nhắn khi vào tin nhắn
+          //đọc tin nhắn khi đang trong phần tin nhắn tin nhắn
           socket.emit('read-message', {
             user: user.id,
             group: group_id
@@ -83,27 +84,56 @@ const MessageScreen = () => {
         }
         getMessages(group_id)
       })
+      //đọc tin nhắn khi vào tin nhắn
+      socket.emit('read-message', {
+        user: user.id,
+        group: group_id
+      })
+    }else{
+      const { fullname, avatar, id } = route.params
+      setPartner(prevValue => { return { ...prevValue, fullname, avatar, id} })
+      createGroupAPIs(id)
     }
+
+
     return () => {
       socket.off(`message-${user.id}`);
     };
 
-  }, []);
+  }, [isFocus]);
 
   function addMessage(message: messageType) {
+    let messageNew={...message}
     if(reply) {
-      message.parent={
-        sender:reply?.sender
+      messageNew={
+        ...message,
+        parent:{
+          id:message.parent,
+          sender:reply?.sender
+        }
       }
-
+      
       setReply(null)
     }
-
+    
     setMessages(
       (prevValue) => {
-        return [message, ...prevValue]
+        return [messageNew, ...prevValue]
       }
     )
+  }
+
+  async function createGroupAPIs(friend_id:number){
+    const createGroup={
+      type:'single',
+      members:[user.id,friend_id]
+    }
+    const group = await createGroupsHTTP(createGroup)
+    console.log('g',group);
+    
+    getMessages(group.id)
+    setGroupId(group.id)
+
   }
 
   const ListMessage = useCallback(() => {
@@ -120,7 +150,7 @@ const MessageScreen = () => {
             <MessageItem
               message={item}
               sender={user.id === sender}
-              group_id={route.params?.group_id} 
+              group_id={groupId} 
               setMessageReactionsSelected={setMessageReactionsSelected}
               deleteMessage={DeleteMessage}
               setReply={setReply}

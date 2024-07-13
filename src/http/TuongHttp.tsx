@@ -195,3 +195,16 @@ export const getLikePostById = async(id: number) => {
     throw error;
   }
 }
+export const updateLikeComment = async (comment_id:number, userId:number, reaction:number) => {
+  try {
+      const axioInstance = AxiosInstance();
+      const url = `/like-comment/update?comment_id=${comment_id}&user_id=${userId}`;
+     const body = {
+        reaction
+      }
+      const response = await axioInstance.patch(url, body);
+      console.log('Response:', response);
+  } catch (error) {
+      console.log("Lỗi updatecomment",error);
+  }
+};

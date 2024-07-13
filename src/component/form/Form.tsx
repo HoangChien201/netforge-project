@@ -1,96 +1,139 @@
-import { StyleSheet, Text, View } from 'react-native'
-import React, { useState } from 'react'
-import Input from './Input'
-import ButtonLogin from './ButtonLogin'
-import { COLOR } from '../../constant/color'
-import { emailPattern } from '../../constant/valid'
-import { regiter } from '../../http/userHttp/user'
-import { NavigationProp, ParamListBase, useNavigation } from '@react-navigation/native'
+import { StyleSheet, Text, View } from 'react-native';
+import React, { useState } from 'react';
+import Input from './Input';
+import ButtonLogin from './ButtonLogin';
+import { emailPattern } from '../../constant/valid';
+import { regiter } from '../../http/userHttp/user';
+import { NavigationProp, ParamListBase, useNavigation } from '@react-navigation/native';
 
-interface user{
-  email:string,
-  password:string,
-  fullname:string,
-  confirmpassword:string
-}
-export type valid ={
-  email:boolean,
-  password:boolean,
-  fullname:boolean,
-  confirmpassword:boolean
+interface User {
+  email: string;
+  password: string;
+  fullname: string;
+  confirmpassword: string;
 }
 
-const Form= ({setModal}:{setModal:(values:boolean)=>void}) => {
-  const navigation:NavigationProp<ParamListBase> = useNavigation();
-  const [valueF,setValueF] = useState<user>({email:"hoangduy@gmail.com",password:"123",fullname:"Lê Hoàng Duy",confirmpassword:"123"})
-  const [valid,setValid] = useState<valid>({email:true,password:true,fullname:true,confirmpassword:true})
+interface Valid {
+  email: boolean;
+  password: boolean;
+  fullname: boolean;
+  confirmpassword: boolean;
+}
 
-  function onChangText(key:string,values:string){
+const Form = ({ setModal }: { setModal: (values: boolean) => void }) => {
+  const navigation: NavigationProp<ParamListBase> = useNavigation();
+  const [valueF, setValueF] = useState<User>({
+    email: "hoangduy@gmail.com",
+    password: "123",
+    fullname: "Lê Hoàng Duy",
+    confirmpassword: "123"
+  });
+  const [valid, setValid] = useState<Valid>({
+    email: true,
+    password: true,
+    fullname: true,
+    confirmpassword: true
+  });
+
+  const onChangText = (key: keyof User, values: string) => {
     setValueF({
       ...valueF,
-      [key]:values
-    })
-    
-  }
-    
-  const submit = async ()=>{
-      const {email,password,fullname,confirmpassword} = {...valueF}
-      let fullnameValues:boolean | string = fullname.trim();
-      fullnameValues = fullnameValues.includes('');
-      
-      let emailValues: boolean | string = email.trim();
-      const isValid =  emailPattern.test(emailValues)
-      emailValues = emailValues.includes('')
+      [key]: values
+    });
+  };
 
-      let passwordValues:boolean | string = password.trim();
-      passwordValues = passwordValues.length > 0;
+  const submit = async () => {
+    const { email, password, fullname, confirmpassword } = valueF;
 
-      console.log("email",emailValues);
-      console.log("pass",passwordValues);
-      console.log("isvalid",isValid);
-      console.log("fullnameValues",fullnameValues);
+    // Kiểm tra fullname không được để trống
+    const fullnameValid = fullname.trim().length > 0;
 
-      const passwordconfirm = password === confirmpassword
-      console.log("com",password);
-      
-      
+    // Kiểm tra email theo pattern và không để trống
+    const emailValid = emailPattern.test(email.trim());
 
-      if( !passwordconfirm || !isValid || !emailValues || !passwordValues || !fullnameValues){
-        setValid({email:isValid,password:passwordValues,fullname:fullnameValues,confirmpassword:passwordconfirm})
-        console.log("ob",valid);
-        
-        return
-      }
+    // Kiểm tra password không để trống
+    const passwordValid = password.trim().length > 0;
 
-      const result = await regiter(email,password,fullname);
-      console.log(result);
-      
-      if(result){
-        setModal(true)
-        setTimeout(() => {
-          setModal(false)
-          navigation.goBack()
-        }, 1000);
-      
-        console.log("hihi"); 
-      }
-     
+    // Kiểm tra password confirmation khớp
+    const passwordConfirmValid = password === confirmpassword;
 
-      
-  }
+    // Nếu có bất kỳ trường nào không hợp lệ, đặt state valid và dừng submit
+    if (!fullnameValid || !emailValid || !passwordValid || !passwordConfirmValid) {
+      setValid({
+        email: emailValid,
+        password: passwordValid,
+        fullname: fullnameValid,
+        confirmpassword: passwordConfirmValid
+      });
+      return;
+    }
+
+    // Gọi API đăng ký và xử lý kết quả
+    const result = await regiter(email, password, fullname);
+    console.log(result);
+
+    if (result) {
+      setModal(true);
+      setTimeout(() => {
+        setModal(false);
+        navigation.goBack();
+      }, 1000);
+    }
+  };
+
   return (
     <View>
-      <Input invalid={!valid.fullname} label="Fullname" value={valueF.fullname} onchangText={onChangText.bind(this,'fullname')} iconP />
-      <Input invalid={!valid.email} label="Email" value={valueF.email} onchangText={onChangText.bind(this,'email')} iconE />
-      <Input invalid={!valid.password} label="Password" value={valueF.password} onchangText={onChangText.bind(this,'password')} iconPass password={true} />
-      <Input invalid={!valid.confirmpassword} label="Confirm Password" value={valueF.confirmpassword} onchangText={onChangText.bind(this,'confirmpassword')} iconPass password={true} />
-      <View style={{width:'100%'}}>
-        <ButtonLogin chilren='Đăng nhập' textColor='#fff' onPress={submit}/>
+      <Input
+        invalid={!valid.fullname}
+        label="Fullname"
+        value={valueF.fullname}
+        onchangText={onChangText.bind(this, 'fullname')}
+        iconP
+      />
+   
+      
+      <Input
+        invalid={!valid.email}
+        label="Email"
+        value={valueF.email}
+        onchangText={onChangText.bind(this, 'email')}
+        iconE
+      />
+    
+      
+      <Input
+        invalid={!valid.password}
+        label="Password"
+        value={valueF.password}
+        onchangText={onChangText.bind(this, 'password')}
+        iconPass
+        password
+      />
+  
+      
+      <Input
+        invalid={!valid.confirmpassword}
+        label="Confirm Password"
+        value={valueF.confirmpassword}
+        onchangText={onChangText.bind(this, 'confirmpassword')}
+        iconPass
+        password
+      />
+   
+
+      <View style={{ width: '100%' }}>
+        <ButtonLogin chilren='Đăng nhập' textColor='#fff' onPress={submit} />
       </View>
     </View>
-  )
-}
+  );
+};
 
-export default Form
+export default Form;
 
-const styles = StyleSheet.create({})
+const styles = StyleSheet.create({
+  errorText: {
+    color: 'red',
+    marginBottom: 5,
+    marginLeft: 10,
+  },
+});

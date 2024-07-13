@@ -73,14 +73,14 @@ const ExploreScreen = () => {
       console.error('Lỗi khi tải danh sách gần đây:', error);
     }
   };
-  const saveRecentUsers = async (users) => {
+  const saveRecentUsers = async (users: any) => {
     try {
       await AsyncStorage.setItem(`recentUsers_${user.id}`, JSON.stringify(users));
     } catch (error) {
       console.error('Lỗi khi lưu danh sách gần đây:', error);
     }
   };
-  const handleItemClick = (item) => {
+  const handleItemClick = (item: any) => {
     console.log(item.id);
     setKeyword('')
     setUser([])
@@ -152,7 +152,7 @@ const ExploreScreen = () => {
         <ScrollView showsVerticalScrollIndicator={false}>
           {users.map(item => (
             <View key={item.id}>
-              <ItemSearch item={item} handleItemClick={handleItemClick} />
+              <ItemSearch item={item} handleItemClick={handleItemClick} users = {users} />
             </View>
           ))}
         </ScrollView>
