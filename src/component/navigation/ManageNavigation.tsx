@@ -59,7 +59,6 @@ const ManageNavigation: React.FC = () => {
         createChannelNotify();
         requestNotificationPermission();
         requestCameraPermission();
-    }, []);
         const timer = setTimeout(() => {
             setShowSplash(false);
         }, 1500);

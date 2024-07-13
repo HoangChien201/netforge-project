@@ -50,11 +50,11 @@ const ListPorts = memo(({ onrefresh }: { onrefresh: boolean }) => {
     getAllPost();
   }, [getAllPost, onrefresh]);
   
-  useFocusEffect(
-    useCallback(() => {
-      getAllPost();
-    }, [getAllPost])
-    }, [])
+  // useFocusEffect(
+  //   useCallback(() => {
+  //     getAllPost();
+  //   }, [getAllPost])
+  //   }, [])
 
 
   const loadMoreData = () => {
@@ -99,7 +99,6 @@ const ListPorts = memo(({ onrefresh }: { onrefresh: boolean }) => {
     <View style={{ flex:1,backgroundColor: 'rgba(155,155,155,0.2)',zIndex:999999 }}>
       
 
-<!--       <Loading isLoading={loading} />
       <BODYMODAL
         showModalEdit={showModalEdit}
         setShowModalEdit={setShowModalEdit}
@@ -110,7 +109,7 @@ const ListPorts = memo(({ onrefresh }: { onrefresh: boolean }) => {
       setShowDelete={setShowDelete}
       postId={selectedId} 
 
-      /> -->
+      /> 
       {
 
         allData.length > 0 ?

@@ -57,12 +57,14 @@ const HeaderMessageComponent = ({ partner }: { partner: any }) => {
 
     const route = useRoute();
     const { id, fullname, avatar } = route.params;
-    const user_id = id.toString();
+    const user_id = id?.toString();
     const [invitees, setInvitees] = useState([]);
     const { user } = useMyContext()
     console.log(user_id)
 
     useEffect(() => {
+        if(!user_id) return
+
         setInvitees([{ userID: user_id, userName: fullname}]);
         const initializeCallService = async () => {
             try {
