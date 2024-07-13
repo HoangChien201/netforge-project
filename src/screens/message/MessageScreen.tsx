@@ -17,7 +17,7 @@ import { MessageRootStackParams } from '../../component/stack/MessageRootStackPa
 import {
   BottomSheetModal,
   BottomSheetView,
-  BottomSheetModalPraovider,
+  BottomSheetModalProvider,
 } from '@gorhom/bottom-sheet';
 import ShowReactionComponent from '../../component/message/ShowReactionComponent'
 

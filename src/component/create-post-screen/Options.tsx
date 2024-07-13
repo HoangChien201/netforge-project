@@ -20,7 +20,7 @@ type Op = {
     imageUrl: any
 }
 
-const Options:React.FC<Op> = ({ onSelectMedia, onSelectEmoji }) => {
+const Options:React.FC<Op> = ({ onSelectMedia, onSelectEmoji,setShowAI,imageUrl }) => {
     const navigation = useNavigation();
     const [showEmojiModal, setShowEmojiModal] = useState(false);
     
