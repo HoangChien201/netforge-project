@@ -194,7 +194,7 @@ const ExploreScreen = () => {
             recentUsers.length === 0 ? (
               <View style={{ justifyContent: 'center', alignItems: 'center', height: 450 }}>
                 <View style={{ justifyContent: 'center', alignItems: 'center' }}>
-                  <FastImage style={{ width: 120, height: 120 }} source={require('../media/icon_tuong/chim.gif')} />
+                  <FastImage style={{ width: 120, height: 120 }} source={require('../media/icon_tuong/chimne.gif')} />
                   <Text style={{ fontSize: 18, fontWeight: '500', marginTop: 20 }}>Tìm kiếm gần đây trống!</Text>
                 </View>
               </View>

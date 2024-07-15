@@ -65,8 +65,8 @@ const LikeItem = ({ like }) => {
         </View>
     );
 };
-const Modal_GetLikePosts = ({ isVisible, onClose, postId }) => {
-    const [like, setLike] = useState([]);
+const Modal_GetLikePosts = ({ isVisible, onClose, postId, like, setLike }) => {
+    // const [like, setLike] = useState([]);
     // console.log('postmodal:', postId);
     // console.log(like);
     // ref
@@ -85,15 +85,15 @@ const Modal_GetLikePosts = ({ isVisible, onClose, postId }) => {
             }
         }, [postId])
     useEffect(() => {
-
+        fecthGetLikePost();
         if (isVisible) {
-            fecthGetLikePost();
+           
             bottomSheetModalRef.current?.present();
         }
     }, [isVisible]);
 
     const handleSheetChanges = useCallback((index: number) => {
-        console.log('handleSheetChanges', index);
+        // console.log('handleSheetChanges', index);
         if (index === -1) {
             onClose();
         }
@@ -183,7 +183,7 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         width: 350,
         height: 1,
-        backgroundColor: '#F6F5F5',
+        backgroundColor: '#EEEDEB',
         alignItems: 'center'
     },
 })
