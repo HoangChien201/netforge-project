@@ -14,7 +14,7 @@ const CommentHistories: React.FC<Comment> = ({ dataComment }) => {
     const navigation = useNavigation();
     const { user } = useMyContext();
     const [loading, setLoading] = useState(true);
-    if (!dataComment || dataComment.length === 0) {
+    if (!dataComment || dataComment.length == 0) {
         return (
             <View style={styles.containerEmpty}>
                 <Text style={styles.textEmpty}>Hãy tương tác với mọi người để lưu giữ kỉ niệm!</Text>
@@ -51,7 +51,7 @@ const CommentHistories: React.FC<Comment> = ({ dataComment }) => {
 
                 :
                 <View style={styles.listContainer}>
-                    {sortedData.map((item: { content: any; create_at: any; posts: { id: number; creater: { fullname: string } } }, index: { toString: () => React.Key | null | undefined; }) => {
+                    {dataComment.map((item: { content: any; create_at: any; posts: { id: number; creater: { fullname: string } } }, index: { toString: () => React.Key | null | undefined; }) => {
                         const postId = item.posts.id;
                         return (
                             <TouchableOpacity

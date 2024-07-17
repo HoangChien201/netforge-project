@@ -1,8 +1,8 @@
 import React, { memo, useCallback, useRef, useState, useEffect } from 'react';
-import { StyleSheet, View, Animated, Image, Text, TouchableOpacity, ScrollView, ImageBackground } from 'react-native';
+import { StyleSheet, View, Animated, Image, Text, TouchableOpacity, ScrollView, ImageBackground, TouchableWithoutFeedback, Keyboard } from 'react-native';
 import ListStory from '../component/storys/ListStory';
 import ListPorts from '../component/listpost/ListPorts';
-import { useNavigation, useIsFocused } from '@react-navigation/native';
+import { useNavigation, useIsFocused, useFocusEffect } from '@react-navigation/native';
 import { COLOR } from '../constant/color';
 import AntDesignIcon from 'react-native-vector-icons/AntDesign';
 
@@ -15,6 +15,7 @@ import { HomeRootStackEnum } from '../component/stack/HomeRootStackParams';
 import TouchId from '../component/Modal/TouchId';
 import TouchID from 'react-native-touch-id';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { flatMap } from 'lodash';
 
 const HomeScreen = () => {
     const initialData = [{ key: 'stories' }, { key: 'posts' }];
@@ -28,8 +29,11 @@ const HomeScreen = () => {
     const isFocused = useIsFocused();
     const { user } = useMyContext();
     const [visible, setVisible] = useState(false);
-    console.log("HomeScreen");
-    
+
+    const handleOutsidePress = () => {
+        setHidden(false);
+    };
+
     const checkTouchIdLogin = () => {
         TouchID.isSupported()
             .then(async biometryType => {
@@ -52,11 +56,39 @@ const HomeScreen = () => {
                 console.log('TouchID not supported', error);
             });
     };
-
     useEffect(() => {
         checkTouchIdLogin();
     }, []);
+    useEffect(() => {
+        setHidden(false)
+    }, [prevScrollY]);
+    useFocusEffect(
+        useCallback(() => {
+            setHidden(false);
+        }, [])
+    );
+    useFocusEffect(
+        React.useCallback(() => {
+            // Khi màn hình được focus, hiển thị lại bottom-tab
+            navigation.getParent()?.setOptions({
+                tabBarStyle: {
+                    position: 'absolute',
+                    backgroundColor: '#1F1F2F',
+                    margin: 20,
+                    borderRadius: 15,
+                },
+            });
 
+            // Cleanup function khi màn hình mất focus
+            return () => {
+                navigation.getParent()?.setOptions({
+                    tabBarStyle: {
+                        display: 'none',
+                    },
+                });
+            };
+        }, [navigation])
+    );
     useEffect(() => {
         const listener = tabBarTranslateY.addListener(({ value }) => {
             navigation.getParent()?.setOptions({
@@ -106,7 +138,7 @@ const HomeScreen = () => {
             if (item.key === 'stories' || item.key.startsWith('new_post')) {
                 return (
                     <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-                           {/* <View style={{marginLeft:10,position:'absolute'}}>
+                        {/* <View style={{marginLeft:10,position:'absolute'}}>
                 <Text style={{color:'#000',fontWeight:'bold'}}>Bảng tin</Text>
             </View> */}
                         <View style={styles.storyContainer}>
@@ -120,7 +152,7 @@ const HomeScreen = () => {
                                     >
                                         <AntDesignIcon name='pluscircle' color={COLOR.PrimaryColor1} size={22} style={styles.iconCenter} />
                                     </TouchableOpacity>
-                                    <Text style={{bottom:-15,color:"#fff",fontSize:13,fontWeight:'bold'}}>Tạo tin</Text>
+                                    <Text style={{ bottom: -15, color: "#fff", fontSize: 13, fontWeight: 'bold' }}>Tạo tin</Text>
                                 </ImageBackground>
                             </View>
                             <ListStory onrefresh={refreshing} />
@@ -141,65 +173,76 @@ const HomeScreen = () => {
 
     const handleToScanner = () => {
         navigation.navigate(HomeRootStackEnum.Scanner);
+        setHidden(false);
+    }
+    const handleToQRcode = () => {
+        navigation.navigate(HomeRootStackEnum.QRcodeScreen);
+        setHidden(false);
     }
     return (
-        <View style={styles.container}>
-            <TouchId visible={visible} setVisible={setVisible} />
-            <View style={styles.headerContainer}>
-                <View style={styles.headerLeft}>
-                    <Image source={require('../media/quyet_icon/netforge1.jpg')} style={styles.logo} />
-                    <Text style={styles.headerTitle}>NetForge</Text>
-                </View>
-                <View>
-                    <TouchableOpacity onPress={() => navigation.navigate(HomeRootStackEnum.ExploreScreen)}>
-                        <AntDesignIcon name='search1' size={22} color='#000' style={styles.iconCenter} />
-                    </TouchableOpacity>
+        <TouchableWithoutFeedback onPress={handleOutsidePress}>
+            <View style={styles.container}
 
-                </View>
-                <View style={styles.headerRight}>
-                    <TouchableOpacity style={{ alignItems: 'center' }} onPress={handlerClick}>
-                        <Image source={{ uri: user.avatar }} style={styles.userAvatar} />
-                        {/* <Text style={styles.userName}>{user.fullname}</Text> */}
-                    </TouchableOpacity>
-
-                </View>
-                {hidden && (
-                    <View style={styles.hiddenMenu}>
-                        <View style={styles.hiddenMenuContent}>
-                            <TouchableOpacity style={styles.hiddenMenuItem}
-                                onPress={() => navigation.navigate('Scanner')}
-                            >
-                                <MaterialCommunityIcons name='qrcode-scan' size={25} />
-                                <Text style={styles.hiddenMenuText}>Mở máy ảnh</Text>
-                            </TouchableOpacity>
-                            <TouchableOpacity style={styles.hiddenMenuItem}
-                            onPress={() => navigation.navigate('QRcodeScreen')}
-                            >
-                                <MaterialCommunityIcons name='qrcode' size={25} />
-                                <Text style={styles.hiddenMenuText}>Mã QR của tôi</Text>
-                            </TouchableOpacity>
-                        </View>
+            >
+                <TouchId visible={visible} setVisible={setVisible} />
+                <View style={styles.headerContainer}
+                >
+                    <View style={styles.headerLeft}>
+                        <Image source={require('../media/quyet_icon/netforge1.jpg')} style={styles.logo} />
+                        <Text style={styles.headerTitle}>NetForge</Text>
                     </View>
-                )}
-            </View>
-         
-            <View style={styles.contentContainer}>
-                
-                <Animated.FlatList
-                    data={data}
-                    renderItem={renderItem}
-                    keyExtractor={item => item.key}
-                    showsVerticalScrollIndicator={false}
-                    onScroll={Animated.event(
-                        [{ nativeEvent: { contentOffset: { y: scrollY } } }],
-                        { useNativeDriver: false, listener: handleScroll }
+                    <View>
+                        <TouchableOpacity onPress={() => navigation.navigate(HomeRootStackEnum.ExploreScreen)}>
+                            <AntDesignIcon name='search1' size={22} color='#000' style={styles.iconCenter} />
+                        </TouchableOpacity>
+
+                    </View>
+                    <View style={styles.headerRight}>
+                        <TouchableOpacity style={{ alignItems: 'center' }} onPress={handlerClick}>
+                            <Image source={{ uri: user.avatar }} style={styles.userAvatar} />
+                            {/* <Text style={styles.userName}>{user.fullname}</Text> */}
+                        </TouchableOpacity>
+
+                    </View>
+                    {hidden && (
+                        <View style={styles.hiddenMenu}
+                        >
+                            <View style={styles.hiddenMenuContent}>
+                                <TouchableOpacity style={styles.hiddenMenuItem}
+                                    onPress={handleToScanner}
+                                >
+                                    <MaterialCommunityIcons name='qrcode-scan' size={25} />
+                                    <Text style={styles.hiddenMenuText}>Quét mã QR</Text>
+                                </TouchableOpacity>
+                                <TouchableOpacity style={styles.hiddenMenuItem}
+                                    onPress={handleToQRcode}
+                                >
+                                    <MaterialCommunityIcons name='qrcode' size={25} />
+                                    <Text style={styles.hiddenMenuText}>QR của tôi</Text>
+                                </TouchableOpacity>
+                            </View>
+                        </View>
                     )}
-                    onEndReachedThreshold={0.5}
-                    refreshing={refreshing}
-                    onRefresh={onRefresh}
-                />
+                </View>
+
+                <View style={styles.contentContainer}>
+
+                    <Animated.FlatList
+                        data={data}
+                        renderItem={renderItem}
+                        keyExtractor={item => item.key}
+                        showsVerticalScrollIndicator={false}
+                        onScroll={Animated.event(
+                            [{ nativeEvent: { contentOffset: { y: scrollY } } }],
+                            { useNativeDriver: false, listener: handleScroll }
+                        )}
+                        onEndReachedThreshold={0.5}
+                        refreshing={refreshing}
+                        onRefresh={onRefresh}
+                    />
+                </View>
             </View>
-        </View>
+        </TouchableWithoutFeedback>
     );
 };
 
@@ -313,19 +356,19 @@ const styles = StyleSheet.create({
         textAlign: 'center',
     },
     borderContainer: {
-        width: 100, 
+        width: 100,
         height: 148,
-        borderRadius: 7, 
-        overflow: 'hidden', 
-        borderWidth:2,
-        borderColor:COLOR.PrimaryColor
-      },
-      imageBackground: {
-        flex: 1, 
-        justifyContent: 'center', 
-        alignItems: 'center', 
-      },
-      imageStyle: {
-        borderRadius: 6, 
-      },
+        borderRadius: 7,
+        overflow: 'hidden',
+        borderWidth: 2,
+        borderColor: COLOR.PrimaryColor
+    },
+    imageBackground: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    imageStyle: {
+        borderRadius: 6,
+    },
 });

@@ -1,5 +1,5 @@
-import { Image, KeyboardAvoidingView, Platform, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
-import React, { useState } from 'react'
+import { Alert, Animated, Easing, Image, Keyboard, KeyboardAvoidingView, Platform, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import React, { memo, useCallback, useEffect, useRef, useState } from 'react'
 import { COLOR } from '../constant/color'
 import BODY from '../component/create-post-screen/Body'
 import BODYMODAL from '../component/edit-post-modal/Body'
@@ -14,7 +14,9 @@ import { socket } from '../http/SocketHandle'
 import uuid from 'react-native-uuid';
 import { useSendNotification } from '../constant/notify'
 import GenerImageAI from '../component/create-post-screen/GenerImageAI'
-const CreatePostScreen = () => {
+import { useFocusEffect, useIsFocused } from '@react-navigation/native'
+import { useNavigation } from '@react-navigation/native'
+const CreatePostScreen = memo(() => {
   const [status, setStatus] = useState('');
   const [showPopup, setShowPopup] = useState(false);
   const [isError, setIsError] = useState(false);
@@ -25,13 +27,23 @@ const CreatePostScreen = () => {
   const [media, setMedia] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const type = 1;
+  const isFocused = useIsFocused()
   const [permission, setPermission] = useState(1);
   const [sendAll, setSendAll] = useState(true);
   const { sendNCreateNewPostHistory } = useSendNotification();
   const [showAI, setShowAI] = useState(false);
-  const [imageUrl, setImageUrl] = useState('')
+  const [imageUrl, setImageUrl] = useState('');
+  const navigation = useNavigation();
+  const contentRef = useRef(content);
+  const mediaRef = useRef(media);
   // const [imageUrl, setImageUrl] = useState('https://oaidalleapiprodscus.blob.core.windows.net/private/org-xPqRqNjg7rhJctL5M8HgZuVW/user-7aLXFzohKCutW9RLwKG25OxW/img-OV7ku7s8LUd6BUMEu0hbXT4v.png?st=2024-07-11T14%3A47%3A14Z&se=2024-07-11T16%3A47%3A14Z&sp=r&sv=2023-11-03&sr=b&rscd=inline&rsct=image/png&skoid=6aaadede-4fb3-4698-a8f6-684d7786b067&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2024-07-10T23%3A22%3A00Z&ske=2024-07-11T23%3A22%3A00Z&sks=b&skv=2023-11-03&sig=5g5HtkuVSHgbNk%2By60LIx7FLtyaxDdXcR%2BenAaz3CCA%3D');
+  useEffect(() => {
+    contentRef.current = content;
+  }, [content]);
 
+  useEffect(() => {
+    mediaRef.current = media;
+  }, [media]);
 
   const clear = () => {
     setContent('');
@@ -39,6 +51,38 @@ const CreatePostScreen = () => {
     setPermission(1);
     setImageUrl('');
   };
+
+  const handleLeaveScreen = useCallback(() => {
+    if (contentRef.current.trim().length > 0 || mediaRef.current.length > 0) {
+      Alert.alert(
+        'Bài viết chưa được đăng!',
+        'Bạn có muốn giữ lại dữ liệu?',
+        [
+          {
+            text: 'Giữ lại',
+            style: 'cancel',
+          },
+          {
+            text: 'Xóa bỏ',
+            onPress: () => {
+              clear();
+              //navigation.goBack();
+            },
+          },
+        ],
+        { cancelable: false }
+      );
+      return true;
+    }
+    return false;
+  }, [navigation]);
+
+  useEffect(() => {
+    if (!isFocused) {
+      handleLeaveScreen();
+    }
+  }, [isFocused, handleLeaveScreen]);
+
   const tags = friends.map(id => ({ user: String(id) }));
   const uploadPost = async () => {
     try {
@@ -101,7 +145,7 @@ const CreatePostScreen = () => {
           console.log('Added imageUrl to media paths:', medias);
         }
         console.log('here: ' + JSON.stringify(media));
-        const newPost = await createNewPost({ content, type, tags, medias,permission });
+        const newPost = await createNewPost({ content, type, tags, medias, permission });
         console.log('Bài viết đã được tạo không medias:', newPost);
         if (newPost && permission == 1) {
           handleSendReaction(newPost);
@@ -154,19 +198,57 @@ const CreatePostScreen = () => {
   };
   const log = () => {
 
-    console.log(content, media, type, permission, tags,imageUrl);
+    console.log(content, media, type, permission, tags, imageUrl);
 
   }
+  useFocusEffect(
+    React.useCallback(() => {
+      // Khi màn hình được focus, hiển thị lại bottom-tab
+      navigation.getParent()?.setOptions({
+        tabBarStyle: {
+          position: 'absolute',
+          backgroundColor: '#1F1F2F',
+          margin: 20,
+          borderRadius: 15,
+        },
+      });
+    }, [navigation])
+  );
 
+  
 
-
+  const handleKeyboardShow = useCallback(() => {
+    navigation.getParent()?.setOptions({
+        tabBarStyle: {
+            display: 'none',
+        }
+    });
+}, []);
+const handleKeyboardHide = useCallback(() => {
+    navigation.getParent()?.setOptions({
+        tabBarStyle: {
+            position: 'absolute',
+            backgroundColor: '#1F1F2F',
+            margin: 20,
+            borderRadius: 15
+        },
+    });
+}, []);
+useEffect(() => {
+  // Lắng nghe sự kiện hiển thị và ẩn bàn phím
+  const keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', handleKeyboardShow);
+  const keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', handleKeyboardHide);
+  return () => {
+      keyboardDidShowListener.remove();
+      keyboardDidHideListener.remove();
+  };
+}, [handleKeyboardShow, handleKeyboardHide]);
   return (
     <KeyboardAvoidingView style={styles.container}>
-
       <Loading isLoading={isLoading} />
       <View style={styles.header} >
         <Text style={styles.headerText}>Tạo bài viết</Text>
-        <TouchableOpacity onPress={uploadPost} >
+        <TouchableOpacity onPress={uploadPost} style={styles.buttonD}>
           <Text style={styles.headerPostText} >Đăng</Text>
         </TouchableOpacity>
       </View>
@@ -193,7 +275,7 @@ const CreatePostScreen = () => {
       <GenerImageAI showAI={showAI} setShowAI={setShowAI} imageUrl={imageUrl} setImageUrl={setImageUrl} />
     </KeyboardAvoidingView>
   )
-};
+});
 
 export default CreatePostScreen
 
@@ -211,22 +293,29 @@ const styles = StyleSheet.create({
     marginHorizontal: 16
   },
   headerText: {
-    color: '#f8f7fc',
-    fontWeight: '600',
-    fontSize: 23,
+    color: COLOR.primary300,
+    fontWeight: '500',
+    fontSize: 21,
 
   },
   headerPostText: {
-    color: '#f8f7fc',
+    color: '#333333',
     fontWeight: '400',
-    fontSize: 24
+    fontSize: 17
 
   },
   headerClose: {
     height: 40,
     width: 40,
-
-
   },
+  buttonD: {
+    backgroundColor: '#AAAAAA',
+    borderRadius: 5,
+    marginEnd: 5,
+    height: 35,
+    width: 70,
+    alignItems: 'center',
+    justifyContent: 'center'
+  }
 
 })

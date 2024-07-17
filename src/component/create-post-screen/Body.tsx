@@ -27,7 +27,9 @@ const Body: React.FC<Bpob> = ({ content, setContent, media, setMedia, permission
     //const [media, setMedia] = useState([]);
     const [playingVideo, setPlayingVideo] = useState(null);
     const [viewMore, setViewMore] = useState(false);
-    const [uries, setUries] = useState<any>([])
+    const [uries, setUries] = useState<any>([]);
+    const [currentIndex, setCurrentIndex] = useState(0);
+    const [swiperKey, setSwiperKey] = useState(0);
     //const [image, setImage] = useState('https://oaidalleapiprodscus.blob.core.windows.net/private/org-xPqRqNjg7rhJctL5M8HgZuVW/user-7aLXFzohKCutW9RLwKG25OxW/img-RFhiItBxeWWhJB6zSWW1fTyj.png?st=2024-07-12T10%3A13%3A46Z&se=2024-07-12T12%3A13%3A46Z&sp=r&sv=2023-11-03&sr=b&rscd=inline&rsct=image/png&skoid=6aaadede-4fb3-4698-a8f6-684d7786b067&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2024-07-11T23%3A21%3A08Z&ske=2024-07-12T23%3A21%3A08Z&sks=b&skv=2023-11-03&sig=B9SF8LnWfmVdzVpLZWRMcxdoSdMcL0xIDszFD6hkK7c%3D')
     const handleEmojiSelect = (emoji: any) => {
         setContent(content + emoji);
@@ -52,9 +54,11 @@ const Body: React.FC<Bpob> = ({ content, setContent, media, setMedia, permission
         //     });
         //     console.log('Added imageUrl to media paths:', media);
         // }
+        console.log('total:', media);
+
         pushAImage();
     }, [imageUrl || media]);
-    const pushAImage =() =>{
+    const pushAImage = () => {
         if (imageUrl) {
             media.push({
                 uri: imageUrl,
@@ -64,15 +68,16 @@ const Body: React.FC<Bpob> = ({ content, setContent, media, setMedia, permission
         }
         renderMedia;
     }
-    const handleMediaSelect = (newImages: any) => {
-        setMedia(newImages);
-        console.log('Media selected:', newImages);
-    };
+    const handleMediaSelect = (newImages) => {
+        setMedia((prevMedia) => [...prevMedia, ...newImages]);
+        console.log('Updated media:', media);
+    }
     const deleteImage = (uri: any) => {
         const updatedImages = media.filter((media: { uri: any; }) => media.uri !== uri);
         setMedia(updatedImages);
         console.log(updatedImages);
         console.log(media);
+        setSwiperKey((prevKey) => prevKey + 1);
 
     };
     const togglePlayVideo = (uri: any) => {
@@ -329,6 +334,7 @@ const Body: React.FC<Bpob> = ({ content, setContent, media, setMedia, permission
         if (item) {
             return (
                 <SwiperFlatList
+                key={swiperKey} 
                     data={item}
                     renderItem={({ item }) => (
                         <View style={styles.imageContainer} key={item.toString()}>
@@ -357,10 +363,28 @@ const Body: React.FC<Bpob> = ({ content, setContent, media, setMedia, permission
                     )}
                     keyExtractor={(item, index) => index.toString()}
                     horizontal
+                    onChangeIndex={({ index }) => setCurrentIndex(index)}
+
+
                 />
             )
         }
 
+    };
+    const renderDots = () => {
+        return (
+            <View style={styles.dotsContainer}>
+                {media.map((_, index) => (
+                    <View
+                        key={index}
+                        style={[
+                            styles.dot,
+                            { backgroundColor: index === currentIndex ? COLOR.PrimaryColor : '#ccc' },
+                        ]}
+                    />
+                ))}
+            </View>
+        );
     };
     return (
         <View style={styles.container} >
@@ -372,13 +396,14 @@ const Body: React.FC<Bpob> = ({ content, setContent, media, setMedia, permission
                 {viewMore ?
                     <View>
                         {switchMedia(media)}
-                        {viewMore ?
+                        {renderDots()}
+                        {!viewMore || media.length==0?
+                            null
+                            :
                             <TouchableOpacity style={styles.buttonCloseSwitch} onPress={() => { setViewMore(false) }}>
                                 {/* <Icon name='x' color={'#fff'} size={24} /> */}
                                 <Text style={{ color: COLOR.primary300, fontWeight: '400' }}>Đóng</Text>
                             </TouchableOpacity>
-                            :
-                            null
                         }
                     </View>
                     :
@@ -585,5 +610,19 @@ const styles = StyleSheet.create({
         width: '100%',
         alignItems: 'center',
         justifyContent: 'center',
-    }
+    },
+    dotsContainer: {
+        flexDirection: 'row',
+        justifyContent: 'center',
+        alignItems: 'center',
+        position: 'absolute',
+        bottom: 10,
+        width: '100%',
+    },
+    dot: {
+        width: 6,
+        height: 6,
+        borderRadius: 5,
+        margin: 5,
+    },
 });

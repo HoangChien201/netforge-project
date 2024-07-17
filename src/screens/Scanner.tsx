@@ -1,11 +1,12 @@
-import React, { useEffect, useRef, useState } from 'react';
-import { Alert, PermissionsAndroid, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
+import { Alert, Modal, PermissionsAndroid, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { Camera, useCameraDevice, useCameraDevices, useFrameProcessor } from 'react-native-vision-camera';
 import { useCodeScanner } from 'react-native-vision-camera';
 import ICON from 'react-native-vector-icons/MaterialCommunityIcons';
 import SCANMODAL from '../component/scanQR-modal/Body';
 import { getUserById } from '../http/QuyetHTTP';
-
+import { useFocusEffect, useIsFocused } from '@react-navigation/native';
+import { useNavigation } from '@react-navigation/native';
 const Scanner = () => {
   const [data, setData] = useState('');
   const [show, setShow] = useState(false);
@@ -14,6 +15,10 @@ const Scanner = () => {
   const devices = useCameraDevice(cameraPosition);
   const camera = useRef(null);
   const [flashMode, setFlashMode] = useState('on');
+  const isFocused = useIsFocused();
+  const [isCameraActive, setIsCameraActive] = useState(true);
+  const navigation = useNavigation()
+
   useEffect(() => {
     const numericData = Number(data);
     if (!isNaN(numericData) && data) {
@@ -24,7 +29,15 @@ const Scanner = () => {
       console.log('Data is not a valid number: ' + JSON.stringify(data));
     }
   }, [data]);
-
+  useEffect(() => {
+    if (isFocused) {
+      navigation.getParent()?.setOptions({
+        tabBarStyle: {
+          display: 'none',
+        }
+      });
+    }
+  }, [isFocused]);
   const getUser = async (id) => {
     try {
       const result = await getUserById(id);
@@ -48,19 +61,30 @@ const Scanner = () => {
       }
     },
   });
+
+  useFocusEffect(
+    useCallback(() => {
+      setIsCameraActive(true);
+
+      return () => {
+        setIsCameraActive(false);
+      };
+    }, [isFocused])
+  );
   return (
     <View style={styles.container}>
-      {devices != null && (
+      {devices != null && isCameraActive && (
         <Camera
           ref={camera}
           device={devices}
           isActive={true}
           codeScanner={codeScanner}
           style={styles.camera}
-          torch={flashMode} 
-          enableZoomGesture={true} 
+          torch={flashMode}
+          enableZoomGesture={true}
         />
       )}
+
       <TouchableOpacity
         onPress={toggleFlash}
         style={{ position: 'absolute', end: 20, top: 15, zIndex: 99, padding: 5 }} >
@@ -70,6 +94,7 @@ const Scanner = () => {
       <View style={{}}>
         <SCANMODAL show={show} setShow={setShow} user={user} setData={setData} />
       </View>
+
     </View>
   );
 };

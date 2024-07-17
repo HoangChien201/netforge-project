@@ -1,15 +1,17 @@
 import { Image, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import React, { useState } from 'react'
 import Icon from 'react-native-vector-icons/AntDesign'
-
+import { useNavigation } from '@react-navigation/native';
 import { COLOR } from '../../constant/color'
 import { cancelWaitAccept, acceptRequest } from '../../http/QuyetHTTP'
 import EmptyWA from './EmptyWA'
 type Wait ={
     dataWaitAccept:any, 
     setDataWaitAccept:(value:any)=>void,
+    setShowModalFriend:(value:any) => void,
 }
-const WaitAcceptList:React.FC<Wait> = ({ dataWaitAccept, setDataWaitAccept}) => {
+const WaitAcceptList:React.FC<Wait> = ({ dataWaitAccept, setDataWaitAccept, setShowModalFriend}) => {
+    const navigation = useNavigation();
     const cancelReq = async (friendId:number) => {
         try {
             await cancelWaitAccept(friendId);
@@ -32,7 +34,11 @@ const WaitAcceptList:React.FC<Wait> = ({ dataWaitAccept, setDataWaitAccept}) => 
     if (!dataWaitAccept || dataWaitAccept.length === 0) {
         return <EmptyWA ></EmptyWA>;
     }
-
+    const openProfile = (id: any)=>{
+        const userId = id;
+        navigation.navigate('FriendProfile', {userId});
+        setShowModalFriend(false);
+    }
     return (
         <ScrollView style={styles.container}>
             {dataWaitAccept.map(friend => (
