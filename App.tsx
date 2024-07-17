@@ -7,11 +7,8 @@
 import 'react-native-gesture-handler';
 import React, { useEffect } from 'react';
 import {
-
   LogBox,
   StatusBar,
-  LogBox
-
 } from 'react-native';
 import ManageNavigation from './src/component/navigation/ManageNavigation';
 import { UserProvider } from './src/component/navigation/UserContext';
