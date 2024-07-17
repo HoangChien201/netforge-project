@@ -32,6 +32,7 @@ const FormLogin = ({ setModal, setStatus, setIsLoading }: { setModal: (value: bo
 
   const [valueF, setValueF] = useState<user>({ email: '', password: '' })
 
+
   const [valid, setValid] = useState<valid>({ email: true, password: true })
 
   const { setUser } = useMyContext();

@@ -99,7 +99,7 @@ const Reaction = memo(({ like_count, type, commentId, render, checkReaction, set
                     <TouchableOpacity onLongPress={OnPressIcon} onPress={() => {
                         DeleteLikeComment(commentId)
                         setNumber(null)
-                        numberLike === null ? setNumberLike(0) : setNumberLike((pre) => pre - 1)
+                        numberLike === null ? setNumberLike(0) : setNumberLike((pre) => parseInt(pre) - 1)
                         setIsLike(false)
                         setCheckReaction(false)                       
                     }
@@ -121,7 +121,7 @@ const Reaction = memo(({ like_count, type, commentId, render, checkReaction, set
                             <Pressable onLongPress={OnPressIcon} onPress={() => {
                                 setNumber(1);
                                 addLikeComment(commentId, 1);
-                                numberLike === null ? setNumberLike(1) : setNumberLike(pre => (parseInt(pre)) + 1)
+                                numberLike === null ? setNumberLike(1) : setNumberLike(pre => (parseInt(pre.toString())) + 1)
                                 setIsLike(false)
                             }}>
                                 <AntDesignIcon name='like2' size={18} color='#000' />
@@ -162,10 +162,14 @@ const Reaction = memo(({ like_count, type, commentId, render, checkReaction, set
                             <TouchableOpacity key={index} style={{ paddingHorizontal: 5 }} onPress={() => {
                                 setNumber(item.type);
                                 setIsLike(false)
-                                
-                           
-                                numberLike === null ? setNumberLike(1) : setNumberLike(pre => parseInt(pre.toString()) + 1)
-                                number === null ? addLikeComment(commentId, item.type) : updateLike(commentId, item.type)
+                                if(item.Emoji){
+                                    numberLike === null ? setNumberLike(1) : setNumberLike(pre => parseInt(pre.toString()) + 0)
+                                    number === null ? addLikeComment(commentId, item.type) : updateLike(commentId, item.type)
+                                }else{
+                                    number === null ? addLikeComment(commentId, item.type) : updateLike(commentId, item.type)
+                                    numberLike === null ? setNumberLike(1) : setNumberLike(pre => parseInt(pre.toString()) + 1)
+                                }
+                              
                                
                             }}>
                                 <Image source={item.Emoji} style={{ width: 20, height: 20, marginVertical: 6 }} />

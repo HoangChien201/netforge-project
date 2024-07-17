@@ -11,6 +11,7 @@ import { useMyContext } from '../component/navigation/UserContext';
 import { ProfileRootStackEnum } from '../component/stack/ProfileRootStackParams';
 import FastImage from 'react-native-fast-image';
 import Icon from 'react-native-vector-icons/Entypo'
+import { UIActivityIndicator } from 'react-native-indicators';
 
 const ExploreScreen = () => {
   const navigation = useNavigation()
@@ -121,8 +122,9 @@ const ExploreScreen = () => {
 
   // xóa keywork
   const handleDeleteKeywork = () => {
-    setKeyword('')
     setIsSearching(true)
+    setUser([])
+    setKeyword('')
     setNoResult(false)
     clearTimeout(timerRef.current);
   }
@@ -160,7 +162,7 @@ const ExploreScreen = () => {
         keyword && isLoading && (
         
           <View style={styles.spinnerContainer}>
-            <ActivityIndicator size="large" color={COLOR.PrimaryColor}/>
+           <UIActivityIndicator color={'#FF6347'} size={30} />
           </View>
 
           
@@ -194,7 +196,7 @@ const ExploreScreen = () => {
             recentUsers.length === 0 ? (
               <View style={{ justifyContent: 'center', alignItems: 'center', height: 450 }}>
                 <View style={{ justifyContent: 'center', alignItems: 'center' }}>
-                  <FastImage style={{ width: 120, height: 120 }} source={require('../media/icon_tuong/chim.gif')} />
+                  <FastImage style={{ width: 120, height: 120 }} source={require('../media/icon_tuong/chimne.gif')} />
                   <Text style={{ fontSize: 18, fontWeight: '500', marginTop: 20 }}>Tìm kiếm gần đây trống!</Text>
                 </View>
               </View>
@@ -204,7 +206,7 @@ const ExploreScreen = () => {
                   recentUsers.map(item => (
 
                     <View key={item.id}>
-                      <ItemRencent item={item} onPressDelete={removeRecentUser} />
+                      <ItemRencent item={item} onPressDelete={removeRecentUser} users = {users} />
                     </View>
 
                   ))

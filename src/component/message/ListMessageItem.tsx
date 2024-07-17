@@ -12,7 +12,7 @@ export type GroupChatType = {
     "image": string | null,
     "members": Array<{
         user: {
-            id: string,
+            id: number,
             fullname: string,
             avatar: string
         }
@@ -27,11 +27,12 @@ const ListMessageItem = ({ group }: { group: GroupChatType }) => {
 
     let avatar = ''
     let name = ''
+    let members:Array<number>=[]
 
     let id_user = null
     if (group.type === 'group') {
         avatar = group.image ? group.image : '';
-        name = group.name ? group.name : ''
+        name = group.name ? group.name : '';
     }
     else {
         const userSend = group.members.find(member => member.user.id !== user.id)
@@ -54,7 +55,8 @@ const ListMessageItem = ({ group }: { group: GroupChatType }) => {
                 fullname: name,
                 avatar: avatar,
                 messages: group.messages,
-                id: id_user
+                members:group.members
+
             })
 
             return 
@@ -66,6 +68,7 @@ const ListMessageItem = ({ group }: { group: GroupChatType }) => {
             fullname: name,
             avatar: avatar,
             messages: group.messages,
+            members:group.members
         })
     }
     const messageLastest = group.messages[0]

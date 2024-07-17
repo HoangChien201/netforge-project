@@ -40,7 +40,6 @@ const MessageScreen = () => {
   const [partner, setPartner] = useState({
     fullname: '',
     avatar: '',
-    id: null
   })
   const [groupId, setGroupId] = useState<number | null>(null)
   const [reply, setReply] = useState<messageType | null>(null)
@@ -82,10 +81,10 @@ const MessageScreen = () => {
     // navigation.getParent()?.setOptions({ tabBarStyle: { display: 'none' } });
 
     if (route.params?.group_id) {
-      const { fullname, avatar, id } = route.params
+      const { fullname, avatar } = route.params
       const group_id = route.params?.group_id
       getMessages(group_id)
-      setPartner(prevValue => { return { ...prevValue, fullname, avatar, id } })
+      setPartner(prevValue => { return { ...prevValue, fullname, avatar} })
       setGroupId(group_id)
       setMessages(route.params?.messages)
 
@@ -104,10 +103,12 @@ const MessageScreen = () => {
         user: user.id,
         group: group_id
       })
-    } else {
-      const { fullname, avatar, id } = route.params
-      setPartner(prevValue => { return { ...prevValue, fullname, avatar, id } })
-      createGroupAPIs(id)
+    }else{
+      const { fullname, avatar, members } = route.params
+      const partner_id=members[0].user.id
+      setPartner(prevValue => { return { ...prevValue, fullname, avatar} })
+      if(!partner_id) return
+      createGroupAPIs(partner_id)
     }
 
 
@@ -144,8 +145,8 @@ const MessageScreen = () => {
       members: [user.id, friend_id]
     }
     const group = await createGroupsHTTP(createGroup)
-    console.log('g', group);
-
+    if(!group) return 
+    
     getMessages(group.id)
     setGroupId(group.id)
 
