@@ -24,7 +24,7 @@ export const getGroupsAPI = async () => {
 export const createGroupsHTTP = async (body:any) => {
   try {
     const url = '/group-chat/';
-    const respone:Array<GroupChatType>= await AxiosInstance().post(url,body)
+    const respone:GroupChatType= await AxiosInstance().post(url,body)
     return respone
   } catch (error) {
     console.log(error);
