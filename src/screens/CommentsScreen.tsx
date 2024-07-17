@@ -14,12 +14,14 @@ import Icon from 'react-native-vector-icons/Ionicons'
 import Loading from '../component/Modal/Loading';
 import { ActivityIndicator } from 'react-native';
 import { COLOR } from '../constant/color';
+import FastImage from 'react-native-fast-image';
+import { UIActivityIndicator } from 'react-native-indicators';
 const CommentsScreen = () => {
     const navigation = useNavigation<navigationType>()
     const { user } = useMyContext();
     const [modalGetLikePostVisible, setModalGetLikePostVisible] = useState(false);
     const [commentUserId, setCommentUserId] = useState(null);
-    const [text, setText] = useState(null)
+    const [text, setText] = useState(null);
     const [post, setPosts] = useState(null);
     const [replyTo, setReplyTo] = useState(null);
     const [comment, setComments] = useState([]);
@@ -27,13 +29,15 @@ const CommentsScreen = () => {
     const [commentCount, setCommentCount] = useState(0);
     const [loadDatda, setLoadData] = useState(false);
     const [loaDing, setLoading] = useState(false);
+    const [like, setLike] = useState([])
     const scrollViewRef = useRef();
     const route = useRoute();
     const { postId } = route.params;
     const { numberLike } = route.params;
 
 
-    console.log('postId', postId);
+    console.log('postId', postId); 
+
     // console.log('numberLikeNe', numberLike);
     // console.log(text);
 
@@ -57,7 +61,7 @@ const CommentsScreen = () => {
         try {
             //goo
             const response: any = await getComments(postId);
-            
+
             setComments(response.reverse());
             setCommentCount(response.length);
         } catch (error) {
@@ -69,6 +73,7 @@ const CommentsScreen = () => {
         setReplyTo(parent); // Thiết lập bình luận cha để trả lời
         console.log("parent:", parent);
     };
+    
     // // hàm render comments
     useEffect(() => {
         fetchPosts();
@@ -77,7 +82,7 @@ const CommentsScreen = () => {
                 setLoadData(true);
                 setLoading(false)
             }
-        }, 3000); // Sau 5 giây nếu không có dữ liệu, dataLoaded sẽ là true
+        }, 3000);
 
         return () => clearTimeout(timer);
 
@@ -112,91 +117,99 @@ const CommentsScreen = () => {
         }
     };
 
-    return (
 
-        <Pressable style={[styles.container]}>
-            <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center', position: 'relative', height: 50, backgroundColor: '#fff' }}>
-                <Pressable onPress={() => { navigation.goBack() }} style={{ position: 'absolute', left: 15 }}>
-                    <Icon name='arrow-back' size={28} color={'#000'} />
-                </Pressable>
-                <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', }}>
-                    <Text style={{ fontSize: 20, fontWeight: '700', color: '#000' }}>Bình Luận</Text>
-                </View>
+
+
+return (
+
+    <Pressable style={[styles.container]}>
+        <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center', position: 'relative', height: 50, backgroundColor: '#fff' }}>
+            <Pressable onPress={() => { navigation.goBack() }} style={{ position: 'absolute', left: 15 }}>
+                <Icon name='arrow-back' size={28} color={'#000'} />
+            </Pressable>
+            <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', }}>
+                <Text style={{ fontSize: 20, fontWeight: '700', color: '#000' }}>Bình Luận</Text>
             </View>
+        </View>
 
-            <View style={{ height: "87%", backgroundColor: 'white' }}>
+        <View style={{ height: "87%", backgroundColor: 'white' }}>
 
-                <ScrollView ref={scrollViewRef} showsVerticalScrollIndicator={false}>
-                    {
-                        post && (
-                            <View style={{ margin: 0 }}>
-                                <ItemPost key={post.id} data={post} onPressProfile={handleToProfile} />
-                            </View>
-                        )
-                    }
-                    {
-                        numberLike && (
-                            <TouchableOpacity onPress={() => setModalGetLikePostVisible(true)}>
-
-                                <View style={styles.ViewPostLike}>
-                                    <Image style={{ width: 18, height: 18 }} source={require('../media/Dicons/thumb-up.png')} />
-                                    <Text style={{ marginStart: 4, fontSize: 16, fontWeight: '500', color: '#000' }}>{numberLike}</Text>
-                                </View>
-                            </TouchableOpacity>
-                        )
-                    }
-                    {
-                        loaDing &&  comment.length == 0 && (
-                            <View style={styles.spinnerContainer}>
-                            <ActivityIndicator size="large" color={COLOR.PrimaryColor}/>
-                          </View>
-                        )
-                    }
-                    { loadDatda && comment.length === 0 ? (
-                        <View style={styles.ViewNoComment}>
-                            <View style={{ justifyContent: 'center', alignItems: 'center' }}>
-                                <Image style={{ width: 150, height: 150, marginBottom: 20 }} source={require('../media/icon_tuong/chat.png')} />
-                                <Text style={styles.textNoComment1}>Chưa có bình luận nào</Text>
-                                <Text style={styles.textNoComment2}>Hãy là người đầu tiên bình luận.</Text>
-                            </View>
+            <ScrollView ref={scrollViewRef} showsVerticalScrollIndicator={false}>
+                {
+                    post && (
+                        <View style={{ margin: 0 }}>
+                            <ItemPost key={post.id} data={post} onPressProfile={handleToProfile} />
                         </View>
-                    ) : (
-                        comment.map(comment => (
-                            <CommentItem key={comment.id} comment={comment} onReply={handleReply} render={fetchComments} parent={replyTo} setText={setText} setUserId={setCommentUserId}/>
-                        ))
                     )
-                    }
-                </ScrollView>
-            </View>
-            {
-                modalGetLikePostVisible ? (
-                    <Modal_GetLikePosts
-                        isVisible={modalGetLikePostVisible}
-                        onClose={() => setModalGetLikePostVisible(false)}
-                        postId={postId} />
+                }
+                {
+                    numberLike && (
+                        <TouchableOpacity onPress={() => setModalGetLikePostVisible(true)}>
+
+                            <View style={styles.ViewPostLike}>
+                                <Image style={{ width: 18, height: 18 }} source={require('../media/Dicons/thumb-up.png')} />
+                                <Text style={{ marginStart: 4, fontSize: 16, fontWeight: '500', color: '#000' }}>{numberLike}</Text>
+                            </View>
+                        </TouchableOpacity>
+                    )
+                }
+                {
+                    loaDing && comment.length == 0 && (
+                        <View style={styles.spinnerContainer}>
+                            <UIActivityIndicator color={'#FF6347'} size={30} />
+                        </View>
+                    )
+                }
+                {loadDatda && comment.length === 0 ? (
+                    <View style={styles.ViewNoComment}>
+                        <View style={{ justifyContent: 'center', alignItems: 'center' }}>
+
+                            <Image style={{ width: 150, height: 150, marginBottom: 20 }} source={require('../media/icon_tuong/chat.png')} />
+                            <Text style={styles.textNoComment1}>Chưa có bình luận nào</Text>
+                            <Text style={styles.textNoComment2}>Hãy là người đầu tiên bình luận.</Text>
+                        </View>
+                    </View>
                 ) : (
-                    <InputCmt
-                        comment={commentUserId}
-                        setText={setText}
-                        text={text}
-                        parent={replyTo} // Truyền ID bình luận cha khi trả lời
-                        fetchComments={fetchComments}
-                        onMediaSelected={handleMediaSelected} // Xử lý khi người dùng chọn hình ảnh hoặc video
-                        postId={postId}
-                        setParent={setReplyTo}
-                    />
+                    comment.map(comment => (
+                        <CommentItem key={comment.id} comment={comment} onReply={handleReply} render={fetchComments} parent={replyTo} setText={setText} setUserId={setCommentUserId} />
+                    ))
                 )
-            }
-        </Pressable>
-    )
+                }
+            </ScrollView>
+        </View>
+        {
+            modalGetLikePostVisible ? (
+                <Modal_GetLikePosts
+                    isVisible={modalGetLikePostVisible}
+                    onClose={() => setModalGetLikePostVisible(false)}
+                    postId={postId}
+                    like={like}
+                    setLike={setLike} />
+            ) : (
+                <InputCmt
+                    comment={commentUserId}
+                    setText={setText}
+                    text={text}
+                    parent={replyTo} // Truyền ID bình luận cha khi trả lời
+                    fetchComments={fetchComments}
+                    onMediaSelected={handleMediaSelected} // Xử lý khi người dùng chọn hình ảnh hoặc video
+                    postId={postId}
+                    setParent={setReplyTo}
+                />
+            )
+        }
+    </Pressable>
+)
 }
 
 export default CommentsScreen
 
 const styles = StyleSheet.create({
-    spinnerContainer:{
-        top: 150,
-        height: 300
+    
+    spinnerContainer: {
+        justifyContent: 'center', 
+        alignItems: 'center',
+        height: 250,
     },
     ViewPostLike: {
         alignItems: 'center',

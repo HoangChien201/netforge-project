@@ -8,7 +8,9 @@ import 'react-native-gesture-handler';
 import React, { useEffect } from 'react';
 import {
 
+  LogBox,
   StatusBar,
+  LogBox
 
 } from 'react-native';
 import ManageNavigation from './src/component/navigation/ManageNavigation';
@@ -30,13 +32,18 @@ function App(): React.JSX.Element {
     RequestNotificationPermission()
     registerRemoteNotificationsEvent()
   });
+  LogBox.ignoreLogs([
+    '[Reanimated] Tried to modify key `reduceMotion` of an object which has been already passed to a worklet.',
+  ]);
+
+  LogBox.ignoreLogs(['new NativeEventEmitter']);
 
   return (
     <GestureHandlerRootView>
       <StatusBar barStyle="dark-content" backgroundColor="transparent" />
       <UserProvider>
         <Host>
-          <ManageNavigation />
+            <ManageNavigation />
           <ZegoUIKitPrebuiltLiveStreamingFloatingMinimizedView />
         </Host>
       </UserProvider>

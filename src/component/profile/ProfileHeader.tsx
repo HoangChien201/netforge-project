@@ -5,11 +5,12 @@ import { formattedDate } from '../../format/FormatDate';
 import { useNavigation } from '@react-navigation/native';
 import { COLOR } from '../../constant/color';
 import { useMyContext } from '../navigation/UserContext';
-import { deleteFriend, sendRequest } from '../../http/QuyetHTTP';
+import { cancelRequest, deleteFriend, sendRequest } from '../../http/QuyetHTTP';
 import DeleteFriend from '../../screens/profile/friendScreen/DeleteFriend'
 import uuid from 'react-native-uuid';
 import { socket } from '../../http/SocketHandle';
 import { useSendNotification } from '../../constant/notify';
+
 interface ProfileHeaderProps {
   fullname: string;
   userId: number;
@@ -29,17 +30,19 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({ fullname, userId, loggedI
   const [show, setShow] = useState(false);
   const [type, setType] = useState(false);
   const [change, setChange] = useState(false);
-  const {sendNRequestFriend} = useSendNotification();
-  useEffect(()=>{
-    checkFiend()
-  },[show])
-  const handleToEditProfile = () =>  {
-  //const { user } = useMyContext();
-  //const isOwnProfile = userId === loggedInUserId; // Kiểm tra xem đây có phải là trang cá nhân của người đang đăng nhập hay không
+  const { sendNRequestFriend } = useSendNotification();
+  const { user } = useMyContext();
 
-  // if (userId === loggedInUserId) {
-  //   navigation.navigate('ProfileScreen');
-  // }
+  useEffect(() => {
+    checkFiend()
+  }, [show])
+  const handleToEditProfile = () => {
+
+    //const isOwnProfile = userId === loggedInUserId; // Kiểm tra xem đây có phải là trang cá nhân của người đang đăng nhập hay không
+
+    // if (userId === loggedInUserId) {
+    //   navigation.navigate('ProfileScreen');
+    // }
     navigation.navigate('EditProfileScreen' as never);
     //navigation.navigate('StoryScreen');
   }
@@ -60,15 +63,17 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({ fullname, userId, loggedI
         if (result) {
           setTextReqState(true);
           handleSendNotify(id);
+          setChange(prevChange => !prevChange);
+          checkFiend();
         }
       } catch (error) {
         setDisabledButtons(false);
       }
     }
   }
-  const handleSendNotify = (id:any) => {
+  const handleSendNotify = (id: any) => {
     const data = {
-      receiver:id,
+      receiver: id,
     };
     sendNRequestFriend(data)
   };
@@ -78,10 +83,11 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({ fullname, userId, loggedI
   };
 
   const deleteF = async (id: number) => {
-    const user1 = Number(user.id);
+    const id1 = user.id
+    const user1 = Number(id1);
     const user2 = Number(id);
     //console.log('click');
-    
+
     try {
       const result = await deleteFriend(user1, user2);
       if (result) {
@@ -90,7 +96,7 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({ fullname, userId, loggedI
         setType(true);
         setChange(true);
         setTextReqState(false);
-        setCancelAdd(true); 
+        setCancelAdd(true);
         const timer = setTimeout(() => {
           setCancelAdd(false);
         }, 60 * 1000);
@@ -100,13 +106,28 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({ fullname, userId, loggedI
       console.log('Lỗi khi xóa bạn: ', error);
     }
   };
+  const cancelReq = async (friendId: number)=>{
+    try {
+        const result = await cancelRequest(friendId);
+        if(result){
+          setChange(prevChange => !prevChange);
+          console.log('deleted');
+          
+        }
+    } catch (error) {
+        console.log(error);
+        console.log(friendId);
+        
+    }
+}
   const checkFiend = () => {
 
     if (relationship === null || relationship?.status == null || change) {
       return (
         <View>
           <TouchableOpacity style={styles.btnAddFriend}
-            onPress={() => { sendRequestFriend(userId, 1) }} disabled={textReqState == true || disabledButtons}
+            onPress={() => { sendRequestFriend(userId, 1) }} 
+            disabled={textReqState == true || disabledButtons}
           >
             <Icon name="person-add" size={24} color="#fff" style={{ marginRight: 10 }} />
             <Text style={{ color: '#fff', fontSize: 18, fontWeight: '700' }}>{textReqState == true ? 'Đã gửi lời mời' : 'Gửi lời mời'}</Text>
@@ -121,9 +142,17 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({ fullname, userId, loggedI
     } else if (relationship.status == 1) {
       return (
         <View>
-          <View style={styles.btnAddFriend}>
-            <Icon name="person-add" size={24} color="#fff" style={{ marginRight: 10 }} />
-            <Text style={{ color: '#fff', fontSize: 18, fontWeight: '700' }}>Chờ phê duyệt</Text>
+          <View style={styles.typeFriend}>
+            <View style={styles.TextType}>
+              <Icon name="person-add" size={24} color="#fff" style={{ marginRight: 10 }} />
+              <Text style={{ color: '#fff', fontSize: 18, fontWeight: '700' }}>Chờ phê duyệt</Text>
+            </View>
+            <TouchableOpacity style={styles.btnCancel}
+            onPress={() => { cancelReq(userId) }}
+            >
+              <Icon name="person-remove" size={24} color={COLOR.PrimaryColor} style={{ marginRight: 10 }} />
+              <Text style={{ color: COLOR.PrimaryColor, fontSize: 18, fontWeight: '700' }}>Hủy bỏ</Text>
+            </TouchableOpacity>
           </View>
           <TouchableOpacity style={styles.btnSendMessage}>
             <Icon name="message" size={24} color="#000" style={{ marginRight: 10 }} />
@@ -134,13 +163,28 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({ fullname, userId, loggedI
     } else if (relationship.status == 2) {
       return (
         <View>
-          <TouchableOpacity style={styles.btnAddFriend}
+ 
+
+          <View style={styles.typeFriend}>
+            <View style={styles.TextType}>
+              <Icon name="people" size={24} color="#fff" style={{ marginRight: 10 }} />
+              <Text style={{ color: '#fff', fontSize: 18, fontWeight: '700' }}>Bạn bè</Text>
+            </View>
+            <TouchableOpacity style={styles.btnCancel}
             onPress={() => openDelete()}
           >
             <Icon name="person-remove" size={24} color="#fff" style={{ marginRight: 10 }} />
             <Text style={{ color: '#fff', fontSize: 18, fontWeight: '700' }}>{cancelF}</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.btnSendMessage}>
+          </View>
+
+          <TouchableOpacity style={styles.btnSendMessage}
+          onPress={()=>{navigation.navigate('MessageScreen',{
+            id, 
+            fullname,
+            avatar
+        })}}
+          >
             <Icon name="message" size={24} color="#000" style={{ marginRight: 10 }} />
             <Text style={{ color: '#000', fontSize: 18, fontWeight: '700' }}>Nhắn tin</Text>
           </TouchableOpacity>
@@ -230,6 +274,32 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     marginTop: 10,
+    flexDirection: 'row',
+  },
+  typeFriend: {
+    height: 40,
+    width: '100%',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginTop: 10,
+    flexDirection: 'row',
+  },
+  btnCancel: {
+    borderRadius: 10,
+    backgroundColor: '#C0C0C0',
+    height: 40,
+    width: '40%',
+    alignItems: 'center',
+    justifyContent: 'center',
+    flexDirection: 'row',
+  },
+  TextType: {
+    borderRadius: 10,
+    backgroundColor: COLOR.PrimaryColor,
+    height: 40,
+    width: '59%',
+    alignItems: 'center',
+    justifyContent: 'center',
     flexDirection: 'row',
   },
   btnSendMessage: {

@@ -4,12 +4,19 @@ import MaterialIcon from 'react-native-vector-icons/MaterialIcons'
 import { COLOR } from '../../constant/color'
 import { useNavigation, useRoute } from '@react-navigation/native'
 import { postLocalNotification } from '../../notifications/Events'
-import { onUserLogin,  onUserLogout } from '../../screens/call-video/Utils';
+import { onUserLogin, onUserLogout } from '../../screens/call-video/Utils';
 // @ts-ignore
-import  ZegoUIKitPrebuiltCallService,{ ZegoSendCallInvitationButton,ZegoMenuBarButtonName } from '@zegocloud/zego-uikit-prebuilt-call-rn';
+import ZegoUIKitPrebuiltCallService, { ZegoSendCallInvitationButton, ZegoMenuBarButtonName } from '@zegocloud/zego-uikit-prebuilt-call-rn';
 import { socket } from '../../http/SocketHandle'
 import { multiply } from 'lodash'
 import { useMyContext } from '../navigation/UserContext'
+import { MessageScreenRouteProp } from '../../screens/message/MessageScreen'
+
+type InviteeType={
+    userID:string,
+    userName:string
+}
+
 
 const HeaderMessageComponent = ({ partner }: { partner: any }) => {
     const navigation = useNavigation()
@@ -31,8 +38,8 @@ const HeaderMessageComponent = ({ partner }: { partner: any }) => {
                 body: "Local notification!",
                 title: "Local Notification Title",
                 userInfo: {
-                    sender:2,
-                    multiple:true
+                    sender: 2,
+                    multiple: true
                 },
                 fireDate: new Date(),
 
@@ -55,17 +62,41 @@ const HeaderMessageComponent = ({ partner }: { partner: any }) => {
         )
     }
 
-    const route = useRoute();
-    const { id, fullname, avatar } = route.params;
-    const user_id = id?.toString();
-    const [invitees, setInvitees] = useState([]);
-    const { user } = useMyContext()
-    console.log(user_id)
+    //*******type member********
+    // members:Array<{
+    //     user:{
+    //         fullname:string,
+    //         avatar:string,
+    //         id:number
+    //     }
+    // }>
 
+    const route: MessageScreenRouteProp = useRoute()
+    const { fullname, avatar,members } = route.params;
+    const { user } = useMyContext();
+    const invitees:Array<InviteeType>
+                    =members.map(m=>{
+                            return {
+                                userID:m.user.id.toString(),
+                                userName:m.user.fullname
+                            }
+                        
+                    }).filter(invitee=>invitee.userID !== user.id.toString())
+    console.log('invitees',invitees);
+    
+    // const id_invitee = members[0].user.id?.toString();
+    // const [invitees, setInvitees]
+    //     = useState<Array<
+    //         {
+    //             userID: string,
+    //             userName: string
+    //         }>>([]);
+
+    //call-begin
     useEffect(() => {
-        if(!user_id) return
+        if (invitees.length > 0) return
 
-        setInvitees([{ userID: user_id, userName: fullname}]);
+        // setInvitees([{ userID: id_invitee, userName: fullname }]);
         const initializeCallService = async () => {
             try {
                 await onUserLogin(user.id, user.fullname, avatar);
@@ -79,7 +110,8 @@ const HeaderMessageComponent = ({ partner }: { partner: any }) => {
             onUserLogout();
             console.log("User logged out");
         };
-    }, [user_id, fullname]);
+    }, [invitees, fullname]);
+    //call-end
 
     return (
         <View style={styles.container}>
@@ -102,9 +134,6 @@ const HeaderMessageComponent = ({ partner }: { partner: any }) => {
                 </View>
 
                 <View style={styles.options}>
-                    {/* <IconButton name='phone-in-talk' size={20} color='#fff' type='call' />
-                    <IconButton name='video-call' size={20} color='#fff' type='video' /> */}
-                    
                     <ZegoSendCallInvitationButton
                         invitees={invitees}
                         isVideoCall={false}
@@ -116,7 +145,7 @@ const HeaderMessageComponent = ({ partner }: { partner: any }) => {
                         isVideoCall={true}
                         backgroundColor={'rgba(255,255,255,0.2)'}
                         resourceID={"zego_call"}
-                        //icon={require('../../media/icon/video_call.png')}
+                    //icon={require('../../media/icon/video_call.png')}
                     />
                 </View>
             </View>

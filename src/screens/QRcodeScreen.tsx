@@ -1,13 +1,14 @@
 import { Alert, Button, Image, Platform, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import React, { useEffect, useRef } from 'react'
 import QRCode from 'react-native-qrcode-svg';
-import { useNavigation } from '@react-navigation/native';
+import { useIsFocused, useNavigation } from '@react-navigation/native';
 import { ProfileRootStackEnum } from '../component/stack/ProfileRootStackParams';
 import { useMyContext } from '../component/navigation/UserContext';
 import ICON from 'react-native-vector-icons/AntDesign';
 import RNFS from 'react-native-fs';
 import ViewShot, { captureRef } from 'react-native-view-shot';
 import { PermissionsAndroid } from 'react-native';
+const isFocused = useIsFocused();
 const QRcodeScreen = () => {
   const navigation = useNavigation()
   let logoFromFile = require('../media/quyet_icon/netforge.png');
@@ -16,7 +17,15 @@ const QRcodeScreen = () => {
   const handleToScanner = () => {
     navigation.navigate(ProfileRootStackEnum.Scanner);
   }
-
+  useEffect(() => {
+    if (isFocused) {
+      navigation.getParent()?.setOptions({
+        tabBarStyle: {
+          display: 'none',
+        }
+      });
+    }
+  }, [isFocused]);
   useEffect(() => {
     requestStoragePermission();
   }, []);
@@ -119,9 +128,10 @@ const QRcodeScreen = () => {
           <Text>Quét mã QR để kết bạn với tôi!</Text>
         </View>
       </ViewShot >
-      <TouchableOpacity onPress={handleToScanner}>
+      <View></View>
+      {/* <TouchableOpacity onPress={handleToScanner}>
         <Text style={{ color: "#000", fontSize: 17, fontWeight: '400' }}>Scan</Text>
-      </TouchableOpacity>
+      </TouchableOpacity> */}
       <View></View>
     </View>
   )
@@ -135,12 +145,14 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     backgroundColor: '#fff',
+    paddingTop:18
   },
   infor: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    width: '90%'
+    width: '90%',
+    
   },
   userName: {
     color: 'black',

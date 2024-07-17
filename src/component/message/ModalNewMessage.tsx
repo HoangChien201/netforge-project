@@ -52,17 +52,16 @@ const ModalNewMessage = ({ visible, setVisible }: { visible: boolean, setVisible
             setNameGroup('');
             setType('message');
             (async function getMessages() {
-                const respone = await getMessageByGroupAPI(group.id)
-            
+                const messsages = await getMessageByGroupAPI(group.id)
                 navigation.navigate('MessageScreen', {
                     group_id: group.id,
                     fullname: group?.name ? group?.name : 'Group '+ group?.id ,
                     avatar: group?.image ,
-                    messages: respone,
+                    messages: messsages,
+                    members:group.members
                 })
             })()
            
-            console.log(group);
         }
         
 

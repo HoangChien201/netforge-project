@@ -1,8 +1,9 @@
-import React, { useCallback, useRef, useState, useEffect } from 'react';
-import { StyleSheet, View, Animated, Image, Text, TouchableOpacity, ScrollView, ImageBackground } from 'react-native';
+import React, { memo,useCallback, useRef, useState, useEffect } from 'react';
+import { StyleSheet, View, Animated, Image, Text, TouchableOpacity, ScrollView, ImageBackground, TouchableWithoutFeedback, Keyboard } from 'react-native';
+        
 import ListStory from '../component/storys/ListStory';
 import ListPorts from '../component/listpost/ListPorts';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useIsFocused, useFocusEffect } from '@react-navigation/native';
 import { COLOR } from '../constant/color';
 import AntDesignIcon from 'react-native-vector-icons/AntDesign';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -10,7 +11,10 @@ import { useMyContext } from '../component/navigation/UserContext';
 import TouchId from '../component/Modal/TouchId';
 import TouchID from 'react-native-touch-id';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+
 import { NetworkRootStackEnum } from '../component/stack/NetworkRootStackParams';
+
+import { flatMap } from 'lodash';
 
 const HomeScreen = () => {
     const initialData = [{ key: 'stories' }, { key: 'posts' }];
@@ -23,7 +27,11 @@ const HomeScreen = () => {
     const navigation = useNavigation();
     const { user } = useMyContext();
     const [visible, setVisible] = useState(false);
-    console.log("HomeScreen");
+
+    const handleOutsidePress = () => {
+        setHidden(false);
+    };
+
 
     const checkTouchIdLogin = () => {
         TouchID.isSupported()
@@ -47,11 +55,39 @@ const HomeScreen = () => {
                 console.log('TouchID not supported', error);
             });
     };
-
     useEffect(() => {
         checkTouchIdLogin();
     }, []);
+    useEffect(() => {
+        setHidden(false)
+    }, [prevScrollY]);
+    useFocusEffect(
+        useCallback(() => {
+            setHidden(false);
+        }, [])
+    );
+    useFocusEffect(
+        React.useCallback(() => {
+            // Khi màn hình được focus, hiển thị lại bottom-tab
+            navigation.getParent()?.setOptions({
+                tabBarStyle: {
+                    position: 'absolute',
+                    backgroundColor: '#1F1F2F',
+                    margin: 20,
+                    borderRadius: 15,
+                },
+            });
 
+            // Cleanup function khi màn hình mất focus
+            return () => {
+                navigation.getParent()?.setOptions({
+                    tabBarStyle: {
+                        display: 'none',
+                    },
+                });
+            };
+        }, [navigation])
+    );
     useEffect(() => {
         const listener = tabBarTranslateY.addListener(({ value }) => {
             navigation.getParent()?.setOptions({
@@ -107,6 +143,10 @@ const HomeScreen = () => {
             if (item.key === 'stories' || item.key.startsWith('new_post')) {
                 return (
                     <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+                        {/* <View style={{marginLeft:10,position:'absolute'}}>
+                <Text style={{color:'#000',fontWeight:'bold'}}>Bảng tin</Text>
+            </View> */}
+
                         <View style={styles.storyContainer}>
                             <View style={styles.borderContainer}>
                                 <ImageBackground source={{ uri: user.avatar }} style={styles.imageBackground} imageStyle={styles.imageStyle}>
@@ -181,12 +221,26 @@ const HomeScreen = () => {
                         [{ nativeEvent: { contentOffset: { y: scrollY } } }],
                         { useNativeDriver: false, listener: handleScroll }
                     )}
-                    onEndReachedThreshold={0.5}
-                    refreshing={refreshing}
-                    onRefresh={onRefresh}
-                />
+                </View>
+
+                <View style={styles.contentContainer}>
+
+                    <Animated.FlatList
+                        data={data}
+                        renderItem={renderItem}
+                        keyExtractor={item => item.key}
+                        showsVerticalScrollIndicator={false}
+                        onScroll={Animated.event(
+                            [{ nativeEvent: { contentOffset: { y: scrollY } } }],
+                            { useNativeDriver: false, listener: handleScroll }
+                        )}
+                        onEndReachedThreshold={0.5}
+                        refreshing={refreshing}
+                        onRefresh={onRefresh}
+                    />
+                </View>
             </View>
-        </View>
+        </TouchableWithoutFeedback>
     );
 };
 

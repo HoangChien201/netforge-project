@@ -1,14 +1,18 @@
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
-import React, { useCallback, useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useRef, useState } from 'react'
 import { useFocusEffect, useIsFocused, useNavigation } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/AntDesign'
 import { COLOR } from '../../constant/color'
 
 import MODALFRIEND from '../../component/friend-request-accept-modal/Body'
-import { getAllUser, getFriends, getSuggest } from '../../http/QuyetHTTP';
+import { getAllUser, getFriends, getRequest, getSuggest } from '../../http/QuyetHTTP';
 import Friends from './friendScreen/Friends';
 import RequestFriends from './friendScreen/RequestFriends';
 import SuggestFriends from './friendScreen/SuggestFriends';
+import RequestList from '../../component/friend-request-accept-modal/RequestList';
+import WaitAcceptList from '../../component/friend-request-accept-modal/WaitAcceptList';
+import BODY from '../../component/friend-request-accept-modal/Body'
+import Swiper from 'react-native-swiper';
 // import { BounceIn, FadeIn, ReduceMotion, useReducedMotion } from 'react-native-reanimated';
 type Friends = {
 }
@@ -21,10 +25,15 @@ const FriendScreen: React.FC<Friends> = () => {
   const isFocus = useIsFocused()
   const [friends, setFriends] = useState<any[]>([]);
   const status2 = 2;
+  const status1 = 1;
   const [showModalFriend, setShowModalFriend] = useState(false);
   const [dot, setDot] = useState(Number);
   const [reload, setReload] = useState(false);
   const [dataSuggest, setDataSuggest] = useState([]);
+  const [dataRequest, setDataRequest] = useState([]);
+  const [dataWaitAccept, setDataWaitAccept] = useState([]);
+  const swiperRef = useRef(null);
+  const [currentIndex, setCurrentIndex] = useState(0);
   const getFriendList = async (status: number) => {
     try {
       const result = await getFriends(status);
@@ -39,8 +48,8 @@ const FriendScreen: React.FC<Friends> = () => {
   };
   const getSuggestList = async () => {
     try {
-      const result = await getAllUser();
-      // const result = await getSuggest();
+      //const result = await getAllUser();
+      const result = await getSuggest();
       //console.log('danh sách gợi ý: ' + JSON.stringify(result));
       setDataSuggest(result);
 
@@ -49,19 +58,39 @@ const FriendScreen: React.FC<Friends> = () => {
       console.log(error);
     }
   };
-  const ShowModalFriend = () => {
-    setShowModalFriend(true);
-  }
+  const getRequestList = async (num: number) => {
+    try {
+      const result = await getFriends(num);
+      //console.log('danh sách bạn bè 1: ' + JSON.stringify(result));
+      setDataRequest(result);
+      //console.log('request: ' + JSON.stringify(result));
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const getWaitAcceptList = async () => {
+    try {
+      const result = await getRequest();
+      //console.log('danh sách bạn bè chờ chấp nhận: ' + JSON.stringify(result));
+      setDataWaitAccept(result);
+      //console.log('Accept: ' + result);
+    } catch (error) {
+      console.log(error);
+    }
+  };
   useEffect(() => {
     getFriendList(status2);
     getSuggestList();
+    getRequestList(status1);
+    getWaitAcceptList()
   }, [])
-  useEffect(() => {
-    getFriendList(status2);
-  }, [showModalFriend])
   useFocusEffect(
     useCallback(() => {
       getFriendList(status2);
+      getSuggestList();
+      getRequestList(status1);
+      getWaitAcceptList()
     }, [])
   );
   useEffect(() => {
@@ -73,40 +102,45 @@ const FriendScreen: React.FC<Friends> = () => {
       });
     }
   }, [isFocus]);
-
+  const handleIndexChanged = (index) => {
+    setCurrentIndex(index);
+};
+const handleButtonPress = (index) => {
+  if (swiperRef.current) {
+    swiperRef.current.scrollBy(index - currentIndex, true);
+  }
+};
   return (
     <View style={styles.container}>
-      <TouchableOpacity onPress={ShowModalFriend}>
-        <View style={styles.reqFriends}>
-          <View style={styles.iconFriend} >
-            <Icon name='adduser' size={24} color={COLOR.PrimaryColor} />
-          </View>
-          <View style={styles.text}>
-            <Text style={styles.text1}>Yêu cầu kết bạn</Text>
-            <Text style={styles.text2}>Phê duyệt hoặc bỏ qua yêu cầu</Text>
-          </View>
-        </View>
-        {dot > 0 ? <View style={styles.dot}>
-          <Text style={{ color: COLOR.PrimaryColor, fontSize: 16 }}>{dot}</Text>
-        </View> : <View style={styles.dot}>
-          <Text style={{ color: COLOR.PrimaryColor, fontSize: 16 }}>0</Text>
-        </View>}
-      </TouchableOpacity>
       <View style={styles.header}>
-        <Text style={styles.headerText}>Danh sách bạn bè</Text>
+        <TouchableOpacity
+          style={[styles.buttonS, currentIndex === 0 && styles.activeButton]}
+          onPress={() => handleButtonPress(0)}
+        >
+          <Text style={styles.text1}>Yêu cầu</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={[styles.buttonS, currentIndex === 1 && styles.activeButton]}
+          onPress={() => handleButtonPress(1)}
+        >
+          <Text style={styles.text1}>Lời mời</Text>
+        </TouchableOpacity>
       </View>
-      <Friends friends={friends} setFriends={setFriends} />
-      <MODALFRIEND
-        reload={reload}
-        showModalFriend={showModalFriend}
-        setShowModalFriend={setShowModalFriend}
-        setDot={setDot}
-        setReload={setReload}
-
-      />
+      <View style={[styles.container1]}>
+        <Swiper ref={swiperRef} loop={false} showsButtons={false}
+        onIndexChanged={handleIndexChanged}
+        >
+          <View>
+            <WaitAcceptList dataWaitAccept={dataWaitAccept} setDataWaitAccept={setDataWaitAccept} setShowModalFriend={setShowModalFriend} />
+          </View>
+          <View>
+            <RequestList dataRequest={dataRequest} setDataRequest={setDataRequest} setReload={setReload} setShowModalFriend={setShowModalFriend} />
+          </View>
+        </Swiper>
+      </View>
       <SuggestFriends data={dataSuggest} setData={setDataSuggest} />
 
-    </View>
+    </View >
   )
 
 }
@@ -115,8 +149,11 @@ export default FriendScreen
 
 const styles = StyleSheet.create({
   container: {
-
     height: '100%',
+    backgroundColor: COLOR.primary300,
+  },
+  container1: {
+    height: '70%',
     backgroundColor: COLOR.primary300,
   },
   reqFriends: {
@@ -145,7 +182,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: '500',
     fontStyle: "normal",
-    color: 'black'
+    color: COLOR.primary500
   },
   text2: {
     fontSize: 13,
@@ -154,7 +191,8 @@ const styles = StyleSheet.create({
     color: 'black'
   },
   header: {
-
+    height: 60,
+    flexDirection: 'row'
   },
   headerText: {
     color: 'black',
@@ -175,5 +213,17 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     borderRadius: 10
-  }
+  },
+  buttonS: {
+    width: 80,
+    height: 35,
+    borderRadius: 10,
+    margin: 5,
+    backgroundColor: COLOR.primary400,
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
+  activeButton: {
+    backgroundColor: COLOR.PrimaryColor1, // Change to the active color
+  },
 })
