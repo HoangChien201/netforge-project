@@ -1,4 +1,4 @@
-import React, { memo, useState } from 'react';
+import React, { memo, useEffect, useState } from 'react';
 import { FlatList, View, StyleSheet, Text, TouchableOpacity } from 'react-native';
 import Video from 'react-native-video';
 import FastImage from 'react-native-fast-image';
@@ -16,11 +16,15 @@ const images: Medias[] = [
   { url: "https://res.cloudinary.com/dyjxyz2jc/video/upload/v1717001460/demo1/ejpinaoiwxunfk8t5mfk.mp4", resource_type: "video" },
 ];
 
-const ItemImg = memo(({ image }: { image: Medias[] }) => {
+const ItemImg = ({ image }: { image: Medias[] }) => {
   const navigation:NavigationProp<ParamListBase> = useNavigation();
   const [visible, setVisible] = useState(false);
   const [indeximg, setIndeximg] = useState<null | number>(null);
   const [img, setImg] = useState<Medias[]>([...image]);
+
+  useEffect(()=>{
+    setImg([...image])
+  },[image])
   console.log("ItemImgPost");
   const onPressImg = (index) => {
     setIndeximg(index);
@@ -155,7 +159,7 @@ const ItemImg = memo(({ image }: { image: Medias[] }) => {
       
     </View>
   );
-});
+};
 
 const styles = StyleSheet.create({
   overlay: {

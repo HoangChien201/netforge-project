@@ -30,10 +30,10 @@ const SignupScreen: React.FC = () => {
                     <View style={styles.viewAll}></View>
                 </View>
                 <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'null'} style={styles.viewContent}>
-                    <Text style={{ marginBottom: 10, fontSize: 28, color: "black", fontWeight: "bold" }}>Xin Chào</Text>
-                    <View style={{ marginBottom: 10 }}>
-                        <Text style={{flexWrap:'wrap',fontFamily:'800'}}>Tạo tài khoản để tiếp tục khám phá những điều tuyệt vời</Text>
-                        <Text>các điểm đến trên khắp thế giới!</Text>
+                    <Text style={{ marginBottom: 10,marginHorizontal:10, fontSize: 28, color: "black", fontWeight: "bold" }}>Xin Chào</Text>
+                    <View style={{ marginBottom: 10,margin:10 }}>
+                        <Text style={{flexWrap:'wrap',fontFamily:'800'}}>Tạo tài khoản để tiếp tục khám phá những điều tuyệt vời <Text>các điểm đến trên khắp thế giới!</Text></Text>
+                     
                     </View>
                     <Form setModal={setModal} />
                     <View style={styles.text}>

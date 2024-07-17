@@ -121,8 +121,8 @@ const Form = ({ setModal }: { setModal: (values: boolean) => void }) => {
       />
    
 
-      <View style={{ width: '100%' }}>
-        <ButtonLogin chilren='Đăng nhập' textColor='#fff' onPress={submit} />
+      <View style={{ width: '100%',justifyContent:'center',alignItems:'center' }}>
+        <ButtonLogin chilren='Đăng kí' textColor='#fff' onPress={submit} />
       </View>
     </View>
   );

@@ -139,10 +139,7 @@ const FormLogin = ({ setModal, setStatus, setIsLoading }: { setModal: (value: bo
       <InputLogin invalid={!valid.password} label="Mật khẩu" value={valueF.password} onchangText={onChangText.bind(this, 'password')} iconPass password={true} />
       <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center", paddingHorizontal: 12 }}>
         <Remember />
-        <TouchableOpacity>
-          <Text onPress={handleForgotPassword}>Quên mật khẩu?</Text>
-        </TouchableOpacity>
-
+       
       </View>
       <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingHorizontal: 14 }}>
         <ButtonLogin textLogin chilren='Đăng nhập' textColor='#fff' onPress={submit} />
