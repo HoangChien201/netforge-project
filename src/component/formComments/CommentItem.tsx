@@ -167,7 +167,9 @@ const CommentItem = ({ comment, onReply, depth = 0, render, parent, setText, set
                             <Image source={{ uri: comment.user.avatar }} style={styles.avatar} />
                         </Pressable>
 
-                        <Pressable style={styles.BackgroundComment} onLongPress={() => handleCommentPress()}>
+                        <Pressable onLongPress={() => handleCommentPress()}>
+                            <View style={[styles.BackgroundComment, 
+                                { backgroundColor: comment.content && '#E6E6FA',}]}>
                             <View style={{ padding: 10, flexDirection: 'column' }}>
                                 <Pressable >
                                     <Text style={styles.fullname}>{comment.user.fullname}</Text>
@@ -175,7 +177,10 @@ const CommentItem = ({ comment, onReply, depth = 0, render, parent, setText, set
                                 {comment.content ? (
                                     <Text style={styles.content}>{comment.content}</Text>
                                 ) : null}
-                                <View style={{ marginTop: 5, alignItems: 'center' }}>
+                             
+                            </View>
+                            </View>
+                            <View style={{ marginTop: 5, alignItems: 'center',  bottom: comment.image && !comment.content && 10, marginBottom: comment.image && !comment.content && -10 }}>
                                     {comment.image ? (
                                         comment.image.endsWith('.mp4') ? (
                                             <Pressable style={{ width: 100, height: 150, }} onPress={() => handleImagePress(comment.image)}>
@@ -190,20 +195,12 @@ const CommentItem = ({ comment, onReply, depth = 0, render, parent, setText, set
                                         )
                                     ) : null}
                                 </View>
-                            </View>
+                           
                         </Pressable>
                     </View>
                     <View style={{ flexDirection: "row", alignItems: 'center', marginStart: 55, marginTop: 3 }}>
                         <Text style={{ marginRight: 5, fontWeight: 'bold', fontSize: 14 }}>{DateOfTimePost(comment.create_at)}</Text>
-                        {/* {
-                            !comment.parent &&
-                            <>
-                                <Text style={{ fontWeight: 'bold', fontSize: 14, color: 'black', }}>᛫</Text>
-                                <TouchableOpacity onPress={handleReply} style={styles.replyButton}>
-                                    <Text style={{ fontWeight: 'bold', fontSize: 13 }}>Trả lời</Text>
-                                </TouchableOpacity>
-                            </>
-                        } */}
+                  
                           <>
                                 <Text style={{ fontWeight: 'bold', fontSize: 14, color: 'black', }}>᛫</Text>
                                 <TouchableOpacity onPress={handleReply} style={styles.replyButton}>
@@ -275,7 +272,6 @@ const styles = StyleSheet.create({
     BackgroundComment: {
         marginLeft: 5,
         borderRadius: 10,
-        backgroundColor: "#E6E6FA",
         justifyContent: "center",
         alignItems: "center"
     }
