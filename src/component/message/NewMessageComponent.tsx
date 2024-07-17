@@ -22,10 +22,10 @@ const NewMessageComponent = ({ setType, suggests}: { setType: any, suggests: Arr
         fullname:string,
         id:number
     }) {
-        const { avatar, fullname, id } = user
+        const { avatar, fullname } = user
         
         navigation.navigate('MessageScreen',{
-            id,
+            members:[{user}],
             fullname,
             avatar
         })
