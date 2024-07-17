@@ -7,17 +7,19 @@ import { sendRequest } from '../../../http/QuyetHTTP';
 import { useMyContext } from '../../../component/navigation/UserContext';
 import { socket } from '../../../http/SocketHandle';
 import { useSendNotification } from '../../../constant/notify';
+import { useNavigation } from '@react-navigation/native';
 type Suggest = {
   data: any,
   setData: () => void,
 }
 const SuggestFriends: React.FC<Suggest> = ({ data, setData }) => {
-  const snapPoints = useMemo(() => ['15%', '50%', '100%'], []);
+  const snapPoints = useMemo(() => ['20%', '50%', '100%'], []);
   const snapPointsE = useMemo(() => ['15%'], []);
   const bottomSheetRef = useRef<BottomSheet>(null);
   const [textReqState, setTextReqState] = useState({});
   const [disabledButtons, setDisabledButtons] = useState({});
   const { user } = useMyContext();
+  const navigation = useNavigation();
   const { sendNRequestFriend } = useSendNotification();
   LogBox.ignoreLogs([
     '[Reanimated] Reduced motion setting is enabled on this device.',
@@ -31,26 +33,30 @@ const SuggestFriends: React.FC<Suggest> = ({ data, setData }) => {
   // gửi yêu cầu kết bạn
   const status = 1;
   const sendRequestFriend = async (id: number, status: number) => {
+    const user2 = parseInt(id);
     setDisabledButtons((prevState) => ({
       ...prevState,
       [id]: true,
     }));
     try {
-      const result = await sendRequest(id, status);
-      console.log('đã gửi lời mời');
-
-      if (result) {
+      const result = await sendRequest(user2, status);
+      console.log(result);
+      
+      if (result?.status==1) {
         handleSendReaction(id)
         setTextReqState((prevState) => ({
           ...prevState,
           [id]: 'Đã gửi'
         }));
+        console.log('đã gửi lời mời');
       }
     } catch (error) {
       setDisabledButtons((prevState) => ({
         ...prevState,
         [id]: false,
       }));
+      console.log(error);
+      
     }
   }
 
@@ -75,11 +81,13 @@ const SuggestFriends: React.FC<Suggest> = ({ data, setData }) => {
     >
       <BottomSheetScrollView style={styles.contentContainer}>
         <View style={{ alignItems: 'center', justifyContent: 'center' }}>
-          <Text style={styles.text}>Danh sách gợi ý 🎉</Text>
+          <Text style={styles.text}>Những người bạn có thể biết</Text>
         </View>
 
         {data?.map((friend: { user: { id: string | number; avatar: any; fullname: string | number | boolean | React.ReactElement<any, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | React.ReactPortal | null | undefined } }) => (
-          <View key={friend.id.toString()}>
+          <TouchableOpacity key={friend.id.toString()}
+          onPress={()=> navigation.navigate('FriendProfile',{userId:friend.id})}
+          >
             <View style={styles.itemWA}>
               <View style={styles.user}>
                 {friend.avatar ? <Image source={{ uri: friend.avatar }} style={styles.avatarne} /> :
@@ -97,7 +105,7 @@ const SuggestFriends: React.FC<Suggest> = ({ data, setData }) => {
               </View>
             </View>
 
-          </View>
+          </TouchableOpacity>
         ))}
       </BottomSheetScrollView>
     </BottomSheet>
@@ -113,7 +121,7 @@ const styles = StyleSheet.create({
   },
   contentContainer: {
     flex: 1,
-
+    marginBottom:20,
   },
   content: {
     alignItems: 'center',

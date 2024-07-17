@@ -3,13 +3,13 @@ import React, { useEffect, useState, useRef } from "react";
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { NetworkRootBottomTabParams, NetworkRootBottomTabScreens } from "./NetworkRootBottomTabParams";
 import { Keyboard, Animated, Easing } from 'react-native';
+import { useIsFocused, useNavigation } from '@react-navigation/native';
 
 const Tab = createBottomTabNavigator<NetworkRootBottomTabParams>();
 
 export default function NetworkBottomTab(): React.JSX.Element {
     const [keyboardVisible, setKeyboardVisible] = useState(false);
     const tabBarAnimation = useRef(new Animated.Value(1)).current; // Initial opacity 1 (visible)
-    
     useEffect(() => {
         const keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', () => {
             setKeyboardVisible(true);
@@ -35,7 +35,6 @@ export default function NetworkBottomTab(): React.JSX.Element {
             keyboardDidShowListener.remove();
         };
     }, []);
-
     return (
         <Tab.Navigator
             screenOptions={{

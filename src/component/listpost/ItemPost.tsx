@@ -107,10 +107,12 @@ const ItemPost = memo(({ index, data, onrefresh, userId, onPressProfile, setShow
     const handleEdit = () => {
         setSelectedId(id);
         setShowModalEdit(true);
+        setHidden(false);
     };
     const handleDelete = () => {
         setSelectedId(id);
         setShowDelete(true);
+        setHidden(false);
     };
     return (
         <Pressable onPress={handleItemPress} style={{ margin: 5, marginBottom: 6, backgroundColor: "#fff" }}>

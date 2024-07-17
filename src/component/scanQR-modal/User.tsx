@@ -13,7 +13,7 @@ const User: React.FC<USER> = ({ user }) => {
   const userId = (user.id)
   const getRelationshipText = (status: any) => {
     if (status === 1) {
-      return 'Bạn hoặc người dùng này đã gửi lời mời!';
+      return 'Bạn đã gửi lời mời!';
     } else if (status === 2) {
       return 'Các bạn đã là bạn bè của nhau!';
     } else {

@@ -55,7 +55,11 @@ const ListPorts = memo(({ onrefresh }: { onrefresh: boolean }) => {
   //     getAllPost();
   //   }, [getAllPost])
   //   }, [])
-
+  useEffect(() => {
+    if (!showDelete||!showModalEdit) {
+      getAllPost();
+    }
+  }, [showDelete||showModalEdit]);
 
   const loadMoreData = () => {
 
