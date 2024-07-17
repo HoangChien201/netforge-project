@@ -1,12 +1,15 @@
 import { Dimensions, Image, ImageBackground, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { NavigationProp, ParamListBase, useNavigation } from '@react-navigation/native';
 import { COLOR } from '../../constant/color';
+import { setDate } from 'date-fns';
 
 const ItemStory = ({ data, setIndex, index, indexfind, list }) => {
-  const navigation: NavigationProp<ParamListBase> = useNavigation(); 
-
-
+  const navigation: NavigationProp<ParamListBase> = useNavigation();
+  const [result,setResult] = useState(data);
+  useEffect(() => {
+    setResult(data)
+  }, []); 
   return (
     <TouchableOpacity
       onPress={() => {
@@ -16,18 +19,18 @@ const ItemStory = ({ data, setIndex, index, indexfind, list }) => {
     >
       <View style={[styles.borderContainer,{ borderColor: indexfind === index ? COLOR.PrimaryColor1 : '#A5A3A3' }]}>
         <ImageBackground 
-          source={{ uri: data.posts[0].media[0]?.url }} 
+          source={{ uri: result?.posts[0].media[0]?.url }} 
           style={styles.imageBackground} 
           imageStyle={styles.imageStyle}
         >
           <Image 
-            source={{ uri: data.avatar }} 
+            source={{ uri: result?.avatar }} 
             style={[
               styles.avatar, 
               { borderColor: indexfind === index ? COLOR.PrimaryColor1 : COLOR.PrimaryColor }
             ]} 
           />
-          <Text style={{top:data?.fullname.length > 8 ? 60:70,color:'#fff',fontWeight:'bold'}}>{data?.fullname}</Text>
+          <Text style={{top:result?.fullname.length > 8 ? 60:70,color:'#fff',fontWeight:'bold'}}>{result?.fullname}</Text>
         </ImageBackground>
       </View>
     </TouchableOpacity>

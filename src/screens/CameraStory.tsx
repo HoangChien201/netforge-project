@@ -1,19 +1,19 @@
 import { NavigationProp, ParamListBase, useNavigation } from '@react-navigation/native';
-import React, { useRef, useState } from 'react';
+import React, { useRef } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
-//import { RNCamera } from 'react-native-camera';
+import { RNCamera } from 'react-native-camera';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-
 import { NetworkRootStackEnum } from '../component/stack/NetworkRootStackParams';
 
 const CameraStory = () => {
   const cameraRef = useRef(null);
   const navigation: NavigationProp<ParamListBase> = useNavigation();
+
   const takePicture = async () => {
     if (cameraRef.current) {
       try {
         const options = { quality: 0.5, base64: true };
-        const data = await cameraRef.current?.takePictureAsync(options);
+        const data = await cameraRef.current.takePictureAsync(options);
         const uri = data.uri;
         console.log(data.uri);
         navigation.navigate(NetworkRootStackEnum.StoryDetail, { uri });
@@ -24,14 +24,14 @@ const CameraStory = () => {
   };
 
   return (
-    <View style={[styles.container]}>
+    <View style={styles.container}>
       <TouchableOpacity
         onPress={() => navigation.goBack()}
         style={{ position: 'absolute', zIndex: 9999, top: 20, left: 20, width: 30, height: 30 }}
       >
         <Ionicons name="close-outline" size={34} />
       </TouchableOpacity>
-      {/* <RNCamera
+      <RNCamera
         ref={cameraRef}
         style={styles.preview}
         androidCameraPermissionOptions={{
@@ -46,8 +46,7 @@ const CameraStory = () => {
           buttonPositive: 'OK',
           buttonNegative: 'Hủy',
         }}
-      /> */}
-
+      />
       <View style={{ borderWidth: 1, flex: 0, flexDirection: 'row', justifyContent: 'center' }}>
         <TouchableOpacity onPress={takePicture} style={styles.capture}></TouchableOpacity>
       </View>
@@ -74,21 +73,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 30,
     alignSelf: 'center',
     margin: 20,
-  },
-  overlay: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: 'rgba(0, 0, 0, 0.5)', // Nền bán trong suốt
-  },
-  tick: {
-    color: '#00ff00', // Màu xanh lá cho dấu tick
-    fontSize: 100, // Điều chỉnh kích thước theo nhu cầu
-    fontWeight: 'bold',
   },
 });
 

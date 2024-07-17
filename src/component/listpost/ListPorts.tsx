@@ -1,4 +1,4 @@
-import { FlatList, View, StyleSheet, ActivityIndicator, Text, Dimensions } from 'react-native';
+import { FlatList, View, StyleSheet, ActivityIndicator, Text, Dimensions, Image } from 'react-native';
 import React, { memo, useCallback, useEffect, useState } from 'react';
 import ItemPost from './ItemPost';
 import { getAll } from '../../http/userHttp/getpost';
@@ -10,6 +10,7 @@ import Loading from '../Modal/Loading';
 import { date } from 'yup';
 import BODYMODAL from '../../component/edit-post-modal/Body'
 import DELETEPOST from './DeletePostModal'
+import FastImage from 'react-native-fast-image';
 const ListPorts = memo(({ onrefresh }: { onrefresh: boolean }) => {
   const [allData, setAllData] = useState<any>([]);
   const [displayData, setDisplayData] = useState<any>([]);
@@ -35,7 +36,7 @@ const ListPorts = memo(({ onrefresh }: { onrefresh: boolean }) => {
 
       if (response.length > 0) {
         const getByTypeOne = response.filter(post => post.type === 1)
-
+ 
         setAllData([...getByTypeOne]);
         setDisplayData([...getByTypeOne.slice(0, PAGE_SIZE)]);
       }
@@ -43,23 +44,19 @@ const ListPorts = memo(({ onrefresh }: { onrefresh: boolean }) => {
       console.error(error);
     }
     setLoading(false);
-  }, [setAllData, setDisplayData, onrefresh]);
+  }, [setAllData, setDisplayData, onrefresh,showDelete,showModalEdit]);
 
   useEffect(() => {
 
     getAllPost();
-  }, [getAllPost, onrefresh]);
+  }, [getAllPost, onrefresh,showDelete,showModalEdit]);
   
-  // useFocusEffect(
-  //   useCallback(() => {
-  //     getAllPost();
-  //   }, [getAllPost])
-  //   }, [])
-  useEffect(() => {
-    if (!showDelete||!showModalEdit) {
+  useFocusEffect(
+    useCallback(() => {
       getAllPost();
-    }
-  }, [showDelete||showModalEdit]);
+    }, [getAllPost])
+    )
+
 
   const loadMoreData = () => {
 
@@ -132,6 +129,10 @@ const ListPorts = memo(({ onrefresh }: { onrefresh: boolean }) => {
           (
             !loading && (
               <View style={styles.messageContainer}>
+               <FastImage
+      source={require('../../media/Dicons/gitne.jpg')}
+      style={{width: '59%', height: '40%',backgroundColor:'#fff'}}
+    />
                 <Text style={styles.messageText}>Hiện chưa có bài viết nào</Text>
               </View>
             )

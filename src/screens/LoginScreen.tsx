@@ -19,6 +19,9 @@ const LoginScreen = () => {
     const [status, setStatus] = useState(true);;
     const [isLoading, setIsLoading] = useState(false);
     const [visible, setVisible] = useState(true)
+    const handleForgotPassword = () => {
+        navigation.navigate(UserRootStackEnum.ForgotPassword);
+      }
     const hanlerRegiter = () => {
         navigation.navigate(UserRootStackEnum.SignUp);
     }
@@ -26,20 +29,36 @@ const LoginScreen = () => {
         <>
             <StatusBar barStyle="light-content" backgroundColor={COLOR.PrimaryColor} />
             <View style={styles.container}>
-                <View style={{ flexDirection: "row", paddingVertical: 75,width:'100%' }}>
-                    <View style={{ position: "absolute", right: 0, top: 0,flex:0.5 }}>
+                <View style={{ flexDirection: "column", paddingVertical: 25, width: '100%' }}>
+                    <View style={{ position: "absolute", right: 0, top: 0, flex: 0.6 }}>
                         <Image source={require('../media/Dicons/elip.png')} />
                     </View>
-                    <View style={[styles.viewAll]}>
-                        <Text style={styles.labelLogin}>Đăng nhập</Text>
+                    <View style={[{ width: 245,height:150,justifyContent:'center' }]}>
+                        <Text style={styles.labelLogin}>Chào mừng ! đến với Netfore</Text>
+                        
                     </View>
-                  
+                    <View style={{ position: "absolute", left: 0, bottom: 0, flex: 0.5 }}>
+                        <Image source={require('../media/Dicons/tron.png')} />
+                    </View>
+                    <View style={{ position: "absolute", left: 20, bottom: 0, flex: 0.5 }}>
+                        <Image source={require('../media/Dicons/tron1.png')} />
+                    </View>
                 </View>
+
                 <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'null'} style={styles.viewContent}>
+                    <View style={[styles.viewAll]}>
+                        <Text style={{
+                            color: "#000",
+                            fontWeight: "bold",
+                            fontSize: 20,
+                            paddingLeft: 30,
+                            textAlign:'center'
+                        }}>Đăng nhập</Text>
+                    </View>
                     <Loading isLoading={isLoading} />
                     <FormLogin setIsLoading={setIsLoading} setStatus={setStatus} setModal={setShowModal} />
                     <View style={{ alignItems: "center", padding: 10 }}>
-                        <Text>Nếu bạn chưa có tài khoản ?<Text onPress={hanlerRegiter} style={{ color: COLOR.PrimaryColor }}> Đăng kí</Text></Text>
+                       <Text onPress={handleForgotPassword} style={{ color: "#000" }}> Quên mật khẩu ?</Text>
                     </View>
                     <View style={{ flexDirection: "row", justifyContent: 'center', alignItems: 'center', padding: 15 }}>
                         <View style={{ height: 0.2, backgroundColor: "black", width: "36%" }}></View>
@@ -48,8 +67,8 @@ const LoginScreen = () => {
                         </View>
                         <View style={{ height: 0.2, backgroundColor: "black", width: "36%" }}></View>
                     </View>
-                    <View style={{ justifyContent: 'center', paddingVertical: 20,paddingHorizontal:110}}>
-                        <ButtonImage children='Google' source={require('../media/icon/Google.png')} style={styles.buttonImage} />
+                    <View style={{ alignItems: "center", padding: 10 }}>
+                        <Text>Nếu bạn chưa có tài khoản ?<Text onPress={hanlerRegiter} style={{ color: COLOR.PrimaryColor }}> Đăng kí</Text></Text>
                     </View>
                 </KeyboardAvoidingView>
                 {status ? (
@@ -80,17 +99,14 @@ const styles = StyleSheet.create({
         flexDirection: "row", alignItems: "center"
     },
     viewAll: {
-        flex: 1,
-        bottom:0,
-        
-     
+        bottom: 0,
     },
     labelLogin: {
         color: "#fff",
         fontWeight: "bold",
-        fontSize: 40,
+        fontSize: 30,
         paddingLeft: 30,
-      
+
     },
     viewContent: {
         backgroundColor: "#ffff", flex: 1, marginTop: 15, borderTopEndRadius: 30, borderTopStartRadius: 30, padding: 18
@@ -109,7 +125,7 @@ const styles = StyleSheet.create({
         height: 50,
         backgroundColor: 'rgba(225,225,225,0.1)',
         width: '100%',
-        
-        
+
+
     }
 })
