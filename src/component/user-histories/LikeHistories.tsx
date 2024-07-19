@@ -45,7 +45,7 @@ const LikeHistories: React.FC<Like> = ({ data }) => {
             const likeComments = data.likeComments || [];
             const total = [...likeComments, ...likePosts];
             const sorted = total.sort((a, b) => new Date(b.create_at) - new Date(a.create_at));
-            setSortedData(sorted);
+            setSortedData(total);
             //console.log('data ben like: ' + JSON.stringify(sorted));
         }
         renderItem;

@@ -25,7 +25,7 @@ const Body: React.FC<BodyH> = ({ }) => {
             // setDataLikeP(result.likePosts);
             // setDataLikeC(result.likeComments);
             setDataComment(result.comments)
-            //console.log('body data: ' + result);
+            //console.log('body data: ' + JSON.stringify(result));
             // console.log('dataH' + JSON.stringify(result));
             // console.log('data likeP: ' + JSON.stringify(result.likePosts));
             // console.log('data likeC: ' + JSON.stringify(result.likeComments));

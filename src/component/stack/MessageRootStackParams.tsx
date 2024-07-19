@@ -18,12 +18,17 @@ export type MessageRootStackParams = {
     ZegoUIKitPrebuiltCallWaitingScreen: undefined;
     ZegoUIKitPrebuiltCallInCallScreen: undefined;
     MessageScreen: {
-        id:string,
         group_id?: number,
         fullname: string,
         avatar: string,
         messages?: Array<messageType>,
-        id?:number
+        members:Array<{
+            user:{
+                fullname:string,
+                avatar:string,
+                id:number
+            }
+        }>,
     };
     ListMessageScreen: undefined;
     CallManagement: undefined;

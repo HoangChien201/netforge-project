@@ -1,6 +1,6 @@
 import { Image, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import React, { useState } from 'react'
-import { NavigationProp, ParamListBase, useFocusEffect, useNavigation } from '@react-navigation/native';
+import { NavigationProp, ParamListBase, useFocusEffect, useIsFocused, useNavigation } from '@react-navigation/native';
 
 
 import { deleteFriend } from '../../../http/QuyetHTTP';
@@ -8,20 +8,24 @@ import { useMyContext } from '../../../component/navigation/UserContext';
 import DeleteFriend from './DeleteFriend';
 import Loading from '../../../component/Modal/Loading';
 import { ProfileRootStackEnum } from '../../../component/stack/ProfileRootStackParams';
-
+import ICON from 'react-native-vector-icons/MaterialIcons';
+import ICON1 from 'react-native-vector-icons/AntDesign'
+import { COLOR } from '../../../constant/color';
 type Friend = {
   friends: any,
   setFriends: () => void;
 }
 
-const Friends: React.FC<Friend> = ({ friends, setFriends}) => {
+const Friends: React.FC<Friend> = ({ friends, setFriends }) => {
   const { user } = useMyContext();
   const [show, setShow] = useState(false);
   const [user2, setUser2] = useState<number>(0);
   const navigation: NavigationProp<ParamListBase> = useNavigation();
+
   if (!friends || friends.length === 0) {
-    return <View style={{alignItems:'center', justifyContent:'center',
-      marginTop:10
+    return <View style={{
+      alignItems: 'center', justifyContent: 'center',
+      marginTop: 10
     }}>
       <Text style={styles.headerText}>Chưa có bạn bè</Text>
     </View>;
@@ -46,10 +50,11 @@ const Friends: React.FC<Friend> = ({ friends, setFriends}) => {
               <Text style={styles.userName}>{friend.user.fullname}</Text>
             </View>
             <View style={styles.button}>
+              <TouchableOpacity style={styles.buttonAccept} >
+                <ICON1 name='message1' size={22} color={COLOR.PrimaryColor} />
+              </TouchableOpacity>
               <TouchableOpacity style={styles.buttonAccept} onPress={() => deleteFri(friend.user.id)} >
-                <Text style={styles.textAccept1}>
-                  Xóa bạn
-                </Text>
+                <ICON name='person-remove' size={22} color={'red'} />
               </TouchableOpacity>
             </View>
           </View>
@@ -57,7 +62,7 @@ const Friends: React.FC<Friend> = ({ friends, setFriends}) => {
         </TouchableOpacity>
       ))
       }
-      <DeleteFriend show={show} setShow={setShow} user2={user2} setFriends={setFriends}/>
+      <DeleteFriend show={show} setShow={setShow} user2={user2} setFriends={setFriends} />
     </ScrollView >
   )
 }
@@ -107,14 +112,15 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    marginEnd: 5
+    width:100
   },
   buttonAccept: {
     height: 30,
-    width: 80,
+    width: 40,
     alignItems: 'center',
     justifyContent: 'center',
     borderRadius: 5,
+    marginStart:5
 
   },
   buttonReject: {

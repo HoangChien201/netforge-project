@@ -2,13 +2,16 @@ import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import EmptyReq from './EmptyReq'
 import {cancelRequest} from '../../http/QuyetHTTP'
+import { useNavigation } from '@react-navigation/native';
+
 type Req ={
     dataRequest:any, 
     setDataRequest:(value:any)=>void, 
     setReload:(value:any)=>void, 
+    setShowModalFriend:(value:any) => void,
 }
-const RequestList:React.FC<Req> = ({ dataRequest, setDataRequest, setReload }) => {
-
+const RequestList:React.FC<Req> = ({ dataRequest, setDataRequest, setReload,setShowModalFriend }) => {
+    const navigation = useNavigation();
 const cancelReq = async (friendId: number)=>{
     try {
         await cancelRequest(friendId);
@@ -19,13 +22,21 @@ const cancelReq = async (friendId: number)=>{
         
     }
 }
+const openProfile = (id: any)=>{
+    const userId = id;
+    navigation.navigate('FriendProfile', {userId});
+    setShowModalFriend(false);
+}
     if (!dataRequest || dataRequest.length === 0) {
         return <EmptyReq/>; // Hoặc hiển thị một thông báo khác tùy ý
     }
     return (
         <View style={styles.container}>
             {dataRequest.map((friend: { user: { id: React.Key | null | undefined | any; avatar: any; fullname: string | undefined |any } }) => (
-                <View style={styles.itemWA} key={friend.user.id}>
+                
+                <TouchableOpacity style={styles.itemWA} key={friend.user.id}
+                onPress={() => openProfile(friend.user.id)}
+                >
                     <View style={styles.user}>
                         {friend.user.avatar? <Image source={{uri: friend.user.avatar}} style={styles.avatarne}/>  : 
                         <View style={{height:48, width:48, borderRadius:50, borderWidth:1,borderColor:'gray', backgroundColor:'#DDDDDD',marginStart:10,}}/>
@@ -40,7 +51,7 @@ const cancelReq = async (friendId: number)=>{
                             <Text style={styles.textAccept}>Hủy bỏ</Text>
                         </TouchableOpacity>
                     </View>
-                </View>
+                </TouchableOpacity>
             ))}
         </View>
     )

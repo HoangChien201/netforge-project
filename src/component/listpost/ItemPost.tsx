@@ -111,13 +111,18 @@ const ItemPost = memo(({ index, data, onrefresh, userId, onPressProfile, setShow
     const handleEdit = () => {
         setSelectedId(id);
         setShowModalEdit(true);
+
         hiddenMenu1();
+        setHidden(false);
+
     };
 
     const handleDelete = () => {
         setSelectedId(id);
         setShowDelete(true);
+
         hiddenMenu1();
+        setHidden(false);
     };
 
     return (

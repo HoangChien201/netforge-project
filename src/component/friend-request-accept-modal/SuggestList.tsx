@@ -19,13 +19,14 @@ const SuggestList: React.FC<Suggest> = ({ data, setData, setReload }) => {
         }));
         try {
             const result = await sendRequest(id, status);
-            console.log('đã gửi lời mời');
-
-            if (result) {
+            if (result.status==1) {
                 setTextReqState((prevState) => ({
                     ...prevState,
                     [id]: 'Đã gửi'
                 }));
+                console.log('đã gửi lời mời');
+                console.log(result);
+                
             }
         } catch (error) {
             setDisabledButtons((prevState) => ({

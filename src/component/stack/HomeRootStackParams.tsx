@@ -79,7 +79,8 @@ export const HomeRootStackScreens = [
         name: HomeRootStackEnum.Scanner,
         component: Scanner,
         options: {
-            headerShown: true
+            headerShown: true,
+            title:"Quét mã QR",
         }
     },
     {
@@ -87,7 +88,8 @@ export const HomeRootStackScreens = [
         name: HomeRootStackEnum.QRcodeScreen,
         component: QRcodeScreen,
         options: {
-            headerShown: true
+            headerShown: true,
+            title:''
         }
     },
     {
