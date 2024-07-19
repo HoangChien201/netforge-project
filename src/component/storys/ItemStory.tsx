@@ -19,7 +19,7 @@ const ItemStory = ({ data, setIndex, index, indexfind, list }) => {
     >
       <View style={[styles.borderContainer,{ borderColor: indexfind === index ? COLOR.PrimaryColor1 : '#A5A3A3' }]}>
         <ImageBackground 
-          source={{ uri: result?.posts[0].media[0]?.url }} 
+          source={{ uri: result?.posts[0].media[0]?.url ? result?.posts[0].media[0]?.url  : "https://images.pexels.com/photos/2310713/pexels-photo-2310713.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" }} 
           style={styles.imageBackground} 
           imageStyle={styles.imageStyle}
         >

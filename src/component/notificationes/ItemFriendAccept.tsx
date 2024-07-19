@@ -4,24 +4,30 @@ import React from 'react'
 import Icon from 'react-native-vector-icons/MaterialIcons'
 import { COLOR } from '../../constant/color'
 import { DateOfTimePost } from '../../format/DateOfTimePost'
-import { useNavigation } from '@react-navigation/native'
+import { useNavigation } from '@react-navigation/native';
 type Item = {
     notification: any
 }
-const ItemMessage:React.FC<Item> = ({ notification }) => {
+const ItemFriendAccept:React.FC<Item> = ({ notification }) => {
     const navigation = useNavigation();
+    function navigationScreen(screen: string) {
+        navigation.navigate(`${screen}`)
+    }
     const displayDate = DateOfTimePost(notification.data[0].timestamp);
     return (
         <TouchableOpacity style={styles.container} key={notification.idv4.toString()} 
-        onPress={()=> navigation.navigate('MessageStack')}
+        onPress={()=> navigation.navigate('FriendScreen')}
         >
         <View style={styles.iconFriend} >
             <Image style={styles.avatar} source={{ uri: notification.data[0].userInfo.avatar }} />
-            <Icon style={styles.iconHeart} name='message' size={18} color={COLOR.PrimaryColor} />
+            <Icon style={styles.iconHeart} name='group' size={18} color={COLOR.PrimaryColor} />
         </View>
         <View style={styles.text}>
             <Text style={styles.textUser_Post}>{notification.data[0].title} </Text>
-            <Text style={styles.text1} numberOfLines={1} ellipsizeMode="tail">{notification.data[0].body}</Text>
+            <Text
+            style={styles.text1}
+            numberOfLines={1} ellipsizeMode="tail"
+            >{notification.data[0].body}</Text>
         </View>
         <View style={styles.viewTime}>
             <Text style={styles.textTime}>{displayDate}</Text>
@@ -31,7 +37,7 @@ const ItemMessage:React.FC<Item> = ({ notification }) => {
     )
 }
 
-export default ItemMessage
+export default ItemFriendAccept
 
 const styles = StyleSheet.create({
     container: {
@@ -102,12 +108,11 @@ const styles = StyleSheet.create({
         marginStart: 10,
         flex: 5,
         flexDirection:'column',
-        overflow:'hidden',
-        
+        overflow:'hidden', 
     },
     textUser_Post: {
         fontSize: 16,
-        fontWeight: '500',
+        fontWeight: '600',
         fontStyle: "normal",
         color: 'black',
 
@@ -119,6 +124,7 @@ const styles = StyleSheet.create({
         color: 'black',
         marginEnd:5
     },
+
     textTime: {
         fontSize: 9,
         fontWeight: '300',

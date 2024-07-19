@@ -12,7 +12,7 @@ export const getAll = async (token:any,id?:number) => {
             }
         };
         const res = await axioInstance.get(url, headers)
-        console.log("ddfsd",res);
+        //console.log("ddfsd",res);
         
         return res
     } catch (error) {
@@ -95,3 +95,21 @@ export const deletePost = async (postId: number) => {
         throw error;
     }
 };
+export const getPostById = async(id: number) => {
+    try {
+      const token = await AsyncStorage.getItem('token')
+      const axios = await AxiosInstance();
+      const url = `/posts/find-one/${id}`
+      const result = axios.get(url,
+        {
+          headers:{
+            Authorization: `Bearer ${token}`
+          }
+        }
+      )
+      return result;
+    } catch (error) {
+      console.log('get-post-byId', error)
+      throw error;
+    }
+  }

@@ -29,18 +29,18 @@ const Body: React.FC<Bob> = ({ reload, showModalFriend, setShowModalFriend, setD
     const status2 = 2;
     const slideAnim = useRef(new Animated.Value(-500)).current;
     const swiperRef = useRef(null);
-    const OpenCloseRA = () => {
-        setShowRA(!showRA);
-        if (swiperRef.current) {
-            if (showRA) {
-                setTextShowRA('Lời mời');
-                swiperRef.current.scrollTo(-1);
-            } else {
-                setTextShowRA('Yêu cầu');
-                swiperRef.current.scrollTo(1);
-            }
-        }
-    };
+    // const OpenCloseRA = () => {
+    //     setShowRA(!showRA);
+    //     if (swiperRef.current) {
+    //         if (showRA) {
+    //             setTextShowRA('Lời mời');
+    //             swiperRef.current.scrollTo(-1);
+    //         } else {
+    //             setTextShowRA('Yêu cầu');
+    //             swiperRef.current.scrollTo(1);
+    //         }
+    //     }
+    // };
     useEffect(() => {
         getRequestList(status1);
         getWaitAcceptList();
@@ -123,11 +123,7 @@ const Body: React.FC<Bob> = ({ reload, showModalFriend, setShowModalFriend, setD
                         <Icon name='close' size={24} color={'white'} style={styles.buttonCloseModal} />
                     </TouchableOpacity>
                     <Text style={styles.textHeader}>Yêu cầu kết bạn</Text>
-                    <TouchableOpacity onPress={OpenCloseRA} style={styles.buttonShowRA}>
-
-                        <Text style={styles.textShowRA}>{textShowRA}</Text>
-                        <Icon name='doubleright' color={COLOR.PrimaryColor1} size={16} />
-                    </TouchableOpacity>
+                    <View></View>
                 </View>
                 <Swiper ref={swiperRef} loop={false} showsButtons={false}>
                     <View>
@@ -170,7 +166,6 @@ const styles = StyleSheet.create({
         fontSize: 20,
         color: COLOR.primary300,
         fontWeight: '500',
-        marginStart: -110,
     },
     textShowRA: {
         fontSize: 16,

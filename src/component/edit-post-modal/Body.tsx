@@ -56,16 +56,16 @@ const Body: React.FunctionComponent<BodyProps> = ({ showModalEdit, setShowModalE
                 const mediaItem = result.media.map(item => item);
                 setImages(mediaItem)
                 //console.log('mediaUrl: ' + mediaUrls);
-                console.log('images: ' + JSON.stringify(mediaItem));
+                //console.log('images: ' + JSON.stringify(mediaItem));
                 setMedia(mediaUrls);
                 setPermission(result.permission);
                 //setFriends(result.tags)
                 setIsLoading(false)
             }
-            if(result.share?.id){
+            if (result.share?.id) {
                 const result1 = await getPostById(result.share?.id);
                 setDataShare(result1)
-            }else{
+            } else {
                 setDataShare('')
             }
         } catch (error) {
@@ -74,14 +74,33 @@ const Body: React.FunctionComponent<BodyProps> = ({ showModalEdit, setShowModalE
         }
     };
 
-
     useEffect(() => {
+        // if (postId) {
+        //     getOnePost();
+        // }
         if (postId) {
-            getOnePost();
+            setContent(postId.content);
+            const mediaUrls = postId.media.map(item => item.url);
+            const mediaItem = postId.media.map(item => item);
+            setImages(mediaItem)
+            console.log('mediaUrl: ' + JSON.stringify(postId));
+            console.log('images: ' + JSON.stringify(mediaItem));
+            setMedia(mediaUrls);
+            setPermission(postId.permission);
+            //setFriends(result.tags)
+            setIsLoading(false)
+            if (postId.share?.id) {
+                getShare(postId.share?.id)
+            } else {
+                setDataShare('')
+            }
         }
-
     }, [postId]);
-
+    
+    const getShare = async (id) => {
+        const result1 = await getPostById(id);
+        setDataShare(result1)
+    }
     const handleEmojiSelect = (emoji: any) => {
         setContent(content + emoji);
     };
@@ -111,7 +130,7 @@ const Body: React.FunctionComponent<BodyProps> = ({ showModalEdit, setShowModalE
         try {
             setIsLoading(true);
             if (images && images.length > 0) {
-                const newPost = await updatePost(postId, { permission, content, tags, medias });
+                const newPost = await updatePost(postId.id, { permission, content, tags, medias });
                 console.log('Bài viết đã được cập nhật:', newPost);
                 setIsLoading(false);
                 setTimeout(() => {
@@ -127,7 +146,7 @@ const Body: React.FunctionComponent<BodyProps> = ({ showModalEdit, setShowModalE
                 }, 1100);
             } else {
                 try {
-                    const newPost = await updatePost(postId, { permission, tags, content, medias });
+                    const newPost = await updatePost(postId.id, { permission, tags, content, medias });
                     console.log('Bài viết đã được cập nhật:', newPost);
                     setIsLoading(false);
                     setTimeout(() => {

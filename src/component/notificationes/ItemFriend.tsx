@@ -1,7 +1,7 @@
 
 import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import React from 'react'
-import Icon from 'react-native-vector-icons/AntDesign'
+import Icon from 'react-native-vector-icons/MaterialIcons'
 import { COLOR } from '../../constant/color'
 import { DateOfTimePost } from '../../format/DateOfTimePost'
 import { useNavigation } from '@react-navigation/native';
@@ -20,7 +20,7 @@ const ItemFriend:React.FC<Item> = ({ notification }) => {
         >
         <View style={styles.iconFriend} >
             <Image style={styles.avatar} source={{ uri: notification.data[0].userInfo.avatar }} />
-            <Icon style={styles.iconHeart} name='adduser' size={18} color={COLOR.PrimaryColor} />
+            <Icon style={styles.iconHeart} name='person-add' size={18} color={COLOR.PrimaryColor} />
         </View>
         <View style={styles.text}>
             <Text style={styles.textUser_Post}>{notification.data[0].title} </Text>

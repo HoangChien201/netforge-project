@@ -18,6 +18,7 @@ interface Valid {
   password: boolean;
   fullname: boolean;
   confirmpassword: boolean;
+  emailError?: string;  // Thêm trường lỗi cho email
 }
 
 const Form = ({ setModal }: { setModal: (values: boolean) => void }) => {
@@ -68,60 +69,70 @@ const Form = ({ setModal }: { setModal: (values: boolean) => void }) => {
       return;
     }
 
-    // Gọi API đăng ký và xử lý kết quả
-    const result = await regiter(email, password, fullname);
-    console.log(result);
+    try {
+      // Gọi API đăng ký và xử lý kết quả
+      const result = await regiter(email, password, fullname);
 
-    if (result) {
+      if (result === undefined) {
+    
+        setValid(prev => ({
+          ...prev,
+          email: true,
+          emailError: 'Email đã tồn tại ! vui lòng nhập email khác' 
+        }));
+        return;
+      }
+
+
       setModal(true);
       setTimeout(() => {
         setModal(false);
         navigation.goBack();
       }, 1000);
+    } catch (error) {
+      console.error(error);
+
     }
   };
 
   return (
-    <View>
+    <View style={{marginTop:0}}>
       <Input
         invalid={!valid.fullname}
-        label="Fullname"
+        label="Họ tên không được để trống"
+        labels='Họ tên'
         value={valueF.fullname}
         onchangText={onChangText.bind(this, 'fullname')}
         iconP
       />
-   
-      
       <Input
         invalid={!valid.email}
-        label="Email"
+        label="Vui lòng nhập đúng định dạng Email"
+        labels='Email'
         value={valueF.email}
         onchangText={onChangText.bind(this, 'email')}
         iconE
       />
-    
-      
+      {valid.emailError && <Text style={styles.errorText}>{valid.emailError}</Text>}
       <Input
         invalid={!valid.password}
-        label="Password"
+        label="Mật khẩu không trùng khớp"
+        labels='Mật khẩu'
         value={valueF.password}
         onchangText={onChangText.bind(this, 'password')}
         iconPass
         password
       />
-  
-      
       <Input
         invalid={!valid.confirmpassword}
-        label="Confirm Password"
+        label="Mật khẩu không trùng khớp"
+        labels='Nhập lại mật khẩu'
         value={valueF.confirmpassword}
         onchangText={onChangText.bind(this, 'confirmpassword')}
         iconPass
         password
       />
-   
-
-      <View style={{ width: '100%',justifyContent:'center',alignItems:'center' }}>
+      <View style={{ width: '100%', justifyContent: 'center', alignItems: 'center' }}>
         <ButtonLogin chilren='Đăng kí' textColor='#fff' onPress={submit} />
       </View>
     </View>
@@ -133,7 +144,8 @@ export default Form;
 const styles = StyleSheet.create({
   errorText: {
     color: 'red',
-    marginBottom: 5,
-    marginLeft: 10,
+    marginBottom: 0,
+    marginLeft: 21,
+    fontSize:10,fontWeight:"400", fontFamily: "poppins"
   },
 });
