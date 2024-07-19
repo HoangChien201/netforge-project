@@ -235,6 +235,7 @@ const HomeScreen = () => {
                             </View>
                         </View>
                     )}
+                    />
                 </View>
                 <View style={styles.contentContainer}>
                     <Animated.FlatList
@@ -251,8 +252,9 @@ const HomeScreen = () => {
                         onRefresh={onRefresh}
                     />
                 </View>
-            </View>
-        </TouchableWithoutFeedback>
+            
+        </View>
+        
     );
 };
 

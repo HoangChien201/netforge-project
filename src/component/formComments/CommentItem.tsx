@@ -170,25 +170,25 @@ const CommentItem = ({ comment, onReply, depth = 0, render, parent, setText, set
                         <Pressable onLongPress={() => handleCommentPress()}>
                             <View style={[styles.BackgroundComment, 
                                 { backgroundColor: comment.content && '#E6E6FA',}]}>
-                            <View style={{ padding: 10, flexDirection: 'column' }}>
-                                <Pressable >
+                            <Pressable style={{ padding: 10, flexDirection: 'column' }} onLongPress={() => handleCommentPress()}>
+                                <Pressable onLongPress={() => handleCommentPress()}>
                                     <Text style={styles.fullname}>{comment.user.fullname}</Text>
                                 </Pressable>
                                 {comment.content ? (
                                     <Text style={styles.content}>{comment.content}</Text>
                                 ) : null}
                              
-                            </View>
+                            </Pressable>
                             </View>
                             <View style={{ marginTop: 5, alignItems: 'center',  bottom: comment.image && !comment.content && 10, marginBottom: comment.image && !comment.content && -10 }}>
                                     {comment.image ? (
                                         comment.image.endsWith('.mp4') ? (
-                                            <Pressable style={{ width: 100, height: 150, }} onPress={() => handleImagePress(comment.image)}>
+                                            <Pressable style={{ width: 100, height: 150, }} onPress={() => handleImagePress(comment.image)} onLongPress={() => handleCommentPress()}>
                                                 <Video source={{ uri: comment.image }} style={styles.media} resizeMode='cover' />
                                             </Pressable>
 
                                         ) : (
-                                            <Pressable style={{ width: 100, height: 150, }} onPress={() => handleImagePress(comment.image)}>
+                                            <Pressable style={{ width: 100, height: 150, }} onPress={() => handleImagePress(comment.image)} onLongPress={() => handleCommentPress()}>
                                                 <Image source={{ uri: comment.image }} style={styles.media} />
                                             </Pressable>
 

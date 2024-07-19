@@ -1,9 +1,9 @@
 import { Image, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { NavigationProp, ParamListBase, useFocusEffect, useIsFocused, useNavigation } from '@react-navigation/native';
 
 
-import { deleteFriend } from '../../../http/QuyetHTTP';
+import { deleteFriend, getFriends } from '../../../http/QuyetHTTP';
 import { useMyContext } from '../../../component/navigation/UserContext';
 import DeleteFriend from './DeleteFriend';
 import Loading from '../../../component/Modal/Loading';
@@ -16,12 +16,28 @@ type Friend = {
   setFriends: () => void;
 }
 
-const Friends: React.FC<Friend> = ({ friends, setFriends }) => {
+const Friends: React.FC<Friend> = () => {
   const { user } = useMyContext();
   const [show, setShow] = useState(false);
   const [user2, setUser2] = useState<number>(0);
   const navigation: NavigationProp<ParamListBase> = useNavigation();
+  const [friends, setFriends] = useState<any[]>([]);
 
+  const getFriendList = async () => {
+    try {
+      const result = await getFriends(2);
+      if (result) {
+        setFriends(result);
+        //console.log('bạn bè nè: ' + JSON.stringify(result));
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    getFriendList()
+  }, [friends]);
   if (!friends || friends.length === 0) {
     return <View style={{
       alignItems: 'center', justifyContent: 'center',

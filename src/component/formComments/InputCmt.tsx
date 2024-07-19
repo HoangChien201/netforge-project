@@ -102,6 +102,7 @@ const InputCmt = ({ fetchComments, onMediaSelected, parent = null , postId, text
     }, [onMediaSelected]);
 
     const handleAddComment = async () => {
+       
         try {
             if (media === null && comments === '' && imagePath === null) {
                 console.log("Vui lòng comment");
@@ -125,6 +126,7 @@ const InputCmt = ({ fetchComments, onMediaSelected, parent = null , postId, text
             setMedia(null)
             setImagePath(null)
             setMediaType(null)
+            Keyboard.dismiss()
             console.log("Thêm bình luận thành công !");
         } catch (error) {
             console.log(error);
