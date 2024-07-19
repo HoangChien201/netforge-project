@@ -35,7 +35,7 @@ const CustomDatePicker:React.FC<CustomDatePickerProps> = ({ selectedDate, onDate
   return (
     <View>
       <TouchableOpacity style={styles.dateButton} onPress={showDatePicker}>
-      <Icon name="calendar-outline" size={20} color="#000" style={styles.icon} />
+        <Icon name="calendar-outline" size={20} color="#000" style={styles.icon} />
         <Text style={styles.dateButtonText}>{formattedDate(selectedDate)}</Text>
       </TouchableOpacity>
       {/* {error && <Text style={styles.errorText}>{error}</Text>} */}
@@ -60,7 +60,7 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
   },
   dateButtonText: {
-    marginLeft:5,
+    // marginLeft:5,
     fontSize: 16,   
     fontWeight:'500',
     color:'#000'

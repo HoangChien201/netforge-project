@@ -47,9 +47,9 @@ export const onUserLogin = async (userID: any, userName: string, avatar:string) 
                         incomingVideoCallDialogTitle: "%10",
                         incomingVideoCallDialogMessage: "Đang gọi...",
                     },
-                    foregroundBuilder: () => {
-                        return (<Text>hihi</Text>);
-                    },
+                    // foregroundBuilder: () => {
+                    //     return (<Text>hihi</Text>);
+                    // },
                       timingConfig: {
                           isDurationVisible: true,
                           onDurationUpdate: (duration: any) => {
@@ -58,9 +58,13 @@ export const onUserLogin = async (userID: any, userName: string, avatar:string) 
                               }
                           },
                       },
-                      topMenuBarConfig: {
-                          buttons: [ZegoMenuBarButtonName.minimizingButton],
-                      },
+                      
+                    onCallEnd: (callID: any, reason: any, duration: any) => {
+                        console.log('########CallWithInvitation onCallEnd', callID, reason, duration);
+                    },
+                    //   topMenuBarConfig: {
+                    //       buttons: [ZegoMenuBarButtonName.minimizingButton],
+                    //   },
                       // onWindowMinimized: () => {
                       //     navigation.navigate('MessageScreen');
                       // },
@@ -68,12 +72,15 @@ export const onUserLogin = async (userID: any, userName: string, avatar:string) 
                       //     navigation.navigate('ZegoUIKitPrebuiltCallInCallScreen');
                       // },
                   };
+                  
               },
+              
               notifyWhenAppRunningInBackgroundOrQuit: true,
               isIOSSandboxEnvironment: true,
           }
       );
       console.log("User logged in successfully:", userID, userName);
+      
   } catch (error) {
       console.error("Error logging in user Utils:", error);
   }
@@ -81,4 +88,5 @@ export const onUserLogin = async (userID: any, userName: string, avatar:string) 
 
 export const onUserLogout = async () => {
     return ZegoUIKitPrebuiltCallService.uninit();
+    
 };

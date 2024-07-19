@@ -1,13 +1,14 @@
-import React, { FC, useEffect, useMemo, useState } from 'react';
+import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { StyleSheet, View, FlatList, Text, Image, ToastAndroid, TouchableOpacity } from 'react-native';
 import { MentionInput, MentionSuggestionsProps, Suggestion, replaceMentionValues } from 'react-native-controlled-mentions';
 import { getFriends } from '../../http/QuyetHTTP';
 import { COLOR } from '../../constant/color';
 import { TextInput } from 'react-native-gesture-handler';
+import { useFocusEffect } from '@react-navigation/native';
 
 type Props = {
     content: any,
-    setContent: (value:any) => void,
+    setContent: (value: any) => void,
     friends: any,
     setFriends: (value: any) => void
 }
@@ -53,14 +54,20 @@ const TextArea: React.FC<Props> = ({ content, setContent, friends, setFriends })
         if (mentions.length > 0) {
             const ids = mentions.map(mention => mention.id);
             setFriends(ids);
-            console.log('id lũ bạn: ' + ids);
+            console.log('id lũ bạn: ' + friends);
             console.log('mentions : ' + JSON.stringify(mentions));
             setValue(prevValue => prevValue.filter(item => !ids.includes(item.user.id)));
         } else {
             setFriends([]);
         }
     }, [content]);
-
+    useFocusEffect(
+        useCallback(() => {
+            getFriendList();
+            return () => {
+            };
+        }, [])
+    );
     const renderSuggestions: FC<MentionSuggestionsProps> = ({ keyword, onSuggestionPress }) => {
         if (!keyword) {
             return null;

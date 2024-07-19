@@ -1,8 +1,9 @@
-import React, {useEffect, useState} from 'react';
-import {Button, View, StyleSheet, Text, TextInput} from 'react-native';
-import {useNavigation} from '@react-navigation/native';
-import {useSafeAreaInsets} from 'react-native-safe-area-context';
+import React, { useEffect, useState } from 'react';
+import { Button, View, StyleSheet, Text, TextInput, Image, TouchableOpacity } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useMyContext } from '../../component/navigation/UserContext';
+import { createNewPost } from '../../http/QuyetHTTP';
 
 const LiveWithZego: React.FC = () => {
   const navigation = useNavigation();
@@ -10,9 +11,10 @@ const LiveWithZego: React.FC = () => {
     navigation.getParent()?.setOptions({ tabBarStyle: { display: 'none' } });
   }, []);
   
-  const {user} = useMyContext();
+  const { user } = useMyContext();
   const name = user.fullname;
-  const onJoinPress = (isHost: boolean) => {
+  const onJoinPress =  (isHost: boolean) => {
+    //await createLivePost(liveID)
     navigation.navigate(isHost ? 'HostScreen' : 'AudienceScreen', {
       userID,
       userName: name,
@@ -28,13 +30,29 @@ const LiveWithZego: React.FC = () => {
   }, []);
 
   const insets = useSafeAreaInsets();
+
+  const createLivePost = async () => {
+    try {
+        const type = 2;
+        const content = liveID
+        const permission = 1;
+        const newPost = await createNewPost({ type,  permission, content });
+        console.log("live post", newPost);
+        onJoinPress(true)
+
+
+    } catch (error) {
+        console.error('Error live post: ', error);
+    }
+};
+
   return (
     <View
       style={[
         styles.container,
-        {paddingTop: insets.top, paddingBottom: insets.bottom},
-      ]}>
-      {/* <Text style={styles.userID}>ID của bạn: {userID}</Text> */}
+        { paddingTop: insets.top, paddingBottom: insets.bottom },
+      ]}
+    >
       <Text style={[styles.liveID, styles.leftPadding]}>Live ID:</Text>
       <TextInput
         placeholder="Nhập ID Live"
@@ -46,7 +64,7 @@ const LiveWithZego: React.FC = () => {
       <View style={[styles.buttonLine, styles.leftPadding]}>
         <Button
           disabled={liveID.length === 0}
-          title="Phát trưc tiếp"
+          title="Phát trực tiếp"
           onPress={() => onJoinPress(true)}
         />
         <View style={styles.buttonSpacing} />
@@ -55,6 +73,15 @@ const LiveWithZego: React.FC = () => {
           title="Xem trực tiếp"
           onPress={() => onJoinPress(false)}
         />
+      </View>
+      <View style={[styles.imageContainer, styles.leftPadding]}>
+        <TouchableOpacity onPress={() => onJoinPress(false)}>
+          <Image
+            source={{ uri: user.avatar}}
+            style={styles.thumbnail}
+          />
+          <Text style={styles.thumbnailText}>Bấm để xem trực tiếp</Text>
+        </TouchableOpacity>
       </View>
     </View>
   );
@@ -100,10 +127,24 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: '#2A2A2A',
     marginBottom: 10,
-    marginTop:30
+    marginTop: 30,
   },
   leftPadding: {
     paddingLeft: 35,
+  },
+  imageContainer: {
+    marginTop: 20,
+    alignItems: 'center',
+  },
+  thumbnail: {
+    width: 200,
+    height: 150,
+    borderRadius: 10,
+    marginBottom: 10,
+  },
+  thumbnailText: {
+    fontSize: 16,
+    color: '#000',
   },
 });
 

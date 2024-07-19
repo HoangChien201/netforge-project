@@ -16,16 +16,6 @@ export default function LiveStack(): React.JSX.Element {
         if (isFocused) {
             navigation.getParent()?.setOptions({ tabBarStyle: { display: 'none' } });
         } 
-        // else {
-        //     navigation.getParent()?.setOptions({
-        //         tabBarStyle: { 
-        //             position: 'absolute',
-        //             backgroundColor:'#1F1F2F',
-        //             margin:20,
-        //             borderRadius:15,
-        //         },
-        //     });
-        // }
     }, [isFocused]);
 
     return (

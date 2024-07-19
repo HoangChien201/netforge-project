@@ -13,6 +13,9 @@ import RequestList from '../../component/friend-request-accept-modal/RequestList
 import WaitAcceptList from '../../component/friend-request-accept-modal/WaitAcceptList';
 import BODY from '../../component/friend-request-accept-modal/Body'
 import Swiper from 'react-native-swiper';
+import { socket } from '../../http/SocketHandle';
+import { useMyContext } from '../../component/navigation/UserContext';
+import { useSendNotification } from '../../constant/notify';
 // import { BounceIn, FadeIn, ReduceMotion, useReducedMotion } from 'react-native-reanimated';
 type Friends = {
 }
@@ -26,6 +29,8 @@ const FriendScreen: React.FC<Friends> = () => {
   const [friends, setFriends] = useState<any[]>([]);
   const status2 = 2;
   const status1 = 1;
+  const {user} = useMyContext();
+  const userId = user.id
   const [showModalFriend, setShowModalFriend] = useState(false);
   const [dot, setDot] = useState(Number);
   const [reload, setReload] = useState(false);
@@ -34,6 +39,7 @@ const FriendScreen: React.FC<Friends> = () => {
   const [dataWaitAccept, setDataWaitAccept] = useState([]);
   const swiperRef = useRef(null);
   const [currentIndex, setCurrentIndex] = useState(0);
+  const { sendNRequestFriend} = useSendNotification();
   const getFriendList = async (status: number) => {
     try {
       const result = await getFriends(status);
@@ -80,19 +86,35 @@ const FriendScreen: React.FC<Friends> = () => {
     }
   };
   useEffect(() => {
+    loadAllData();
+  }, [])
+  useEffect(() => {
+    if (isFocus) {
+      navigation.getParent()?.setOptions({
+        tabBarStyle: {
+          display: 'none',
+        },
+      });
+      loadAllData();
+    }
+  }, [isFocus, reload]);
+  const loadAllData = () => {
     getFriendList(status2);
     getSuggestList();
     getRequestList(status1);
-    getWaitAcceptList()
-  }, [])
-  useFocusEffect(
-    useCallback(() => {
-      getFriendList(status2);
-      getSuggestList();
-      getRequestList(status1);
-      getWaitAcceptList()
-    }, [])
-  );
+    getWaitAcceptList();
+  };
+  useEffect(() => {
+    socket.on(`notification-${userId}`, (data) => {
+      console.log('Notification received:', data);
+        if(data){
+            setReload(prevState => !prevState)
+        }
+    });
+    return () => {
+        socket.off(`notification-${userId}`);
+    };
+}, [userId]);
   useEffect(() => {
     if (isFocus) {
       navigation.getParent()?.setOptions({
@@ -104,12 +126,19 @@ const FriendScreen: React.FC<Friends> = () => {
   }, [isFocus]);
   const handleIndexChanged = (index) => {
     setCurrentIndex(index);
-};
-const handleButtonPress = (index) => {
-  if (swiperRef.current) {
-    swiperRef.current.scrollBy(index - currentIndex, true);
-  }
-};
+  };
+  const handleButtonPress = (index) => {
+    if (swiperRef.current) {
+      swiperRef.current.scrollBy(index - currentIndex, true);
+    }
+  };
+  // const handleSendReaction = () => {
+  //   const data = {
+  //     receiver:8
+  //   }
+  //   sendNRequestFriend(data);
+
+  // };
   return (
     <View style={styles.container}>
       <View style={styles.header}>
@@ -125,13 +154,20 @@ const handleButtonPress = (index) => {
         >
           <Text style={styles.text1}>Lời mời</Text>
         </TouchableOpacity>
+        {/* <TouchableOpacity style={styles.buttonS}
+        onPress={handleSendReaction}
+        >
+          <Text>send No</Text>
+        </TouchableOpacity> */}
       </View>
       <View style={[styles.container1]}>
         <Swiper ref={swiperRef} loop={false} showsButtons={false}
-        onIndexChanged={handleIndexChanged}
+          onIndexChanged={handleIndexChanged}
         >
           <View>
-            <WaitAcceptList dataWaitAccept={dataWaitAccept} setDataWaitAccept={setDataWaitAccept} setShowModalFriend={setShowModalFriend} />
+            <WaitAcceptList dataWaitAccept={dataWaitAccept}
+              setDataWaitAccept={setDataWaitAccept} setShowModalFriend={setShowModalFriend}
+              getWaitAcceptList={getWaitAcceptList} />
           </View>
           <View>
             <RequestList dataRequest={dataRequest} setDataRequest={setDataRequest} setReload={setReload} setShowModalFriend={setShowModalFriend} />

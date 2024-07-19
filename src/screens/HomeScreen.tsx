@@ -1,25 +1,19 @@
-<<<<<<< HEAD
 import React, { useCallback, useRef, useState, useEffect } from 'react';
 import { StyleSheet, View, Animated, Image, Text, TouchableOpacity, ScrollView, ImageBackground, TouchableWithoutFeedback } from 'react-native';
-=======
-import React, { memo,useCallback, useRef, useState, useEffect } from 'react';
-import { StyleSheet, View, Animated, Image, Text, TouchableOpacity, ScrollView, ImageBackground, TouchableWithoutFeedback, Keyboard } from 'react-native';
-        
->>>>>>> 15b5333e9a7e08b1150ed00322cf34840ab6f115
-import ListStory from '../component/storys/ListStory';
-import ListPorts from '../component/listpost/ListPorts';
 import { useNavigation, useIsFocused, useFocusEffect } from '@react-navigation/native';
-import { COLOR } from '../constant/color';
-import AntDesignIcon from 'react-native-vector-icons/AntDesign';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import { useMyContext } from '../component/navigation/UserContext';
-import TouchId from '../component/Modal/TouchId';
 import TouchID from 'react-native-touch-id';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-
-import { NetworkRootStackEnum } from '../component/stack/NetworkRootStackParams';
-
 import { flatMap } from 'lodash';
+
+import ListStory from '../component/storys/ListStory';
+import ListPorts from '../component/listpost/ListPorts';
+import { COLOR } from '../constant/color';
+import AntDesignIcon from 'react-native-vector-icons/AntDesign';
+import { useMyContext } from '../component/navigation/UserContext';
+import TouchId from '../component/Modal/TouchId';
+import { onUserLogin, onUserLogout } from '../screens/call-video/Utils'
+import { NetworkRootStackEnum } from '../component/stack/NetworkRootStackParams';
 
 const HomeScreen = () => {
     const initialData = [{ key: 'stories' }, { key: 'posts' }];
@@ -33,10 +27,28 @@ const HomeScreen = () => {
     const { user } = useMyContext();
     const [visible, setVisible] = useState(false);
 
+        // login zegoCloud để thực hiện cuộc gọi
+        useEffect(() => {
+            const initializeCallService = async () => {
+                try {
+                    await onUserLogin(user.id, user.fullname, user.avatar);
+                    console.log("User logged in successfully on HomeScreen:", user.id, user.fullname);
+                } catch (error) {
+                    console.error("Error logging in user on HomeScreen:", error);
+                }s
+            };
+            initializeCallService();
+            return () => {
+                onUserLogout();
+                console.log("User logged out on HomeScreen");
+            };
+        }, [user.id, user.fullname]);
+        //end zegoCloud
+    
+
     const handleOutsidePress = () => {
         setHidden(false);
     };
-
 
     const checkTouchIdLogin = () => {
         TouchID.isSupported()
@@ -224,13 +236,7 @@ const HomeScreen = () => {
                         </View>
                     )}
                 </View>
-<<<<<<< HEAD
                 <View style={styles.contentContainer}>
-=======
-
-                <View style={styles.contentContainer}>
-
->>>>>>> 15b5333e9a7e08b1150ed00322cf34840ab6f115
                     <Animated.FlatList
                         data={data}
                         renderItem={renderItem}

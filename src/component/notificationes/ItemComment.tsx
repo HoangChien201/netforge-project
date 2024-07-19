@@ -1,7 +1,7 @@
 
 import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import React, { useEffect, useState } from 'react'
-import Icon from 'react-native-vector-icons/AntDesign'
+import Icon from 'react-native-vector-icons/MaterialIcons'
 import { COLOR } from '../../constant/color'
 import { DateOfTimePost } from '../../format/DateOfTimePost'
 import { useNavigation } from '@react-navigation/native';
@@ -59,7 +59,7 @@ const ItemComment: React.FC<ItemCommentProps> = ({ notification }) => {
                     null
                 }
 
-                <Icon style={styles.iconHeart} name="aliwangwang-o1" size={18} color={COLOR.PrimaryColor} />
+                <Icon style={styles.iconHeart} name="comment-bank" size={18} color={COLOR.PrimaryColor} />
             </View>
             <View style={styles.text}>
                 <Text >

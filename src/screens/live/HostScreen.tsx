@@ -54,7 +54,6 @@ const HostScreen: React.FC<Props> = ({ route }) => {
         const content = liveID
         const permission = 1;
      
-        
         const newPost = await createNewPost({ type,  permission, content });
         await AsyncStorage.setItem("liveID",content);
        
