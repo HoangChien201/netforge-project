@@ -12,6 +12,8 @@ export const getAll = async (token:any,id?:number) => {
             }
         };
         const res = await axioInstance.get(url, headers)
+        console.log("ddfsd",res);
+        
         return res
     } catch (error) {
         console.log("Lỗi get",error);

@@ -18,13 +18,13 @@ const GenerImageAI: React.FC<AI> = ({ showAI, setShowAI, imageUrl, setImageUrl }
   const [isLoad, setIsLoad] = useState(false);
   const [image, setImage] = useState('');
   const data = [
-    { value: 1, text: 'cat', color: '#FF6347' },
-    { value: 2, text: 'meadow', color: '#32CD32' },
-    { value: 3, text: 'beach', color: '#1E90FF' },
-    { value: 4, text: 'abstract', color: '#8A2BE2' },
-    { value: 5, text: 'future', color: '#228B22' },
+    { value: 1, text: 'mèo', color: '#FF6347' },
+    { value: 2, text: 'hoàng hôn', color: '#32CD32' },
+    { value: 3, text: 'bãi biển', color: '#1E90FF' },
+    { value: 4, text: 'minions', color: '#8A2BE2' },
+    { value: 5, text: 'tương lai', color: '#228B22' },
     { value: 6, text: 'sunset', color: '#FF4500' },
-    { value: 7, text: 'warrior', color: '#DA70D6' },
+    { value: 7, text: 'quái vật', color: '#DA70D6' },
     { value: 8, text: 'logo', color: '#20B2AA' },
     { value: 9, text: 'anime', color: '#00BFFF' },
   ];
@@ -42,7 +42,7 @@ const GenerImageAI: React.FC<AI> = ({ showAI, setShowAI, imageUrl, setImageUrl }
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "Authorization": "Bearer",
+          "Authorization": "Bearer ",
         },
         body: JSON.stringify({
           prompt: textInputValue,

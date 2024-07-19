@@ -5,7 +5,7 @@ import { getAll, deletePost } from '../../http/userHttp/getpost';
 import { useFocusEffect } from '@react-navigation/native';
 import ItemStory from './ItemStory';
 
-const ListStory = memo(({ onrefresh }) => {
+const ListStory = ({ onrefresh }) => {
   const [data, setData] = useState([]);
   const flatRef = useRef(null);
   const [index, setIndex] = useState(0);
@@ -55,21 +55,23 @@ const ListStory = memo(({ onrefresh }) => {
 
         const groupedPosts = Array.from(createrMap.values());
         setData([...groupedPosts]);
+        console.log("sdfdsf");
+        
       }
     } catch (error) {
       console.error(error);
     }
-  }, [setData]);
+  }, []);
 
   useEffect(() => {
     getAllPost();
-  }, [getAllPost, onrefresh,data]);
+  }, [getAllPost, onrefresh]);
 
-  // useFocusEffect(
-  //   useCallback(() => {
-  //     getAllPost();
-  //   }, [getAllPost])
-  // );
+  useFocusEffect(
+    useCallback(() => {
+      getAllPost();
+    }, [getAllPost])
+  );
 
  
 
@@ -96,7 +98,7 @@ const ListStory = memo(({ onrefresh }) => {
       />
     </View>
   );
-});
+};
 
 export default ListStory;
 

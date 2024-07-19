@@ -6,12 +6,14 @@ import { Keyboard, Animated, Easing } from 'react-native';
 // @ts-ignore
 import {ZegoUIKitPrebuiltCallWaitingScreen, ZegoUIKitPrebuiltCallInCallScreen,} from '@zegocloud/zego-uikit-prebuilt-call-rn';
 
+import { useIsFocused, useNavigation } from '@react-navigation/native';
+
+
 const Tab = createBottomTabNavigator<NetworkRootBottomTabParams>();
 
 export default function NetworkBottomTab(): React.JSX.Element {
     const [keyboardVisible, setKeyboardVisible] = useState(false);
     const tabBarAnimation = useRef(new Animated.Value(1)).current; // Initial opacity 1 (visible)
-    
     useEffect(() => {
         const keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', () => {
             setKeyboardVisible(true);
@@ -37,7 +39,6 @@ export default function NetworkBottomTab(): React.JSX.Element {
             keyboardDidShowListener.remove();
         };
     }, []);
-
     return (
         <Tab.Navigator
             screenOptions={{

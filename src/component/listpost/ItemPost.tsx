@@ -1,5 +1,5 @@
-import { Image, Pressable, StyleSheet, Animated, Text, TouchableOpacity, View } from 'react-native';
-import React, { memo, useEffect, useMemo, useRef, useState } from 'react';
+import { Image, Pressable, StyleSheet, Animated, Text, TouchableOpacity, View, Modal } from 'react-native';
+import React, { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import ActionBar from './ActionBar';
 import { DateOfTimePost } from '../../format/DateOfTimePost';
 import ItemImg from './ItemImg';
@@ -8,25 +8,41 @@ import AntDesignIcon from 'react-native-vector-icons/AntDesign';
 import { SharePost } from '../../http/userHttp/getpost';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import ModalFriendProfile from '../profile/FriendProfile';
-import { NavigationProp, ParamListBase, useNavigation } from '@react-navigation/native';
+import { NavigationProp, ParamListBase, useFocusEffect, useNavigation } from '@react-navigation/native';
 import { ProfileRootStackEnum } from '../stack/ProfileRootStackParams';
 
 import { deletePost } from '../../http/QuyetHTTP'
 import AxiosInstance from '../../http/AxiosInstance';
+import { set } from 'lodash';
+
 const ItemPost = memo(({ index, data, onrefresh, userId, onPressProfile, setShowModalEdit, setSelectedId, showDelete, setShowDelete }) => {
-    const { creater, share_count, reaction, content, media, comment_count, create_at, id, like_count, share } = data;
+   
     const [checkLike, setCheckLike] = useState(false);
+    const [datas, setData] = useState(data);
     const [shareId, setshareId] = useState(null);
     const [postsShares, setPostShare] = useState({});
     const { user } = useMyContext();
     const menu = useRef(new Animated.Value(0)).current;
     const [hidden, setHidden] = useState(false);
-    //console.log("ItemPost1s");
-    //
+
     const navigation: NavigationProp<ParamListBase> = useNavigation();
     const [isModalVisible, setIsModalVisible] = useState(false);
     const [selectedUserId, setSelectedUserId] = useState(null);
     const loggedInUserId = user.id;
+    
+    useEffect(()=>{
+        setData(data)
+    },[data])
+   
+    const { creater, share_count, reaction, content, media, comment_count, create_at, id, like_count, share } = datas;
+    
+    const navigation: NavigationProp<ParamListBase> = useNavigation();
+
+    useFocusEffect(
+        useCallback(() => {
+            const { creater, share_count, reaction, content, media, comment_count, create_at, id, like_count, share } = datas;
+        }, [datas])
+    );
 
     useEffect(() => {
         if (share) {
@@ -35,28 +51,18 @@ const ItemPost = memo(({ index, data, onrefresh, userId, onPressProfile, setShow
                 const token = await AsyncStorage.getItem('userToken');
                 const result = await SharePost(share.id);
                 setPostShare(result);
-
             }
             getPostShare();
         }
     }, [share]);
 
     const hiddenMenu = () => {
-        Animated.timing(menu, {
-            toValue: 0,
-            duration: 150,
-            useNativeDriver: true,
-        }).start(() => setHidden(true));
+        setIsModalVisible(true);
     };
 
     const hiddenMenu1 = () => {
-        Animated.timing(menu, {
-            toValue: 5,
-            duration: 100,
-            useNativeDriver: true,
-        }).start(() => setHidden(false));
+        setIsModalVisible(false);
     };
-
 
     const formatContent = useMemo(() => {
         const format = content?.split(/@\[([^\]]+)\]\(\d+\)/g);
@@ -103,15 +109,23 @@ const ItemPost = memo(({ index, data, onrefresh, userId, onPressProfile, setShow
         }
     };
 
-
     const handleEdit = () => {
         setSelectedId(id);
         setShowModalEdit(true);
+
+        hiddenMenu1();
+        setHidden(false);
+
     };
+
     const handleDelete = () => {
         setSelectedId(id);
         setShowDelete(true);
+
+        hiddenMenu1();
+        setHidden(false);
     };
+
     return (
         <Pressable onPress={handleItemPress} style={{ margin: 5, marginBottom: 6, backgroundColor: "#fff" }}>
             {shareId ? (
@@ -139,33 +153,39 @@ const ItemPost = memo(({ index, data, onrefresh, userId, onPressProfile, setShow
                                     <Image source={require('../../media/Dicons/ellipsis.png')} style={styles.ellips} />
                                 </TouchableOpacity>
                             )}
-                            {hidden && (
-                                <Animated.View style={[styles.menu, { transform: [{ translateY: menu }], }]}>
-                                    <View style={{ height: '100%', width: '100%', backgroundColor: '#fff', padding: 2, borderRadius: 5, borderWidth: 0.5, borderColor: '#fff' }}>
-                                        <TouchableOpacity style={[styles.buttonMenu]}
-                                            onPress={handleDelete}
-                                        >
-                                            <Text style={styles.textMenu}>Xóa</Text>
-                                            <AntDesignIcon name='close' size={18} color="black" />
+                            <Modal
+                                animationType="slide"
+                                transparent={true}
+                                visible={isModalVisible}
+                                onRequestClose={() => setIsModalVisible(false)}
+                            >
+                                <TouchableOpacity style={styles.modalOverlay} onPress={hiddenMenu1}>
+                                <TouchableOpacity style={styles.modalContainer} activeOpacity={1}>
+                                        <TouchableOpacity style={styles.buttonMenu} onPress={handleDelete}>
+                                        <View style={{marginHorizontal:10, marginRight:20,backgroundColor:'rgba(0,0,0,0.2)',width:30,height:30,alignItems:'center',justifyContent:'center',borderRadius:50}}>
+                                        <AntDesignIcon name='close' size={18} color="black" />
+                                          </View>
+                                            <Text style={styles.textMenu}>Xóa bài viết</Text>
+                                           
                                         </TouchableOpacity>
-                                        <TouchableOpacity style={styles.buttonMenu}
-                                            onPress={handleEdit}
-                                        >
-                                            <Text style={styles.textMenu}>
-                                                Sửa
-                                            </Text>
-                                            <AntDesignIcon name='sync' size={18} color="black" />
+                                        <TouchableOpacity style={styles.buttonMenu} onPress={handleEdit}>
+                                              <View style={{marginHorizontal:10, marginRight:20,backgroundColor:'rgba(0,0,0,0.2)',width:30,height:30,alignItems:'center',justifyContent:'center',borderRadius:50}}>
+                                          <AntDesignIcon name='sync' size={18} color="black" />
+                                          </View>
+                                            <Text style={styles.textMenu}>Sửa bài viết</Text>
+                                        
                                         </TouchableOpacity>
-                                    </View>
-                                </Animated.View>
-                            )}
+                                       
+                                    </TouchableOpacity>
+                                </TouchableOpacity>
+                            </Modal>
                         </View>
                     </View>
-                    {
-                        content.length > 0 && <View style={styles.sharedContent}>
+                    {content.length > 0 && (
+                        <View style={styles.sharedContent}>
                             {formatContent}
                         </View>
-                    }
+                    )}
                     <View style={styles.sharedPost}>
                         <View style={styles.home}>
                             <View style={styles.containerAvt}>
@@ -185,13 +205,15 @@ const ItemPost = memo(({ index, data, onrefresh, userId, onPressProfile, setShow
                                 </TouchableOpacity>
                             </View>
                         </View>
-                        {
-                            postsShares?.content?.length > 0 ? <View style={styles.sharedPostContainer}>
+                        {postsShares?.content?.length > 0 ? (
+                            <View style={styles.sharedPostContainer}>
                                 {formatContents}
-                            </View> : <View style={{ padding: 5 }}>
-                                <Text style={{ textAlign: 'center' }}> Bài viết này đã được xóa </Text>
                             </View>
-                        }
+                        ) : (
+                            <View style={{ padding: 5 }}>
+                                <Text style={{ textAlign: 'center' }}>Bài viết này đã được xóa</Text>
+                            </View>
+                        )}
                         {postsShares?.media?.length > 0 && <ItemImg image={postsShares?.media} />}
                     </View>
                     <ActionBar share={share.id} checkLike={checkLike} setCheckLike={setCheckLike} postId={id} type={reaction} comment_count={comment_count} share_count={share_count} like_count={like_count} />
@@ -221,26 +243,32 @@ const ItemPost = memo(({ index, data, onrefresh, userId, onPressProfile, setShow
                                     <Image source={require('../../media/Dicons/ellipsis.png')} style={styles.ellips} />
                                 </TouchableOpacity>
                             )}
-                            {hidden && (
-                                <Animated.View style={[styles.menu, { transform: [{ translateY: menu }], }]}>
-                                    <View style={{ height: '100%', width: '100%', backgroundColor: '#fff', padding: 2, borderRadius: 5, borderWidth: 0.5, borderColor: '#fff' }}>
-                                        <TouchableOpacity style={[styles.buttonMenu]}
-                                            onPress={handleDelete}
-                                        >
-                                            <Text style={styles.textMenu}>Xóa</Text>
-                                            <AntDesignIcon name='close' size={18} color="black" />
+                            <Modal
+                                animationType="slide"
+                                transparent={true}
+                                visible={isModalVisible}
+                                onRequestClose={() => setIsModalVisible(false)}
+                            >
+                                <TouchableOpacity style={styles.modalOverlay} onPress={hiddenMenu1}>
+                                <TouchableOpacity style={styles.modalContainer} activeOpacity={1}>
+                                        <TouchableOpacity style={styles.buttonMenu} onPress={handleDelete}>
+                                        <View style={{marginHorizontal:10, marginRight:20,backgroundColor:'rgba(0,0,0,0.2)',width:30,height:30,alignItems:'center',justifyContent:'center',borderRadius:50}}>
+                                        <AntDesignIcon name='close' size={18} color="black" />
+                                          </View>
+                                            <Text style={styles.textMenu}>Xóa bài viết</Text>
+                                           
                                         </TouchableOpacity>
-                                        <TouchableOpacity style={styles.buttonMenu}
-                                            onPress={handleEdit}
-                                        >
-                                            <Text style={styles.textMenu}>
-                                                Sửa
-                                            </Text>
-                                            <AntDesignIcon name='sync' size={18} color="black" />
+                                        <TouchableOpacity style={styles.buttonMenu} onPress={handleEdit}>
+                                              <View style={{marginHorizontal:10, marginRight:20,backgroundColor:'rgba(0,0,0,0.2)',width:30,height:30,alignItems:'center',justifyContent:'center',borderRadius:50}}>
+                                          <AntDesignIcon name='sync' size={18} color="black" />
+                                          </View>
+                                            <Text style={styles.textMenu}>Sửa bài viết</Text>
+                                        
                                         </TouchableOpacity>
-                                    </View>
-                                </Animated.View>
-                            )}
+                                       
+                                    </TouchableOpacity>
+                                </TouchableOpacity>
+                            </Modal>
                         </View>
                     </View>
                     {formatContent}
@@ -248,7 +276,6 @@ const ItemPost = memo(({ index, data, onrefresh, userId, onPressProfile, setShow
                     <ActionBar checkLike={checkLike} setCheckLike={setCheckLike} postId={id} type={reaction} comment_count={comment_count} share_count={share_count} like_count={like_count} />
                 </>
             )}
-
         </Pressable>
     );
 });
@@ -290,12 +317,12 @@ const styles = StyleSheet.create({
     buttonMenu: {
         flexDirection: 'row',
         padding: 5,
-        justifyContent: 'space-around',
-
+        alignItems:'center'
+       
     },
     textMenu: {
         fontWeight: 'bold',
-        color: 'black'
+        color: 'black',
     },
     menu: {
         padding: 5,
@@ -304,11 +331,9 @@ const styles = StyleSheet.create({
         position: 'absolute',
         width: 100,
         height: 75,
-
         right: 0,
         top: 15,
         borderWidth: 0.6,
-
     },
     sharedContent: {
         margin: 0,
@@ -328,6 +353,31 @@ const styles = StyleSheet.create({
         marginRight: 10,
     },
     sharedPostContainer: {
+        
+    },
+    modalOverlay: {
+        flex: 1,
+        backgroundColor: 'rgba(0, 0, 0, 0.2)',
+        justifyContent: 'flex-end',
+        alignItems: 'center',
+    },
+    modalContainer: {
+        backgroundColor: 'white',
+        padding: 20,
+        borderTopStartRadius:30,
+        borderTopEndRadius:30,
+       
+        width: '100%',
 
+    },
+    closeButton: {
+        marginTop: 10,
+        padding: 10,
+        backgroundColor: '#e74c3c',
+        borderRadius: 5,
+    },
+    closeButtonText: {
+        color: 'white',
+        fontWeight: 'bold',
     },
 });

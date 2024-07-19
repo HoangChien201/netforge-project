@@ -7,6 +7,7 @@ import Swiper from 'react-native-swiper';
 import { COLOR } from '../../constant/color';
 import RequestList from './RequestList';
 import WaitAcceptList from './WaitAcceptList';
+import { useFocusEffect } from '@react-navigation/native';
 type Bob = {
     reload: any,
     showModalFriend: any,
@@ -31,44 +32,29 @@ const Body: React.FC<Bob> = ({ reload, showModalFriend, setShowModalFriend, setD
     const OpenCloseRA = () => {
         setShowRA(!showRA);
         if (swiperRef.current) {
-          if (showRA) {
-            setTextShowRA('Lời mời');
-            swiperRef.current.scrollTo(-1);
-          } else {
-            setTextShowRA('Yêu cầu');
-            swiperRef.current.scrollTo(1);
-          }
+            if (showRA) {
+                setTextShowRA('Lời mời');
+                swiperRef.current.scrollTo(-1);
+            } else {
+                setTextShowRA('Yêu cầu');
+                swiperRef.current.scrollTo(1);
+            }
         }
-      };
+    };
     useEffect(() => {
-        getFriendList(status2);
         getRequestList(status1);
         getWaitAcceptList();
-        getSuggestList();
     }, [showModalFriend]);
     useEffect(() => {
-        getFriendList(status2);
         getRequestList(status1);
         getWaitAcceptList();
-        getSuggestList();
     }, []);
 
     useEffect(() => {
         const total = dataRequest.length + dataWaitAccept.length;
         setDot(total);
 
-        //
-        const requestIds = new Set(dataRequest.map(request => request.user.id));
-        const acceptIds = new Set(dataWaitAccept.map(accept => accept.user.id));
-
-        const filteredData = dataSuggest.filter(suggest =>
-            !requestIds.has(suggest.id) && !acceptIds.has(suggest.id)
-        );
-
-        setData(filteredData);
-        //console.log('dữ liệu nè: ' + JSON.stringify(filteredData));
-
-    }, [dataRequest || dataWaitAccept || dataSuggest]);
+    }, [dataRequest || dataWaitAccept]);
 
     useEffect(() => {
         if (showModalFriend) {
@@ -77,30 +63,6 @@ const Body: React.FC<Bob> = ({ reload, showModalFriend, setShowModalFriend, setD
             slideOut();
         }
     }, [showModalFriend]);
-    // lấy danh sách bạn bè
-    const getFriendList = async (status: number) => {
-        try {
-            const result = await getFriends(status);
-            //console.log('danh sách bạn bè 2: ' + JSON.stringify(result));
-            setDataFriends(result);
-        } catch (error) {
-            console.log(error);
-        }
-    };
-    // lấy danhn sách gợi ý
-    const getSuggestList = async () => {
-        try {
-            const result = await getSuggest();
-
-            //console.log('danh sách gợi ý: ' + JSON.stringify(result));
-            setDataSuggest(result);
-
-            //console.log('suggest: ' + JSON.stringify(result));
-        } catch (error) {
-            console.log(error);
-        }
-    };
-
     const getRequestList = async (num: number) => {
         try {
             const result = await getFriends(num);
@@ -153,7 +115,6 @@ const Body: React.FC<Bob> = ({ reload, showModalFriend, setShowModalFriend, setD
         setTimeout(() => setShowModalFriend(false), 300); // Delay to match slide out animation
     };
 
-
     return (
         <Modal transparent visible={showModalFriend}>
             <Animated.View style={[styles.container, { transform: [{ translateY: slideAnim }] }]}>
@@ -170,10 +131,10 @@ const Body: React.FC<Bob> = ({ reload, showModalFriend, setShowModalFriend, setD
                 </View>
                 <Swiper ref={swiperRef} loop={false} showsButtons={false}>
                     <View>
-                        <WaitAcceptList dataWaitAccept={dataWaitAccept} setDataWaitAccept={setDataWaitAccept} />
+                        <WaitAcceptList dataWaitAccept={dataWaitAccept} setDataWaitAccept={setDataWaitAccept} setShowModalFriend={setShowModalFriend} />
                     </View>
                     <View>
-                        <RequestList dataRequest={dataRequest} setDataRequest={setDataRequest} setReload={setReload} />
+                        <RequestList dataRequest={dataRequest} setDataRequest={setDataRequest} setReload={setReload} setShowModalFriend={setShowModalFriend} />
                     </View>
                 </Swiper>
             </Animated.View>
@@ -242,4 +203,5 @@ const styles = StyleSheet.create({
         backgroundColor: 'red',
         borderRadius: 5,
     },
+
 });

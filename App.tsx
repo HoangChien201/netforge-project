@@ -7,10 +7,8 @@
 import 'react-native-gesture-handler';
 import React, { useEffect } from 'react';
 import {
-
+  LogBox,
   StatusBar,
-  LogBox
-
 } from 'react-native';
 import ManageNavigation from './src/component/navigation/ManageNavigation';
 import { UserProvider } from './src/component/navigation/UserContext';
@@ -37,12 +35,14 @@ function App(): React.JSX.Element {
   ]);
   LogBox.ignoreAllLogs(true);
 
+  LogBox.ignoreLogs(['new NativeEventEmitter']);
+
   return (
     <GestureHandlerRootView>
       <StatusBar barStyle="dark-content" backgroundColor="transparent" />
       <UserProvider>
         <Host>
-          <ManageNavigation />
+            <ManageNavigation />
           <ZegoUIKitPrebuiltLiveStreamingFloatingMinimizedView />
         </Host>
       </UserProvider>
