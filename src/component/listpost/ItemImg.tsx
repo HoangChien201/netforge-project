@@ -21,11 +21,10 @@ const ItemImg = ({ image }: { image: Medias[] }) => {
   const [visible, setVisible] = useState(false);
   const [indeximg, setIndeximg] = useState<null | number>(null);
   const [img, setImg] = useState<Medias[]>([...image]);
-
   useEffect(()=>{
     setImg([...image])
   },[image])
-  console.log("ItemImgPost");
+
   const onPressImg = (index) => {
     setIndeximg(index);
     setVisible(true);

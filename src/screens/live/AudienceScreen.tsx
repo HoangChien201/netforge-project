@@ -33,8 +33,7 @@ const AudienceScreen: React.FC<Props> = ({route}) => {
   const {user} = useMyContext();
 
   const handleLeaveLiveStreaming = () => {
-    navigation.navigate('LiveWithZego' as never);
-    
+    navigation.popToTop()
   };
 
 
@@ -62,9 +61,6 @@ const AudienceScreen: React.FC<Props> = ({route}) => {
           audioVideoViewConfig: {
             showSoundWavesInAudioMode: true,
           },
-          // onLeaveLiveStreaming: () => {
-          //   navigation.navigate('LiveWithZego');
-          // },
         }}
       />
     </View>

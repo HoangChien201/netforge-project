@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, TouchableOpacity, FlatList, StyleSheet, TextInput, Image } from 'react-native';
-import Modal from 'react-native-modal';
+import { View, Text, TouchableOpacity, FlatList, StyleSheet, TextInput, Modal, Pressable } from 'react-native';
 import { COLOR } from '../../constant/color';
 import Icon from 'react-native-vector-icons/AntDesign';
 
@@ -13,22 +12,20 @@ interface AddressModalProps {
   selectedAddress: string|null;
   onSelectAddress: (address: string|null) => void;
   onCloseModal: () => void;
+  resetToInitial: () => void; // Add this prop to reset the address to the initial value
 }
 
-const AddressModal: React.FC<AddressModalProps> = ({ isVisible, selectedAddress, onSelectAddress, onCloseModal }) => {
+const AddressModal: React.FC<AddressModalProps> = ({ isVisible, selectedAddress, onSelectAddress, onCloseModal, resetToInitial }) => {
   const [query, setQuery] = useState<string>('');
-  const [suggestions, setSuggestions] = useState<Suggestion[]>([]); //gợi ý nè
-  const [isSearch, setIsSearch] = useState<boolean>(false); // kiểm tra có dữ liệu ko
-  const [chosenAddress, setChosenAddress] = useState<string|null>(''); //lưu địa chỉ đã chọn
+  const [suggestions, setSuggestions] = useState<Suggestion[]>([]); 
+  const [isSearch, setIsSearch] = useState<boolean>(false); 
+  const [chosenAddress, setChosenAddress] = useState<string|null>(''); 
   const [textInputValue, setTextInputValue] = useState<string>('');
-  const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
-
 
   useEffect(() => {
     if (isVisible && query.length > 2) {
       setIsSearch(true);
       fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${query}&addressdetails=1&limit=5&countrycodes=vne`)
-      //fetch(`https://nominatim.openstreetmap.org/sarch?format=json&q=${query}&addressdetails=1&limit=5&countrycodes=vn&state&county&city&country`)
         .then(response => response.json())
         .then(data => {
           console.log('địa chỉ nè:', data);
@@ -48,11 +45,10 @@ const AddressModal: React.FC<AddressModalProps> = ({ isVisible, selectedAddress,
     }
   }, [isVisible, selectedAddress]);
 
-
   const handleSelectAddressItem = (address: string) => {
     setChosenAddress(address);
     setTextInputValue(address); 
-    onSelectAddress(address);
+    onSelectAddress(address || '');
   };
 
   const handleClearSelectedAddress = () => {
@@ -64,88 +60,81 @@ const AddressModal: React.FC<AddressModalProps> = ({ isVisible, selectedAddress,
   const handleSave = () => {
     onSelectAddress(textInputValue);
     onCloseModal();
+    console.log('Lưu địa chỉ:', textInputValue);
   };
 
   const handleCloseModal = () => {
+    resetToInitial(); 
     onCloseModal();
   };
 
   return (
-    <Modal isVisible={isVisible} >
-      <View style={styles.modalContent}>
-        <TextInput
-          style={styles.input}
-          placeholder="Tìm kiếm địa chỉ..."
-          value={textInputValue}
-          onChangeText={(text) => {
-            setTextInputValue(text);
-            setChosenAddress('');
-            setQuery(text);
-          }}
-        />
-        {isSearch && <Text style={styles.txtLoading}>Đang tìm kiếm...</Text>}
-        {!isSearch && suggestions.length === 0 && (
-          <Text style={styles.txtNoData}>Không tìm thấy địa chỉ phù hợp</Text>
-        )}
-        <FlatList
-          data={suggestions}
-          renderItem={({ item }) => (
-            <TouchableOpacity onPress={() => handleSelectAddressItem(item.display_name)}>
-              <Text style={styles.addressItem}>{item.display_name}</Text>
-            </TouchableOpacity>
+    <Modal visible={isVisible} animationType="slide" transparent={true} onRequestClose={handleCloseModal}>
+      <Pressable style={styles.overlay} onPress={handleCloseModal}>
+        <View style={styles.modalContent}>
+          <TextInput
+            style={styles.input}
+            placeholder="Tìm kiếm địa chỉ..."
+            value={textInputValue}
+            onChangeText={(text) => {
+              setTextInputValue(text);
+              setChosenAddress('');
+              setQuery(text);
+            }}
+          />
+          {isSearch && <Text style={styles.txtLoading}>Đang tìm kiếm...</Text>}
+          {!isSearch && suggestions.length === 0 && (
+            <Text style={styles.txtNoData}>Không tìm thấy địa chỉ phù hợp</Text>
           )}
-          keyExtractor={(item, index) => `${item.display_name}-${index}`}
-        />
-        {textInputValue ? ( // Nếu có giá trị trong TextInput, hiển thị nút Xóa
-          <TouchableOpacity style={styles.clearButton} onPress={handleClearSelectedAddress}>
-            <Icon name="close" size={20} color="#000"/>
-          </TouchableOpacity>
-        ) : null}
-        
-        <View style={styles.footer}>
-        {/* <TouchableOpacity style={styles.button} onPress={onCloseModal}>
-            <Text style={styles.buttonText}>Đóng</Text>
-            </TouchableOpacity> */}
-
-          <TouchableOpacity style={styles.button} onPress={handleSave}>
-            <Text style={styles.buttonText}>Lưu</Text>
-          </TouchableOpacity>
+          <FlatList
+            data={suggestions}
+            renderItem={({ item }) => (
+              <TouchableOpacity onPress={() => handleSelectAddressItem(item.display_name)}>
+                <Text style={styles.addressItem}>{item.display_name}</Text>
+              </TouchableOpacity>
+            )}
+            keyExtractor={(item, index) => `${item.display_name}-${index}`}
+          />
+          {textInputValue ? (
+            <TouchableOpacity style={styles.clearButton} onPress={handleClearSelectedAddress}>
+              <Icon name="close" size={20} color="#000"/>
+            </TouchableOpacity>
+          ) : null}
+          
+          <View style={styles.footer}>
+            <TouchableOpacity style={styles.button} onPress={handleSave}>
+              <Text style={styles.buttonText}>Chọn</Text>
+            </TouchableOpacity>
+          </View>
         </View>
-      </View>
+      </Pressable>
     </Modal>
   );
 };
 
 const styles = StyleSheet.create({
+  overlay: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0,0,0,0.5)',
+  },
   modalContent: {
+    width: '90%',
+    maxHeight: '80%',
     backgroundColor: '#fff',
     padding: 20,
     borderRadius: 10,
-    height:300,
-  },
-  header: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    marginBottom: 10,
-  },
-  headerText: {
-    fontSize: 16,
-    fontWeight: 'bold',
-  },
-  selectedAddress: {
-    marginBottom: 10,
-    fontStyle: 'italic',
-    color: '#777',
   },
   input: {
-    height: 60,
+    height: 50,
     borderColor: '#ddd',
     borderWidth: 1,
     borderRadius: 6,
     paddingHorizontal: 10,
     marginBottom: 10,
     fontSize:16,
+    paddingRight:30
   },
   addressItem: {
     padding: 10,
@@ -181,7 +170,7 @@ const styles = StyleSheet.create({
   clearButton: {
     position: 'absolute',
     right: 25,
-    top: 30,
+    top: 35,
   },
 });
 

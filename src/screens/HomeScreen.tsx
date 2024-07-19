@@ -11,6 +11,7 @@ import { useMyContext } from '../component/navigation/UserContext';
 import TouchId from '../component/Modal/TouchId';
 import TouchID from 'react-native-touch-id';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { onUserLogin, onUserLogout } from '../screens/call-video/Utils'
 
 import { NetworkRootStackEnum } from '../component/stack/NetworkRootStackParams';
 
@@ -28,10 +29,28 @@ const HomeScreen = () => {
     const { user } = useMyContext();
     const [visible, setVisible] = useState(false);
 
+        // login zegoCloud để thực hiện cuộc gọi
+        useEffect(() => {
+            const initializeCallService = async () => {
+                try {
+                    await onUserLogin(user.id, user.fullname, user.avatar);
+                    console.log("User logged in successfully on HomeScreen:", user.id, user.fullname);
+                } catch (error) {
+                    console.error("Error logging in user on HomeScreen:", error);
+                }s
+            };
+            initializeCallService();
+            return () => {
+                onUserLogout();
+                console.log("User logged out on HomeScreen");
+            };
+        }, [user.id, user.fullname]);
+        //end zegoCloud
+    
+
     const handleOutsidePress = () => {
         setHidden(false);
     };
-
 
     const checkTouchIdLogin = () => {
         TouchID.isSupported()

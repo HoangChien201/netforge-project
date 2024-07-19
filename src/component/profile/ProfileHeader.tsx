@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, ToastAndroid, Modal } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
-import { formattedDate } from '../../format/FormatDate';
+import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import { useNavigation } from '@react-navigation/native';
 import { COLOR } from '../../constant/color';
 import { useMyContext } from '../navigation/UserContext';
@@ -38,6 +38,7 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({ fullname, userId, loggedI
     checkFiend();
     //getWaitAcept();
   }, [show])
+  
   const getWaitAcept = async () => {
     try {
       const result = await getRequest();
@@ -50,16 +51,13 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({ fullname, userId, loggedI
       console.error(error);
     }
   };
+  
   const handleToEditProfile = () => {
-
-    //const isOwnProfile = userId === loggedInUserId; // Kiểm tra xem đây có phải là trang cá nhân của người đang đăng nhập hay không
-
-    // if (userId === loggedInUserId) {
-    //   navigation.navigate('ProfileScreen');
-    // }
     navigation.navigate('EditProfileScreen' as never);
-    //navigation.navigate('StoryScreen');
   }
+  const handleToFriend = () =>  {
+      navigation.navigate('Friends' as never);
+    }
 
   const handleToCreateStory = () => {
     //navigation.navigate('LiveStack' as never);
@@ -72,8 +70,7 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({ fullname, userId, loggedI
       setDisabledButtons(true);
       try {
         const result = await sendRequest(id, status);
-        // console.log('đã gửi lời mời');
-        // console.log('id: '+ id + 'status: ' + status);
+
         if (result) {
           setTextReqState(true);
           handleSendNotify(id);
@@ -97,11 +94,10 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({ fullname, userId, loggedI
   };
 
   const deleteF = async (id: number) => {
-    const id1 = user.id
-    const user1 = Number(id1);
-    const user2 = Number(id);
-    //console.log('click');
-
+    
+    const user1 = Number(user.id);
+    const user2 = Number(id); 
+    
     try {
       const result = await deleteFriend(user1, user2);
       if (result) {
@@ -168,10 +164,17 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({ fullname, userId, loggedI
             <Icon name="person-add" size={24} color="#fff" style={{ marginRight: 10 }} />
             <Text style={{ color: '#fff', fontSize: 18, fontWeight: '700' }}>{textReqState == true ? 'Đã gửi lời mời' : 'Gửi lời mời'}</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.btnSendMessage}>
-            <Icon name="message" size={24} color="#000" style={{ marginRight: 10 }} />
-            <Text style={{ color: '#000', fontSize: 18, fontWeight: '700' }}>Nhắn tin</Text>
-          </TouchableOpacity>
+          <View style={{flexDirection:'row'}}>
+            <TouchableOpacity style={styles.btnSendMessage}>
+              <Icon name="message" size={24} color="#000" style={{ marginRight: 10 }} />
+              <Text style={{ color: '#000', fontSize: 18, fontWeight: '700' }}>Nhắn tin</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity style={[styles.btnToEdit, { width: '35%', marginLeft:5}]} onPress={handleToFriend}>
+              <FontAwesome5 name="user-friends" size={18} color="#000" style={{ marginRight: 5 }} />
+              <Text style={{ color: '#000', fontSize: 18, fontWeight: '700' }}>Bạn bè</Text>
+            </TouchableOpacity>
+          </View>
         </View>
       )
 
@@ -194,18 +197,23 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({ fullname, userId, loggedI
               <Text style={{ color: COLOR.PrimaryColor, fontSize: 18, fontWeight: '700' }}>Hủy bỏ</Text>
             </TouchableOpacity>
           </View>
-          <TouchableOpacity style={styles.btnSendMessage}>
-            <Icon name="message" size={24} color="#000" style={{ marginRight: 10 }} />
-            <Text style={{ color: '#000', fontSize: 18, fontWeight: '700' }}>Nhắn tin</Text>
-          </TouchableOpacity>
+          <View style={{flexDirection:'row'}}>
+            <TouchableOpacity style={styles.btnSendMessage}>
+              <Icon name="message" size={24} color="#000" style={{ marginRight: 10 }} />
+              <Text style={{ color: '#000', fontSize: 18, fontWeight: '700' }}>Nhắn tin</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity style={[styles.btnToEdit, { width: '35%', marginLeft:5}]} onPress={handleToFriend}>
+              <FontAwesome5 name="user-friends" size={18} color="#000" style={{ marginRight: 5 }} />
+              <Text style={{ color: '#000', fontSize: 18, fontWeight: '700' }}>Bạn bè</Text>
+            </TouchableOpacity>
+          </View>
         </View>
       )
     }
     else if (relationship.status == 2) {
       return (
         <View>
-
-
           <View style={styles.typeFriend}>
             <View style={styles.TextType}>
               <Icon name="people" size={24} color="#fff" style={{ marginRight: 10 }} />
@@ -218,19 +226,19 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({ fullname, userId, loggedI
               <Text style={{ color: '#fff', fontSize: 18, fontWeight: '700' }}>{cancelF}</Text>
             </TouchableOpacity>
           </View>
+            
+          <View style={{flexDirection:'row'}}>
+            <TouchableOpacity style={styles.btnSendMessage}>
+              <Icon name="message" size={24} color="#000" style={{ marginRight: 10 }} />
+              <Text style={{ color: '#000', fontSize: 18, fontWeight: '700' }}>Nhắn tin</Text>
+            </TouchableOpacity>
 
-          <TouchableOpacity style={styles.btnSendMessage}
-            onPress={() => {
-              navigation.navigate('MessageScreen', {
-                id,
-                fullname,
-                avatar
-              })
-            }}
-          >
-            <Icon name="message" size={24} color="#000" style={{ marginRight: 10 }} />
-            <Text style={{ color: '#000', fontSize: 18, fontWeight: '700' }}>Nhắn tin</Text>
-          </TouchableOpacity>
+            <TouchableOpacity style={[styles.btnToEdit, { width: '35%', marginLeft:5}]} onPress={handleToFriend}>
+              <FontAwesome5 name="user-friends" size={18} color="#000" style={{ marginRight: 5 }} />
+              <Text style={{ color: '#000', fontSize: 18, fontWeight: '700' }}>Bạn bè</Text>
+            </TouchableOpacity>
+          </View>
+
         </View>
       )
     }
@@ -245,10 +253,17 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({ fullname, userId, loggedI
             <Icon name="add" size={24} color="#fff" style={{ marginRight: 10 }} />
             <Text style={{ color: '#fff', fontSize: 18, fontWeight: '700' }}>Thêm vào tin</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.btnToEdit} onPress={handleToEditProfile}>
-            <Icon name="edit" size={24} color="#000" style={{ marginRight: 10 }} />
-            <Text style={{ color: '#000', fontSize: 18, fontWeight: '700' }}>Chỉnh sửa trang cá nhân</Text>
-          </TouchableOpacity>
+          <View style={{flexDirection:'row'}}>
+            <TouchableOpacity style={[styles.btnToEdit, { width: '64%'}]} onPress={handleToEditProfile}>
+              <Icon name="edit" size={20} color="#000" style={{ marginRight: 5 }} />
+              <Text style={{ color: '#000', fontSize: 18, fontWeight: '700' }}>Chỉnh sửa thông tin</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity style={[styles.btnToEdit, { width: '35%', marginLeft:5}]} onPress={handleToFriend}>
+              <FontAwesome5 name="user-friends" size={18} color="#000" style={{ marginRight: 5 }} />
+              <Text style={{ color: '#000', fontSize: 18, fontWeight: '700' }}>Bạn bè</Text>
+            </TouchableOpacity>
+          </View>
         </>
       ) : ( // Nếu không phải là trang cá nhân của người đăng nhập
         checkFiend()
@@ -303,7 +318,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     backgroundColor: '#C0C0C0',
     height: 40,
-    width: '100%',
+    // width: '100%',
     alignItems: 'center',
     justifyContent: 'center',
     marginTop: 10,
@@ -349,7 +364,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     backgroundColor: '#C0C0C0',
     height: 40,
-    width: '100%',
+    width: '64%',
     alignItems: 'center',
     justifyContent: 'center',
     marginTop: 10,
