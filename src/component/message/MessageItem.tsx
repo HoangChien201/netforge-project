@@ -9,6 +9,7 @@ import { MessageCordinatesType } from '../../screens/message/MessageScreen'
 import StateMessage from './StateMessage'
 import { socket } from '../../http/SocketHandle'
 import { useMyContext } from '../navigation/UserContext';
+import { MessageProvider } from './class/MessageProvider';
 
 export type messageType = {
   id: number,
@@ -41,15 +42,14 @@ export type messageType = {
   group: number | {
     id: number
   },
-  parent: number | {
+  parent: number  |{
     sender: {
       "id": number,
       "fullname": string,
       "avatar": string
     },
     id: number,
-    message?: string
-  }
+  } 
 }
 
 export type reactionType = {
@@ -62,7 +62,7 @@ export type reactionType = {
 }
 
 interface MessageItemProp {
-  message: messageType,
+  message: MessageProvider,
   sender: boolean,
   group_id: number | null,
   setMessageReactionsSelected: any,
@@ -254,17 +254,23 @@ const MessageItem: React.FC<MessageItemProp> = React.memo((
     const { height } = e.nativeEvent.layout
     setHeightLayout(height)
   }
-  const isMessageSennder=typeof message.sender === 'object' ? message.sender.id === user.id : message.sender === user.id;
-  
+  const isMessageSennder = typeof message.sender === 'object' ? message.sender.id === user.id : message.sender === user.id;
+
   // console.log('mesageprarent',message);
-  
+
   return (
     <View style={styles.container}>
       {
-        (message.parent) && isMessageSennder &&
-        <View style={[styles.replyStyle, { justifyContent: sender ? 'flex-end' : 'flex-start' }]}>
+        (message.parent) &&
+        <View style={[styles.replyStyle, { justifyContent: isMessageSennder ? 'flex-end' : 'flex-start' }]}>
           <MIcon name='reply' size={20} color={'#707777'} />
-          <Text>Trả lời {message.parent?.sender?.fullname}</Text>
+          {
+            isMessageSennder ?
+              <Text>Trả lời { message.parent?.sender?.fullname }</Text>
+              :
+              <Text>Chiến trả lời bạn</Text>
+
+          }
         </View>
       }
       <View style={[styles.wrapperMessage, { flexDirection: sender ? 'row-reverse' : 'row' }]}>
@@ -293,7 +299,7 @@ const MessageItem: React.FC<MessageItemProp> = React.memo((
             }
           </TouchableOpacity>
 
-          <StateMessage message={message} group_id={group_id} sender={sender} lastMessage={lastMessage}/>
+          <StateMessage message={message} group_id={group_id} sender={sender} lastMessage={lastMessage} />
 
         </View>
 
@@ -317,7 +323,8 @@ export default MessageItem
 const styles = StyleSheet.create({
   replyStyle: {
     flexDirection: 'row',
-    alignItems: 'center'
+    alignItems: 'center',
+    marginStart: 50
   },
   content: {
     minWidth: 0,
@@ -344,6 +351,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     marginVertical: 5
   },
+  container: {
 
+  }
 
 })

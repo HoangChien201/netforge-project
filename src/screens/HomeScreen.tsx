@@ -1,6 +1,6 @@
-import React, { memo,useCallback, useRef, useState, useEffect } from 'react';
+import React, { memo, useCallback, useRef, useState, useEffect } from 'react';
 import { StyleSheet, View, Animated, Image, Text, TouchableOpacity, ScrollView, ImageBackground, TouchableWithoutFeedback, Keyboard } from 'react-native';
-        
+
 import ListStory from '../component/storys/ListStory';
 import ListPorts from '../component/listpost/ListPorts';
 import { useNavigation, useIsFocused, useFocusEffect } from '@react-navigation/native';
@@ -113,14 +113,14 @@ const HomeScreen = () => {
     const handleScroll = ({ nativeEvent }) => {
         const offsetY = nativeEvent.contentOffset.y;
         if (offsetY - prevScrollY > 10) {
-        
+
             Animated.timing(tabBarTranslateY, {
                 toValue: 100,
                 duration: 100,
                 useNativeDriver: true,
             }).start();
         } else if (prevScrollY - offsetY > 10) {
-           
+
             Animated.timing(tabBarTranslateY, {
                 toValue: 0,
                 duration: 150,
@@ -211,7 +211,10 @@ const HomeScreen = () => {
                     </View>
                 )}
             </View>
+
+
             <View style={styles.contentContainer}>
+
                 <Animated.FlatList
                     data={data}
                     renderItem={renderItem}
@@ -221,26 +224,12 @@ const HomeScreen = () => {
                         [{ nativeEvent: { contentOffset: { y: scrollY } } }],
                         { useNativeDriver: false, listener: handleScroll }
                     )}
-                </View>
-
-                <View style={styles.contentContainer}>
-
-                    <Animated.FlatList
-                        data={data}
-                        renderItem={renderItem}
-                        keyExtractor={item => item.key}
-                        showsVerticalScrollIndicator={false}
-                        onScroll={Animated.event(
-                            [{ nativeEvent: { contentOffset: { y: scrollY } } }],
-                            { useNativeDriver: false, listener: handleScroll }
-                        )}
-                        onEndReachedThreshold={0.5}
-                        refreshing={refreshing}
-                        onRefresh={onRefresh}
-                    />
-                </View>
+                    onEndReachedThreshold={0.5}
+                    refreshing={refreshing}
+                    onRefresh={onRefresh}
+                />
             </View>
-        </TouchableWithoutFeedback>
+        </View>
     );
 };
 

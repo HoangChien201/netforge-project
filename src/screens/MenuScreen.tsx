@@ -35,6 +35,7 @@ const MenuScreen = () => {
     const handleEditProfile = async () => {
         navigation.navigate("EditProfileScreen");
     }
+    
     return (
         <ScrollView>
             <View style={styles.container}>

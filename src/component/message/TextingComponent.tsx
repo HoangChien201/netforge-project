@@ -7,30 +7,26 @@ import { COLOR } from '../../constant/color';
 import UseMedia from './UseMedia';
 import { useMyContext } from '../navigation/UserContext';
 import { messageType } from './MessageItem';
+import { MessageProvider } from './class/MessageProvider';
 
 
-const TextingComponent = ({ addMessage, reply,setReply }: { addMessage: any, reply: messageType | null,setReply:any }) => {
+const TextingComponent = ({ addMessage, reply, setReply }: { addMessage: any, reply: messageType | null, setReply: any }) => {
     const [valueInput, setValueInput] = useState<string>()
     const { user } = useMyContext()
-    console.log('reply',reply);
-    function onSubmit(messageArg?: any | null) {
-        let id = Date.now()
-        
-        const message = {
-            "id": id,
-            "create_at": new Date().toISOString(),
-            "update_at": new Date().toISOString(),
-            "state": 0,
-            "type": "text",
-            "message": valueInput ? valueInput : '😂',
-            "sender": user.id,
-            "reactions": [],
-            "reads": [],
-            "parent":reply ? reply.id : null
+    function onSubmit(messageMedia?: any | null) {
+        if (messageMedia?.id) {
+            addMessage(messageMedia)
+            return
         }
-        console.log('mes ',message);
-        
-        addMessage(messageArg?.id ? messageArg : message)
+
+        const messageCreate = new MessageProvider({
+            message:valueInput ? valueInput : '😂',
+            type:'text',
+            sender:user.id,
+            parent:reply ? reply : null
+        })
+        addMessage(messageCreate)
+
         setValueInput('')
     }
     function OnChangeText(text: string) {
@@ -39,7 +35,7 @@ const TextingComponent = ({ addMessage, reply,setReply }: { addMessage: any, rep
 
     return (
         <View style={styles.container}>
-            <UseMedia onSubmit={onSubmit} reply={reply}/>
+            <UseMedia onSubmit={onSubmit} reply={reply} />
             <View style={styles.inputWrapper}>
                 <TextInput
                     placeholder='Nhập'
@@ -50,24 +46,24 @@ const TextingComponent = ({ addMessage, reply,setReply }: { addMessage: any, rep
             </View>
             <View style={styles.submitWrapper}>
                 {
-                    valueInput ? 
-                    <MCIcon name='send' size={30} color={COLOR.PrimaryColor} onPress={onSubmit} />
-                    :
-                    <TouchableOpacity onPress={onSubmit}>
-                        <Text style={{fontSize:24,alignSelf:'center'}}>😂</Text>
-                    </TouchableOpacity>
+                    valueInput ?
+                        <MCIcon name='send' size={30} color={COLOR.PrimaryColor} onPress={onSubmit} />
+                        :
+                        <TouchableOpacity onPress={onSubmit}>
+                            <Text style={{ fontSize: 24, alignSelf: 'center' }}>😂</Text>
+                        </TouchableOpacity>
                 }
             </View>
             {
                 reply &&
                 <View style={styles.replyStyle}>
                     <View>
-                        <Text style={styles.title}>Trả lời tin nhắn của 
-                            <Text style={{fontWeight:'600',color:'#000'}}> {reply.sender.id === user.id ? "bạn" : reply.sender.fullname}</Text>
+                        <Text style={styles.title}>Trả lời tin nhắn của
+                            <Text style={{ fontWeight: '600', color: '#000' }}> {reply.sender.id === user.id ? "bạn" : reply.sender.fullname}</Text>
                         </Text>
                         <Text style={styles.message}>{reply.type !== 'text' ? 'Hình ảnh' : reply.message.toString()}</Text>
                     </View>
-                    <TouchableOpacity activeOpacity={.7} onPress={()=>setReply(null)}>
+                    <TouchableOpacity activeOpacity={.7} onPress={() => setReply(null)}>
                         <MCIcon name='close' size={24} color={'#000'} />
                     </TouchableOpacity>
                 </View>

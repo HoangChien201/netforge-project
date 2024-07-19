@@ -20,6 +20,8 @@ import {
   BottomSheetModalProvider,
 } from '@gorhom/bottom-sheet';
 import ShowReactionComponent from '../../component/message/ShowReactionComponent'
+import { GroupChatType } from '../../component/message/ListMessageItem'
+import { MessageManage, MessageProvider } from '../../component/message/class/MessageProvider'
 
 export type MessageCordinatesType = {
   x: number,
@@ -36,7 +38,7 @@ export type MessageScreenRouteProp = RouteProp<MessageRootStackParams, 'MessageS
 
 const MessageScreen = () => {
   const { user } = useMyContext()
-  const [messages, setMessages] = useState<Array<messageType>>([])
+  const [messages, setMessages] = useState<Array<MessageProvider>>([])
   const [partner, setPartner] = useState({
     fullname: '',
     avatar: '',
@@ -50,14 +52,15 @@ const MessageScreen = () => {
 
 
   async function getMessages(group_id: number) {
-    const respone = await getMessageByGroupAPI(group_id)
-
-    setMessages(respone)
+    const messagesAPI = await getMessageByGroupAPI(group_id)
+    //convert listMessage to listObject
+    const messages=new MessageManage(messagesAPI).messages
+    setMessages(messages)
   }
 
   function DeleteMessage(message_id: number) {
     setMessages((prev) => {
-      const messagesFilter = prev.filter((message) => message.id !== message_id)
+      const messagesFilter = prev.filter((message) => message.getId !== message_id)
       return messagesFilter
     })
   }
@@ -75,7 +78,7 @@ const MessageScreen = () => {
           },
         });
       };
-    }, [navigation|| isFocus])
+    }, [navigation, isFocus])
   );
   useLayoutEffect(() => {
     // navigation.getParent()?.setOptions({ tabBarStyle: { display: 'none' } });
@@ -86,7 +89,11 @@ const MessageScreen = () => {
       getMessages(group_id)
       setPartner(prevValue => { return { ...prevValue, fullname, avatar} })
       setGroupId(group_id)
-      setMessages(route.params?.messages)
+      if(route.params?.messages){
+        const messages=new MessageManage(route.params?.messages).messages
+  
+        setMessages(messages)
+      }
 
       socket.on(`message-${user.id}`, (message) => {
         if (isFocus) {
@@ -118,38 +125,42 @@ const MessageScreen = () => {
 
   }, [isFocus]);
 
-  function addMessage(message: messageType) {
-    let messageNew = { ...message }
-    if (reply) {
-      messageNew = {
-        ...message,
-        parent: {
-          id: message.parent,
-          sender: reply?.sender
-        }
-      }
-
-      setReply(null)
-    }
-
+  function addMessage(message: MessageProvider) {
+    setReply(null)
     setMessages(
       (prevValue) => {
-        return [messageNew, ...prevValue]
+        return [message, ...prevValue]
       }
     )
   }
 
-  async function createGroupAPIs(friend_id: number) {
+  async function createGroupAPIs(friend_id: number){
     const createGroup = {
       type: 'single',
       members: [user.id, friend_id]
     }
-    const group = await createGroupsHTTP(createGroup)
+    const group:GroupChatType= await createGroupsHTTP(createGroup)
     if(!group) return 
+
+    socket.on(`message-${user.id}`, (message) => {
+      if (isFocus) {
+        //đọc tin nhắn khi đang trong phần tin nhắn tin nhắn
+        socket.emit('read-message', {
+          user: user.id,
+          group: group.id
+        })
+      }
+      getMessages(group.id)
+    })
+    //đọc tin nhắn khi vào tin nhắn
+    socket.emit('read-message', {
+      user: user.id,
+      group: group.id
+    })
     
     getMessages(group.id)
     setGroupId(group.id)
-
+    return group;
   }
 
   const ListMessage = useCallback(() => {
@@ -173,7 +184,7 @@ const MessageScreen = () => {
               lastMessage={index === 0} />
           )
         }}
-        keyExtractor={(item) => item.id.toString()}
+        keyExtractor={(item) => item.getId.toString()}
         showsVerticalScrollIndicator={false}
         extraData={messages}
       />

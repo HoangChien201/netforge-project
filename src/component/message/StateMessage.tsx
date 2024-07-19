@@ -6,8 +6,9 @@ import { uploadImage } from '../../http/TuongHttp'
 import { socket } from '../../http/SocketHandle'
 import { useMyContext } from '../navigation/UserContext'
 import { StateMessageFormat } from './format/StatusMessage'
+import { MessageProvider } from './class/MessageProvider'
 export type StateMessageType = {
-  message: messageType,
+  message: MessageProvider,
   group_id: number | null,
   sender: boolean,
   lastMessage: boolean
@@ -30,7 +31,7 @@ const StateMessage: React.FC<StateMessageType> = ({ message, group_id, sender, l
 
   useEffect(() => {
 
-    socket.on(`read-message-${message.id}`, (m: any) => {
+    socket.on(`read-message-${message.getId}`, (m: any) => {
       setSeens(
         prev => {
           return [...prev, m.user]
@@ -45,19 +46,7 @@ const StateMessage: React.FC<StateMessageType> = ({ message, group_id, sender, l
 
         case 'text':
 
-
-          let messageCreate = {
-            ...message,
-            state: STATUS_SEND,
-            group: group_id
-          }
-
-          if (message.parent) {
-
-            messageCreate.parent = typeof message.parent === 'object' ? message.parent.id : message.parent
-          }
-
-          const messageNew = await addMessageAPI(messageCreate)
+          const messageNew = await message.CreateMessageToAPIByGroup(group_id)
           if (messageNew) {
             socket.emit(`message`, messageNew)
             setState(messageNew.state)
@@ -73,7 +62,7 @@ const StateMessage: React.FC<StateMessageType> = ({ message, group_id, sender, l
 
   }
 
-  async function messgeMedia(message: messageType) {
+  async function messgeMedia(message: MessageProvider) {
     const files = new FormData();
 
     files.append('files', {
@@ -87,13 +76,10 @@ const StateMessage: React.FC<StateMessageType> = ({ message, group_id, sender, l
       // Kiểm tra cấu trúc phản hồi từ API uploadImage
       // Kiểm tra xem phản hồi có phải là một mảng và có ít nhất một phần tử không
       if (Array.isArray(resultImage) && resultImage.length > 0) {
-        let messageCreate = {
-          ...message,
-          state: STATUS_SEND,
-          group: group_id,
-          message: resultImage[0].url
-        }
-        const messageNew = await addMessageAPI(messageCreate)
+        if (!group_id) return
+        
+        message.message = resultImage[0].url
+        const messageNew = await message.CreateMessageToAPIByGroup(group_id)
         if (messageNew) {
           socket.emit(`message`, messageNew)
 

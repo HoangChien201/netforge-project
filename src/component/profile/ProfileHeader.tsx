@@ -82,6 +82,7 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({ fullname, userId, loggedI
     setShow(true);
   };
 
+  
   const deleteF = async (id: number) => {
     const id1 = user.id
     const user1 = Number(id1);
@@ -106,33 +107,33 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({ fullname, userId, loggedI
       console.log('Lỗi khi xóa bạn: ', error);
     }
   };
-  const cancelReq = async (friendId: number)=>{
+  const cancelReq = async (friendId: number) => {
     try {
-        const result = await cancelRequest(friendId);
-        if(result){
-          setChange(prevChange => !prevChange);
-          console.log('deleted');
-          
-        }
+      const result = await cancelRequest(friendId);
+      if (result) {
+        setChange(prevChange => !prevChange);
+        console.log('deleted');
+
+      }
     } catch (error) {
-        console.log(error);
-        console.log(friendId);
-        
+      console.log(error);
+      console.log(friendId);
+
     }
-}
+  }
   const checkFiend = () => {
 
     if (relationship === null || relationship?.status == null || change) {
       return (
         <View>
           <TouchableOpacity style={styles.btnAddFriend}
-            onPress={() => { sendRequestFriend(userId, 1) }} 
+            onPress={() => { sendRequestFriend(userId, 1) }}
             disabled={textReqState == true || disabledButtons}
           >
             <Icon name="person-add" size={24} color="#fff" style={{ marginRight: 10 }} />
             <Text style={{ color: '#fff', fontSize: 18, fontWeight: '700' }}>{textReqState == true ? 'Đã gửi lời mời' : 'Gửi lời mời'}</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.btnSendMessage}>
+          <TouchableOpacity style={styles.btnSendMessage} >
             <Icon name="message" size={24} color="#000" style={{ marginRight: 10 }} />
             <Text style={{ color: '#000', fontSize: 18, fontWeight: '700' }}>Nhắn tin</Text>
           </TouchableOpacity>
@@ -148,7 +149,7 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({ fullname, userId, loggedI
               <Text style={{ color: '#fff', fontSize: 18, fontWeight: '700' }}>Chờ phê duyệt</Text>
             </View>
             <TouchableOpacity style={styles.btnCancel}
-            onPress={() => { cancelReq(userId) }}
+              onPress={() => { cancelReq(userId) }}
             >
               <Icon name="person-remove" size={24} color={COLOR.PrimaryColor} style={{ marginRight: 10 }} />
               <Text style={{ color: COLOR.PrimaryColor, fontSize: 18, fontWeight: '700' }}>Hủy bỏ</Text>
@@ -163,7 +164,7 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({ fullname, userId, loggedI
     } else if (relationship.status == 2) {
       return (
         <View>
- 
+
 
           <View style={styles.typeFriend}>
             <View style={styles.TextType}>
@@ -171,19 +172,15 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({ fullname, userId, loggedI
               <Text style={{ color: '#fff', fontSize: 18, fontWeight: '700' }}>Bạn bè</Text>
             </View>
             <TouchableOpacity style={styles.btnCancel}
-            onPress={() => openDelete()}
-          >
-            <Icon name="person-remove" size={24} color="#fff" style={{ marginRight: 10 }} />
-            <Text style={{ color: '#fff', fontSize: 18, fontWeight: '700' }}>{cancelF}</Text>
-          </TouchableOpacity>
+              onPress={() => openDelete()}
+            >
+              <Icon name="person-remove" size={24} color="#fff" style={{ marginRight: 10 }} />
+              <Text style={{ color: '#fff', fontSize: 18, fontWeight: '700' }}>{cancelF}</Text>
+            </TouchableOpacity>
           </View>
 
           <TouchableOpacity style={styles.btnSendMessage}
-          onPress={()=>{navigation.navigate('MessageScreen',{
-            id, 
-            fullname,
-            avatar
-        })}}
+            
           >
             <Icon name="message" size={24} color="#000" style={{ marginRight: 10 }} />
             <Text style={{ color: '#000', fontSize: 18, fontWeight: '700' }}>Nhắn tin</Text>

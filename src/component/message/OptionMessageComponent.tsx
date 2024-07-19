@@ -18,7 +18,8 @@ const OptionMessageComponent = ({ deleteMessage, message, setReply,setSelectedMe
         const resultDelete = await deleteMessageAPI(message.id)
 
         if (resultDelete['status'] <= 0) return
-
+        console.log('mesageDel',message);
+        
         socket.emit('message', message)
 
         deleteMessage(message.id)
@@ -27,7 +28,7 @@ const OptionMessageComponent = ({ deleteMessage, message, setReply,setSelectedMe
 
     }
 
-
+    const isSender=(typeof message.sender === 'object') ? message.sender.id === user.id : message.sender === user.id
     return (
         <View style={styles.container}>
             <TouchableOpacity onPress={ReplyHandle} activeOpacity={0.8} style={[styles.optionStyle, {
@@ -37,7 +38,7 @@ const OptionMessageComponent = ({ deleteMessage, message, setReply,setSelectedMe
                 <IconFont name='reply' size={18} color={'#000'} />
             </TouchableOpacity>
             {
-                message.sender.id === user.id &&
+                isSender &&
                 <TouchableOpacity onPress={DelteMessageHandle} activeOpacity={0.8} style={styles.optionStyle}>
                     <Text style={[styles.nameOption, { color: 'red' }]}>Xóa</Text>
                     <IconFont name='trash' size={18} color={'red'} />
