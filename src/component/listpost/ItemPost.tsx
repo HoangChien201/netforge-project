@@ -24,6 +24,8 @@ const ItemPost = memo(({ index, data, onrefresh, userId, onPressProfile, setShow
     const { user } = useMyContext();
     const menu = useRef(new Animated.Value(0)).current;
     const [hidden, setHidden] = useState(false);
+
+    const navigation: NavigationProp<ParamListBase> = useNavigation();
     const [isModalVisible, setIsModalVisible] = useState(false);
     const [selectedUserId, setSelectedUserId] = useState(null);
     const loggedInUserId = user.id;
@@ -33,7 +35,6 @@ const ItemPost = memo(({ index, data, onrefresh, userId, onPressProfile, setShow
     },[data])
    
     const { creater, share_count, reaction, content, media, comment_count, create_at, id, like_count, share } = datas;
-    console.log("ItemPost1s");
     
     const navigation: NavigationProp<ParamListBase> = useNavigation();
 

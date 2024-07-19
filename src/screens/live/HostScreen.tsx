@@ -6,6 +6,8 @@ import ZegoUIKitPrebuiltLiveStreaming, {
 import KeyCenter from './KeyCenter';
 import { useNavigation, NavigationProp, RouteProp } from '@react-navigation/native';
 import { useMyContext } from '../../component/navigation/UserContext';
+import { createNewPost } from '../../http/QuyetHTTP';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 //import { ZegoToastType } from '@zegocloud/zego-uikit-prebuilt-live-streaming-rn/lib/typescript/services/defines';
 //import * as ZIM from 'zego-zim-react-native';
@@ -32,8 +34,9 @@ const HostScreen: React.FC<Props> = ({ route }) => {
   }, []);
   const { user } = useMyContext();
 
-  const handleLeaveLiveStreaming = () => {
+  const handleLeaveLiveStreaming = async() => {
     navigation.navigate('LiveWithZego' as never);
+    await AsyncStorage.removeItem("liveID")
   };
   const foregroundBuilder = ({ userInfo }: { userInfo: any }) => (
     <View style={styles.foreground}>
@@ -44,6 +47,26 @@ const HostScreen: React.FC<Props> = ({ route }) => {
       <Text style={styles.userName}>{userInfo.userName}</Text>
     </View>
   );
+
+  const createLivePost = async () => {
+    try {
+        const type = 2;
+        const content = liveID
+        const permission = 1;
+        await AsyncStorage.setItem("liveID", liveID);
+        const newPost = await createNewPost({ type,  permission, content });
+        console.log("live post", newPost);
+    } catch (error) {
+        console.error('Error live post: ', error);
+    }
+};
+
+useEffect(() => {
+  const startLiveStream = async () => {
+    await createLivePost();
+  };
+  startLiveStream();
+}, [liveID]);
 
   return (
     <View style={styles.container}>
@@ -79,6 +102,7 @@ const HostScreen: React.FC<Props> = ({ route }) => {
       },
         onLiveStreamingEnded: handleLeaveLiveStreaming,
         onLeaveLiveStreaming: handleLeaveLiveStreaming,
+        onStartLiveStreaming: createLivePost,
         // onWindowMinimized: () => {
         //     navigation.navigate('LiveWithZego' as never);
         // },

@@ -10,6 +10,10 @@ import ProfileDetailData from './ProfileDetailData';
 import { getUSerByID } from '../../http/PhuHTTP';
 import MediaOfUser from './MediaOfUser';
 import Icon from 'react-native-vector-icons/Ionicons';
+import FriendScreen from '../../screens/profile/FriendScreen';
+import Friends from '../../screens/profile/friendScreen/Friends';
+import { getFriends } from '../../http/QuyetHTTP';
+import { COLOR } from '../../constant/color';
 
 interface ModalFriendProfileProps {
     userId:any;
@@ -33,10 +37,37 @@ const FriendProfile:React.FC<ModalFriendProfileProps> = () => {
   const [tabBarPosition, setTabBarPosition] = useState(headerHeight);
   const route = useRoute();
   const userId = route.params?.userId;
+  const [friends, setFriends] = useState<any[]>([]);
 
   const token = user.token;
   const [userData, setUserData] = useState<any>();
+
+  useEffect(() => {
+    navigation.setOptions({
+      headerShown: true,
+      title: '',
+      headerTitleAlign: 'center',
+    });
+  }, [navigation]);
   
+
+  //api bạn bè
+  const getFriendList = async (status: number) => {
+    try {
+      const result = await getFriends(status);
+      if (result) {
+        setFriends(result);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    getFriendList(2);
+  }, [])
+
+
   useFocusEffect(
     React.useCallback(() => {
       const fetchUserData = async () => {
@@ -73,7 +104,6 @@ const FriendProfile:React.FC<ModalFriendProfileProps> = () => {
                 userId={userId} 
                 loggedInUserId={user.id}
                 relationship ={userData.relationship}
- 
                 />
       </>
     );
@@ -111,6 +141,12 @@ const FriendProfile:React.FC<ModalFriendProfileProps> = () => {
     </View>
   );
 
+  // const MyFriendScreen = () => (
+  //   <View style={{ paddingTop:10, paddingBottom:20}}>
+  //     <Friends friends={friends} setFriends={setFriends} />
+  //   </View>
+  // );
+
   return (
       <View style={styles.container}>
         <Animated.FlatList
@@ -125,7 +161,7 @@ const FriendProfile:React.FC<ModalFriendProfileProps> = () => {
                   <View style={{paddingTop: tabBarHeight}}></View>
                   {item === 'MyPost' && <MyPostScreen />}
                   {item === 'Media' && <MyMediaScreen />}
-                  {item === 'Events' && <EventScreen />}
+                  {/* {item === 'Events' && <MyFriendScreen/>} */}
                 </View>
               )}
             </View>
@@ -172,26 +208,16 @@ const FriendProfile:React.FC<ModalFriendProfileProps> = () => {
               component={MyMediaScreen}
               options={{tabBarLabel: 'Hình ảnh'}}
             />
-            <Tab.Screen
+            {/* <Tab.Screen
               name="Events"
-              component={EventScreen}
-              options={{tabBarLabel: 'Video'}}
-            />
+              component={MyFriendScreen}
+              options={{tabBarLabel: 'Bạn bè'}}
+            /> */}
           </Tab.Navigator>
         </Animated.View>
       </View>
   );
 };
-
-const ReviewScreen = () => (
-  <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-    <Text>hihi</Text>
-  </View>
-);
-
-const EventScreen = () => (
-  <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}></View>
-);
 
 const TabBar = ({ state, descriptors, navigation, currentTab, handleTabChange }: any) => {
   return (
@@ -210,7 +236,7 @@ const TabBar = ({ state, descriptors, navigation, currentTab, handleTabChange }:
         return (
           <TouchableOpacity
             key={route.key}
-            style={styles.tabItem}
+            style={[styles.tabItem, isFocused && styles.focusedTabItem]}
             onPress={() => {
               const event = navigation.emit({
                 type: 'tabPress',
@@ -224,7 +250,7 @@ const TabBar = ({ state, descriptors, navigation, currentTab, handleTabChange }:
               }
             }}
           >
-            <Text style={[styles.tabText, { color: isFocused ? '#007AFF' : '#333333' }]}>{label}</Text>
+            <Text style={[styles.tabText, isFocused && styles.focusedTabText]}>{label}</Text>
           </TouchableOpacity>
         );
       })}
@@ -248,43 +274,29 @@ const styles = StyleSheet.create({
     zIndex: 1,
     borderBottomWidth: 1,
     borderColor: '#dddddd',
-    //elevation: 8,
   },
   tabBar: {
     flexDirection: 'row',
-    justifyContent: 'space-around',
-    alignItems: 'center',
     height: '100%',
-    paddingHorizontal: 10,
   },
   tabItem: {
-    flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
+    paddingHorizontal:30 
   },
   tabText: {
     fontSize: 16,
     fontWeight: 'bold',
   },
-  // modalContainer: {
-  //   flex: 1,
-  //   justifyContent: 'center',
-  //   alignItems: 'center',
-  //   backgroundColor: 'rgba(0, 0, 0, 0.5)',
-  // },
-  // closeButton: {
-  //   position: 'absolute',
-  //   bottom: 30,
-  //   left: 0,
-  //   right: 0,
-  //   justifyContent: 'center',
-  //   alignItems: 'center',
-  // },
-  // closeButtonText: {
-  //   fontSize: 18,
-  //   color: '#007AFF',
-  // },
-
+  focusedTabItem: {
+    backgroundColor: '#32DEEE2A',
+    borderRadius: 25,
+    marginVertical: 5,
+    marginHorizontal:10
+  },
+  focusedTabText: {
+    color: COLOR.PrimaryColor,
+  },
 });
 
 export default FriendProfile;

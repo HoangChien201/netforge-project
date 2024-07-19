@@ -109,6 +109,7 @@ const HeaderMessageComponent = ({ partner }: { partner: any }) => {
         return () => {
             onUserLogout();
             console.log("User logged out");
+            console.log("id ng gọi: ", user.id)
         };
     }, [invitees, fullname]);
     //call-end

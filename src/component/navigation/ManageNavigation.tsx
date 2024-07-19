@@ -15,6 +15,8 @@ import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import PushNotification, { Importance } from 'react-native-push-notification';
 import { Alert, PermissionsAndroid } from 'react-native';
 import { socket } from '../../http/SocketHandle'
+// @ts-ignore
+import { ZegoCallInvitationDialog } from '@zegocloud/zego-uikit-prebuilt-call-rn';
 
 
 export type navigationType = StackNavigationProp<RootStackParamList>
@@ -180,6 +182,8 @@ const ManageNavigation: React.FC = () => {
     return (
         <GestureHandlerRootView>
             <NavigationContainer>
+                 {/*ZegoCallInvitationDialog hiện dialog nhận cuộc gọi */}
+                <ZegoCallInvitationDialog />
                 {user ? <NetworkStack /> : <UserStack />}
             </NavigationContainer>
         </GestureHandlerRootView>

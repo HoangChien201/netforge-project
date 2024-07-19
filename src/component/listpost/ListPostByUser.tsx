@@ -20,8 +20,6 @@ const ListPortsByUser:React.FC<ListPortsByUserProps> = React.memo(({ userId, onR
   const navigation: NavigationProp<ParamListBase> = useNavigation();
   const [isFetching, setIsFetching] = useState(true); // Thêm biến trạng thái để kiểm soát hiển thị
 
-
-
   const PAGE_SIZE = 10;
   useEffect(() => {
     const fetchData = async () => {
@@ -32,37 +30,9 @@ const ListPortsByUser:React.FC<ListPortsByUserProps> = React.memo(({ userId, onR
     fetchData();
   }, [fetchPosts, userId, onRefresh]);
 
-  // useEffect(() => {
-  //   fetchPosts(userId);
-  // }, [fetchPosts, userId, onRefresh]);
-
   useEffect(() => {
     setDisplayData(post.slice(0, PAGE_SIZE));
   }, [post]);
-
-  // const logCount = useRef(0);  // Biến đếm số lần log
-  // useEffect(() => {
-  //   logCount.current += 1;
-  //   console.log(`ListPortsByUser lần thứ ${logCount.current}: `, post);
-  // }, [post]);
-  // const getPostUser = useCallback(async () => {
-  //   try {
-  //       setLoading(true);
-  //     const response:any = await getPostByUser(userId);
-  //     if (response) {
-  //       setAllData([...response]);
-  //       setDisplayData([...response.slice(0, PAGE_SIZE)]);
-  //       setLoading(false);
-  //     }
-  //   } catch (error) {
-  //     console.error(error);
-  //   }
-   
-  // }, [setAllData, setDisplayData]);
-
-  // useEffect(() => {
-  //   getPostUser();
-  // }, [getPostUser, onRefresh]);
 
   const loadMoreData = () => {
     if (loadingMore || displayData.length >= post.length) return;
@@ -90,7 +60,7 @@ const ListPortsByUser:React.FC<ListPortsByUserProps> = React.memo(({ userId, onR
 
   const { user } = useMyContext();
   const loggedInUserId = user.id;
-  const handleToProfile = (userId: React.SetStateAction<null>) => {
+  const handleToProfile = (userId: React.SetStateAction<null>, userName: string) => {
     if (userId === loggedInUserId) {
         navigation.navigate(ProfileRootStackEnum.ProfileScreen);
     } else {
@@ -106,7 +76,7 @@ const ListPortsByUser:React.FC<ListPortsByUserProps> = React.memo(({ userId, onR
           <FlatList
             data={displayData}
             renderItem={({ item, index }) => {
-              return <ItemPost onrefresh={onRefresh} index={index} data={item} userId={userId} onPressProfile={handleToProfile} />;
+              return <ItemPost onrefresh={onRefresh} index={index} data={item}  />;
             }}
             keyExtractor={(item) => item.id.toString()}
             showsVerticalScrollIndicator={false}
@@ -118,8 +88,17 @@ const ListPortsByUser:React.FC<ListPortsByUserProps> = React.memo(({ userId, onR
           <>
             <View style={{ borderWidth: 0.7, borderColor: '#ddd', marginHorizontal: 18,}}></View>
             <View style={styles.messageContainer}>
-              <Image source={require('../../media/quyet_icon/netforge1.jpg')} style={styles.noImage} />
-              <Text style={styles.messageText}>Tạo và chia sẻ những câu chuyện đặc biệt của bạn!</Text>
+              <Image 
+                source={userId === loggedInUserId
+                  ? require('../../media/quyet_icon/netforge1.jpg')
+                  : require('../../media/quyet_icon/netforge.png')} 
+                style={styles.noImage} 
+              />
+              <Text style={styles.messageText}>
+                {userId === loggedInUserId
+                  ? 'Tạo và chia sẻ những câu chuyện đặc biệt của bạn!'
+                  : 'Không có bài viết nào để hiển thị'}
+              </Text>
             </View>
           </>
         )
