@@ -18,7 +18,7 @@ const ActionBar = memo(({onPressProfile, like_count,type, postId, comment_count,
     const [number, setNumber] = useState<number | null>(type);
     const animationRef = useRef(null);
     const [isModalVisible, setModalVisible] = useState(false);
-    console.log("ActionBar");
+    //console.log("ActionBar");
     
     const toggleModal = () => {
       setModalVisible(!isModalVisible);

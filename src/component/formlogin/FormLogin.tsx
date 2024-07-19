@@ -30,7 +30,7 @@ const FormLogin = ({ setModal, setStatus, setIsLoading }: { setModal: (value: bo
   const navigation: NavigationProp<ParamListBase> = useNavigation();
 
 
-  const [valueF, setValueF] = useState<user>({ email: '', password: '' })
+  const [valueF, setValueF] = useState<user>({ email: 'phuking203@gmail.com', password: '123456' })
 
 
   const [valid, setValid] = useState<valid>({ email: true, password: true })

@@ -33,7 +33,7 @@ export const UseFetchPostByUser = (): UseFetchPostsReturn => {
 
   const fetchPosts = useCallback(async (userId: any) => {
     try {
-      setLoading(true);
+      // setLoading(true);
       const response: any = await getPostByUser(userId);
       const getByTypeOne = response.filter(post => post.type === 1)
       setPosts([...getByTypeOne]);
@@ -42,10 +42,10 @@ export const UseFetchPostByUser = (): UseFetchPostsReturn => {
         const sortedPosts = filteredPosts.sort((a: Media, b: Media) => new Date(b.create_at).getTime() - new Date(a.create_at).getTime());
         setMedias([...sortedPosts]);
       }
-      setLoading(false);
+      // setLoading(false);
     } catch (error) {
       console.error(error);
-      setLoading(false);
+      // setLoading(false);
     }
   }, []);
 

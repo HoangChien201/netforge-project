@@ -3,6 +3,8 @@ import React, { useEffect, useState, useRef } from "react";
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { NetworkRootBottomTabParams, NetworkRootBottomTabScreens } from "./NetworkRootBottomTabParams";
 import { Keyboard, Animated, Easing } from 'react-native';
+// @ts-ignore
+import {ZegoUIKitPrebuiltCallWaitingScreen, ZegoUIKitPrebuiltCallInCallScreen,} from '@zegocloud/zego-uikit-prebuilt-call-rn';
 
 const Tab = createBottomTabNavigator<NetworkRootBottomTabParams>();
 
@@ -63,6 +65,17 @@ export default function NetworkBottomTab(): React.JSX.Element {
                     options={item.options}
                 />
             ))}
+            {/* nhận cuộc gọi ở bất kỳ screen nào */}
+            <Tab.Screen
+                name="ZegoUIKitPrebuiltCallInCallScreen"
+                component={ZegoUIKitPrebuiltCallInCallScreen}
+                options={{ tabBarButton: () => null,  tabBarStyle: { display: 'none' },}}
+            />
+            <Tab.Screen
+                name="ZegoUIKitPrebuiltCallWaitingScreen"
+                component={ZegoUIKitPrebuiltCallWaitingScreen}
+                options={{ tabBarButton: () => null,  tabBarStyle: { display: 'none' },}}
+            />
         </Tab.Navigator>
     );
 }

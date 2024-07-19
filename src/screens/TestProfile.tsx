@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useRef, useState } from 'react';
+import React, { memo, useEffect, useMemo, useRef, useState } from 'react';
 import { View, Animated, StyleSheet, ScrollView, Dimensions, Text, TouchableOpacity } from 'react-native';
 import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import HeaderBanner from '../component/profile/HeaderBanner';
@@ -9,6 +9,10 @@ import ListPortsByUser from '../component/listpost/ListPostByUser';
 import ProfileDetailData from '../component/profile/ProfileDetailData';
 import { getUSerByID } from '../http/PhuHTTP';
 import MediaOfUser from '../component/profile/MediaOfUser';
+import FriendScreen from './profile/FriendScreen';
+import Friends from './profile/friendScreen/Friends';
+import { getFriends } from '../http/QuyetHTTP';
+import { COLOR } from '../constant/color';
 
 
 const { height: SCREEN_HEIGHT } = Dimensions.get('window');
@@ -29,11 +33,12 @@ const TestProfile = () => {
   const [userData, setUserData] = useState<any>();
   let dateOfBirth = useState(null);
   const nameUser = user.fullname;
+  const [friends, setFriends] = useState<any[]>([]);
 
   useEffect(() => {
     navigation.setOptions({
       headerShown: true,
-      title: nameUser,
+      title: 'Trang cá nhân',
       headerTitleAlign: 'center',
     });
   }, [navigation]);
@@ -45,7 +50,7 @@ const TestProfile = () => {
           const response = await getUSerByID(userID, token);
           setUserData(response);
           dateOfBirth = response.dateOfBirth;
-          console.log("ProfileDetailData: ", response)
+          //console.log("ProfileDetailData: ", response)
         } catch (error) {
           console.log(error);
         }
@@ -53,6 +58,21 @@ const TestProfile = () => {
       fetchUserData();
     }, [setUserData])
   );
+
+  const getFriendList = async (status: number) => {
+    try {
+      const result = await getFriends(status);
+      if (result) {
+        setFriends(result);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    getFriendList(2);
+  }, [])
 
   
   useEffect(() => {
@@ -70,7 +90,6 @@ const TestProfile = () => {
 
   const headerComponent = useMemo(() => {
     if (!userData) return null;
-
     return (
       <>
         <HeaderBanner value={scrollOffsetY} userId={user.id} />
@@ -106,16 +125,26 @@ const TestProfile = () => {
     }
   };
   
-  const MyPostScreen = () => (
+  const MyPostScreen = React.memo(() => {
+    return(
     <View style={{ flex: 1 }}>
       {userData && <ProfileDetailData userData={userData} />}
       <ListPortsByUser onRefresh={false} userId = {userID} />
     </View>
-  );
+    )
+});
 
-  const MyMediaScreen = () => (
+  const MyMediaScreen = React.memo( () => {
+    return (
     <View style={{ paddingTop:20}}>
       <MediaOfUser userId={userID} onRefresh={false}/>
+    </View>
+    )
+  });
+
+  const MyFriendScreen = () => (
+    <View style={{ paddingTop:10, paddingBottom:20}}>
+      <Friends friends={friends} setFriends={setFriends} />
     </View>
   );
 
@@ -135,7 +164,7 @@ const TestProfile = () => {
         {currentTab === 'Events' && <EventScreen />}
       </ScrollView> */}
       <Animated.FlatList
-        data={['MyPost', 'Media', 'Events']}
+        data={['MyPost', 'Media']}
         renderItem={({ item }) => (
           <View style={{ flex: 1 }} key={item}>
 
@@ -145,7 +174,7 @@ const TestProfile = () => {
                 <View style={{ paddingTop:tabBarHeight }}></View>
                 {item === 'MyPost' && <MyPostScreen />}
                 {item === 'Media' && <MyMediaScreen />}
-                {item === 'Events' && <EventScreen />}
+                {/* {item === 'Events' && <MyFriendScreen />} */}
               </View>
             )}
           </View>
@@ -184,19 +213,12 @@ const TestProfile = () => {
         >
           <Tab.Screen name="MyPost" component={MyPostScreen} options={{ tabBarLabel: 'Bài viết' }} />
           <Tab.Screen name="Media" component={MyMediaScreen} options={{ tabBarLabel: 'Hình ảnh' }} />
-          <Tab.Screen name="Events" component={EventScreen} options={{ tabBarLabel: 'Video' }} />
+          {/* <Tab.Screen name="Events" component={MyFriendScreen} options={{ tabBarLabel: 'Bạn bè' }} /> */}
         </Tab.Navigator>
       </Animated.View>
     </View>
   );
 };
-
-
-const EventScreen = () => (
-  <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-
-  </View>
-);
 
 const TabBar = ({ state, descriptors, navigation, currentTab, handleTabChange }: any) => {
   return (
@@ -210,7 +232,7 @@ const TabBar = ({ state, descriptors, navigation, currentTab, handleTabChange }:
         return (
           <TouchableOpacity
           key={route.key}
-            style={styles.tabItem}
+          style={[styles.tabItem, isFocused && styles.focusedTabItem]}
             onPress={() => {
               const event = navigation.emit({
                 type: 'tabPress',
@@ -224,7 +246,7 @@ const TabBar = ({ state, descriptors, navigation, currentTab, handleTabChange }:
               }
             }}
           >
-            <Text style={[styles.tabText, { color: isFocused ? '#007AFF' : '#333333' }]}>{label}</Text>
+            <Text style={[styles.tabText, isFocused && styles.focusedTabText]}>{label}</Text>
           </TouchableOpacity>
         );
       })}
@@ -247,24 +269,29 @@ const styles = StyleSheet.create({
     borderTopWidth: 1,
     zIndex: 1,
     borderBottomWidth:1,
-    borderColor:'#dddddd',
-    //elevation: 8,
+    borderColor:'#dddddd'
   },
   tabBar: {
     flexDirection: 'row',
-    justifyContent: 'space-around',
-    alignItems: 'center',
     height: '100%',
-    paddingHorizontal: 10,
   },
   tabItem: {
-    flex: 1,
     justifyContent: 'center',
-    alignItems: 'center',
+    alignItems: 'center', 
+    paddingHorizontal:30 
   },
   tabText: {
     fontSize: 16,
     fontWeight: 'bold',
+  },
+  focusedTabItem: {
+    backgroundColor: '#32DEEE2A',
+    borderRadius: 25,
+    marginVertical: 5,
+    marginHorizontal:10
+  },
+  focusedTabText: {
+    color: COLOR.PrimaryColor,
   },
 });
 

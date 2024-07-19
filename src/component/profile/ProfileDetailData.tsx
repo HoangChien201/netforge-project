@@ -23,7 +23,7 @@ const ProfileDetailData = ({ userData }: { userData: any }) => {
               <Text style={styles.detail}>{userData.phone}</Text>
             </View>
           )}
-          {userData.gender && (
+          {userData.gender && userData.gender !== "--" && (
             <View style={styles.row}>
               <Icon name="male-female-outline" size={18} color="#000" style={styles.icon} />
               <Text style={styles.detail}>{userData.gender}</Text>

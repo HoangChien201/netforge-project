@@ -21,7 +21,7 @@ const ItemPost = memo(({ index, data, onrefresh, userId, onPressProfile, setShow
     const { user } = useMyContext();
     const menu = useRef(new Animated.Value(0)).current;
     const [hidden, setHidden] = useState(false);
-    console.log("ItemPost1s");
+    //console.log("ItemPost1s");
     //
     const navigation: NavigationProp<ParamListBase> = useNavigation();
     const [isModalVisible, setIsModalVisible] = useState(false);

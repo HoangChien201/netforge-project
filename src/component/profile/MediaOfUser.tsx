@@ -43,11 +43,6 @@ const MediaOfUser: React.FC<MediaOfUserProps> =  React.memo(({ userId, onRefresh
     fetchData();
   }, [fetchPosts, userId, onRefresh]);
 
-  // const logCount = useRef(0);  // Biến đếm số lần log
-  // useEffect(() => {
-  //   logCount.current += 1;
-  //   console.log(`MediaOfUser lần thứ ${logCount.current}: `, medias);
-  // }, [medias]);
 
   const renderMediaItem = (mediaItem: MediaItem) => {
     if (mediaItem.resource_type === 'image') {

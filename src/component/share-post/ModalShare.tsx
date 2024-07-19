@@ -6,6 +6,8 @@ import { COLOR } from '../../constant/color';
 import { createNewPost, getPostById } from '../../http/QuyetHTTP';
 import { sharePost } from '../../http/PhuHTTP';
 import TextArea from '../create-post-screen/TextArea';
+import { useSendNotification } from '../../constant/notify';
+import { useMyContext } from '../navigation/UserContext';
 
 
 interface ModalShareProps{
@@ -16,17 +18,16 @@ interface ModalShareProps{
 }
 
 const ModalShare:React.FC<ModalShareProps> = ({ isVisible, onClose, idPost, share }) => {
+    const {user} = useMyContext();
     const [content, setContent] = useState<string | null>('');
     const [permission, setPermission] = useState(1);
-    const [images, setImages] = useState<any[]>([]);
-    const [media, setMedia] = useState([]);
     const type = 1;
     const [friends, setFriends] = useState([]);
     const tags = friends.map(id => ({ user: String(id) }));
+    const { sendNSharePost} = useSendNotification();
     
     useEffect(() => {
         if (isVisible) {
-            // Mở modal khi isVisible là true
             setContent('');
         }
     }, [isVisible]);
@@ -42,22 +43,28 @@ const ModalShare:React.FC<ModalShareProps> = ({ isVisible, onClose, idPost, shar
         try {
             if(share) {
                 const response = await sharePost(share, content, permission, type);
-                //console.log('Share:',share);
                 handleClose()
                 ToastAndroid.show('Chia sẻ bài viết thành công', ToastAndroid.SHORT);
+                handleSendNotification(response)
             } else{
                 const response = await sharePost(idPost, content, permission, type);
-                //console.log('Share idPost:');
                 handleClose()
                 ToastAndroid.show('Chia sẻ bài viết thành công', ToastAndroid.SHORT);
             }
-           
         } catch (error) {
             
         }
     };
 
-   
+    const handleSendNotification = (post: any) => {
+        const data = {
+            postId: post.id,
+            body: post.contain,
+            receiver: user.id
+        };
+        sendNSharePost(data);
+        console.log(data);
+    };
 
 return (
     <Modal

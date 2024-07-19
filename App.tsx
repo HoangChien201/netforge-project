@@ -20,6 +20,7 @@ import { Host } from 'react-native-portalize';
 import RequestNotificationPermission from './src/permissions/RequestNotificationPermission';
 import { registerRemoteNotificationsEvent } from './src/notifications/Events';
 import PushNotification from 'react-native-push-notification';
+
 function App(): React.JSX.Element {
   PushNotification.configure({
     onNotification: function (notification) {
@@ -34,6 +35,7 @@ function App(): React.JSX.Element {
   LogBox.ignoreLogs([
     '[Reanimated] Tried to modify key `reduceMotion` of an object which has been already passed to a worklet.',
   ]);
+  LogBox.ignoreAllLogs(true);
 
   return (
     <GestureHandlerRootView>

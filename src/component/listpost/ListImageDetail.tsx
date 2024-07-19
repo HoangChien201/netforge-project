@@ -16,7 +16,7 @@ const ListImageDetail = memo(() => {
       scrollViewRef?.current?.scrollTo({ x: index * itemWidth, animated: false });
     }
   }, [index,img]);
-  console.log("ListImageDetail");
+  //console.log("ListImageDetail");
 
   return (
     <>

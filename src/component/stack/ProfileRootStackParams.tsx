@@ -13,6 +13,7 @@ import HistoryStack from "./HistoryStack";
 import HomeScreen from "../../screens/HomeScreen";
 import LiveStack from "./LiveStack";
 import FriendProfile from "../profile/FriendProfile";
+import Friends from "../../screens/profile/friendScreen/Friends";
 
 export enum ProfileRootStackEnum {
     ProfileScreen = 'ProfileScreen',
@@ -31,6 +32,7 @@ export enum ProfileRootStackEnum {
     HomeScreen = 'HomeScreen',
     LiveStack = 'LiveStack',
     FriendProfile = 'FriendProfile',
+    Friends = 'Friends',
 }
 
 export type ProfileRootStackParams={
@@ -49,7 +51,8 @@ export type ProfileRootStackParams={
     HomeScreen: undefined;
     LiveStack: undefined;
     FriendProfile:undefined;
-    FollowingScreen:undefined
+    FollowingScreen:undefined;
+    Friends: undefined;
 
 }
 
@@ -167,9 +170,20 @@ export const ProfileRootStackScreens=[
         options: {
             headerShown: true,
             // headerLeft: () => null,
-            title:"Trang cá nhân",
+            title:"",
             headerTitleAlign:'center'
             
+        }
+    },
+    {
+        id: Math.random() + "" + Date,
+        name: ProfileRootStackEnum.Friends,
+        component: Friends,
+        options: {
+            headerShown: true,
+            tabBarShowLabel: false,
+            title:"Bạn bè",
+            headerTitleAlign:'center'
         }
     },
     
