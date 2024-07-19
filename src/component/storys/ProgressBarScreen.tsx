@@ -6,18 +6,22 @@ import { COLOR } from '../../constant/color';
 import FontAwesome6 from 'react-native-vector-icons/FontAwesome6';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import { DateOfTimePost } from '../../format/DateOfTimePost';
-import { deletePost } from '../../http/userHttp/getpost';
-import { useNavigation } from '@react-navigation/native';
+import { deletePost, getPostById } from '../../http/userHttp/getpost';
+import { NavigationProp, ParamListBase, useNavigation } from '@react-navigation/native';
 import { useMyContext } from '../navigation/UserContext';
+import { LiveRootStackScreens } from '../stack/LiveRootStackParams';
+import { HomeRootStackEnum } from '../stack/HomeRootStackParams';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const ProgressBarScreen = ({ listpostStory, setCurrentIndex, currentIndex, dataLength }) => {
     const [activeIndex, setActiveIndex] = useState(0);
     const [check, setCheck] = useState(false);
     const [paused, setPaused] = useState(false);
     const [hidden, setHidden] = useState(false);
+    const [idPosts,setIdpost] = useState(0)
     const showReactions = useRef(new Animated.Value(0)).current;
     const spinValue = useRef(new Animated.Value(0)).current;
-    const navigation = useNavigation();
+    const navigation:NavigationProp<ParamListBase> = useNavigation();
     const { user } = useMyContext();
 
     useEffect(() => {
@@ -99,6 +103,48 @@ const ProgressBarScreen = ({ listpostStory, setCurrentIndex, currentIndex, dataL
             console.error(error);
         }
     }, [activeIndex, listpostStory, navigation]);
+    
+//   useEffect(() => {
+    
+//     const getDetailByPost = async() =>{
+//         try {
+//           const result = await getPostById(listpostStory[activeIndex].id);
+//           console.log("re",result);
+          
+//           if(result){
+//             setIdpost(result?.reaction)
+//           }
+//         } catch (error) {
+          
+//         }
+//     }
+//     getDetailByPost()
+//   }, [listpostStory[activeIndex].id]);
+
+    // const handleDetailLiveStream = async ()=>{
+      
+    //         try {
+    //             const value = await AsyncStorage.getItem("liveID");
+    //             console.log("Retrieved liveID:", value);
+               
+    //                 const userName = user.fullname;
+    //                 const userID = String(Math.floor(Math.random() * 100000));
+    //                 // navigation.navigate(HomeRootStackEnum.LiveStack, {
+    //                 //     userID,
+    //                 //     userName,
+    //                 //     liveID:value,
+    //                 // });
+    //                 console.log("LiveID found:", value);
+                
+    //         } catch (error) {
+    //             console.error('Error retrieving liveID:', error);
+    //         }
+       
+        
+       
+       
+       
+    // }
 
     return (
         <View style={styles.container}>
@@ -121,10 +167,12 @@ const ProgressBarScreen = ({ listpostStory, setCurrentIndex, currentIndex, dataL
                     <Text style={styles.dateText}>{DateOfTimePost(listpostStory[activeIndex].create_at)}</Text>
                 </>
             ) : (
+                <>
                 <View style={styles.fullscreenImage1}>
-                    <Text style={styles.textContent}>{listpostStory[activeIndex]?.content}</Text>
                     <Text style={styles.dateText}>{DateOfTimePost(listpostStory[activeIndex].create_at)}</Text>
                 </View>
+                <TouchableOpacity  style={styles.textContent}><Text style={styles.textContent}>{listpostStory[activeIndex]?.content}</Text></TouchableOpacity>
+                </>
             )}
             <View style={styles.progressBarContainer}>
                 {listpostStory.map((item, index) => (
@@ -253,6 +301,8 @@ const styles = StyleSheet.create({
         position: 'absolute',
         top: '40%',
         left: '25%',
+        zIndex:99999999,
+        backgroundColor:'red'
     },
     dateText: {
         color: 'white',

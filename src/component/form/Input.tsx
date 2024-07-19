@@ -12,12 +12,13 @@ type props = {
     iconE?: boolean,
     iconP?: boolean,
     iconPass?: boolean,
-    invalid?:boolean
+    invalid?:boolean,
+    labels?:string
 
 }
 
 const Input = (props: props) => {
-    const { label, onchangText, value, requireField, password, iconE, iconP, iconPass, invalid } = props;
+    const { labels,label, onchangText, value, requireField, password, iconE, iconP, iconPass, invalid } = props;
     const [hidePassword, setHidePassword] = useState<boolean | undefined>(password)
 
     function Secure() {
@@ -45,7 +46,7 @@ const Input = (props: props) => {
     return (
         <View style={[invalid && {margin:0},{margin:9}]}>
             {/* <Text style={[styles.label]}>{label} {requireField && <Text style={{color:"#C30052"}}>*</Text>}</Text> */}
-            <TextInput placeholder={"Enter"+" "+label} style={[styles.input,invalid && styles.validation]} secureTextEntry={hidePassword} value={value} onChangeText={onchantext} />
+            <TextInput placeholder={"Nhập"+" "+labels} style={[styles.input,invalid && styles.validation]} secureTextEntry={hidePassword} value={value} onChangeText={onchantext} />
             {iconE && <Image style={styles.iconMail} source={require('../../media/icon/Mail.png')} />}
             {iconPass && <Image style={styles.iconMail} source={require('../../media/icon/Password.png')} />}
             {iconP && <Image style={{
@@ -60,7 +61,7 @@ const Input = (props: props) => {
             }
             {
                 invalid && <Text style={{fontSize:10,position:"absolute",bottom:-15,left:10,color:"red",fontWeight:"400", fontFamily: "poppins"
-                }}>Vui lòng nhập đúng định dạng {label} !</Text>
+                }}> {label} !</Text>
             }
          
         </View>

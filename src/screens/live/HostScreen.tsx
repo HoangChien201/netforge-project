@@ -53,9 +53,12 @@ const HostScreen: React.FC<Props> = ({ route }) => {
         const type = 2;
         const content = liveID
         const permission = 1;
-        await AsyncStorage.setItem("liveID", liveID);
+     
         const newPost = await createNewPost({ type,  permission, content });
-        console.log("live post", newPost);
+        await AsyncStorage.setItem("liveID",content);
+       
+        const value = await AsyncStorage.getItem("liveID");
+        console.log("live post", value);
     } catch (error) {
         console.error('Error live post: ', error);
     }
@@ -91,7 +94,7 @@ useEffect(() => {
                 
             ],
             styles: {
-                color: 'red',
+              color: 'red',
               },
         },
         confirmDialogInfo: {

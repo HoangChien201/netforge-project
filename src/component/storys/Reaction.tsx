@@ -1,41 +1,57 @@
+import React, { useEffect, useState, useMemo, useCallback } from 'react';
 import { ScrollView, StyleSheet, TouchableOpacity, View, Image } from 'react-native';
-import React, { useEffect, useState, useMemo } from 'react';
-import { reaction } from '../../constant/emoji';
-import { likePost, updateLikePost } from '../../http/userHttp/getpost';
+import { useDispatch, useSelector } from 'react-redux';
+import { RootState } from '../store/store';
+import { setReaction } from '../store/reactionSlice';
 import { useMyContext } from '../navigation/UserContext';
-import ExplosionModal from './ExplosionModal '
-const Reaction = ({ postID, reactions }: { postID: number, reactions?: number | null }) => {
-  const [indexPress, setIndexPress] = useState(reactions);
+import { likePost, updateLikePost } from '../../http/userHttp/getpost';
+import { reaction } from '../../constant/emoji';
+import ExplosionModal from './ExplosionModal ';
+
+interface ReactionProps {
+  postID: number;
+  reactions?: number | null;
+}
+
+const Reaction: React.FC<ReactionProps> = ({ postID, reactions }) => {
+  const dispatch = useDispatch();
+  const reactionState = useSelector((state: RootState) => state.reaction.reactions[postID] || reactions);
+  const [indexPress, setIndexPress] = useState(reactionState);
   const [modalVisible, setModalVisible] = useState(false);
-  const [selectedEmoji, setSelectedEmoji] = useState(null);
+  const [selectedEmoji, setSelectedEmoji] = useState<string | null>(null);
   const { user } = useMyContext();
 
   useEffect(() => {
-    setIndexPress(reactions);
-  }, [reactions]);
+    setIndexPress(reactionState);
+  }, [reactionState]);
 
-  const handleReaction = async (type: number, index: number, emoji) => {
+  const handleReaction = useCallback(async (type: number, index: number, emoji: string) => {
+    const previousReaction = indexPress;
     setIndexPress(index);
     setSelectedEmoji(emoji);
     setModalVisible(true);
+
     try {
-      if (indexPress !== null) {
-        return await updateLikePost(postID, user.id, type);
+      if (reactions > 0) {
+        await updateLikePost(postID, user.id, index);
       } else {
-        return await likePost(postID, type);
+        await likePost(postID, type);
       }
+
+      dispatch(setReaction({ postID, reaction: index }));
     } catch (error) {
       console.error(error);
+      setIndexPress(previousReaction);
     }
-  };
+  }, [indexPress, postID, reactions, user.id, dispatch]);
 
-  const RenderItem = useMemo(() => ({ val, index }) => {
+  const RenderItem = useMemo(() => ({ val, index }: { val: { Emoji: any; id: number; type: number }; index: number }) => {
     const { Emoji, id, type } = val;
-    const isSelected = indexPress === index && postID === postID;
+    const isSelected = indexPress === type;
 
     return (
       <View key={id.toString()} style={styles.emojiContainer}>
-        <TouchableOpacity onPress={() => handleReaction(type, index, Emoji)}>
+        <TouchableOpacity onPress={() => handleReaction(type, type, Emoji)}>
           <View style={{ marginTop: 10 }}>
             <Image
               source={Emoji}
@@ -52,7 +68,7 @@ const Reaction = ({ postID, reactions }: { postID: number, reactions?: number | 
         </TouchableOpacity>
       </View>
     );
-  }, [indexPress, postID]);
+  }, [indexPress, handleReaction]);
 
   return (
     <View style={styles.container}>
@@ -84,15 +100,4 @@ const styles = StyleSheet.create({
     width: 25,
     height: 25,
   },
-  textinput: {
-    borderWidth: 1,
-    width: "50%",
-    height: 40,
-    justifyContent: 'center',
-    marginLeft: 10,
-    borderRadius: 30,
-    paddingHorizontal: 20,
-    backgroundColor: 'rgba(0, 0, 0, 0)',
-    color: 'white',
-  }
 });
