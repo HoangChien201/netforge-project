@@ -1,89 +1,104 @@
 import { StyleSheet, Text, View, Modal, TouchableOpacity, Dimensions, ScrollView } from 'react-native'
-import React, { useEffect, useMemo, useState } from 'react'
+import React, { useEffect, useMemo, useRef, useState } from 'react'
 import CommentHistories from './CommentHistories'
 import LikeHistories from './LikeHistories'
 import Icon from 'react-native-vector-icons/AntDesign'
 import { COLOR } from '../../constant/color'
 import { getUserHistories } from '../../http/QuyetHTTP';
 import { useNavigation } from '@react-navigation/native'
+import Swiper from 'react-native-swiper';
+import Loading from '../Modal/Loading'
 const { width } = Dimensions.get('window');
-type BodyH = {
-}
+
+type BodyH = {}
+
 const Body: React.FC<BodyH> = ({ }) => {
     const [view, setView] = useState(true);
-
-    const [data, setData] = useState<any>({});
+    const swiperRef = useRef(null);
+    const [dataLike, setDataLike] = useState<any>({});
     const [dataComment, setDataComment] = useState<any[]>([]);
     const navigation = useNavigation();
+    const [load, setLoad] = useState(false);
+    const [currentIndex, setCurrentIndex] = useState(0);
+    
     function navigationScreen(screen: string) {
         navigation.navigate(`${screen}`)
     };
+
     const getData = async () => {
+        setLoad(true)
         try {
             const result = await getUserHistories();
-            setData(result);
-            // setDataLikeP(result.likePosts);
-            // setDataLikeC(result.likeComments);
-            setDataComment(result.comments)
-            //console.log('body data: ' + JSON.stringify(result));
-            // console.log('dataH' + JSON.stringify(result));
-            // console.log('data likeP: ' + JSON.stringify(result.likePosts));
-            // console.log('data likeC: ' + JSON.stringify(result.likeComments));
-            // console.log('data Comment: ' + JSON.stringify(result.comments));
+            const likePosts = result.likePosts || [];
+            const likeComments = result.likeComments || [];
+            setDataLike([...likeComments, ...likePosts]);
+            setDataComment(result.comments);
+            setLoad(false);
         } catch (error) {
-            console.log('lỗi lấy useHistories: ' + error);
+            console.log('Lỗi lấy useHistories: ' + error);
+            setLoad(false);
         }
     };
+
     useEffect(() => {
         getData();
-    }, [])
-    const switchToLike = () => {
-        setView(true);
+    }, []);
+
+    const handleIndexChanged = (index) => {
+        setCurrentIndex(index);
     };
-    const switchToComment = () => {
-        setView(false);
+
+    const handleButtonPress = (index) => {
+        if (swiperRef.current) {
+            swiperRef.current.scrollBy(index - currentIndex, true);
+        }
     };
+
+    const memoizedLikeHistories = useMemo(() => {
+        return <LikeHistories dataLike={dataLike} load={load} />;
+    }, [dataLike, load]);
+
+    const memoizedCommentHistories = useMemo(() => {
+        return <CommentHistories dataComment={dataComment} load={load} />;
+    }, [dataComment, load]);
+
     return (
-        <View style={styles.container}
-        >
+        <View style={styles.container}>
+            <Loading isLoading={load} />
             <View style={styles.header}>
                 <View style={styles.typeHis}>
-                    <TouchableOpacity style={styles.likeButton} onPress={switchToLike}>
+                    <TouchableOpacity style={[styles.likeButton, currentIndex === 0 && styles.activeButton]} onPress={() => { handleButtonPress(0) }}>
                         <Icon name='like1' size={18} color={COLOR.PrimaryColor} />
                         <Text style={styles.textLike}> Cảm xúc</Text>
                     </TouchableOpacity>
-                    <TouchableOpacity style={styles.commentButton} onPress={switchToComment}>
+                    <TouchableOpacity style={[styles.likeButton, currentIndex === 1 && styles.activeButton]} onPress={() => { handleButtonPress(1) }}>
                         <Icon name='aliwangwang' size={18} color={COLOR.PrimaryColor} />
                         <Text style={styles.textLike} > Bình luận</Text>
                     </TouchableOpacity>
                 </View>
             </View>
-            <View style={[styles.container,]}>
-                {view ?
+            <View style={[styles.container]}>
+                <Swiper ref={swiperRef} loop={false} showsButtons={false} style={{ marginBottom: 50 }}
+                    onIndexChanged={handleIndexChanged}
+                >
                     <View>
                         <View style={styles.header}>
                             <Text style={styles.headerText}>Lịch sử thích</Text>
                         </View>
                         <ScrollView style={styles.page}>
-
-                            <LikeHistories data={data} />
+                            {memoizedLikeHistories}
                         </ScrollView>
                     </View>
-                    :
+
                     <View>
                         <View style={styles.header}>
                             <Text style={styles.headerText}>Lịch sử bình luận</Text>
                         </View>
                         <ScrollView style={styles.page}>
-
-                            <CommentHistories dataComment={dataComment} />
-
+                            {memoizedCommentHistories}
                         </ScrollView>
                     </View>
-                }
-
-
-
+                </Swiper>
             </View>
         </View>
     )
@@ -95,11 +110,10 @@ const styles = StyleSheet.create({
     container: {
         flexDirection: 'column',
         zIndex: 999,
-        marginBottom:100
+        height: '100%',
+        paddingBottom: 30
     },
-    header: {
-
-    },
+    header: {},
     typeHis: {
         flexDirection: 'row',
         height: 50,
@@ -112,7 +126,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
         borderRadius: 10,
-        backgroundColor: COLOR.primary150,
+        backgroundColor: COLOR.primary300,
         flexDirection: 'row',
     },
     commentButton: {
@@ -121,9 +135,12 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
         borderRadius: 10,
-        backgroundColor: COLOR.primary150,
+        backgroundColor: COLOR.primary300,
         marginStart: 8,
         flexDirection: 'row'
+    },
+    activeButton: {
+        backgroundColor: COLOR.primary150
     },
     textLike: {},
     back: {
@@ -141,7 +158,7 @@ const styles = StyleSheet.create({
     page: {
         width: (width),
         height: '100%',
-        // Each page should take up the full width of the screen
+        marginBottom: 100
     },
     headerText: {
         fontSize: 20,

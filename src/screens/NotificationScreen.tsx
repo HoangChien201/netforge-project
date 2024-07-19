@@ -256,6 +256,7 @@ const styles = StyleSheet.create({
     backgroundColor: COLOR.primary300,
   }
 })
+
 const data = [
   {
     id: 1,

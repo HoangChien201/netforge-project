@@ -6,33 +6,11 @@ import { useNavigation } from '@react-navigation/native';
 import Loading from '../Modal/Loading'
 import { COLOR } from '../../constant/color';
 type Like = {
-    data: {
-        likePosts?: any[],
-        likeComments?: any[]
-    }
+    dataLike: any,
+    load:any
 }
-const LikeHistories: React.FC<Like> = ({ data }) => {
+const LikeHistories: React.FC<Like> = ({ dataLike, load }) => {
     const navigation = useNavigation();
-
-
-    function navigationScreen(screen: string) {
-        navigation.navigate(`${screen}`)
-      }
-    const noData = () => {
-        if (data.likeComments?.length>0 || data.likePosts?.length>0) {
-            return (
-                (sortedData.map(renderItem))
-            )
-        } else {
-            return (
-                <View style={styles.containerEmpty}>
-                    <Text style={styles.textEmpty}>Hãy tương tác với mọi người để lưu giữ kỉ niệm!</Text>
-                </View>
-            )
-        }
-
-
-    }
     const [totalData, setTotalData] = useState([]);
     const { user } = useMyContext();
     const [sortedData, setSortedData] = useState<any[]>([]);
@@ -40,22 +18,22 @@ const LikeHistories: React.FC<Like> = ({ data }) => {
     const [dataLikeC, setDataLikeC] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
     useEffect(() => {
-        if (data) {
-            const likePosts = data.likePosts || [];
-            const likeComments = data.likeComments || [];
-            const total = [...likeComments, ...likePosts];
-            const sorted = total.sort((a, b) => new Date(b.create_at) - new Date(a.create_at));
-            setSortedData(total);
-            //console.log('data ben like: ' + JSON.stringify(sorted));
-        }
-        renderItem;
 
-        // console.log('like: ' + dataLikeC);
-        // console.log('LikeP: ' + dataLikeP);
-    }, [data]);
-    useEffect(() => {
-        renderItem
-    }, [data, sortedData])
+        renderItem;
+    }, [dataLike]);
+    const noData =()=>{
+    if (!load) {
+        return (
+            (dataLike.map(renderItem))
+        )
+    } else {
+        return (
+            <View style={styles.containerEmpty}>
+                <Text style={styles.textEmpty}>Hãy tương tác với mọi người để lưu giữ kỉ niệm!</Text>
+            </View>
+        )
+    }
+    }
     // useEffect(() => {
     //     // Set a timeout to simulate loading
     //     const timer = setTimeout(() => {
@@ -85,10 +63,10 @@ const LikeHistories: React.FC<Like> = ({ data }) => {
     const renderItem = (item: { reaction: any, posts: { id: number }, creater: { fullname: string } }, index: { toString: () => React.Key | null | undefined; }) => {
         const { text, iconName, iconColor, linkImage } = getReactionDetails(item.reaction);
         const postId = item.posts?.id;
-    
+
         return (
             <TouchableOpacity style={styles.itemContainer} key={index.toString()}
-            onPress={()=> navigation.navigate('CommentsScreen',{postId})}
+                onPress={() => navigation.navigate('CommentsScreen', { postId })}
             >
                 <View style={styles.infor}>
                     <Image source={{ uri: user.avatar }} style={styles.avatar} />
@@ -119,23 +97,14 @@ const LikeHistories: React.FC<Like> = ({ data }) => {
             </TouchableOpacity>
         );
     };
-    
+
     return (
         <View style={styles.container}>
-            {/* {!sortedData ? (
-                <View>
-                    <Text style={styles.textEmpty}>Bạn chưa có hoạt động nào</Text>
-                </View>
-            ) : (
-
-                sortedData.map(renderItem)
-            )} */}
-            {!data ? (
-                <ActivityIndicator size="large" color={COLOR.PrimaryColor} />
-            ) :
-                
+            {dataLike.length>0 ?
             noData()
-            }
+        :
+            null
+        }            
         </View >
     );
 };
