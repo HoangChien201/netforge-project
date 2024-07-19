@@ -19,6 +19,8 @@ import { Host } from 'react-native-portalize';
 import RequestNotificationPermission from './src/permissions/RequestNotificationPermission';
 import { registerRemoteNotificationsEvent } from './src/notifications/Events';
 import PushNotification from 'react-native-push-notification';
+import { Provider } from 'react-redux';
+import store from './src/component/store/store';
 function App(): React.JSX.Element {
   PushNotification.configure({
     onNotification: function (notification) {
@@ -33,6 +35,7 @@ function App(): React.JSX.Element {
 
   return (
     <GestureHandlerRootView>
+      <Provider store={store}>
       <StatusBar barStyle="dark-content" backgroundColor="transparent" />
       <UserProvider>
         <Host>
@@ -40,6 +43,7 @@ function App(): React.JSX.Element {
           <ZegoUIKitPrebuiltLiveStreamingFloatingMinimizedView />
         </Host>
       </UserProvider>
+      </Provider>
     </GestureHandlerRootView>
   )
 }

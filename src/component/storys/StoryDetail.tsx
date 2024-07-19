@@ -17,6 +17,7 @@ const StoryDetail = ({ route }) => {
     const [isTextInputVisible, setIsTextInputVisible] = useState(false);
     const [content, setContent] = useState('');
     const [isMultiLine, setIsMultiLine] = useState(false);
+    const [isSubmitDisabled, setIsSubmitDisabled] = useState(false);
     const textInputRef = useRef(null);
     const textHiddenRef = useRef(null);
     const navigation = useNavigation();
@@ -24,6 +25,7 @@ const StoryDetail = ({ route }) => {
     const animatedBottom = useRef(new Animated.Value(50)).current;
     const animatedWidth = useRef(new Animated.Value(1)).current;
     console.log("StoryDetail");
+    
     useEffect(() => {
         const keyboardDidShowListener = Keyboard.addListener(
             'keyboardDidShow',
@@ -79,6 +81,7 @@ const StoryDetail = ({ route }) => {
 
     const uploadImage = async () => {
         try {
+            setIsSubmitDisabled(true);
             const formData = new FormData();
             formData.append('files', {
                 uri: Platform.OS === 'android' ? uri : uri.replace('content://', ''),
@@ -87,7 +90,7 @@ const StoryDetail = ({ route }) => {
             });
 
             const uploadedMedias = await upLoadMedia(formData);
-            let medias:any = [];
+            let medias = [];
             if (Array.isArray(uploadedMedias)) {
                 medias = uploadedMedias.map(item => ({
                     url: item.url,
@@ -98,7 +101,6 @@ const StoryDetail = ({ route }) => {
                 console.error('uploadedMedias is not an array or is undefined');
             }
             const type = 2;
-
             const permission = 1;
             setIsLoading(true);
             const newPost = await createNewPost({ type, medias, permission, content });
@@ -115,7 +117,6 @@ const StoryDetail = ({ route }) => {
                     navigation.popToTop();
                 }, 1500);
             }, 1000);
-
         } catch (error) {
             console.error('Error uploading image: ', error);
             setTimeout(() => {
@@ -123,6 +124,7 @@ const StoryDetail = ({ route }) => {
                 setStatus('Có lỗi khi tạo');
                 setShowPopup(true);
                 setIsError(true);
+                setIsSubmitDisabled(false); // Enable submit button on error
                 setTimeout(() => {
                     setStatus('');
                     setShowPopup(false);
@@ -146,7 +148,7 @@ const StoryDetail = ({ route }) => {
             <Loading isLoading={isLoading} />
             <Image source={{ uri: uri }} style={{ flex: 1 }} />
             <Animated.View style={{ position: 'absolute', bottom: animatedBottom, right: 30, width: "25%", height: '8%', backgroundColor: COLOR.PrimaryColor, borderRadius: 10, alignItems: 'center', justifyContent: 'center' }}>
-                <TouchableOpacity onPress={uploadImage}>
+                <TouchableOpacity onPress={uploadImage} disabled={isSubmitDisabled}>
                     <Text style={{ color: '#000', fontWeight: 'bold' }}>Đăng</Text>
                 </TouchableOpacity>
             </Animated.View>
@@ -192,7 +194,7 @@ export default StoryDetail;
 
 const styles = StyleSheet.create({
     input: {
-        fontSize:20,
+        fontSize: 20,
         height: 80,
         borderColor: 'gray',
         borderWidth: 1,
@@ -208,7 +210,6 @@ const styles = StyleSheet.create({
         paddingHorizontal: 10,
     },
     animatedInputContainer: {
-        
         position: 'absolute',
         top: 100,
         justifyContent: 'center',

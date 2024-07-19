@@ -13,6 +13,9 @@ import FriendProfile from "../profile/FriendProfile";
 
 import Birtday from "../../birtday/Birtday";
 import QRcodeScreen from "../../screens/QRcodeScreen";
+import LiveStack from "./LiveStack";
+import AudienceScreen from "../../screens/live/AudienceScreen";
+import HostScreen from "../../screens/live/HostScreen";
 
 export enum HomeRootStackEnum {
     StoryScreen = 'StoryScreen',
@@ -25,7 +28,9 @@ export enum HomeRootStackEnum {
     EditProfileScreen = 'EditProfileScreen',
     FriendProfile = 'FriendProfile',
     Birtday = 'Birtday',
-    QRcodeScreen = 'QRcodeScreen'
+    QRcodeScreen = 'QRcodeScreen',
+    LiveStack = 'LiveStack',
+    HostScreen = 'HostScreen'
 
 }
 
@@ -39,6 +44,8 @@ export type HomeRootStackParams = {
     FriendProfile: undefined,
     Birtday: undefined
     QRcodeScreen:undefined
+    LiveStack:undefined
+    HostScreen:undefined
 
 }
 
@@ -128,16 +135,28 @@ export const HomeRootStackScreens = [
             headerTitleAlign:'center'
         }
     },
-    // }
-    //     id: Math.random() + "" + Date,
-    //     name: HomeRootStackEnum.ProfileScreen,
-    //     component: ProfileScreen,
-    //     options: {
-    //         headerShown: true,
-    //         // headerLeft: () => null,
-    //         title:"Trang cá nhân",
-    //         headerTitleAlign:'center'
-    //     }
-    // },
+     {
+        id: Math.random() + "" + Date,
+        name: HomeRootStackEnum.LiveStack,
+        component: AudienceScreen,
+        options: {
+            headerShown: true,
+            // headerLeft: () => null,
+            title:"Phát trực tiếp",
+            headerTitleAlign:'center'
+        }
+    },
+    {
+        id: Math.random() + "" + Date,
+        name: "HostScreen",
+        component: HostScreen,
+        options: {
+            headerShown: true,
+            // headerLeft: () => null,
+            title:"Phát trực tiếp",
+            headerTitleAlign:'center'
+        }
+    },
+   
 
 ]

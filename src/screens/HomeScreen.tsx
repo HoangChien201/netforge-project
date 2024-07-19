@@ -1,5 +1,5 @@
 import React, { useCallback, useRef, useState, useEffect } from 'react';
-import { StyleSheet, View, Animated, Image, Text, TouchableOpacity, ScrollView, ImageBackground } from 'react-native';
+import { StyleSheet, View, Animated, Image, Text, TouchableOpacity, ScrollView, ImageBackground, TouchableWithoutFeedback } from 'react-native';
 import ListStory from '../component/storys/ListStory';
 import ListPorts from '../component/listpost/ListPorts';
 import { useNavigation } from '@react-navigation/native';
@@ -77,19 +77,19 @@ const HomeScreen = () => {
     const handleScroll = ({ nativeEvent }) => {
         const offsetY = nativeEvent.contentOffset.y;
         if (offsetY - prevScrollY > 10) {
-        
             Animated.timing(tabBarTranslateY, {
                 toValue: 100,
                 duration: 100,
                 useNativeDriver: true,
             }).start();
+            handleOutsidePress(); // Ẩn menu khi cuộn xuống
         } else if (prevScrollY - offsetY > 10) {
-           
             Animated.timing(tabBarTranslateY, {
                 toValue: 0,
                 duration: 150,
                 useNativeDriver: true,
             }).start();
+            handleOutsidePress(); // Ẩn menu khi cuộn lên
         }
 
         setPrevScrollY(offsetY);
@@ -137,56 +137,65 @@ const HomeScreen = () => {
         setHidden(prev => !prev);
     };
 
+    // Hàm để ẩn menu khi chạm ra ngoài hoặc cuộn
+    const handleOutsidePress = () => {
+        if (hidden) {
+            setHidden(false);
+        }
+    };
+
     return (
-        <View style={styles.container}>
-            <TouchId visible={visible} setVisible={setVisible} />
-            <View style={styles.headerContainer}>
-                <View style={styles.headerLeft}>
-                    <Image source={require('../media/quyet_icon/netforge1.jpg')} style={styles.logo} />
-                    <Text style={styles.headerTitle}>NetForge</Text>
-                </View>
-                <View>
-                    <TouchableOpacity onPress={() => navigation.navigate('ExploreScreen')}>
-                        <AntDesignIcon name='search1' size={22} color='#000' style={styles.iconCenter} />
-                    </TouchableOpacity>
-                </View>
-                <View style={styles.headerRight}>
-                    <TouchableOpacity style={{ alignItems: 'center' }} onPress={handlerClick}>
-                        <Image source={{ uri: user.avatar }} style={styles.userAvatar} />
-                        <Text style={styles.userName}>{user.fullname}</Text>
-                    </TouchableOpacity>
-                </View>
-                {hidden && (
-                    <View style={styles.hiddenMenu}>
-                        <View style={styles.hiddenMenuContent}>
-                            <TouchableOpacity style={styles.hiddenMenuItem} onPress={() => navigation.navigate('Scanner')}>
-                                <MaterialCommunityIcons name='qrcode-scan' size={25} />
-                                <Text style={styles.hiddenMenuText}>Mở máy ảnh</Text>
-                            </TouchableOpacity>
-                            <TouchableOpacity style={styles.hiddenMenuItem} onPress={() => navigation.navigate('QRcodeScreen')}>
-                                <MaterialCommunityIcons name='qrcode' size={25} />
-                                <Text style={styles.hiddenMenuText}>Mã QR của tôi</Text>
-                            </TouchableOpacity>
-                        </View>
+        <TouchableWithoutFeedback onPress={handleOutsidePress}>
+            <View style={styles.container}>
+                <TouchId visible={visible} setVisible={setVisible} />
+                <View style={styles.headerContainer}>
+                    <View style={styles.headerLeft}>
+                        <Image source={require('../media/quyet_icon/netforge1.jpg')} style={styles.logo} />
+                        <Text style={styles.headerTitle}>NetForge</Text>
                     </View>
-                )}
-            </View>
-            <View style={styles.contentContainer}>
-                <Animated.FlatList
-                    data={data}
-                    renderItem={renderItem}
-                    keyExtractor={item => item.key}
-                    showsVerticalScrollIndicator={false}
-                    onScroll={Animated.event(
-                        [{ nativeEvent: { contentOffset: { y: scrollY } } }],
-                        { useNativeDriver: false, listener: handleScroll }
+                    <View>
+                        <TouchableOpacity onPress={() => navigation.navigate('ExploreScreen')}>
+                            <AntDesignIcon name='search1' size={22} color='#000' style={styles.iconCenter} />
+                        </TouchableOpacity>
+                    </View>
+                    <View style={styles.headerRight}>
+                        <TouchableOpacity style={{ alignItems: 'center' }} onPress={handlerClick}>
+                            <Image source={{ uri: user.avatar }} style={styles.userAvatar} />
+                            <Text style={styles.userName}>{user.fullname}</Text>
+                        </TouchableOpacity>
+                    </View>
+                    {hidden && (
+                        <View style={styles.hiddenMenu}>
+                            <View style={styles.hiddenMenuContent}>
+                                <TouchableOpacity style={styles.hiddenMenuItem} onPress={() => navigation.navigate('Scanner')}>
+                                    <MaterialCommunityIcons name='qrcode-scan' size={25} />
+                                    <Text style={styles.hiddenMenuText}>Mở máy ảnh</Text>
+                                </TouchableOpacity>
+                                <TouchableOpacity style={styles.hiddenMenuItem} onPress={() => navigation.navigate('QRcodeScreen')}>
+                                    <MaterialCommunityIcons name='qrcode' size={25} />
+                                    <Text style={styles.hiddenMenuText}>Mã QR của tôi</Text>
+                                </TouchableOpacity>
+                            </View>
+                        </View>
                     )}
-                    onEndReachedThreshold={0.5}
-                    refreshing={refreshing}
-                    onRefresh={onRefresh}
-                />
+                </View>
+                <View style={styles.contentContainer}>
+                    <Animated.FlatList
+                        data={data}
+                        renderItem={renderItem}
+                        keyExtractor={item => item.key}
+                        showsVerticalScrollIndicator={false}
+                        onScroll={Animated.event(
+                            [{ nativeEvent: { contentOffset: { y: scrollY } } }],
+                            { useNativeDriver: false, listener: handleScroll }
+                        )}
+                        onEndReachedThreshold={0.5}
+                        refreshing={refreshing}
+                        onRefresh={onRefresh}
+                    />
+                </View>
             </View>
-        </View>
+        </TouchableWithoutFeedback>
     );
 };
 
