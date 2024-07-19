@@ -18,7 +18,9 @@ import ItemFriend from '../component/notificationes/ItemFriend'
 import ItemMessage from '../component/notificationes/ItemMessage';
 import ItemShare from '../component/notificationes/ItemShare';
 import ItemNewPost from '../component/notificationes/ItemNewPost';
-import ItemBirth from '../component/notificationes/ItemShare';
+import ItemBirth from '../component/notificationes/ItemBirth';
+import ItemFriendAccept from '../component/notificationes/ItemFriendAccept';
+import ItemNewPostTag from '../component/notificationes/ItemNewPostTag';
 const NotificationScreen = () => {
 
   const [showModalFriend, setShowModalFriend] = useState(false);
@@ -155,6 +157,10 @@ const NotificationScreen = () => {
         return <ItemMessage notification={item} />;
       case 7:
         return <ItemBirth notification={item} />;
+      case 8:
+        return <ItemFriendAccept notification={item} />;
+      case 9:
+        return <ItemNewPostTag notification={item} />;
       default:
         return null;
     }

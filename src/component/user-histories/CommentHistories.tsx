@@ -24,15 +24,15 @@ const CommentHistories: React.FC<Comment> = ({ dataComment }) => {
     const sortedData = useMemo(() => {
         return [...dataComment].sort((a: { create_at: any | Date; }, b: { create_at: any | Date; }) => new Date(b.create_at) - new Date(a.create_at));
     }, [dataComment]);
-    useEffect(() => {
-        // Set a timeout to simulate loading
-        const timer = setTimeout(() => {
-            setLoading(false);
-        }, 1000);
+    // useEffect(() => {
+    //     // Set a timeout to simulate loading
+    //     const timer = setTimeout(() => {
+    //         setLoading(false);
+    //     }, 1000);
 
-        // Clean up the timer
-        return () => clearTimeout(timer);
-    }, []);
+    //     // Clean up the timer
+    //     return () => clearTimeout(timer);
+    // }, []);
 
     const showPostModal = () => {
         setShowModal(true);
@@ -45,7 +45,7 @@ const CommentHistories: React.FC<Comment> = ({ dataComment }) => {
 
     return (
         <View style={styles.container}>
-            {loading ? (
+            {!dataComment ? (
                 <ActivityIndicator size="large" color={COLOR.PrimaryColor} />
             )
 

@@ -10,7 +10,6 @@ import {
 
   LogBox,
   StatusBar,
-  LogBox
 
 } from 'react-native';
 import ManageNavigation from './src/component/navigation/ManageNavigation';

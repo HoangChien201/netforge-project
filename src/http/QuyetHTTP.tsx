@@ -244,7 +244,7 @@ export const cancelWaitAccept = async (friendId: number) => {
         const token = await AsyncStorage.getItem('token')
         const url = '/friendship/reject-request'
         const result = await AxiosInstance().post(url, {
-            status: friendId
+            user1: friendId
         }, {
             headers: {
                 Authorization: `Bearer ${token}`

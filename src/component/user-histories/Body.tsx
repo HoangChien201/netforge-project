@@ -1,5 +1,5 @@
 import { StyleSheet, Text, View, Modal, TouchableOpacity, Dimensions, ScrollView } from 'react-native'
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import CommentHistories from './CommentHistories'
 import LikeHistories from './LikeHistories'
 import Icon from 'react-native-vector-icons/AntDesign'
@@ -33,7 +33,7 @@ const Body: React.FC<BodyH> = ({ }) => {
         } catch (error) {
             console.log('lỗi lấy useHistories: ' + error);
         }
-    }
+    };
     useEffect(() => {
         getData();
     }, [])

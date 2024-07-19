@@ -21,9 +21,10 @@ type Bpob = {
     friends: any,
     setFriends: (value: any) => void,
     setShowAI: (value: any) => void,
-    imageUrl: any
+    imageUrl: any,
+    hiddenView: any
 }
-const Body: React.FC<Bpob> = ({ content, setContent, media, setMedia, permission, setPermission, setStatus, setShowPopup, friends, setFriends, setShowAI, imageUrl }) => {
+const Body: React.FC<Bpob> = ({ hiddenView,content, setContent, media, setMedia, permission, setPermission, setStatus, setShowPopup, friends, setFriends, setShowAI, imageUrl }) => {
     //const [media, setMedia] = useState([]);
     const [playingVideo, setPlayingVideo] = useState(null);
     const [viewMore, setViewMore] = useState(false);
@@ -85,7 +86,7 @@ const Body: React.FC<Bpob> = ({ content, setContent, media, setMedia, permission
     };
     // View danh sách media
     const renderMedia = (item: any) => {
-        if (!item || item.length === 0) {
+        if (!item || item.length === 0 || hiddenView==true) {
             return null;
         }
         const numMedia = item.length;
@@ -328,7 +329,7 @@ const Body: React.FC<Bpob> = ({ content, setContent, media, setMedia, permission
     };
     // Media edit
     const switchMedia = (item: string | any[] | any) => {
-        if (!item || item.length === 0) {
+        if (!item || item.length === 0 || hiddenView==true) {
             return null;
         }
         if (item) {
@@ -387,14 +388,15 @@ const Body: React.FC<Bpob> = ({ content, setContent, media, setMedia, permission
         );
     };
     return (
-        <View style={styles.container} >
-            <View style={styles.header}>
+        <View style={[styles.container]} >
+            <View style={[styles.header,hiddenView == true && styles.hiddent]}>
                 <USER setPermission={setPermission} />
                 {/*----------------------- danh sách media chia theo khung ----------------*/}
                 {/* ---------------------danh sách hiển thị theo list -------------------------*/}
 
+                <TEXTAREA content={content} setContent={setContent} setFriends={setFriends} friends={friends} />
                 {viewMore ?
-                    <View>
+                    <View >
                         {switchMedia(media)}
                         {renderDots()}
                         {!viewMore || media.length==0?
@@ -407,12 +409,10 @@ const Body: React.FC<Bpob> = ({ content, setContent, media, setMedia, permission
                         }
                     </View>
                     :
-                    <View style={styles.itemContainer}>
+                    <View >
                         {renderMedia(media)}
                     </View>
                 }
-
-                <TEXTAREA content={content} setContent={setContent} setFriends={setFriends} friends={friends} />
                 <OPTIONS onSelectEmoji={handleEmojiSelect} onSelectMedia={handleMediaSelect} setShowAI={setShowAI} imageUrl={imageUrl} />
             </View>
         </View>
@@ -428,6 +428,9 @@ const styles = StyleSheet.create({
         width: '100%',
         borderTopStartRadius: 36,
         borderTopEndRadius: 36,
+    },
+    hiddent:{
+        height: '60%',
     },
     buttonCloseSwitch: {
         backgroundColor: COLOR.PrimaryColor,

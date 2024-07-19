@@ -56,15 +56,15 @@ const LikeHistories: React.FC<Like> = ({ data }) => {
     useEffect(() => {
         renderItem
     }, [data, sortedData])
-    useEffect(() => {
-        // Set a timeout to simulate loading
-        const timer = setTimeout(() => {
-            setLoading(false);
-        }, 1000);
+    // useEffect(() => {
+    //     // Set a timeout to simulate loading
+    //     const timer = setTimeout(() => {
+    //         setLoading(false);
+    //     }, 1000);
 
-        // Clean up the timer
-        return () => clearTimeout(timer);
-    }, []);
+    //     // Clean up the timer
+    //     return () => clearTimeout(timer);
+    // }, []);
     const getReactionDetails = (reaction: any) => {
         switch (reaction) {
             case 1:
@@ -130,7 +130,7 @@ const LikeHistories: React.FC<Like> = ({ data }) => {
 
                 sortedData.map(renderItem)
             )} */}
-            {loading ? (
+            {!data ? (
                 <ActivityIndicator size="large" color={COLOR.PrimaryColor} />
             ) :
                 
