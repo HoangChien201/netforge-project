@@ -6,12 +6,17 @@ import { useMyContext } from '../../component/navigation/UserContext';
 import {getFriends } from '../../http/QuyetHTTP';
 import { socket } from '../../http/SocketHandle';
 import Sound from 'react-native-sound';
+import { FlatList } from 'react-native-gesture-handler';
+import { date } from 'yup';
+import ItemBirthday from '../../birtday/ItemBirthday';
 
 const HelpScreen = () => {
   const {user} = useMyContext();
   const [friend, setFriend] = useState([])
+  const [todayFriends, setTodayFriends] = useState([]);
   const [birthdaySound, setBirthdaySound] = useState(null);
   const [isVisibleBirtday, setIsVisibleBirtday] = useState(false);
+
   const navigation = useNavigation()
   const isFocus = useIsFocused()
   // console.log('birt', birthdaySound);
@@ -58,21 +63,27 @@ const HelpScreen = () => {
           }
       });
     }
-}, [isFocus]);
+}, [isFocus]);  
 //happy birthday friend
   useEffect(() => {
-    friend.forEach(friend => {
-      const birthday = new Date()
-      const friendBirthday = new Date(friend.user.dateOfBirth)
-      const id = friend.user.id;
-      const fullname = friend.user.fullname;
-      const avatar = friend.user.avatar;
-      if(birthday.getDate() == friendBirthday.getDate() && birthday.getMonth() == friendBirthday.getMonth()){
-        console.log('Hôm nay là sinh nhật của', friend.user.fullname);
-        handleSendNotification(id,fullname,avatar);
-      }
+    const today = new Date();
+    const friendsToday = friend.filter(friend => {
+      const friendBirthday = new Date(friend.user.dateOfBirth);
+      return today.getDate() === friendBirthday.getDate() && today.getMonth() === friendBirthday.getMonth();
     });
+
+    friendsToday.forEach(friend => {
+      const { id, fullname, avatar } = friend.user;
+      console.log('Hôm nay là sinh nhật của', fullname);
+      handleSendNotification(id, fullname, avatar);
+    });
+
+    setTodayFriends(friendsToday);
+    console.log(friendsToday);
+    
   }, [friend]);
+
+  
 
 // get all friends
   const getFriendAll = async() => {
@@ -98,16 +109,31 @@ const HelpScreen = () => {
     }
     // sendNCommentPost(data)
     socket.emit('notification', data);
-    console.log('Sent notification data:', data);
+    // console.log('Sent notification data:', data);
   };
 
   return (
-    <View style = {{}}>
+    <View style = {{backgroundColor: '#fff', width: '100%', height: '100%'}}>
       <ModalBirtday IsVisible={isVisibleBirtday} onClose = {()=>{
         setIsVisibleBirtday(false)
         if(birthdaySound){
           birthdaySound.stop()
         }}}/>
+        <Text style = {{fontSize: 20, fontWeight: 'bold', color: '#000', marginLeft: 12, top: 10}}>Hôm nay</Text>
+         {
+          todayFriends ? (
+            <FlatList
+        data={todayFriends}
+        keyExtractor={(item) => item.user.id.toString()}
+        renderItem={({ item }) => <ItemBirthday item={item} />} // Sử dụng component ItemBirthday
+        />
+          ) : (
+            <View style = {{justifyContent: 'center', alignItems: 'center'}}> 
+              <Text style = {{fontSize: 20, fontWeight: 'bold'}}>Hôm nay không có sinh nhật</Text>
+            </View>
+
+          )
+         }
     </View>
   )
 }

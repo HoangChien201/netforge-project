@@ -221,6 +221,7 @@ const HomeScreen = () => {
                         [{ nativeEvent: { contentOffset: { y: scrollY } } }],
                         { useNativeDriver: false, listener: handleScroll }
                     )}
+                    />
                 </View>
 
                 <View style={styles.contentContainer}>
@@ -239,8 +240,9 @@ const HomeScreen = () => {
                         onRefresh={onRefresh}
                     />
                 </View>
-            </View>
-        </TouchableWithoutFeedback>
+            
+        </View>
+        
     );
 };
 

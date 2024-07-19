@@ -156,7 +156,7 @@ return (
                 {
                     loaDing && comment.length == 0 && (
                         <View style={styles.spinnerContainer}>
-                            <UIActivityIndicator color={'#FF6347'} size={30} />
+                            <UIActivityIndicator color={'#FF6347'} size={30}/>
                         </View>
                     )
                 }
