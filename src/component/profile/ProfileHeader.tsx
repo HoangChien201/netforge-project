@@ -93,6 +93,7 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({ fullname, userId, loggedI
     setShow(true);
   };
 
+  
   const deleteF = async (id: number) => {
     
     const user1 = Number(user.id);
@@ -130,6 +131,7 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({ fullname, userId, loggedI
 
     }
   }
+
   const checkReqOrAccept = () => {
     return (
       <View>
@@ -164,6 +166,7 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({ fullname, userId, loggedI
             <Icon name="person-add" size={24} color="#fff" style={{ marginRight: 10 }} />
             <Text style={{ color: '#fff', fontSize: 18, fontWeight: '700' }}>{textReqState == true ? 'Đã gửi lời mời' : 'Gửi lời mời'}</Text>
           </TouchableOpacity>
+          
           <View style={{flexDirection:'row'}}>
             <TouchableOpacity style={styles.btnSendMessage}>
               <Icon name="message" size={24} color="#000" style={{ marginRight: 10 }} />
@@ -175,6 +178,7 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({ fullname, userId, loggedI
               <Text style={{ color: '#000', fontSize: 18, fontWeight: '700' }}>Bạn bè</Text>
             </TouchableOpacity>
           </View>
+
         </View>
       )
 

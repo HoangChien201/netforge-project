@@ -11,7 +11,7 @@ import { PermissionsAndroid } from 'react-native';
 const isFocused = useIsFocused();
 const QRcodeScreen = () => {
   const navigation = useNavigation()
-  let logoFromFile = require('../media/quyet_icon/netforge.png');
+  // let logoFromFile = require('../media/quyet_icon/netforge.png');
   const { user } = useMyContext();
   const ref = useRef();
   const handleToScanner = () => {

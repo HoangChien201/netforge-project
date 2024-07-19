@@ -7,6 +7,7 @@ import MCIcon from 'react-native-vector-icons/MaterialCommunityIcons'
 import { PermissionCamera } from './Permission';
 import { useMyContext } from '../navigation/UserContext';
 import { messageType } from './MessageItem';
+import { MessageProvider } from './class/MessageProvider';
 
 const UseMedia = ({ onSubmit,reply }: { onSubmit: any,reply:messageType | null }) => {
     const { user } = useMyContext()
@@ -62,7 +63,20 @@ const UseMedia = ({ onSubmit,reply }: { onSubmit: any,reply:messageType | null }
         if (response.assets && response.assets.length > 0) {
             await response.assets.map((asset: any) => {
                 const { type, fileName, uri } = asset
-                onSubmit(NewMessage({type,fileName,uri}))
+                // onSubmit(NewMessage({type,fileName,uri}))
+                console.log('typeimage',type);
+                
+                onSubmit(
+                    new MessageProvider(
+                        {
+                            message:{ type, fileName, uri },
+                            type:'image',
+                            sender:user.id,
+                            parent:reply ? reply : null
+                        }
+                        
+                    )
+                )
 
                 return {
                     type,

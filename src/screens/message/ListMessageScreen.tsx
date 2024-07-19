@@ -7,14 +7,13 @@ import { getGroupsAPI } from '../../http/ChienHTTP'
 import { socket } from '../../http/SocketHandle'
 import { StackNavigationProp } from '@react-navigation/stack'
 import { MessageRootStackParams } from '../../component/stack/MessageRootStackParams'
-import { RouteProp, useIsFocused } from '@react-navigation/native'
+import { RouteProp, useIsFocused, useNavigation, useRoute } from '@react-navigation/native'
 import ModalNewMessage from '../../component/message/ModalNewMessage'
 
 const ListMessageScreen = () => {
   const {user}=useMyContext()
   const [groups,setGroups]=useState<Array<GroupChatType>>([])
   const [visibleModalNewMessage,SetVisibleModalNewMessage]=useState(false)
-
   const isFocus=useIsFocused()
   useEffect(()=>{
     getGroups()
@@ -22,6 +21,7 @@ const ListMessageScreen = () => {
       
       getGroups()
     })
+
     return ()=>{
       socket.off(`list-group-${user.id}`)
     }

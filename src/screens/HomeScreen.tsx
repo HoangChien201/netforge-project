@@ -6,6 +6,7 @@ import TouchID from 'react-native-touch-id';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { flatMap } from 'lodash';
 
+
 import ListStory from '../component/storys/ListStory';
 import ListPorts from '../component/listpost/ListPorts';
 import { COLOR } from '../constant/color';
@@ -202,7 +203,7 @@ const HomeScreen = () => {
     };
 
     return (
-        <TouchableWithoutFeedback onPress={handleOutsidePress}>
+       <TouchableWithoutFeedback onPress={handleOutsidePress}>
             <View style={styles.container}>
                 <TouchId visible={visible} setVisible={setVisible} />
                 <View style={styles.headerContainer}>
@@ -235,7 +236,6 @@ const HomeScreen = () => {
                             </View>
                         </View>
                     )}
-                    />
                 </View>
                 <View style={styles.contentContainer}>
                     <Animated.FlatList
@@ -252,9 +252,8 @@ const HomeScreen = () => {
                         onRefresh={onRefresh}
                     />
                 </View>
-            
-        </View>
-        
+            </View>
+</TouchableWithoutFeedback>
     );
 };
 

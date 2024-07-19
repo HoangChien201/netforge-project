@@ -2,6 +2,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { GroupChatType } from "../component/message/ListMessageItem";
 import { messageType, reactionType } from "../component/message/MessageItem";
 import AxiosInstance from "./AxiosInstance";
+import { MessageProvider } from "../component/message/class/MessageProvider";
 
 export const getGroupsAPI = async () => {
   try {
@@ -43,7 +44,7 @@ export const getMessageByGroupAPI = async (group_id:number) => {
   }
 }
 
-export const addMessageAPI = async (message:any) => {
+export const addMessageAPI = async (message:MessageProvider) => {
   try {
     const url = '/message';
     const respone:messageType= await AxiosInstance().post(url,message);
