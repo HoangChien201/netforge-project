@@ -3,6 +3,7 @@ import { socket } from '../http/SocketHandle';
 import { useMyContext } from '../component/navigation/UserContext';
 import React from 'react';
 import { number } from 'yup';
+import Friend from '../component/scanQR-modal/Friend';
 
 const createNotificationTemplate = () => ({
   id: uuid.v4(),
@@ -63,7 +64,6 @@ export const useSendNotification = () => {
         fullname: user.fullname,
         avatar: user.avatar,
       }
-
     };
     socket.emit('notification', data);
     console.log('Sent notification data:', data);
@@ -143,9 +143,7 @@ export const useSendNotification = () => {
         sender: user.id,
         fullname: user.fullname,
         avatar: user.avatar,
-
       },
-
     };
     socket.emit('notification', data);
     console.log('Sent notification data:', data);
@@ -190,6 +188,59 @@ export const useSendNotification = () => {
     socket.emit('notification', data);
     console.log('Sent notification data:', data);
   };
+  const sendBirthDay = ( {friendId,fullname,avatar}) => {
+    const notificationTemplate = createNotificationTemplate();
+    const data = {
+      ...notificationTemplate,
+      type: 7,
+      friendId,
+      title:`Hôm nay là sinh nhật của ${fullname}`,
+      userInfo: {
+        receiver:user.id,
+        avatar,
+      },
+
+    };
+    socket.emit('notification', data);
+    console.log('Sent notification data:', data);
+  };
+  const sendAcceptFriend = ( {friendId}) => {
+    const notificationTemplate = createNotificationTemplate();
+    const data = {
+      ...notificationTemplate,
+      type: 8,
+      friendId,
+      title:`${user.fullname} đã chấp nhận lời mời kết bạn!`,
+      body:"",
+      userInfo: {
+        receiver:friendId,
+        sender: user.id,
+        fullname: user.fullname,
+        avatar: user.avatar,
+      },
+    };
+    socket.emit('notification', data);
+    console.log('Sent notification data:', data);
+  };
+  const sendTagFriend = ( {postId,receiver,body}) => {
+    const notificationTemplate = createNotificationTemplate();
+    const data = {
+      ...notificationTemplate,
+      type:9,
+      postId,
+      title:`${user.fullname} đã gắn thẻ bạn trong một bài viết`,
+      body,
+      userInfo: {
+        receiver,
+        sender: user.id,
+        fullname: user.fullname,
+        avatar: user.avatar,
+      },
+
+    };
+    socket.emit('notification', data);
+    console.log('Sent notification data:', data);
+  };
   return {
     sendNCommentPost,
     sendNRepComment,
@@ -198,7 +249,10 @@ export const useSendNotification = () => {
     sendNCreateNewPostHistory,
     sendNRequestFriend,
     sendNMessage,
-    sendNSharePost
+    sendNSharePost,
+    sendTagFriend,
+    sendAcceptFriend,
+    sendBirthDay
   };
 };
 

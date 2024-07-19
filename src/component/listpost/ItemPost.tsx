@@ -16,7 +16,7 @@ import AxiosInstance from '../../http/AxiosInstance';
 import { set } from 'lodash';
 
 const ItemPost = memo(({ index, data, onrefresh, userId, onPressProfile, setShowModalEdit, setSelectedId, showDelete, setShowDelete }) => {
-   
+
     const [checkLike, setCheckLike] = useState(false);
     const [datas, setData] = useState(data);
     const [shareId, setshareId] = useState(null);
@@ -29,13 +29,12 @@ const ItemPost = memo(({ index, data, onrefresh, userId, onPressProfile, setShow
     const [isModalVisible, setIsModalVisible] = useState(false);
     const [selectedUserId, setSelectedUserId] = useState(null);
     const loggedInUserId = user.id;
-    
-    useEffect(()=>{
+
+    useEffect(() => {
         setData(data)
-    },[data])
-   
+    }, [data])
+
     const { creater, share_count, reaction, content, media, comment_count, create_at, id, like_count, share } = datas;
-    
     const navigation: NavigationProp<ParamListBase> = useNavigation();
 
     useFocusEffect(
@@ -110,7 +109,7 @@ const ItemPost = memo(({ index, data, onrefresh, userId, onPressProfile, setShow
     };
 
     const handleEdit = () => {
-        setSelectedId(id);
+        setSelectedId(datas);
         setShowModalEdit(true);
 
         hiddenMenu1();
@@ -160,22 +159,22 @@ const ItemPost = memo(({ index, data, onrefresh, userId, onPressProfile, setShow
                                 onRequestClose={() => setIsModalVisible(false)}
                             >
                                 <TouchableOpacity style={styles.modalOverlay} onPress={hiddenMenu1}>
-                                <TouchableOpacity style={styles.modalContainer} activeOpacity={1}>
+                                    <TouchableOpacity style={styles.modalContainer} activeOpacity={1}>
                                         <TouchableOpacity style={styles.buttonMenu} onPress={handleDelete}>
-                                        <View style={{marginHorizontal:10, marginRight:20,backgroundColor:'rgba(0,0,0,0.2)',width:30,height:30,alignItems:'center',justifyContent:'center',borderRadius:50}}>
-                                        <AntDesignIcon name='close' size={18} color="black" />
-                                          </View>
+                                            <View style={{ marginHorizontal: 10, marginRight: 20, backgroundColor: 'rgba(0,0,0,0.2)', width: 30, height: 30, alignItems: 'center', justifyContent: 'center', borderRadius: 50 }}>
+                                                <AntDesignIcon name='close' size={18} color="black" />
+                                            </View>
                                             <Text style={styles.textMenu}>Xóa bài viết</Text>
-                                           
+
                                         </TouchableOpacity>
                                         <TouchableOpacity style={styles.buttonMenu} onPress={handleEdit}>
-                                              <View style={{marginHorizontal:10, marginRight:20,backgroundColor:'rgba(0,0,0,0.2)',width:30,height:30,alignItems:'center',justifyContent:'center',borderRadius:50}}>
-                                          <AntDesignIcon name='sync' size={18} color="black" />
-                                          </View>
+                                            <View style={{ marginHorizontal: 10, marginRight: 20, backgroundColor: 'rgba(0,0,0,0.2)', width: 30, height: 30, alignItems: 'center', justifyContent: 'center', borderRadius: 50 }}>
+                                                <AntDesignIcon name='sync' size={18} color="black" />
+                                            </View>
                                             <Text style={styles.textMenu}>Sửa bài viết</Text>
-                                        
+
                                         </TouchableOpacity>
-                                       
+
                                     </TouchableOpacity>
                                 </TouchableOpacity>
                             </Modal>
@@ -250,22 +249,22 @@ const ItemPost = memo(({ index, data, onrefresh, userId, onPressProfile, setShow
                                 onRequestClose={() => setIsModalVisible(false)}
                             >
                                 <TouchableOpacity style={styles.modalOverlay} onPress={hiddenMenu1}>
-                                <TouchableOpacity style={styles.modalContainer} activeOpacity={1}>
+                                    <TouchableOpacity style={styles.modalContainer} activeOpacity={1}>
                                         <TouchableOpacity style={styles.buttonMenu} onPress={handleDelete}>
-                                        <View style={{marginHorizontal:10, marginRight:20,backgroundColor:'rgba(0,0,0,0.2)',width:30,height:30,alignItems:'center',justifyContent:'center',borderRadius:50}}>
-                                        <AntDesignIcon name='close' size={18} color="black" />
-                                          </View>
+                                            <View style={{ marginHorizontal: 10, marginRight: 20, backgroundColor: 'rgba(0,0,0,0.2)', width: 30, height: 30, alignItems: 'center', justifyContent: 'center', borderRadius: 50 }}>
+                                                <AntDesignIcon name='close' size={18} color="black" />
+                                            </View>
                                             <Text style={styles.textMenu}>Xóa bài viết</Text>
-                                           
+
                                         </TouchableOpacity>
                                         <TouchableOpacity style={styles.buttonMenu} onPress={handleEdit}>
-                                              <View style={{marginHorizontal:10, marginRight:20,backgroundColor:'rgba(0,0,0,0.2)',width:30,height:30,alignItems:'center',justifyContent:'center',borderRadius:50}}>
-                                          <AntDesignIcon name='sync' size={18} color="black" />
-                                          </View>
+                                            <View style={{ marginHorizontal: 10, marginRight: 20, backgroundColor: 'rgba(0,0,0,0.2)', width: 30, height: 30, alignItems: 'center', justifyContent: 'center', borderRadius: 50 }}>
+                                                <AntDesignIcon name='sync' size={18} color="black" />
+                                            </View>
                                             <Text style={styles.textMenu}>Sửa bài viết</Text>
-                                        
+
                                         </TouchableOpacity>
-                                       
+
                                     </TouchableOpacity>
                                 </TouchableOpacity>
                             </Modal>
@@ -317,8 +316,8 @@ const styles = StyleSheet.create({
     buttonMenu: {
         flexDirection: 'row',
         padding: 5,
-        alignItems:'center'
-       
+        alignItems: 'center'
+
     },
     textMenu: {
         fontWeight: 'bold',
@@ -353,7 +352,7 @@ const styles = StyleSheet.create({
         marginRight: 10,
     },
     sharedPostContainer: {
-        
+
     },
     modalOverlay: {
         flex: 1,
@@ -364,9 +363,9 @@ const styles = StyleSheet.create({
     modalContainer: {
         backgroundColor: 'white',
         padding: 20,
-        borderTopStartRadius:30,
-        borderTopEndRadius:30,
-       
+        borderTopStartRadius: 30,
+        borderTopEndRadius: 30,
+
         width: '100%',
 
     },

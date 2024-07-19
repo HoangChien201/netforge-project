@@ -30,12 +30,14 @@ const CreatePostScreen = memo(() => {
   const isFocused = useIsFocused()
   const [permission, setPermission] = useState(1);
   const [sendAll, setSendAll] = useState(true);
-  const { sendNCreateNewPostHistory } = useSendNotification();
+  const { sendNCreateNewPostHistory,sendTagFriend } = useSendNotification();
+
   const [showAI, setShowAI] = useState(false);
   const [imageUrl, setImageUrl] = useState('');
   const navigation = useNavigation();
   const contentRef = useRef(content);
   const mediaRef = useRef(media);
+  const [hiddenView,setHiddenView] = useState(false)
   // const [imageUrl, setImageUrl] = useState('https://oaidalleapiprodscus.blob.core.windows.net/private/org-xPqRqNjg7rhJctL5M8HgZuVW/user-7aLXFzohKCutW9RLwKG25OxW/img-OV7ku7s8LUd6BUMEu0hbXT4v.png?st=2024-07-11T14%3A47%3A14Z&se=2024-07-11T16%3A47%3A14Z&sp=r&sv=2023-11-03&sr=b&rscd=inline&rsct=image/png&skoid=6aaadede-4fb3-4698-a8f6-684d7786b067&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2024-07-10T23%3A22%3A00Z&ske=2024-07-11T23%3A22%3A00Z&sks=b&skv=2023-11-03&sig=5g5HtkuVSHgbNk%2By60LIx7FLtyaxDdXcR%2BenAaz3CCA%3D');
   useEffect(() => {
     contentRef.current = content;
@@ -121,6 +123,7 @@ const CreatePostScreen = memo(() => {
         console.log('Bài viết đã được tạo:', JSON.stringify(newPost));
         if (newPost && permission == 1) {
           handleSendReaction(newPost);
+          handleSendTags(newPost);
         }
         setTimeout(() => {
           setIsLoading(false);
@@ -149,6 +152,7 @@ const CreatePostScreen = memo(() => {
         console.log('Bài viết đã được tạo không medias:', newPost);
         if (newPost && permission == 1) {
           handleSendReaction(newPost);
+          handleSendTags(newPost);
         }
         setTimeout(() => {
           setIsLoading(false);
@@ -194,11 +198,30 @@ const CreatePostScreen = memo(() => {
       postId: post.id,
       body: post.contain
     };
+
     sendNCreateNewPostHistory(data);
+
   };
+  const handleSendTags = (post:any) => {
+    if (friends.length > 0) {
+      friends.forEach(friend => {
+        const data2 ={
+          postId: post.id,
+          body: post.contain,
+          receiver:Number(friend)
+        };
+        sendTagFriend(data2);
+        //console.log('hh', friend);
+        
+      });
+    } else {
+      console.log('No friends to tag');
+    }
+  };
+
   const log = () => {
 
-    console.log(content, media, type, permission, tags, imageUrl);
+    console.log(content, media, type, permission, tags, imageUrl, 'bạn' +friends);
 
   }
   useFocusEffect(
@@ -215,14 +238,13 @@ const CreatePostScreen = memo(() => {
     }, [navigation])
   );
 
-  
-
   const handleKeyboardShow = useCallback(() => {
     navigation.getParent()?.setOptions({
         tabBarStyle: {
             display: 'none',
         }
     });
+    setHiddenView(true)
 }, []);
 const handleKeyboardHide = useCallback(() => {
     navigation.getParent()?.setOptions({
@@ -233,6 +255,7 @@ const handleKeyboardHide = useCallback(() => {
             borderRadius: 15
         },
     });
+    setHiddenView(false)
 }, []);
 useEffect(() => {
   // Lắng nghe sự kiện hiển thị và ẩn bàn phím
@@ -252,7 +275,9 @@ useEffect(() => {
           <Text style={styles.headerPostText} >Đăng</Text>
         </TouchableOpacity>
       </View>
-      <BODY content={content}
+      <BODY 
+        hiddenView={hiddenView}
+        content={content}
         setContent={setContent}
         media={media}
         setMedia={setMedia}

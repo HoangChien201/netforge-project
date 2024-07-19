@@ -6,34 +6,22 @@ import { useMyContext } from '../navigation/UserContext'
 import { useNavigation } from '@react-navigation/native'
 import { COLOR } from '../../constant/color';
 type Comment = {
-    dataComment: any
+    dataComment: any,
+    load:any
 }
-const CommentHistories: React.FC<Comment> = ({ dataComment }) => {
+const CommentHistories: React.FC<Comment> = ({ dataComment,load }) => {
     // const [sortedData, setSortedData] = useState<any[]>([]);
     const [showModal, setShowModal] = useState(false);
     const navigation = useNavigation();
     const { user } = useMyContext();
     const [loading, setLoading] = useState(true);
-    if (!dataComment || dataComment.length == 0) {
+    if (!dataComment || dataComment.length == 0 && load == true) {
         return (
             <View style={styles.containerEmpty}>
                 <Text style={styles.textEmpty}>Hãy tương tác với mọi người để lưu giữ kỉ niệm!</Text>
             </View>
         )
     }
-    const sortedData = useMemo(() => {
-        return [...dataComment].sort((a: { create_at: any | Date; }, b: { create_at: any | Date; }) => new Date(b.create_at) - new Date(a.create_at));
-    }, [dataComment]);
-    useEffect(() => {
-        // Set a timeout to simulate loading
-        const timer = setTimeout(() => {
-            setLoading(false);
-        }, 1000);
-
-        // Clean up the timer
-        return () => clearTimeout(timer);
-    }, []);
-
     const showPostModal = () => {
         setShowModal(true);
         console.log('click');
@@ -45,11 +33,6 @@ const CommentHistories: React.FC<Comment> = ({ dataComment }) => {
 
     return (
         <View style={styles.container}>
-            {loading ? (
-                <ActivityIndicator size="large" color={COLOR.PrimaryColor} />
-            )
-
-                :
                 <View style={styles.listContainer}>
                     {dataComment.map((item: { content: any; create_at: any; posts: { id: number; creater: { fullname: string } } }, index: { toString: () => React.Key | null | undefined; }) => {
                         const postId = item.posts.id;
@@ -81,8 +64,6 @@ const CommentHistories: React.FC<Comment> = ({ dataComment }) => {
                         );
                     })}
                 </View>
-
-            }
         </View>
     );
 };

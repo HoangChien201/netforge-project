@@ -1,6 +1,7 @@
 import { Image, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
-import React, { useEffect, useState } from 'react'
-import { sendRequest } from '../../http/QuyetHTTP'
+import React, { useEffect, useState } from 'react';
+import { useSendNotification } from '../../constant/notify';
+import { sendRequest } from '../../http/QuyetHTTP';
 type Suggest = {
     data: any,
     setData: () => void,
@@ -10,6 +11,7 @@ const SuggestList: React.FC<Suggest> = ({ data, setData, setReload }) => {
     const [result, setResult] = useState('');
     const [textReqState, setTextReqState] = useState({});
     const [disabledButtons, setDisabledButtons] = useState({});
+    const {sendNRequestFriend} = useSendNotification()
     // gửi yêu cầu kết bạn
     const status = 1;
     const sendRequestFriend = async (id: number, status: number) => {
@@ -26,7 +28,10 @@ const SuggestList: React.FC<Suggest> = ({ data, setData, setReload }) => {
                 }));
                 console.log('đã gửi lời mời');
                 console.log(result);
-                
+                const data ={
+                    receiver:id
+                }
+                sendNRequestFriend(data)
             }
         } catch (error) {
             setDisabledButtons((prevState) => ({

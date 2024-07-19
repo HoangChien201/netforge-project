@@ -1,30 +1,74 @@
 import { Image, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import Icon from 'react-native-vector-icons/AntDesign'
 import { useNavigation } from '@react-navigation/native';
 import { COLOR } from '../../constant/color'
-import { cancelWaitAccept, acceptRequest } from '../../http/QuyetHTTP'
+import { cancelWaitAccept, acceptRequest, getRequest } from '../../http/QuyetHTTP'
 import EmptyWA from './EmptyWA'
-type Wait ={
-    dataWaitAccept:any, 
-    setDataWaitAccept:(value:any)=>void,
-    setShowModalFriend:(value:any) => void,
+import { socket } from '../../http/SocketHandle';
+import { useMyContext } from '../navigation/UserContext';
+import {useSendNotification} from '../../constant/notify'
+import { ProfileRootStackEnum } from '../stack/ProfileRootStackParams';
+type Wait = {
+    dataWaitAccept: any,
+    setDataWaitAccept: (value: any) => void,
+    setShowModalFriend: (value: any) => void,
+    getWaitAcceptList: () => void
 }
-const WaitAcceptList:React.FC<Wait> = ({ dataWaitAccept, setDataWaitAccept, setShowModalFriend}) => {
+const WaitAcceptList: React.FC<Wait> = ({ dataWaitAccept, setDataWaitAccept, setShowModalFriend, getWaitAcceptList }) => {
     const navigation = useNavigation();
-    const cancelReq = async (friendId:number) => {
+    const { user } = useMyContext();
+    const userId = user.id;
+    const [reload, setReload] = useState(false);
+    const {sendAcceptFriend} = useSendNotification();
+    // useEffect(() => {
+    //     getWaitAccept();
+    // }, [reload]);
+    // useEffect(() => {
+    //     socket.on(`notification-${userId}`, (data) => {
+    //         console.log('Notification received:', data);
+    //         if (data) {
+    //             setReload(prevState => !prevState)
+    //             console.log('oh');
+
+    //         }
+    //     });
+    //     return () => {
+    //         socket.off(`notification-${userId}`);
+    //     };
+    // }, [userId]);
+    // const getWaitAccept = async () => {
+    //     try {
+    //         const result = await getRequest();
+    //         //console.log('danh sách bạn bè chờ chấp nhận: ' + JSON.stringify(result));
+    //         setDataWaitAccept(result);
+    //         console.log('Accept: ' + JSON.stringify(result));
+    //     } catch (error) {
+    //         console.log(error);
+    //     }
+    // };
+    const cancelReq = async (friendId: number) => {
         try {
-            await cancelWaitAccept(friendId);
-            setDataWaitAccept(prevData => prevData.filter(friend => friend.user.id !== friendId));
+            const result = await cancelWaitAccept(friendId);
+            console.log(result);
+            if (result.status == 1) {
+                setDataWaitAccept(prevData => prevData.filter(friend => friend.user.id !== friendId));
+            }
         } catch (error) {
             console.log(error);
 
         }
     };
-    const acceptReq = async (friendId:number) => {
+    const acceptReq = async (friendId: number) => {
         try {
-            await acceptRequest(friendId);
-            setDataWaitAccept(prevData => prevData.filter(friend => friend.user.id  !== friendId));
+            const result = await acceptRequest(friendId);
+            if (result.status == 1) {
+                setDataWaitAccept(prevData => prevData.filter(friend => friend.user.id !== friendId));
+                const data ={
+                    friendId
+                }
+                sendAcceptFriend(data)
+            }
         } catch (error) {
             console.log(error);
 
@@ -34,39 +78,54 @@ const WaitAcceptList:React.FC<Wait> = ({ dataWaitAccept, setDataWaitAccept, setS
     if (!dataWaitAccept || dataWaitAccept.length === 0) {
         return <EmptyWA ></EmptyWA>;
     }
-    const openProfile = (id: any)=>{
+    const openProfile = (id: any) => {
         const userId = id;
-        navigation.navigate('FriendProfile', {userId});
+        navigation.navigate('FriendProfile', { userId });
         setShowModalFriend(false);
     }
+    const handleToFriendProfile = (userId: any) => {
+        navigation.navigate(ProfileRootStackEnum.FriendProfile, { userId });
+      };
+    const renderList = (friends: any) => {
+        if (!friends) {
+            return <EmptyWA></EmptyWA>;
+        }
+        return (
+            <ScrollView style={styles.container}>
+                {friends.map(friend => (
+                    <TouchableOpacity style={styles.itemWA} key={friend.user.id}
+                    onPress={() => handleToFriendProfile(friend.user.id)}
+                    >
+                        <View style={styles.user}>
+                            {friend.user.avatar ? <Image source={{ uri: friend.user.avatar }} style={styles.avatarne} /> :
+                                <View style={{ height: 48, width: 48, borderRadius: 50, borderWidth: 1, borderColor: 'gray', backgroundColor: '#DDDDDD', marginStart: 10, }} />
+                            }
+                            <Text style={styles.userName}>{friend.user.fullname}</Text>
+                        </View>
+                        <View style={styles.button}>
+                            <TouchableOpacity style={styles.buttonAccept} onPress={() => {
+                                acceptReq(friend.user.id)
+                            }}>
+                                <Icon name='check' size={22} color={'white'} />
+                                {/* <Text style={styles.textAccept}>Chấp nhận</Text> */}
+                            </TouchableOpacity>
+                            <View style={{ width: 10 }}></View>
+                            <TouchableOpacity style={styles.buttonReject} onPress={() => {
+                                cancelReq(friend.user.id)
+                            }}>
+                                <Icon name='close' size={22} color={'white'} />
+                                {/* <Text style={styles.textAccept}>Từ chối</Text> */}
+                            </TouchableOpacity>
+                        </View>
+                    </TouchableOpacity>
+                ))}
+            </ScrollView>
+        )
+    }
     return (
-        <ScrollView style={styles.container}>
-            {dataWaitAccept.map(friend => (
-                <View style={styles.itemWA} key={friend.user.id}>
-                    <View style={styles.user}>
-                    {friend.user.avatar? <Image source={{uri: friend.user.avatar}} style={styles.avatarne}/>  : 
-                        <View style={{height:48, width:48, borderRadius:50, borderWidth:1,borderColor:'gray', backgroundColor:'#DDDDDD',marginStart:10,}}/>
-                        }
-                        <Text style={styles.userName}>{friend.user.fullname}</Text>
-                    </View>
-                    <View style={styles.button}>
-                        <TouchableOpacity style={styles.buttonAccept}onPress={() => {
-                            acceptReq(friend.user.id)
-                        }}>
-                            <Icon name='check' size={22} color={'white'}/>
-                            {/* <Text style={styles.textAccept}>Chấp nhận</Text> */}
-                        </TouchableOpacity>
-                        <View style={{ width: 10 }}></View>
-                        <TouchableOpacity style={styles.buttonReject} onPress={() => {
-                            cancelReq(friend.user.id)
-                        }}>
-                            <Icon name='close' size={22} color={'white'}/>
-                            {/* <Text style={styles.textAccept}>Từ chối</Text> */}
-                        </TouchableOpacity>
-                    </View>
-                </View>
-            ))}
-        </ScrollView>
+        <View>
+            {renderList(dataWaitAccept)}
+        </View>
     )
 }
 
@@ -138,7 +197,7 @@ const styles = StyleSheet.create({
         height: 45,
         width: 45,
         marginStart: 10,
-        borderRadius:40
+        borderRadius: 40
     }
 
 })

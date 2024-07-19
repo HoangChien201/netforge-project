@@ -197,6 +197,7 @@ const HomeScreen = () => {
     };
 
     return (
+        <TouchableWithoutFeedback onPress={handleOutsidePress}>
         <View style={styles.container}>
             <TouchId visible={visible} setVisible={setVisible} />
             <View style={styles.headerContainer}>
@@ -230,18 +231,6 @@ const HomeScreen = () => {
                     </View>
                 )}
             </View>
-            <View style={styles.contentContainer}>
-                <Animated.FlatList
-                    data={data}
-                    renderItem={renderItem}
-                    keyExtractor={item => item.key}
-                    showsVerticalScrollIndicator={false}
-                    onScroll={Animated.event(
-                        [{ nativeEvent: { contentOffset: { y: scrollY } } }],
-                        { useNativeDriver: false, listener: handleScroll }
-                    )}
-                </View>
-
                 <View style={styles.contentContainer}>
 
                     <Animated.FlatList
