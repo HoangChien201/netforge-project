@@ -140,13 +140,15 @@ const HeaderMessageComponent = ({ partner }: { partner: any }) => {
                         isVideoCall={false}
                         resourceID={"zego_call"}
                         backgroundColor={'rgba(255,255,255,0.2)'}
+                        icon={require('../../media/icon/telephone-call.png')}
+
                     />
                     <ZegoSendCallInvitationButton
                         invitees={invitees}
                         isVideoCall={true}
                         backgroundColor={'rgba(255,255,255,0.2)'}
                         resourceID={"zego_call"}
-                    //icon={require('../../media/icon/video_call.png')}
+                        icon={require('../../media/icon/facetime-button.png')}
                     />
                 </View>
             </View>
