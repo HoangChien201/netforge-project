@@ -21,12 +21,13 @@ import ItemNewPost from '../component/notificationes/ItemNewPost';
 import ItemBirth from '../component/notificationes/ItemBirth';
 import ItemFriendAccept from '../component/notificationes/ItemFriendAccept';
 import ItemNewPostTag from '../component/notificationes/ItemNewPostTag';
+import BirtdayButtonComponent from '../component/notificationes/BirtdayButtonComponent';
+import BirthDayScreen from './BirthdayScreen';
 const NotificationScreen = () => {
 
   const [showModalFriend, setShowModalFriend] = useState(false);
-  const [status, setStatus] = useState('');
-  const [showPopup, setShowPopup] = useState(false);
-  const [isError, setIsError] = useState(false);
+  const [showModalBirthday, setShowModalBirthday] = useState(false);
+
   const [reload, setReload] = useState(false);
   const [dot, setDot] = useState(0);
   const [notifications, setNotifications] = useState([]);
@@ -34,6 +35,7 @@ const NotificationScreen = () => {
   const [groupedNotifications, setGroupedNotifications] = useState<any>([]);
   const userId = user.id;
   const { sendNCommentPost } = useSendNotification();
+
   useEffect(() => {
     fetchData();
     socket.on(`notification-${userId}`, (data) => {
@@ -47,6 +49,8 @@ const NotificationScreen = () => {
     return () => {
       socket.off(`notification-${userId}`);
     };
+
+
   }, [userId]);  // Include notifications in dependencies to ensure up-to-date check
 
   useEffect(() => {
@@ -184,6 +188,11 @@ const NotificationScreen = () => {
           </View>
         )}
       </TouchableOpacity>
+
+      {/* **** button move birtday screen ***  */}
+      <BirtdayButtonComponent setShowModalBirthday={setShowModalBirthday}/>
+      {/* **** button move birtday screen **** */}
+      <View style={styles.line}></View>
       <View style={{ flexDirection: 'column' }}>
         <FlatList
           data={groupedNotifications}
@@ -207,6 +216,7 @@ const NotificationScreen = () => {
         setDot={setDot}
         setReload={setReload}
       />
+      <BirthDayScreen visible={showModalBirthday} setVisible={setShowModalBirthday}/>
     </View>
   );
 };
@@ -219,8 +229,8 @@ const styles = StyleSheet.create({
     flex: 1
   },
   header: {
-    height: 40,
-    backgroundColor: COLOR.PrimaryColor,
+    height: 55,
+    // backgroundColor: COLOR.PrimaryColor,
     justifyContent: 'space-between',
     flexDirection: 'row',
     alignItems: 'center'
@@ -228,9 +238,9 @@ const styles = StyleSheet.create({
   },
   headerText: {
     marginHorizontal: 16,
-    fontWeight: '500',
+    fontWeight: '700',
     fontSize: 24,
-    color: COLOR.primary100
+    color: COLOR.PrimaryColor
 
   },
   dot: {
@@ -254,6 +264,12 @@ const styles = StyleSheet.create({
   list: {
     marginTop: 5,
     backgroundColor: COLOR.primary300,
+  },
+  line: {
+    width: '100%',
+    height: 1,
+    backgroundColor: '#d4d0d4',
+    marginVertical: 5
   }
 })
 

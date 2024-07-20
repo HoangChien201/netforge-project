@@ -28,28 +28,23 @@ const HomeScreen = () => {
     const { user } = useMyContext();
     const [visible, setVisible] = useState(false);
 
-        // login zegoCloud để thực hiện cuộc gọi
-        useEffect(() => {
-            const initializeCallService = async () => {
-                try {
-                    await onUserLogin(user.id, user.fullname, user.avatar);
-                    console.log("User logged in successfully on HomeScreen:", user.id, user.fullname);
-                } catch (error) {
-                    console.error("Error logging in user on HomeScreen:", error);
-                }s
-            };
-            initializeCallService();
-            return () => {
-                onUserLogout();
-                console.log("User logged out on HomeScreen");
-            };
-        }, [user.id, user.fullname]);
-        //end zegoCloud
-    
-
-    const handleOutsidePress = () => {
-        setHidden(false);
-    };
+    // login zegoCloud để thực hiện cuộc gọi
+    useEffect(() => {
+        const initializeCallService = async () => {
+            try {
+                await onUserLogin(user.id, user.fullname, user.avatar);
+                console.log("User logged in successfully on HomeScreen:", user.id, user.fullname);
+            } catch (error) {
+                console.error("Error logging in user on HomeScreen:", error);
+            }
+        };
+        initializeCallService();
+        return () => {
+            onUserLogout();
+            console.log("User logged out on HomeScreen");
+        };
+    }, [user.id, user.fullname]);
+    //end zegoCloud
 
     const checkTouchIdLogin = () => {
         TouchID.isSupported()
@@ -203,7 +198,7 @@ const HomeScreen = () => {
     };
 
     return (
-       <TouchableWithoutFeedback onPress={handleOutsidePress}>
+        <TouchableWithoutFeedback onPress={handleOutsidePress}>
             <View style={styles.container}>
                 <TouchId visible={visible} setVisible={setVisible} />
                 <View style={styles.headerContainer}>
@@ -219,7 +214,7 @@ const HomeScreen = () => {
                     <View style={styles.headerRight}>
                         <TouchableOpacity style={{ alignItems: 'center' }} onPress={handlerClick}>
                             <Image source={{ uri: user.avatar }} style={styles.userAvatar} />
-                            <Text style={styles.userName}>{user.fullname}</Text>
+                            {/* <Text style={styles.userName}>{user.fullname}</Text> */}
                         </TouchableOpacity>
                     </View>
                     {hidden && (
@@ -253,7 +248,7 @@ const HomeScreen = () => {
                     />
                 </View>
             </View>
-</TouchableWithoutFeedback>
+        </TouchableWithoutFeedback>
     );
 };
 
@@ -286,8 +281,8 @@ const styles = StyleSheet.create({
     },
     headerTitle: {
         color: COLOR.PrimaryColor,
-        fontSize: 20,
-        fontWeight: 'bold',
+        fontSize: 24,
+        fontWeight: '700',
     },
     hiddenMenu: {
         zIndex: 9999,

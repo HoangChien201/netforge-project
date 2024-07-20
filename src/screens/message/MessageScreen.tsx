@@ -22,6 +22,7 @@ import {
 import ShowReactionComponent from '../../component/message/ShowReactionComponent'
 import { GroupChatType } from '../../component/message/ListMessageItem'
 import { MessageManage, MessageProvider } from '../../component/message/class/MessageProvider'
+import ToolBar from '../../component/message/ToolBar'
 
 export type MessageCordinatesType = {
   x: number,
@@ -216,7 +217,7 @@ const MessageScreen = () => {
   return (
     <BottomSheetModalProvider>
       <View style={styles.container}>
-
+        <ToolBar title='Tin nhắn'/>
         <HeaderMessageComponent partner={partner} />
         <View style={styles.content}>
           <ListMessage />

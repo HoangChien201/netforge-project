@@ -18,7 +18,7 @@ enum NetworkRootBottomTabEnum {
     CreatePostScreen = 'CreatePostScreen',
     MessageStack = 'MessageStack',
     ProfileStack = 'ProfileStack',
-    CreatePostStack = 'CreatePostStack' //phu update liveStream
+    CreatePostStack = 'CreatePostStack', //phu update liveStream,
 }
 
 export type NetworkRootBottomTabParams = {
@@ -27,7 +27,7 @@ export type NetworkRootBottomTabParams = {
     CreatePostScreen: undefined,
     MessageStack: undefined,
     ProfileStack: undefined,
-    CreatePostStack: undefined
+    CreatePostStack: undefined,
 }
 
 export const NetworkRootBottomTabScreens = [
@@ -100,5 +100,6 @@ export const NetworkRootBottomTabScreens = [
             }
         }
     },
+    
 
 ]

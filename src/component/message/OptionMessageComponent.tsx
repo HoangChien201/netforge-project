@@ -60,8 +60,8 @@ const styles = StyleSheet.create({
     },
     nameOption: {
         color: '#000',
-        fontWeight: '600',
-        fontSize: 17
+        fontWeight: '500',
+        fontSize: 17,
     },
     container: {
         width: 200,

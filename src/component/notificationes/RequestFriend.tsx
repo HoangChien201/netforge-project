@@ -23,7 +23,9 @@ const styles = StyleSheet.create({
         height: 54,
         flexDirection:'row',
         alignItems:'center',
-        justifyContent:'flex-start'
+        justifyContent:'flex-start',
+        paddingHorizontal:10,
+        marginBottom:5
     },
     iconFriend:{
         height:44,
@@ -33,10 +35,9 @@ const styles = StyleSheet.create({
         borderRadius:50,
         alignItems:'center',
         justifyContent:'center',
-        margin:6
     },
     text:{
-        marginStart:10
+        marginStart:15
     },
     text1:{
         fontSize:16,
@@ -46,8 +47,7 @@ const styles = StyleSheet.create({
     },
     text2:{
         fontSize:13,
-        fontWeight:'300',
         fontStyle:"normal",
-        color:'black'
+        color:'#7d7a7e'
     }
 })

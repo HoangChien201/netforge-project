@@ -426,8 +426,8 @@ const styles = StyleSheet.create({
         backgroundColor: 'white',
         height: '100%',
         width: '100%',
-        borderTopStartRadius: 36,
-        borderTopEndRadius: 36,
+        borderTopStartRadius: 20,
+        borderTopEndRadius: 20,
     },
     hiddent:{
         height: '60%',

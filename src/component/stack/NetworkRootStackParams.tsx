@@ -1,3 +1,4 @@
+import { StackNavigationProp } from "@react-navigation/stack";
 import CameraStory from "../../screens/CameraStory";
 import CreateStoris from "../../screens/CreateStoris";
 import MessageScreen from "../../screens/message/MessageScreen";
@@ -7,27 +8,43 @@ import ListImageDetail from "../listpost/ListImageDetail";
 import StoryDetail from "../storys/StoryDetail";
 import StoryText from "../storys/StoryText";
 import MessageStack from "./MessageStack";
-
+export type NetworkStackNavigationProp = StackNavigationProp<
+  NetworkRootStackParams,
+  'MessageStack'
+>;
 export enum NetworkRootStackEnum {
-    NetworkBottomTab='NetworkBottomTab',
-    MessageStack='MessageStack',
+    NetworkBottomTab = 'NetworkBottomTab',
+    MessageStack = 'MessageStack',
     StoryScreen = "StoryScreen",
     CreateStoris = "Tạo Tin",
     StoryDetail = "StoryDetail",
     StoryText = "StoryText",
-    CameraStory ="CameraStory",
+    CameraStory = "CameraStory",
     ListImageDetail = "ListImageDetail",
 }
 
 export type NetworkRootStackParams = {
     NetworkBottomTab: undefined;
-    MessageStack:undefined;
-    StoryScreen:undefined;
-    CreateStoris:undefined;
-    StoryDetail:undefined;
-    CameraStory:undefined;
-    ListImageDetail:undefined;
-    StoryText:undefined;
+    MessageStack: {
+        screen?: string,
+        params?: {
+            fullname: string,
+            avatar: string,
+            members: Array<{
+                user: {
+                    fullname: string,
+                    avatar: string,
+                    id: number
+                }
+            }>,
+        }
+    };
+    StoryScreen: undefined;
+    CreateStoris: undefined;
+    StoryDetail: undefined;
+    CameraStory: undefined;
+    ListImageDetail: undefined;
+    StoryText: undefined;
 }
 
 export const NetworkRootStackScreens = [
@@ -38,7 +55,7 @@ export const NetworkRootStackScreens = [
         options: {
             headerShown: false
         },
-        
+
     },
     {
         id: Math.random() + "" + Date,
@@ -47,7 +64,7 @@ export const NetworkRootStackScreens = [
         options: {
             headerShown: false
         },
-        
+
     },
     {
         id: Math.random() + "" + Date,
@@ -56,7 +73,7 @@ export const NetworkRootStackScreens = [
         options: {
             headerShown: false
         },
-        
+
     },
     {
         id: Math.random() + "" + Date,
@@ -65,7 +82,7 @@ export const NetworkRootStackScreens = [
         options: {
             headerShown: false
         },
-        
+
     },
     {
         id: Math.random() + "" + Date,
@@ -74,7 +91,7 @@ export const NetworkRootStackScreens = [
         options: {
             headerShown: true
         },
-        
+
     },
     {
         id: Math.random() + "" + Date,
@@ -83,7 +100,7 @@ export const NetworkRootStackScreens = [
         options: {
             headerShown: false
         },
-        
+
     },
     {
         id: Math.random() + "" + Date,
@@ -92,7 +109,7 @@ export const NetworkRootStackScreens = [
         options: {
             headerShown: false
         },
-        
+
     },
     {
         id: Math.random() + "" + Date,

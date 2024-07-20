@@ -35,7 +35,6 @@ const ItemPost = memo(({ index, data, onrefresh, userId, onPressProfile, setShow
     }, [data])
 
     const { creater, share_count, reaction, content, media, comment_count, create_at, id, like_count, share } = datas;
-    const navigation: NavigationProp<ParamListBase> = useNavigation();
 
     useFocusEffect(
         useCallback(() => {

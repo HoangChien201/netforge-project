@@ -4,10 +4,13 @@ import { navigationType } from '../../navigation/ManageNavigation'
 import { useNavigation } from '@react-navigation/native'
 import { useMyContext } from '../navigation/UserContext'
 import AsyncStorage from '@react-native-async-storage/async-storage'
+import { NetworkStackNavigationProp } from '../stack/NetworkRootStackParams'
+import { NavigateToMessage } from '../message/NavigateToMessage'
 
 const OptionProfile = () => {
-    const navigation = useNavigation()
     const { setUser } = useMyContext();
+    const navigation:NetworkStackNavigationProp = useNavigation()
+
     function OptionHorizontalItem({ image, text, onPress }: { image: any, text: string, onPress?: any }) {
         return (
             <TouchableOpacity style={styles.optionHorizontalItem} onPress={onPress}>
@@ -59,24 +62,8 @@ const OptionProfile = () => {
     //     }
     // }>,
 
-    function messageOnPress() {
-        navigation.navigate('MessageStack',
-            {
-                screen: "ListMessageScreen", 
-                params:{ 
-                        fullname: "Tran Van Phu",
-                        avatar: 'https://res.cloudinary.com/delivery-food/image/upload/v1718215509/hrsezngadfqzy9m1xs3s.jpg',
-                        members: [
-                            {
-                                user: {
-                                    fullname: 'Tran Van Phu',
-                                    id: 3,
-                                    avatar: 'https://res.cloudinary.com/delivery-food/image/upload/v1718215509/hrsezngadfqzy9m1xs3s.jpg'
-                                }
-                            }
-                        ]
-                    }
-            })
+    function messageOnPress(){
+       
     }
 
 

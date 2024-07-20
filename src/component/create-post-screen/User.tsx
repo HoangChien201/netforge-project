@@ -77,8 +77,8 @@ const styles = StyleSheet.create({
         alignItems:'center',
     },
     userInforAvatar: {
-        width: 50,
-        height: 50,
+        width: 40,
+        height: 40,
         borderRadius:100,
     },
     userInforName: {
@@ -94,7 +94,8 @@ const styles = StyleSheet.create({
         zIndex: 999
     },
     dropdownButton: {
-        padding: 10,
+        paddingHorizontal: 10,
+        paddingVertical: 5,
         backgroundColor: COLOR.PrimaryColor,
         borderRadius: 5,
     },

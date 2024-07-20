@@ -28,7 +28,7 @@ const DeleteFriend: React.FC<Mo> = ({ show, setShow, user2 ,setFriends}) => {
   };
   useEffect(() => {
     console.log(user2);
-  })
+  },[])
   return (
     <Modal
       visible={show}

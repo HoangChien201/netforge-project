@@ -40,6 +40,10 @@ const TestProfile = () => {
       headerShown: true,
       title: 'Trang cá nhân',
       headerTitleAlign: 'center',
+      headerLargeTitleStyle:{
+        fontSize:24,
+      }
+
     });
   }, [navigation]);
 
@@ -90,6 +94,7 @@ const TestProfile = () => {
 
   const headerComponent = useMemo(() => {
     if (!userData) return null;
+    
     return (
       <>
         <HeaderBanner value={scrollOffsetY} userId={user.id} />
