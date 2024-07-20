@@ -71,7 +71,7 @@ const styles = StyleSheet.create({
     },
     heading: {
         color: "#000",
-        fontSize: 18,
+        fontSize: 24,
         fontWeight: '700'
     },
     edit: {

@@ -86,16 +86,16 @@ const Options:React.FC<Op> = ({ onSelectMedia, onSelectEmoji,setShowAI,imageUrl 
     return (
         <View style={styles.container}>
             <TouchableOpacity style={styles.button} onPress={openLibrary}>
-                {/* <Image style={styles.icon} source={require('../../media/quyet_icon/folder_p.png')} /> */}
-                <ICON name='folderopen' size={30} color={'#00CC33'} />
+                <Image style={styles.icon} source={require('../../media/icon/media.png')} />
+                {/* <ICON name='folderopen' size={30} color={'#00CC33'} /> */}
             </TouchableOpacity>
             <TouchableOpacity style={styles.button} onPress={openCamera}>
-                {/* <Image style={styles.icon} source={require('../../media/quyet_icon/camera_p.png')} /> */}
-                <ICON name='camerao' size={30} color={'#0033FF'} />
+                <Image style={styles.icon} source={require('../../media/icon/camera_icon.png')} />
+                {/* <ICON name='camerao' size={30} color={'#0033FF'} /> */}
             </TouchableOpacity>
             <TouchableOpacity style={styles.button} onPress={() => setShowEmojiModal(true)}>
-                {/* <Image style={styles.icon} source={require('../../media/quyet_icon/smile_p.png')} /> */}
-                <ICON name='smileo' size={28} color={'#FF6600'} />
+                <Image style={styles.icon} source={require('../../media/icon/emotion.png')} />
+                {/* <ICON name='smileo' size={28} color={'#FF6600'} /> */}
             </TouchableOpacity>
             <TouchableOpacity style={styles.button} onPress={() => setShowAI(true)}>
                 {/* <Image style={styles.icon} source={require('../../media/quyet_icon/smile_p.png')} /> */}
@@ -109,8 +109,8 @@ const Options:React.FC<Op> = ({ onSelectMedia, onSelectEmoji,setShowAI,imageUrl 
             </TouchableOpacity>
             {/* phu update */}
             <TouchableOpacity style={styles.button} onPress={handleToLiveStream}>
-                {/* <Image style={styles.icon} source={require('../../media/quyet_icon/smile_p.png')} /> */}
-                <MaterialIcons name='live-tv' size={28} color={'#FF6600'}/>
+                <Image style={styles.icon} source={require('../../media/icon/iconstream.png')} />
+                {/* <MaterialIcons name='live-tv' size={28} color={'#FF6600'}/> */}
             </TouchableOpacity>
             {/* phu update */}
             <Modal visible={showEmojiModal} animationType="slide" transparent={true}>

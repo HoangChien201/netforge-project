@@ -8,8 +8,7 @@ const MessageStack = () => {
     
   return (
     <Stack.Navigator
-      screenOptions={{
-      }}
+      initialRouteName='ListMessageScreen'
     >
         {
             MessageRootStackScreens.map((screens)=>{

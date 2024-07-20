@@ -91,7 +91,7 @@ const ListPortsByUser:React.FC<ListPortsByUserProps> = React.memo(({ userId, onR
               <Image 
                 source={userId === loggedInUserId
                   ? require('../../media/quyet_icon/netforge1.jpg')
-                  : require('../../media/quyet_icon/netforge.png')} 
+                  : require('../../media/quyet_icon/netforge1.jpg')} 
                 style={styles.noImage} 
               />
               <Text style={styles.messageText}>

@@ -43,7 +43,7 @@ export class MessageProvider {
         id: number,
     } | null
 
-    constructor(message: messageType) {
+    constructor(message: messageType | any) {
         this.id = !message.id ? Date.now() : message.id,
             this.message = message.message,
             this.create_at = !message.create_at ? new Date().toISOString() : message.create_at,

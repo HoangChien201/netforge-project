@@ -2,6 +2,7 @@ import axios from "axios";
 import AxiosInstance from "./AxiosInstance";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { url } from "../constant/url";
+import { FriendType } from "../component/message/ModalNewMessage";
 
 //getOnePost
 //
@@ -264,7 +265,7 @@ export const getFriends = async (num: number) => {
     try {
         const token = await AsyncStorage.getItem('token');
         const url = '/friendship/get-all';
-        const response = await AxiosInstance().post(url, {
+        const response:Array<FriendType> = await AxiosInstance().post(url, {
             status: num
         }, {
             headers: {

@@ -16,7 +16,8 @@ export type FriendType = {
     user: {
         avatar: string,
         fullname: string,
-        id: number
+        id: number,
+        dateOfBirth:string
     },
     create_at: string
 }

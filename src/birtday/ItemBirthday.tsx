@@ -1,91 +1,129 @@
-import { Image, StyleSheet, Text, TouchableOpacity, View, Pressable } from 'react-native'
+import { Image, StyleSheet, Text, TouchableOpacity, View, Pressable, FlatList } from 'react-native'
 import React, { useState } from 'react'
 import Icon from 'react-native-vector-icons/AntDesign'
+import { NavigateToMessage } from '../component/message/NavigateToMessage'
+import { NetworkStackNavigationProp } from '../component/stack/NetworkRootStackParams'
+import { useNavigation } from '@react-navigation/native'
+import { getTextBirthday } from '../constant/birthday'
+import { FriendType } from '../component/message/ModalNewMessage'
+import { MessageProvider } from '../component/message/class/MessageProvider'
+import { useMyContext } from '../component/navigation/UserContext'
+import Loading from '../component/Modal/Loading'
 
-const ItemBirthday = ({item}) => {
+const ItemBirthday = ({ item }: { item: FriendType }) => {
   const [checkMessaBirthday, setCheckMessaBirthday] = useState(false)
-    // Hàm tính toán tuổi
-    const calculateAge = (birthDate) => {
-      const today = new Date();
-      const birthDateObj = new Date(birthDate);
-      let age = today.getFullYear() - birthDateObj.getFullYear();
-      // const monthDiff = today.getMonth() - birthDateObj.getMonth();
-      // if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDateObj.getDate())) {
-      //   age;
-      // }
-      return age + 1;
-    };
-    const age = calculateAge(item.user.dateOfBirth);
-    const handleSendBirthdayMessage = () => {
-      setCheckMessaBirthday(true)
-      console.log(item.user.fullName + 'heheh');
-      
+  const navigation: NetworkStackNavigationProp = useNavigation()
+  const { user } = useMyContext()
 
+  // Hàm tính toán tuổi
+
+  const calculateAge = (birthDate) => {
+    const today = new Date();
+    const birthDateObj = new Date(birthDate);
+    let age = today.getFullYear() - birthDateObj.getFullYear();
+    // const monthDiff = today.getMonth() - birthDateObj.getMonth();
+    // if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDateObj.getDate())) {
+    //   age;
+    // }
+    return age + 1;
+  };
+  const age = calculateAge(item.user.dateOfBirth);
+  const handleSendBirthdayMessage = async (text: string) => {
+    const { id: partner_id } = item.user
+
+    const messageCreate = await new MessageProvider(
+      {
+        message: text,
+        type: 'text',
+        sender: user.id,
+      }
+    ).CreateMessageToAPIByReceiver(user.id, partner_id)
+
+    if (messageCreate) {
+
+      setCheckMessaBirthday(true)
     }
-    
+
+
+  }
+
+  //navigate to message
+  function IconMessageOnPressHandle() {
+    const { fullname, avatar, id } = item.user
+    NavigateToMessage({
+      fullname,
+      avatar,
+      id: id
+    }, navigation)
+  }
+  //navigate to message
+
+
   return (
     <View style={styles.itemContainer}>
-    <View style={styles.item}>
-      <Image source={{ uri: item.user.avatar }} style={styles.avatar} />
       
-      <View style={styles.textContainer}>
-        <Text style={styles.fullName}>{item.user.fullname}</Text>
-        <Text style={styles.content}>Hôm nay tròn {age} tuổi</Text>
-        {/* <TouchableOpacity style={styles.BtnSms}>
+      <View style={styles.item}>
+        <Image source={{ uri: item.user.avatar }} style={styles.avatar} />
+
+        <View style={styles.textContainer}>
+          <Text style={styles.fullName}>{item.user.fullname}</Text>
+          <Text style={styles.content}>Hôm nay tròn {age} tuổi</Text>
+          {/* <TouchableOpacity style={styles.BtnSms}>
         <Text style = {{fontSize: 16, fontWeight: '500'}}>Nhắn tin</Text>
       </TouchableOpacity> */}
-     
-      <View>
-        
+
+          <View>
+
+          </View>
+        </View>
+
+        <TouchableOpacity style={styles.optionsIcon} onPress={IconMessageOnPressHandle}>
+          <Icon name='message1' size={20} color={'#2F3645'} />
+        </TouchableOpacity>
       </View>
-      </View>
-      
-      <TouchableOpacity style={styles.optionsIcon}>
-        <Icon name='message1' size={20} color={'#2F3645'} />
-      </TouchableOpacity>
+      {
+        !checkMessaBirthday ? (
+          <View style={styles.SendHappy}>
+            <View style={{ padding: 10 }}>
+              <View style={{ justifyContent: 'center', alignItems: 'center', marginBottom: 8 }}>
+                <Text style={{ fontSize: 18, fontWeight: '700', color: "#000" }}>Gửi lời chúc ️🎉</Text>
+              </View>
+              <View>
+
+                <View style={styles.SendHappy1}>
+                  <FlatList
+                    data={getTextBirthday()}
+                    renderItem={({ item }) => {
+                      return (
+                        <TouchableOpacity activeOpacity={.7} style={styles.BtnHappy} onPress={handleSendBirthdayMessage.bind(this, item)}>
+                          <Text style={styles.SmsHappy}>{item}</Text>
+                        </TouchableOpacity >
+                      )
+                    }}
+                    keyExtractor={(item) => item}
+                    scrollEnabled={false}
+                  />
+                </View>
+              </View>
+            </View>
+          </View>
+        ) : (
+          <View style={[styles.SendHappy, { justifyContent: 'center', alignItems: 'center' }]}>
+            <View style={{ padding: 10 }}>
+              <View style={{ justifyContent: 'center', alignItems: 'center', marginBottom: 8 }}>
+                <Text style={{ fontSize: 18, fontWeight: '700', color: "#000" }}>Gửi lời chúc ️🎉</Text>
+              </View>
+              <View>
+                <View style={{ backgroundColor: '#ECFFE6', borderRadius: 20, justifyContent: 'center', alignItems: 'center', width: 250 }}>
+                  <Text style={[styles.SmsHappy, { color: 'green' }]}>✔ Bạn đã gửi lời chúc</Text>
+                </View>
+
+              </View>
+            </View>
+          </View>
+        )
+      }
     </View>
-    {
-      !checkMessaBirthday ? (
-        <View style = {styles.SendHappy}>
-        <View style = {{padding: 10}}>
-          <View style = {{justifyContent: 'center', alignItems:'center', marginBottom: 8}}>
-          <Text style = {{fontSize: 18, fontWeight: '700', color:"#000"}}>Gửi lời chúc ️🎉</Text>
-          </View>
-        <View>
-     
-       <View style = {styles.SendHappy1}>
-       <Pressable style = {styles.BtnHappy} onPress={handleSendBirthdayMessage}>
-        <Text style = {styles.SmsHappy}>Chúc mừng sinh nhật ️🎂🎁🎉</Text>
-        </Pressable>
-
-        <Pressable style = {styles.BtnHappy} onPress={handleSendBirthdayMessage}>
-        <Text style = {styles.SmsHappy}>Tuổi mới con cu thêm nới nới ️🎉</Text>
-        </Pressable>
-
-        <Pressable style = {styles.BtnHappy} onPress={handleSendBirthdayMessage}>
-        <Text style = {styles.SmsHappy}>Sinh nhật vui vẻ ️🎉</Text>
-        </Pressable>
-       </View>
-        </View>
-        </View>
-      </View>
-      ) : (
-        <View style = {[styles.SendHappy, {justifyContent: 'center', alignItems: 'center'}]}>
-        <View style = {{padding: 10}}>
-          <View style = {{justifyContent: 'center', alignItems:'center', marginBottom: 8}}>
-          <Text style = {{fontSize: 18, fontWeight: '700', color:"#000"}}>Gửi lời chúc ️🎉</Text>
-          </View>
-        <View>
-        <View style = {{backgroundColor: '#ECFFE6', borderRadius: 20, justifyContent: 'center', alignItems: 'center', width: 250}}>
-        <Text style = {[styles.SmsHappy, {color: 'green'}]}>✔ Bạn đã gửi lời chúc</Text>
-        </View>
-       
-        </View>
-        </View>
-      </View>
-      )
-    }
-  </View>
   )
 }
 
@@ -105,15 +143,15 @@ const styles = StyleSheet.create({
     borderColor: '#B4B4B8',
     backgroundColor: '#fff',
     width: 'auto'
-  
+
   },
-  SendHappy:{
+  SendHappy: {
     backgroundColor: '#F6F5F5',
     marginTop: 15,
     width: 300,
     borderRadius: 15
   },
-  BtnSms:{
+  BtnSms: {
     marginTop: 10,
     width: 200,
     height: 40,
@@ -123,9 +161,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     borderRadius: 10
   },
-  content:{
+  content: {
     fontSize: 14,
-    fontWeight:'500'
+    fontWeight: '500'
   },
   itemContainer: {
     marginTop: 15,
@@ -135,8 +173,8 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
 
-    
-  
+
+
   },
   item: {
     flexDirection: 'row',
@@ -147,7 +185,7 @@ const styles = StyleSheet.create({
     borderRadius: 50,
     width: 55,
     height: 55,
-  
+
   },
   textContainer: {
     flex: 1,
@@ -172,6 +210,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     borderRadius: 10,
-   
+
   },
 })

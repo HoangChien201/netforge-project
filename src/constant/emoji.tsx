@@ -103,7 +103,7 @@ export const EmojiData = [
     { emoji: '🎃' },
 ];
 export const EmojiReaction=[{
-    source:require('../media/Dicons/thumb-up.png'),
+    source:require('../media/icon/like_icon.png'),
 },
 {
     source:require('../media/Dicons/happy-face.png'),
@@ -115,7 +115,7 @@ export const EmojiReaction=[{
     source:require('../media/Dicons/heartF.png'),
 },
 {
-    source:require('../media/Dicons/wow.png'),
+    source:require('../media/icon/wow_icon.png'),
 },
 ]
 export const reaction = [

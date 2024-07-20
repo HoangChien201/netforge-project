@@ -125,6 +125,9 @@ export const ProfileRootStackScreens=[
             headerTitleAlign:'center',
             animationTypeForReplace: 'push',
             animationEnabled: true,
+            headerLargeTitleStyle:{
+                fontSize:24
+            }
         }
     },
     {

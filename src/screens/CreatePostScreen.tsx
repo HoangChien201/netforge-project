@@ -311,7 +311,7 @@ const styles = StyleSheet.create({
     width: '100%'
   },
   header: {
-    height: 60,
+    height: 55,
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
@@ -319,13 +319,13 @@ const styles = StyleSheet.create({
   },
   headerText: {
     color: COLOR.primary300,
-    fontWeight: '500',
-    fontSize: 21,
+    fontWeight: '700',
+    fontSize: 24,
 
   },
   headerPostText: {
-    color: '#333333',
-    fontWeight: '400',
+    color: '#fff',
+    fontWeight: '500',
     fontSize: 17
 
   },
@@ -334,11 +334,8 @@ const styles = StyleSheet.create({
     width: 40,
   },
   buttonD: {
-    backgroundColor: '#AAAAAA',
     borderRadius: 5,
     marginEnd: 5,
-    height: 35,
-    width: 70,
     alignItems: 'center',
     justifyContent: 'center'
   }

@@ -49,10 +49,11 @@ export const MessageRootStackScreens = [
         name: MessageRootStackEnum.MessageScreen,
         component: MessageScreen,
         options: {
-            title: 'Tin nhắn',
-            headerTitleAlign: 'center',
-            headerTransparent: true,
-            headerTintColor: '#fff'
+            // title: 'Tin nhắn',
+            // headerTitleAlign: 'center',
+            // headerTransparent: true,
+            // headerTintColor: '#fff'
+            headerShown:false
         }
     },
     {

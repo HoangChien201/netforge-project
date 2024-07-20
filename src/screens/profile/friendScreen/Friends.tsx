@@ -9,8 +9,11 @@ import DeleteFriend from './DeleteFriend';
 import Loading from '../../../component/Modal/Loading';
 import { ProfileRootStackEnum } from '../../../component/stack/ProfileRootStackParams';
 import ICON from 'react-native-vector-icons/MaterialIcons';
-import ICON1 from 'react-native-vector-icons/AntDesign'
+import AntDesignIcon from 'react-native-vector-icons/AntDesign'
 import { COLOR } from '../../../constant/color';
+import { NavigateToMessage } from '../../../component/message/NavigateToMessage';
+import { FriendType } from '../../../component/message/ModalNewMessage';
+import { NetworkStackNavigationProp } from '../../../component/stack/NetworkRootStackParams';
 type Friend = {
   friends: any,
   setFriends: () => void;
@@ -21,7 +24,7 @@ const Friends: React.FC<Friend> = () => {
   const [show, setShow] = useState(false);
   const [user2, setUser2] = useState<number>(0);
   const navigation: NavigationProp<ParamListBase> = useNavigation();
-  const [friends, setFriends] = useState<any[]>([]);
+  const [friends, setFriends] = useState<Array<FriendType>>([]);
 
   const getFriendList = async () => {
     try {
@@ -54,9 +57,22 @@ const Friends: React.FC<Friend> = () => {
   const handleToFriendProfile = (userId: any) => {
     navigation.navigate(ProfileRootStackEnum.FriendProfile, { userId });
   };
+
+  //navigate to message
+  function IconMessageOnPressHandle(user:{fullname:string,avatar:string,id:number}) {
+    const { fullname, avatar, id } = user
+    NavigateToMessage({
+      fullname,
+      avatar,
+      id: id
+    }, navigation)
+  }
+  //navigate to message
+
   return (
-    <ScrollView style={{ marginHorizontal: 10 }}>
-      {friends.map((friend: { user: { id: string | number; avatar: any; fullname: string | any | undefined } }) => (
+    <ScrollView style={styles.container}>
+      
+      {friends.map((friend: { user: { id:number; avatar: string; fullname: string } }) => (
         <TouchableOpacity key={friend.id.toString()} onPress={() => handleToFriendProfile(friend.user.id)}>
           <View style={styles.itemWA}>
             <View style={styles.user}>
@@ -66,11 +82,17 @@ const Friends: React.FC<Friend> = () => {
               <Text style={styles.userName}>{friend.user.fullname}</Text>
             </View>
             <View style={styles.button}>
-              <TouchableOpacity style={styles.buttonAccept} >
-                <ICON1 name='message1' size={22} color={COLOR.PrimaryColor} />
+
+              <TouchableOpacity style={styles.buttonAccept} onPress={IconMessageOnPressHandle.bind(this,friend.user)}>
+                <AntDesignIcon name='message1' size={22} color={COLOR.PrimaryColor} />
               </TouchableOpacity>
-              <TouchableOpacity style={styles.buttonAccept} onPress={() => deleteFri(friend.user.id)} >
-                <ICON name='person-remove' size={22} color={'red'} />
+
+              {/* chú ý */}
+              {/* nếu là bạn của bạn bè thì đổi icon này thành icon add friend, còn xem bb của mình thì kh hiện icon ... 
+                nhấn vào dấu ... hiện sự lựa chọn là hủy kb,...
+              */}
+              <TouchableOpacity style={styles.buttonAccept} >
+                <AntDesignIcon name='ellipsis1' size={22} color={'#000'} />
               </TouchableOpacity>
             </View>
           </View>
@@ -86,6 +108,10 @@ const Friends: React.FC<Friend> = () => {
 export default Friends
 
 const styles = StyleSheet.create({
+  container:{
+    backgroundColor:"#fff",
+    paddingHorizontal:8
+  },
   headerText: {
     marginStart: 10,
     fontWeight: '500',
@@ -94,22 +120,20 @@ const styles = StyleSheet.create({
   },
   itemWA: {
     flexDirection: 'row',
-    height: 70,
-    backgroundColor: 'white',
-    borderRadius: 5,
-    shadowColor: 'black',
-    shadowOpacity: 0.5,
-    shadowRadius: 5,
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    elevation: 5,
-    marginTop: 3,
     justifyContent: 'space-between',
-    marginStart: 3,
-    marginBottom: 3,
-    marginEnd: 3
+    height: 70,
+    // backgroundColor: 'white',
+    // borderRadius: 5,
+    // shadowColor: 'black',
+    // shadowOpacity: 0.5,
+    // shadowRadius: 5,
+    // shadowOffset: {
+    //   width: 0,
+    //   height: 2,
+    // },
+    // elevation: 5,
+    // marginTop: 3,
+    // marginBottom: 3,
   },
   user: {
     flexDirection: 'row',
@@ -121,14 +145,13 @@ const styles = StyleSheet.create({
     fontSize: 18,
     color: 'black',
     fontWeight: '400',
-    marginTop: 10,
-    marginStart: 5
+    marginStart:10
   },
   button: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    width:100
+    // width: 100
   },
   buttonAccept: {
     height: 30,
@@ -136,7 +159,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     borderRadius: 5,
-    marginStart:5
+    marginStart: 5
 
   },
   buttonReject: {

@@ -80,8 +80,8 @@ const Body: React.FunctionComponent<BodyProps> = ({ showModalEdit, setShowModalE
         // }
         if (postId) {
             setContent(postId.content);
-            const mediaUrls = postId.media.map(item => item.url);
-            const mediaItem = postId.media.map(item => item);
+            const mediaUrls = postId?.media?.map(item => item.url);
+            const mediaItem = postId?.media?.map(item => item);
             setImages(mediaItem)
             console.log('mediaUrl: ' + JSON.stringify(postId));
             console.log('images: ' + JSON.stringify(mediaItem));
@@ -222,7 +222,7 @@ const Body: React.FunctionComponent<BodyProps> = ({ showModalEdit, setShowModalE
             {/* Danh sách hình ảnh ------------------------------------------------------*/}
             {/* Đây là view sử dụng modal -----------------------------------*/}
             <View >
-                {images.length > 0 ? <TouchableOpacity onPress={() => { setShowModal(true) }}
+                {images?.length > 0 ? <TouchableOpacity onPress={() => { setShowModal(true) }}
                     style={{ zIndex: 99, height: 28, width: 80, backgroundColor: COLOR.PrimaryColor, position: 'absolute', start: 10, top: 10, flexDirection: 'row', padding: 3, borderRadius: 4, alignItems: 'center' }} >
                     <Icon name='edit' size={20} color={'white'} />
                     <Text style={{ fontSize: 12, color: 'white' }}>Chỉnh sửa</Text>

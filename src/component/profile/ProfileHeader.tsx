@@ -10,6 +10,8 @@ import DeleteFriend from '../../screens/profile/friendScreen/DeleteFriend'
 import uuid from 'react-native-uuid';
 import { socket } from '../../http/SocketHandle';
 import { useSendNotification } from '../../constant/notify';
+import { NetworkStackNavigationProp } from '../stack/NetworkRootStackParams';
+import { NavigateToMessage } from '../message/NavigateToMessage';
 
 interface ProfileHeaderProps {
   fullname: string;
@@ -21,8 +23,8 @@ interface ProfileHeaderProps {
   // onEditProfile: () => void;
 }
 
-const ProfileHeader: React.FC<ProfileHeaderProps> = ({ fullname, userId, loggedInUserId, relationship }) => {
-  const navigation = useNavigation();
+const ProfileHeader: React.FC<ProfileHeaderProps> = ({fullname, userId, loggedInUserId, relationship }) => {
+  const navigation:NetworkStackNavigationProp = useNavigation();
   const [cancelAdd, setCancelAdd] = useState(false);
   const [textReqState, setTextReqState] = useState(false);
   const [disabledButtons, setDisabledButtons] = useState(false);
@@ -38,7 +40,7 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({ fullname, userId, loggedI
     checkFiend();
     //getWaitAcept();
   }, [show])
-  
+
   const getWaitAcept = async () => {
     try {
       const result = await getRequest();
@@ -51,13 +53,13 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({ fullname, userId, loggedI
       console.error(error);
     }
   };
-  
+
   const handleToEditProfile = () => {
     navigation.navigate('EditProfileScreen' as never);
   }
-  const handleToFriend = () =>  {
-      navigation.navigate('Friends' as never);
-    }
+  const handleToFriend = () => {
+    navigation.navigate('Friends' as never);
+  }
 
   const handleToCreateStory = () => {
     //navigation.navigate('LiveStack' as never);
@@ -93,12 +95,12 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({ fullname, userId, loggedI
     setShow(true);
   };
 
-  
+
   const deleteF = async (id: number) => {
-    
+
     const user1 = Number(user.id);
-    const user2 = Number(id); 
-    
+    const user2 = Number(id);
+
     try {
       const result = await deleteFriend(user1, user2);
       if (result) {
@@ -154,7 +156,13 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({ fullname, userId, loggedI
       </View>
     )
   }
-
+  function ButtonMessagePressHandle() {
+    NavigateToMessage({
+      fullname,
+      avatar,
+      id:userId
+    },navigation)
+  }
   const checkFiend = () => {
     if (relationship === null || relationship?.status == null || change) {
       return (
@@ -166,14 +174,14 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({ fullname, userId, loggedI
             <Icon name="person-add" size={24} color="#fff" style={{ marginRight: 10 }} />
             <Text style={{ color: '#fff', fontSize: 18, fontWeight: '700' }}>{textReqState == true ? 'Đã gửi lời mời' : 'Gửi lời mời'}</Text>
           </TouchableOpacity>
-          
-          <View style={{flexDirection:'row'}}>
-            <TouchableOpacity style={styles.btnSendMessage}>
+
+          <View style={{ flexDirection: 'row' }}>
+            <TouchableOpacity style={styles.btnSendMessage} onPress={ButtonMessagePressHandle}>
               <Icon name="message" size={24} color="#000" style={{ marginRight: 10 }} />
               <Text style={{ color: '#000', fontSize: 18, fontWeight: '700' }}>Nhắn tin</Text>
             </TouchableOpacity>
 
-            <TouchableOpacity style={[styles.btnToEdit, { width: '35%', marginLeft:5}]} onPress={handleToFriend}>
+            <TouchableOpacity style={[styles.btnToEdit, { width: '35%', marginLeft: 5 }]} onPress={handleToFriend}>
               <FontAwesome5 name="user-friends" size={18} color="#000" style={{ marginRight: 5 }} />
               <Text style={{ color: '#000', fontSize: 18, fontWeight: '700' }}>Bạn bè</Text>
             </TouchableOpacity>
@@ -187,9 +195,9 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({ fullname, userId, loggedI
         <View>
           <View style={styles.typeFriend}>
             <TouchableOpacity style={styles.TextType}
-            onPress={() => {
-              navigation.navigate('NotificationScreen')
-            }}
+              onPress={() => {
+                navigation.navigate('NotificationScreen')
+              }}
             >
               <Icon name="person-add" size={24} color="#fff" style={{ marginRight: 10 }} />
               <Text style={{ color: '#fff', fontSize: 18, fontWeight: '700' }}>Chờ phê duyệt</Text>
@@ -201,13 +209,13 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({ fullname, userId, loggedI
               <Text style={{ color: COLOR.PrimaryColor, fontSize: 18, fontWeight: '700' }}>Hủy bỏ</Text>
             </TouchableOpacity>
           </View>
-          <View style={{flexDirection:'row'}}>
-            <TouchableOpacity style={styles.btnSendMessage}>
+          <View style={{ flexDirection: 'row' }}>
+            <TouchableOpacity style={styles.btnSendMessage} onPress={ButtonMessagePressHandle}>
               <Icon name="message" size={24} color="#000" style={{ marginRight: 10 }} />
               <Text style={{ color: '#000', fontSize: 18, fontWeight: '700' }}>Nhắn tin</Text>
             </TouchableOpacity>
 
-            <TouchableOpacity style={[styles.btnToEdit, { width: '35%', marginLeft:5}]} onPress={handleToFriend}>
+            <TouchableOpacity style={[styles.btnToEdit, { width: '35%', marginLeft: 5 }]} onPress={handleToFriend}>
               <FontAwesome5 name="user-friends" size={18} color="#000" style={{ marginRight: 5 }} />
               <Text style={{ color: '#000', fontSize: 18, fontWeight: '700' }}>Bạn bè</Text>
             </TouchableOpacity>
@@ -223,24 +231,24 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({ fullname, userId, loggedI
               <Icon name="people" size={24} color="#fff" style={{ marginRight: 10 }} />
               <Text style={{ color: '#fff', fontSize: 18, fontWeight: '700' }}>Bạn bè</Text>
             </View>
-            <TouchableOpacity style={styles.btnCancel}
+            {/* <TouchableOpacity style={styles.btnCancel}
               onPress={() => openDelete()}
             >
               <Icon name="person-remove" size={24} color="#fff" style={{ marginRight: 10 }} />
               <Text style={{ color: '#fff', fontSize: 18, fontWeight: '700' }}>{cancelF}</Text>
-            </TouchableOpacity>
+            </TouchableOpacity> */}
           </View>
-            
-          <View style={{flexDirection:'row'}}>
-            <TouchableOpacity style={styles.btnSendMessage}>
+
+          <View style={{ flexDirection: 'row' }}>
+            <TouchableOpacity style={styles.btnSendMessage} onPress={ButtonMessagePressHandle}>
               <Icon name="message" size={24} color="#000" style={{ marginRight: 10 }} />
               <Text style={{ color: '#000', fontSize: 18, fontWeight: '700' }}>Nhắn tin</Text>
             </TouchableOpacity>
 
-            <TouchableOpacity style={[styles.btnToEdit, { width: '35%', marginLeft:5}]} onPress={handleToFriend}>
+            {/* <TouchableOpacity style={[styles.btnToEdit, { width: '35%', marginLeft: 5 }]} onPress={handleToFriend}>
               <FontAwesome5 name="user-friends" size={18} color="#000" style={{ marginRight: 5 }} />
               <Text style={{ color: '#000', fontSize: 18, fontWeight: '700' }}>Bạn bè</Text>
-            </TouchableOpacity>
+            </TouchableOpacity> */}
           </View>
 
         </View>
@@ -257,13 +265,13 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({ fullname, userId, loggedI
             <Icon name="add" size={24} color="#fff" style={{ marginRight: 10 }} />
             <Text style={{ color: '#fff', fontSize: 18, fontWeight: '700' }}>Thêm vào tin</Text>
           </TouchableOpacity>
-          <View style={{flexDirection:'row'}}>
-            <TouchableOpacity style={[styles.btnToEdit, { width: '64%'}]} onPress={handleToEditProfile}>
+          <View style={{ flexDirection: 'row' }}>
+            <TouchableOpacity style={[styles.btnToEdit, { width: '64%' }]} onPress={handleToEditProfile}>
               <Icon name="edit" size={20} color="#000" style={{ marginRight: 5 }} />
               <Text style={{ color: '#000', fontSize: 18, fontWeight: '700' }}>Chỉnh sửa thông tin</Text>
             </TouchableOpacity>
 
-            <TouchableOpacity style={[styles.btnToEdit, { width: '35%', marginLeft:5}]} onPress={handleToFriend}>
+            <TouchableOpacity style={[styles.btnToEdit, { width: '35%', marginLeft: 5 }]} onPress={handleToFriend}>
               <FontAwesome5 name="user-friends" size={18} color="#000" style={{ marginRight: 5 }} />
               <Text style={{ color: '#000', fontSize: 18, fontWeight: '700' }}>Bạn bè</Text>
             </TouchableOpacity>
@@ -359,7 +367,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     backgroundColor: COLOR.PrimaryColor,
     height: 40,
-    width: '59%',
+    width: '100%',
     alignItems: 'center',
     justifyContent: 'center',
     flexDirection: 'row',
@@ -368,7 +376,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     backgroundColor: '#C0C0C0',
     height: 40,
-    width: '64%',
+    width: '100%',
     alignItems: 'center',
     justifyContent: 'center',
     marginTop: 10,
