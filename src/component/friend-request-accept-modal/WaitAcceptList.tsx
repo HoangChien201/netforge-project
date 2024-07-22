@@ -21,32 +21,7 @@ const WaitAcceptList: React.FC<Wait> = ({ dataWaitAccept, setDataWaitAccept, set
     const userId = user.id;
     const [reload, setReload] = useState(false);
     const {sendAcceptFriend} = useSendNotification();
-    // useEffect(() => {
-    //     getWaitAccept();
-    // }, [reload]);
-    // useEffect(() => {
-    //     socket.on(`notification-${userId}`, (data) => {
-    //         console.log('Notification received:', data);
-    //         if (data) {
-    //             setReload(prevState => !prevState)
-    //             console.log('oh');
-
-    //         }
-    //     });
-    //     return () => {
-    //         socket.off(`notification-${userId}`);
-    //     };
-    // }, [userId]);
-    // const getWaitAccept = async () => {
-    //     try {
-    //         const result = await getRequest();
-    //         //console.log('danh sách bạn bè chờ chấp nhận: ' + JSON.stringify(result));
-    //         setDataWaitAccept(result);
-    //         console.log('Accept: ' + JSON.stringify(result));
-    //     } catch (error) {
-    //         console.log(error);
-    //     }
-    // };
+    
     const cancelReq = async (friendId: number) => {
         try {
             const result = await cancelWaitAccept(friendId);

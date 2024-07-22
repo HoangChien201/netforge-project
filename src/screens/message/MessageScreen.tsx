@@ -39,8 +39,6 @@ export type MessageScreenNavigationProp = StackNavigationProp<
 export type MessageScreenRouteProp = RouteProp<MessageRootStackParams, 'MessageScreen'>;
 
 const MessageScreen = () => {
-  const { sendNMessage } = useSendNotification()
-
   const { user } = useMyContext()
   const [messages, setMessages] = useState<Array<MessageProvider>>([])
   const [partner, setPartner] = useState({
@@ -117,7 +115,7 @@ const MessageScreen = () => {
     }else{
       const { fullname, avatar, members } = route.params
       const partner_id=members[0].user.id
-      setPartner(prevValue => { return { ...prevValue, fullname, avatar,id:partner_id} })
+      setPartner(prevValue => { return { ...prevValue, fullname, avatar} })
       if(!partner_id) return
       createGroupAPIs(partner_id)
     }
@@ -130,13 +128,6 @@ const MessageScreen = () => {
   }, [isFocus]);
 
   function addMessage(message: MessageProvider) {
-
-                const data={
-                    messId: message.getId,
-                    body: "",
-                    receiver: partner.id
-                }
-                sendNMessage(data)
     setReply(null)
     setMessages(
       (prevValue) => {
