@@ -7,6 +7,7 @@ import { socket } from '../../http/SocketHandle'
 import { useMyContext } from '../navigation/UserContext'
 import { StateMessageFormat } from './format/StatusMessage'
 import { MessageProvider } from './class/MessageProvider'
+import { useSendNotification } from '../../constant/notify'
 export type StateMessageType = {
   message: MessageProvider,
   group_id: number | null,
@@ -82,7 +83,6 @@ const StateMessage: React.FC<StateMessageType> = ({ message, group_id, sender, l
         const messageNew = await message.CreateMessageToAPIByGroup(group_id)
         if (messageNew) {
           socket.emit(`message`, messageNew)
-
           setState(messageNew.state)
         }
 

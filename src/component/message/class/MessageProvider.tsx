@@ -1,7 +1,8 @@
+import { useSendNotification } from "../../../constant/notify";
 import { addMessageAPI, createGroupsHTTP } from "../../../http/ChienHTTP";
+import { socket } from "../../../http/SocketHandle";
 import { GroupChatType } from "../ListMessageItem";
 import { messageType, reactionType } from "../MessageItem";
-
 export class MessageProvider {
 
     private id: number;
@@ -43,6 +44,7 @@ export class MessageProvider {
         id: number,
     } | null
 
+
     constructor(message: messageType | any) {
         this.id = !message.id ? Date.now() : message.id,
             this.message = message.message,
@@ -78,17 +80,86 @@ export class MessageProvider {
 
     }
     public async CreateMessageToAPIByReceiver(sender: number, reveicer: number) {
-        const createGroup = {
-            type: 'single',
-            members: [sender, reveicer]
-        }
-        const group: GroupChatType = await createGroupsHTTP(createGroup)
+        try {
 
-        this.group=group.id
-        const messageCreate = await addMessageAPI(this)
-        return messageCreate
+            const createGroup = {
+                type: 'single',
+                members: [sender, reveicer]
+            }
+            const group: GroupChatType = await createGroupsHTTP(createGroup)
+
+            this.group = group.id
+            const messageCreate = await addMessageAPI(this)
+
+            if (messageCreate) {
+                console.log(messageCreate);
+                
+                this.sendNRepComment({
+                    nameSender: messageCreate.sender.fullname,
+                    avatarSender: messageCreate.sender.avatar,
+                    sender: messageCreate.sender.id,
+                    messId: messageCreate.id,
+                    body: '',
+                    receiver: reveicer
+                }
+
+                )
+            }
+
+
+
+            return messageCreate
+        } catch (error) {
+            console.log(error);
+
+            return "Gửi tin nhắn lỗi"
+        }
+
 
     }
+    private sendNRepComment = ({ nameSender, avatarSender, sender, messId, body, receiver }) => {
+        const notificationTemplate = this.createNotificationTemplate();
+        const data = {
+            ...notificationTemplate,
+            type: 6,
+            messId,
+            title: `${nameSender} đã gửi tin nhắn mới  `,
+            body,
+            userInfo: {
+                receiver,
+                sender,
+                fullname: nameSender,
+                avatar: avatarSender,
+
+            },
+
+        };
+        socket.emit('notification', data);
+        console.log('Sent notification data:', data);
+    };
+
+    private createNotificationTemplate = () => ({
+        id: new Date().toISOString(),
+        type: null,
+        postId: null,
+        postId1: null,
+        commentId: null,
+        friendId: null,
+        messId: null,
+        title: '',
+        body: '',
+        userInfo: {
+            receiver: null,
+            sender: null,
+            fullname: '',
+            avatar: '',
+            multiple: false
+        },
+        reaction: {
+            type: null
+        },
+        timestamp: new Date().toISOString()
+    });
 }
 
 export class MessageManage {

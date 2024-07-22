@@ -8,13 +8,15 @@ import ListImageDetail from "../listpost/ListImageDetail";
 import StoryDetail from "../storys/StoryDetail";
 import StoryText from "../storys/StoryText";
 import MessageStack from "./MessageStack";
+import MessageManagementScreen from "../../screens/message/MessageManagementScreen";
+
 export type NetworkStackNavigationProp = StackNavigationProp<
-  NetworkRootStackParams,
-  'MessageStack'
+    NetworkRootStackParams,
+    'MessageManagementScreen'
 >;
 export enum NetworkRootStackEnum {
     NetworkBottomTab = 'NetworkBottomTab',
-    MessageStack = 'MessageStack',
+    MessageManagementScreen = 'MessageManagementScreen',
     StoryScreen = "StoryScreen",
     CreateStoris = "Tạo Tin",
     StoryDetail = "StoryDetail",
@@ -25,18 +27,24 @@ export enum NetworkRootStackEnum {
 
 export type NetworkRootStackParams = {
     NetworkBottomTab: undefined;
-    MessageStack: {
+    MessageManagementScreen: {
         screen?: string,
-        params?: {
-            fullname: string,
-            avatar: string,
-            members: Array<{
-                user: {
-                    fullname: string,
-                    avatar: string,
-                    id: number
-                }
-            }>,
+        params: {
+
+            screen?: string,
+            params?: {
+                fullname: string,
+                avatar: string,
+                members: Array<{
+                    user: {
+                        fullname: string,
+                        avatar: string,
+                        id: number
+                    }
+                }>,
+            }
+
+
         }
     };
     StoryScreen: undefined;
@@ -45,6 +53,10 @@ export type NetworkRootStackParams = {
     CameraStory: undefined;
     ListImageDetail: undefined;
     StoryText: undefined;
+
+    //zego
+    ZegoUIKitPrebuiltCallWaitingScreen: undefined;
+    ZegoUIKitPrebuiltCallInCallScreen: undefined;
 }
 
 export const NetworkRootStackScreens = [
@@ -113,8 +125,8 @@ export const NetworkRootStackScreens = [
     },
     {
         id: Math.random() + "" + Date,
-        name: NetworkRootStackEnum.MessageStack,
-        component: MessageStack,
+        name: NetworkRootStackEnum.MessageManagementScreen,
+        component: MessageManagementScreen,
         options: {
             headerShown: false
         }
