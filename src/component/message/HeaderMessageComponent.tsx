@@ -19,57 +19,6 @@ type InviteeType={
 
 
 const HeaderMessageComponent = ({ partner }: { partner: any }) => {
-    const navigation = useNavigation()
-    // const [invitees, setInvitees] = useState<string>();
-    // const [userID, setUserID] = useState('');
-
-    function IconButton({ name, size, color, type }: { name: string, size: number, color: string, onPress?: any, type: string }) {
-        function OptionOnPress() {
-            //handle call
-            if (type === 'call') {
-                console.log('call');
-                return
-            }
-
-            //handle video call
-            console.log('video');
-            socket.emit('notification', {
-
-                body: "Local notification!",
-                title: "Local Notification Title",
-                userInfo: {
-                    sender: 2,
-                    multiple: true
-                },
-                fireDate: new Date(),
-
-            })
-            // postLocalNotification({
-            //     body: "Local notification!",
-            //     title: "Local Notification Title",
-            //     sound: "chime.aiff",
-            //     silent: false,
-            //     category: "SOME_CATEGORY",
-            //     userInfo: {},
-            //     fireDate: new Date(),
-            // })
-        }
-
-        return (
-            <TouchableOpacity onPress={OptionOnPress} style={styles.option}>
-                <MaterialIcon name={name} size={size} color={color} />
-            </TouchableOpacity>
-        )
-    }
-
-    //*******type member********
-    // members:Array<{
-    //     user:{
-    //         fullname:string,
-    //         avatar:string,
-    //         id:number
-    //     }
-    // }>
 
     const route: MessageScreenRouteProp = useRoute()
     const { fullname, avatar,members } = route.params;
@@ -82,9 +31,6 @@ const HeaderMessageComponent = ({ partner }: { partner: any }) => {
                             }
                         
                     }).filter(invitee=>invitee.userID !== user.id.toString())
-    console.log('invitees',invitees);
-    
-    // const id_invitee = members[0].user.id?.toString();
     // const [invitees, setInvitees]
     //     = useState<Array<
     //         {
@@ -92,27 +38,27 @@ const HeaderMessageComponent = ({ partner }: { partner: any }) => {
     //             userName: string
     //         }>>([]);
 
-    //call-begin
-    useEffect(() => {
-        if (invitees.length > 0) return
+    // //call-begin
+    // useEffect(() => {
+    //     if (invitees.length > 0) return
 
-        // setInvitees([{ userID: id_invitee, userName: fullname }]);
-        const initializeCallService = async () => {
-            try {
-                await onUserLogin(user.id, user.fullname, avatar);
-                console.log("User logged in successfully:", user.id, user.fullname);
-            } catch (error) {
-                console.error("Error logging in user headerMessage:", error);
-            }
-        };
-        initializeCallService();
-        return () => {
-            onUserLogout();
-            console.log("User logged out");
-            console.log("id ng gọi: ", user.id)
-        };
-    }, [invitees, fullname]);
-    //call-end
+    //     // setInvitees([{ userID: id_invitee, userName: fullname }]);
+    //     const initializeCallService = async () => {
+    //         try {
+    //             await onUserLogin(user.id, user.fullname, avatar);
+    //             console.log("User logged in successfully:", user.id, user.fullname);
+    //         } catch (error) {
+    //             console.error("Error logging in user headerMessage:", error);
+    //         }
+    //     };
+    //     initializeCallService();
+    //     return () => {
+    //         onUserLogout();
+    //         console.log("User logged out");
+    //         console.log("id ng gọi: ", user.id)
+    //     };
+    // }, [invitees, fullname]);
+    // //call-end
 
     return (
         <View style={styles.container}>
