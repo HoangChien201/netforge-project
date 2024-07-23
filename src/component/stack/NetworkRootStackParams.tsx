@@ -7,7 +7,6 @@ import NetworkBottomTab from "../bottom-stack/NetworkBottomTab"
 import ListImageDetail from "../listpost/ListImageDetail";
 import StoryDetail from "../storys/StoryDetail";
 import StoryText from "../storys/StoryText";
-import MessageStack from "./MessageStack";
 import MessageManagementScreen from "../../screens/message/MessageManagementScreen";
 
 export type NetworkStackNavigationProp = StackNavigationProp<
@@ -54,9 +53,7 @@ export type NetworkRootStackParams = {
     ListImageDetail: undefined;
     StoryText: undefined;
 
-    //zego
-    ZegoUIKitPrebuiltCallWaitingScreen: undefined;
-    ZegoUIKitPrebuiltCallInCallScreen: undefined;
+
 }
 
 export const NetworkRootStackScreens = [

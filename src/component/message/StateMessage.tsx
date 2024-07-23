@@ -48,6 +48,8 @@ const StateMessage: React.FC<StateMessageType> = ({ message, group_id, sender, l
         case 'text':
 
           const messageNew = await message.CreateMessageToAPIByGroup(group_id)
+        console.log('messageNew1',messageNew);
+
           if (messageNew) {
             socket.emit(`message`, messageNew)
             setState(messageNew.state)
@@ -81,6 +83,8 @@ const StateMessage: React.FC<StateMessageType> = ({ message, group_id, sender, l
         
         message.message = resultImage[0].url
         const messageNew = await message.CreateMessageToAPIByGroup(group_id)
+        console.log('messageNew',messageNew);
+        
         if (messageNew) {
           socket.emit(`message`, messageNew)
           setState(messageNew.state)

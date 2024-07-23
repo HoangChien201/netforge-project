@@ -92,9 +92,7 @@ export class MessageProvider {
             const messageCreate = await addMessageAPI(this)
 
             if (messageCreate) {
-                console.log(messageCreate);
-                
-                this.sendNRepComment({
+                this.sendMessage({
                     nameSender: messageCreate.sender.fullname,
                     avatarSender: messageCreate.sender.avatar,
                     sender: messageCreate.sender.id,
@@ -117,7 +115,7 @@ export class MessageProvider {
 
 
     }
-    private sendNRepComment = ({ nameSender, avatarSender, sender, messId, body, receiver }) => {
+    private sendMessage = ({ nameSender, avatarSender, sender, messId, body, receiver }) => {
         const notificationTemplate = this.createNotificationTemplate();
         const data = {
             ...notificationTemplate,
