@@ -59,9 +59,9 @@ export const onUserLogin = async (userID: any, userName: string, avatar:string) 
                           },
                       },
                       
-                    onCallEnd: (callID: any, reason: any, duration: any) => {
-                        console.log('########CallWithInvitation onCallEnd', callID, reason, duration);
-                    },
+                    // onCallEnd: (callID: any, reason: any, duration: any) => {
+                    //     console.log('########CallWithInvitation onCallEnd', callID, reason, duration);
+                    // },
                     //   topMenuBarConfig: {
                     //       buttons: [ZegoMenuBarButtonName.minimizingButton],
                     //   },
