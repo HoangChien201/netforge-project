@@ -136,7 +136,7 @@ const styles = StyleSheet.create({
         marginStart: 5
     },
     viewTime: {
-        flex: 0.5,
+        flex: 0.9,
         height:'100%'
     }
 })

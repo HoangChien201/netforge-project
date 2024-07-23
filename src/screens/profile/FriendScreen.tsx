@@ -1,7 +1,7 @@
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import React, { useCallback, useEffect, useRef, useState } from 'react'
 import { useFocusEffect, useIsFocused, useNavigation } from '@react-navigation/native';
-import Icon from 'react-native-vector-icons/AntDesign'
+import Icon from 'react-native-vector-icons/Entypo'
 import { COLOR } from '../../constant/color'
 
 import MODALFRIEND from '../../component/friend-request-accept-modal/Body'
@@ -29,7 +29,7 @@ const FriendScreen: React.FC<Friends> = () => {
   const [friends, setFriends] = useState<any[]>([]);
   const status2 = 2;
   const status1 = 1;
-  const {user} = useMyContext();
+  const { user } = useMyContext();
   const userId = user.id
   const [showModalFriend, setShowModalFriend] = useState(false);
   const [dot, setDot] = useState(Number);
@@ -39,14 +39,17 @@ const FriendScreen: React.FC<Friends> = () => {
   const [dataWaitAccept, setDataWaitAccept] = useState([]);
   const swiperRef = useRef(null);
   const [currentIndex, setCurrentIndex] = useState(0);
-  const { sendNRequestFriend} = useSendNotification();
+  const { sendNRequestFriend } = useSendNotification();
+  const [refreshing, setRefreshing] = useState(false);
+  const [numReq,setNumReq] = useState(0);
+  const [numWA,setNumWA] = useState(0);
   const getFriendList = async (status: number) => {
     try {
       const result = await getFriends(status);
       if (result) {
         setFriends(result);
         console.log('bạn bè: ' + JSON.stringify(result));
-
+        setRefreshing(false)
       }
     } catch (error) {
       console.log(error);
@@ -57,8 +60,10 @@ const FriendScreen: React.FC<Friends> = () => {
       //const result = await getAllUser();
       const result = await getSuggest();
       //console.log('danh sách gợi ý: ' + JSON.stringify(result));
-      setDataSuggest(result);
-
+      if (result) {
+        setDataSuggest(result);
+        setRefreshing(false)
+      }
       //console.log('suggest: ' + JSON.stringify(result));
     } catch (error) {
       console.log(error);
@@ -68,18 +73,25 @@ const FriendScreen: React.FC<Friends> = () => {
     try {
       const result = await getFriends(num);
       //console.log('danh sách bạn bè 1: ' + JSON.stringify(result));
-      setDataRequest(result);
+      if (result) {
+        setDataRequest(result);
+        setRefreshing(false);
+        setNumReq(result.length)
+      }
       //console.log('request: ' + JSON.stringify(result));
     } catch (error) {
       console.log(error);
     }
   };
-
   const getWaitAcceptList = async () => {
     try {
       const result = await getRequest();
       //console.log('danh sách bạn bè chờ chấp nhận: ' + JSON.stringify(result));
-      setDataWaitAccept(result);
+      if (result) {
+        setDataWaitAccept(result);
+        setRefreshing(false);
+        setNumWA(result.length);
+      }
       //console.log('Accept: ' + result);
     } catch (error) {
       console.log(error);
@@ -96,6 +108,8 @@ const FriendScreen: React.FC<Friends> = () => {
         },
       });
       loadAllData();
+      console.log('load rồi');
+
     }
   }, [isFocus, reload]);
   const loadAllData = () => {
@@ -107,14 +121,14 @@ const FriendScreen: React.FC<Friends> = () => {
   useEffect(() => {
     socket.on(`notification-${userId}`, (data) => {
       console.log('Notification received:', data);
-        if(data){
-            setReload(prevState => !prevState)
-        }
+      if (data) {
+        setReload(prevState => !prevState)
+      }
     });
     return () => {
-        socket.off(`notification-${userId}`);
+      socket.off(`notification-${userId}`);
     };
-}, [userId]);
+  }, [userId]);
   useEffect(() => {
     if (isFocus) {
       navigation.getParent()?.setOptions({
@@ -132,13 +146,12 @@ const FriendScreen: React.FC<Friends> = () => {
       swiperRef.current.scrollBy(index - currentIndex, true);
     }
   };
-  // const handleSendReaction = () => {
-  //   const data = {
-  //     receiver:8
-  //   }
-  //   sendNRequestFriend(data);
-
-  // };
+  useEffect(()=>{
+    getRequestList(status1)
+  },[dataRequest])
+  useEffect(()=>{
+    getWaitAcceptList()
+  },[dataWaitAccept])
   return (
     <View style={styles.container}>
       <View style={styles.header}>
@@ -146,19 +159,29 @@ const FriendScreen: React.FC<Friends> = () => {
           style={[styles.buttonS, currentIndex === 0 && styles.activeButton]}
           onPress={() => handleButtonPress(0)}
         >
+          <Icon name='add-to-list' size={20} color={COLOR.PrimaryColor} />
           <Text style={styles.text1}>Yêu cầu</Text>
+          <View style={{position:'absolute', height:14,width:12, backgroundColor:COLOR.PrimaryColor1, alignItems:'center',justifyContent:'center',borderRadius:8,end:-2,top:-2}}>
+            <Text style={styles.num}>{numWA}</Text>
+          </View>
         </TouchableOpacity>
         <TouchableOpacity
           style={[styles.buttonS, currentIndex === 1 && styles.activeButton]}
           onPress={() => handleButtonPress(1)}
         >
+          <Icon name='paper-plane' size={20} color={COLOR.PrimaryColor} />
           <Text style={styles.text1}>Lời mời</Text>
+          <View style={{position:'absolute', height:14,width:12, backgroundColor:COLOR.PrimaryColor1, alignItems:'center',justifyContent:'center',borderRadius:8,end:-2,top:-2}}>
+            <Text style={styles.num}>{numReq}</Text>
+          </View>
         </TouchableOpacity>
-        {/* <TouchableOpacity style={styles.buttonS}
-        onPress={handleSendReaction}
+        <TouchableOpacity
+          style={[styles.buttonF]}
+          onPress={() => navigation.navigate('Friends')}
         >
-          <Text>send No</Text>
-        </TouchableOpacity> */}
+          <Icon name='users' size={20} color={COLOR.PrimaryColor} />
+          <Text style={styles.text1}>Bạn bè</Text>
+        </TouchableOpacity>
       </View>
       <View style={[styles.container1]}>
         <Swiper ref={swiperRef} loop={false} showsButtons={false}
@@ -167,10 +190,17 @@ const FriendScreen: React.FC<Friends> = () => {
           <View>
             <WaitAcceptList dataWaitAccept={dataWaitAccept}
               setDataWaitAccept={setDataWaitAccept} setShowModalFriend={setShowModalFriend}
-              getWaitAcceptList={getWaitAcceptList} />
+              getWaitAcceptList={getWaitAcceptList}
+              reload={reload} setReload={setReload}
+              refreshing={refreshing} setRefreshing={setRefreshing}
+            />
           </View>
           <View>
-            <RequestList dataRequest={dataRequest} setDataRequest={setDataRequest} setReload={setReload} setShowModalFriend={setShowModalFriend} />
+            <RequestList dataRequest={dataRequest} setDataRequest={setDataRequest}
+              setReload={setReload} reload={reload}
+              setShowModalFriend={setShowModalFriend}
+              refreshing={refreshing} setRefreshing={setRefreshing}
+            />
           </View>
         </Swiper>
       </View>
@@ -216,9 +246,10 @@ const styles = StyleSheet.create({
   },
   text1: {
     fontSize: 16,
-    fontWeight: '500',
+    fontWeight: '400',
     fontStyle: "normal",
-    color: COLOR.primary500
+    color: 'black',
+    marginStart:3
   },
   text2: {
     fontSize: 13,
@@ -228,7 +259,8 @@ const styles = StyleSheet.create({
   },
   header: {
     height: 60,
-    flexDirection: 'row'
+    flexDirection: 'row',
+
   },
   headerText: {
     color: 'black',
@@ -251,15 +283,34 @@ const styles = StyleSheet.create({
     borderRadius: 10
   },
   buttonS: {
-    width: 80,
-    height: 35,
+    width: 86,
+    height: 32,
     borderRadius: 10,
     margin: 5,
-    backgroundColor: COLOR.primary400,
+    backgroundColor: 'white',
     justifyContent: 'center',
-    alignItems: 'center'
+    alignItems: 'center',
+    flexDirection: 'row'
+  },
+  buttonF: {
+    width: 100,
+    height: 32,
+    borderRadius: 10,
+    backgroundColor: COLOR.primary350,
+    justifyContent: 'center',
+    alignItems: 'center',
+    flexDirection: 'row',
+    position:'absolute',
+    end:5,
+    top:5
+
   },
   activeButton: {
-    backgroundColor: COLOR.PrimaryColor1, // Change to the active color
+    backgroundColor: COLOR.primary150 // Change to the active color
   },
+  num:{
+    fontSize:10,
+    color:'black',
+    fontWeight:'400'
+  }
 })

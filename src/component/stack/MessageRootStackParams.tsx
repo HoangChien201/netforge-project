@@ -3,13 +3,14 @@ import CallManagement from "../../screens/message/CallManagement";
 import ListMessageScreen from "../../screens/message/ListMessageScreen";
 import MessageScreen from "../../screens/message/MessageScreen";
 import { messageType } from "../message/MessageItem";
+import CustomZegoCallScreen from "../custom-zegoCallScreen/CustomZegoCallScreen";
 // @ts-ignore
-import {ZegoUIKitPrebuiltCallWaitingScreen, ZegoUIKitPrebuiltCallInCallScreen,} from '@zegocloud/zego-uikit-prebuilt-call-rn';
+import { ZegoUIKitPrebuiltCallWaitingScreen, ZegoUIKitPrebuiltCallInCallScreen, } from '@zegocloud/zego-uikit-prebuilt-call-rn';
 
 enum MessageRootStackEnum {
-    MessageScreen='MessageScreen',
-    ListMessageScreen='ListMessageScreen',
-    CallManagement='CallManagement',
+    MessageScreen = 'MessageScreen',
+    ListMessageScreen = 'ListMessageScreen',
+    CallManagement = 'CallManagement',
     ZegoUIKitPrebuiltCallWaitingScreen = 'ZegoUIKitPrebuiltCallWaitingScreen',
     ZegoUIKitPrebuiltCallInCallScreen = 'ZegoUIKitPrebuiltCallInCallScreen'
 }
@@ -22,17 +23,17 @@ export type MessageRootStackParams = {
         fullname: string,
         avatar: string,
         messages?: Array<messageType>,
-        members:Array<{
-            user:{
-                fullname:string,
-                avatar:string,
-                id:number
+        members: Array<{
+            user: {
+                fullname: string,
+                avatar: string,
+                id: number
             }
         }>,
     };
     ListMessageScreen: undefined;
     CallManagement: undefined;
-    
+
 }
 
 export const MessageRootStackScreens = [
@@ -53,7 +54,7 @@ export const MessageRootStackScreens = [
             // headerTitleAlign: 'center',
             // headerTransparent: true,
             // headerTintColor: '#fff'
-            headerShown:false
+            headerShown: false
         }
     },
     {
@@ -62,7 +63,10 @@ export const MessageRootStackScreens = [
         component: CallManagement,
         options: {
             headerShown: false
-        }
+        },
+        tabBarStyle: {
+            display: 'none',
+        },
     },
     {
         id: Math.random() + "" + Date,
@@ -70,7 +74,7 @@ export const MessageRootStackScreens = [
         component: ZegoUIKitPrebuiltCallWaitingScreen,
         options: {
             headerShown: false
-        }
+        },
     },
     {
         id: Math.random() + "" + Date,

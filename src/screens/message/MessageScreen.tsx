@@ -216,6 +216,7 @@ const MessageScreen = () => {
 
   return (
     <BottomSheetModalProvider>
+
       <View style={styles.container}>
         <ToolBar title='Tin nhắn'/>
         <HeaderMessageComponent partner={partner} />

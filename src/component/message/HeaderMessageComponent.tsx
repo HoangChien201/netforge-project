@@ -11,7 +11,8 @@ import { socket } from '../../http/SocketHandle'
 import { multiply } from 'lodash'
 import { useMyContext } from '../navigation/UserContext'
 import { MessageScreenRouteProp } from '../../screens/message/MessageScreen'
-
+import KeyCenter from '../../screens/call-video/KeyCenter'
+import * as ZIM from 'zego-zim-react-native';
 type InviteeType={
     userID:string,
     userName:string
@@ -98,11 +99,88 @@ const HeaderMessageComponent = ({ partner }: { partner: any }) => {
 
         // setInvitees([{ userID: id_invitee, userName: fullname }]);
         const initializeCallService = async () => {
+            // try {
+            //     await onUserLogin(user.id, user.fullname, avatar,useNavigation());
+            //     console.log("User logged in successfully:", user.id, user.fullname);
+            // } catch (error) {
+            //     console.error("Error logging in user headerMessage:", error);
+            // }
             try {
-                await onUserLogin(user.id, user.fullname, avatar);
-                console.log("User logged in successfully:", user.id, user.fullname);
+                await ZegoUIKitPrebuiltCallService.init(
+                    KeyCenter.appID,
+                    KeyCenter.appSign,
+                    user.id.toString(),
+                    user.fullname.toString(),
+                    [ZIM],
+        
+                    {
+        
+                        ringtoneConfig: {
+                            incomingCallFileName: 'zego_incoming.mp3',
+                            outgoingCallFileName: 'zego_outgoing.mp3',
+                        },
+                        androidNotificationConfig: {
+                            channelID: "Zego_call",
+                            channelName: "Zego_call",
+                        },
+                        avatarBuilder: ({ userInfo }) => {
+                            return (
+                                <View style={{ width: '100%', height: '100%' }}>
+                                    <Image
+                                        style={{ width: '100%', height: '100%' }}
+                                        resizeMode="cover"
+                                        //source={image ? { uri: image } : require('../../media/icon/avatar.png')}
+                                        source={avatar ? { uri: avatar } : { uri: `https://robohash.org/${userInfo.userID}.png` }}
+                                    //source={{ uri: `https://robohash.org/${userInfo.userID}.png` }}
+                                    />
+        
+                                </View>
+                            );
+                        },
+                        requireConfig: (data: any) => {
+                            return {
+                                innerText: {
+                                    incomingVideoCallDialogTitle: "%10",
+                                    incomingVideoCallDialogMessage: "Đang gọi...",
+                                },
+                                // foregroundBuilder: () => {
+                                //     return (<Text>hihi</Text>);
+                                // },
+                                timingConfig: {
+                                    isDurationVisible: true,
+                                    onDurationUpdate: (duration: any) => {
+                                        if (duration === 10 * 60) {
+                                            ZegoUIKitPrebuiltCallService.hangUp();
+                                        }
+                                    },
+                                },
+        
+                                onCallEnd: (callID: any, reason: any, duration: any) => {
+                                    console.log('########CallWithInvitation onCallEnd', callID, reason, duration);
+                                    navigation.goBack();
+                                },
+                                //   topMenuBarConfig: {
+                                //       buttons: [ZegoMenuBarButtonName.minimizingButton],
+                                //   },
+                                // onWindowMinimized: () => {
+                                //     navigation.navigate('MessageScreen');
+                                // },
+                                // onWindowMaximized: () => {
+                                //     navigation.navigate('ZegoUIKitPrebuiltCallInCallScreen');
+                                // },
+                            };
+        
+                        },
+        
+                        notifyWhenAppRunningInBackgroundOrQuit: true,
+                        isIOSSandboxEnvironment: true,
+                        
+                    }
+                );
+                console.log("User logged in successfully:", userID, userName);
+        
             } catch (error) {
-                console.error("Error logging in user headerMessage:", error);
+                console.error("Error logging in user Utils:", error);
             }
         };
         initializeCallService();
@@ -137,7 +215,7 @@ const HeaderMessageComponent = ({ partner }: { partner: any }) => {
                 <View style={styles.options}>
                     <ZegoSendCallInvitationButton
                         invitees={invitees}
-                        isVideoCall={false}
+                        props={navigation}
                         resourceID={"zego_call"}
                         backgroundColor={'rgba(255,255,255,0.2)'}
                         icon={require('../../media/icon/telephone-call.png')}
