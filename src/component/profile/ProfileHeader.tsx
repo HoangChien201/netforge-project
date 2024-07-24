@@ -18,12 +18,19 @@ interface ProfileHeaderProps {
   userId: number;
   loggedInUserId: number;
   relationship: any;
+  avatar:string; //chiến mới thêm //--nếu đã thấy vui lòng xóa comment này
 
   // onAddStory: () => void;
   // onEditProfile: () => void;
 }
 
-const ProfileHeader: React.FC<ProfileHeaderProps> = ({fullname, userId, loggedInUserId, relationship }) => {
+const ProfileHeader: React.FC<ProfileHeaderProps> = (
+  {fullname, 
+    userId, 
+    loggedInUserId, 
+    relationship, 
+    avatar //chiến mới thêm //--nếu đã thấy vui lòng xóa comment này
+  }) => {
   const navigation:NetworkStackNavigationProp = useNavigation();
   const [cancelAdd, setCancelAdd] = useState(false);
   const [textReqState, setTextReqState] = useState(false);

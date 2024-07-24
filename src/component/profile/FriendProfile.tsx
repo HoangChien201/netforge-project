@@ -100,6 +100,7 @@ const FriendProfile:React.FC<ModalFriendProfileProps> = () => {
         <HeaderBanner value={scrollOffsetY} userId={userId} />
         <View style={{ marginTop: 260 }}></View>
         <ProfileHeader
+                avatar={userData.avatar} //chiến mới thêm //--nếu đã thấy vui lòng xóa comment này
                 fullname={userData.fullname}
                 userId={userId} 
                 loggedInUserId={user.id}

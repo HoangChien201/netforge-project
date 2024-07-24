@@ -100,6 +100,7 @@ const TestProfile = () => {
         <HeaderBanner value={scrollOffsetY} userId={user.id} />
         <View style={{marginTop:260}}></View>
           <ProfileHeader
+          avatar={userData.avatar} //chiến mới thêm -- nếu đã đọc được vui lòng xóa comment này <3
           fullname={userData.fullname}
           userId={user.id}
           loggedInUserId={user.id} 

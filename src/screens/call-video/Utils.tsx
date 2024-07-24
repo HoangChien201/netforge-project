@@ -53,15 +53,17 @@ export const onUserLogin = async (userID: any, userName: string, avatar:string) 
                       timingConfig: {
                           isDurationVisible: true,
                           onDurationUpdate: (duration: any) => {
+                            console.log('duration',duration);
+                            
                               if (duration === 10 * 60) {
                                   ZegoUIKitPrebuiltCallService.hangUp();
                               }
                           },
                       },
                       
-                    // onCallEnd: (callID: any, reason: any, duration: any) => {
-                    //     console.log('########CallWithInvitation onCallEnd', callID, reason, duration);
-                    // },
+                    onCallEnd: (callID: any, reason: any, duration: any) => {
+                        console.log('########CallWithInvitation onCallEnd', callID, reason, duration);
+                    },
                     //   topMenuBarConfig: {
                     //       buttons: [ZegoMenuBarButtonName.minimizingButton],
                     //   },

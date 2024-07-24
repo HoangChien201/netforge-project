@@ -7,6 +7,7 @@ import { socket } from '../../http/SocketHandle'
 import { useMyContext } from '../navigation/UserContext'
 import { StateMessageFormat } from './format/StatusMessage'
 import { MessageProvider } from './class/MessageProvider'
+import { useSendNotification } from '../../constant/notify'
 export type StateMessageType = {
   message: MessageProvider,
   group_id: number | null,
@@ -47,6 +48,8 @@ const StateMessage: React.FC<StateMessageType> = ({ message, group_id, sender, l
         case 'text':
 
           const messageNew = await message.CreateMessageToAPIByGroup(group_id)
+        console.log('messageNew1',messageNew);
+
           if (messageNew) {
             socket.emit(`message`, messageNew)
             setState(messageNew.state)
@@ -80,9 +83,10 @@ const StateMessage: React.FC<StateMessageType> = ({ message, group_id, sender, l
         
         message.message = resultImage[0].url
         const messageNew = await message.CreateMessageToAPIByGroup(group_id)
+        console.log('messageNew',messageNew);
+        
         if (messageNew) {
           socket.emit(`message`, messageNew)
-
           setState(messageNew.state)
         }
 

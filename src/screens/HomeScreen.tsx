@@ -28,23 +28,23 @@ const HomeScreen = () => {
     const { user } = useMyContext();
     const [visible, setVisible] = useState(false);
 
-    // login zegoCloud để thực hiện cuộc gọi
-    useEffect(() => {
-        const initializeCallService = async () => {
-            try {
-                await onUserLogin(user.id, user.fullname, user.avatar);
-                console.log("User logged in successfully on HomeScreen:", user.id, user.fullname);
-            } catch (error) {
-                console.error("Error logging in user on HomeScreen:", error);
-            }
-        };
-        initializeCallService();
-        return () => {
-            onUserLogout();
-            console.log("User logged out on HomeScreen");
-        };
-    }, [user.id, user.fullname]);
-    //end zegoCloud
+    // // login zegoCloud để thực hiện cuộc gọi
+    // useEffect(() => {
+    //     const initializeCallService = async () => {
+    //         try {
+    //             await onUserLogin(user.id, user.fullname, user.avatar);
+    //             console.log("User logged in successfully on HomeScreen:", user.id, user.fullname);
+    //         } catch (error) {
+    //             console.error("Error logging in user on HomeScreen:", error);
+    //         }
+    //     };
+    //     initializeCallService();
+    //     return () => {
+    //         onUserLogout();
+    //         console.log("User logged out on HomeScreen");
+    //     };
+    // }, [user.id, user.fullname]);
+    // //end zegoCloud
 
     const checkTouchIdLogin = () => {
         TouchID.isSupported()
