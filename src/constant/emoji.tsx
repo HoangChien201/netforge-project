@@ -158,4 +158,36 @@ export const reaction = [
  
   
 ]
+export const emotions = [
+    {
+        id:"1",
+        title:"cảm thấy vui vẻ🤭!",
+        type:1
+    },
+    {
+        id:"2",
+        title:"cảm thấy trống rỗng🥺!",
+        type:2
+    },
+    {
+        id:"3",
+        title:"cảm thấy mệt mỏi😣!",
+        type:3
+    },
+    {
+        id:"4",
+        title:"cảm thấy đói bụng🤤!",
+        type:4
+    },
+    {
+        id:"5",
+        title:"cảm thấy tức giận😤!",
+        type:5
+    },
+    {
+        id:"6",
+        title:"cảm thấy yếu đuối🤧!",
+        type:6
+    },
+]
 

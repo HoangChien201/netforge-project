@@ -7,9 +7,10 @@ import { setDate } from 'date-fns';
 const ItemStory = ({ data, setIndex, index, indexfind, list }) => {
   const navigation: NavigationProp<ParamListBase> = useNavigation();
   const [result,setResult] = useState(data);
+  console.log("dâtta",data);
   useEffect(() => {
     setResult(data)
-  }, []); 
+  }, [data]); 
   return (
     <TouchableOpacity
       onPress={() => {
@@ -17,7 +18,10 @@ const ItemStory = ({ data, setIndex, index, indexfind, list }) => {
         navigation.navigate("StoryScreen", { list, indexfind });
       }}
     >
-      <View style={[styles.borderContainer,{ borderColor: indexfind === index ? COLOR.PrimaryColor1 : '#A5A3A3' }]}>
+      <View style={[styles.borderContainer,{ borderColor: result?.posts[0].type === 3 ? 'red' : indexfind === index ? COLOR.PrimaryColor1 : '#A5A3A3'}]}>
+        {
+          result?.posts[0].type === 3 && <View style={{position:'absolute',top:5,right:6,zIndex:11111,backgroundColor:'red',padding:3,borderColor:'white',borderWidth:1}}><Text style={{fontWeight:'bold',color:'white',fontSize:10}}>Live</Text></View>
+        }
         <ImageBackground 
           source={{ uri: result?.posts[0].media[0]?.url ? result?.posts[0].media[0]?.url  : "https://images.pexels.com/photos/2310713/pexels-photo-2310713.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" }} 
           style={styles.imageBackground} 

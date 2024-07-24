@@ -3,7 +3,7 @@ import React, { memo, useCallback, useEffect, useState } from 'react';
 import ItemPost from './ItemPost';
 import { getAll } from '../../http/userHttp/getpost';
 import { useMyContext } from '../navigation/UserContext';
-import { NavigationProp, ParamListBase, useFocusEffect, useNavigation } from '@react-navigation/native';
+import { NavigationProp, ParamListBase, useFocusEffect, useIsFocused, useNavigation } from '@react-navigation/native';
 import { ProfileRootStackEnum } from '../stack/ProfileRootStackParams';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Loading from '../Modal/Loading';
@@ -11,16 +11,29 @@ import { date } from 'yup';
 import BODYMODAL from '../../component/edit-post-modal/Body'
 import DELETEPOST from './DeletePostModal'
 import FastImage from 'react-native-fast-image';
+import { RootState } from '../store/store';
+import { useDispatch, useSelector } from 'react-redux';
+import { updateIsLoading } from '../store/loadDataSlice';
 const ListPorts = memo(({ onrefresh }: { onrefresh: boolean }) => {
+  const isLoading = useSelector((state: RootState) => state.loading.isLoadingg);
+  const dispatch = useDispatch();
   const [allData, setAllData] = useState<any>([]);
   const [displayData, setDisplayData] = useState<any>([]);
   const [loading, setLoading] = useState(false);
+
   const [loadingMore, setLoadingMore] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
 
   const [showModalEdit, setShowModalEdit] = useState(false);
   const [showDelete,setShowDelete] = useState(false);
   const [selectedId, setSelectedId] = useState(null); 
+  const focus = useIsFocused();
+
+  useEffect(()=>{
+    if(focus){
+      getAllPost();
+    }
+  },[focus])
 
   const navigation: NavigationProp<ParamListBase> = useNavigation();
   const PAGE_SIZE = 10;
@@ -33,7 +46,7 @@ const ListPorts = memo(({ onrefresh }: { onrefresh: boolean }) => {
    
     try {
       const response: any = await getAll(token, user.id);
-
+      console.log("sdasdasdasdqwewqe1232321",response);
       if (response.length > 0) {
         const getByTypeOne = response.filter(post => post.type === 1)
  
@@ -44,6 +57,7 @@ const ListPorts = memo(({ onrefresh }: { onrefresh: boolean }) => {
       console.error(error);
     }
     setLoading(false);
+    dispatch(updateIsLoading())
   }, [setAllData, setDisplayData, onrefresh,showDelete,showModalEdit]);
 
   useEffect(() => {
@@ -54,7 +68,7 @@ const ListPorts = memo(({ onrefresh }: { onrefresh: boolean }) => {
   useFocusEffect(
     useCallback(() => {
       getAllPost();
-    }, [getAllPost])
+    }, [getAllPost,isLoading])
     )
 
 
@@ -99,7 +113,6 @@ const ListPorts = memo(({ onrefresh }: { onrefresh: boolean }) => {
     <>
     <View style={{ flex:1,backgroundColor: 'rgba(155,155,155,0.2)',zIndex:999999 }}>
       
-
       <BODYMODAL
         showModalEdit={showModalEdit}
         setShowModalEdit={setShowModalEdit}

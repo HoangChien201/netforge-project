@@ -8,6 +8,9 @@ import { useNavigation, NavigationProp, RouteProp } from '@react-navigation/nati
 import { useMyContext } from '../../component/navigation/UserContext';
 import { createNewPost } from '../../http/QuyetHTTP';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { deletePost } from '../../http/userHttp/getpost';
+import { useSelector } from 'react-redux';
+import { RootState } from '../../component/store/store';
 
 //import { ZegoToastType } from '@zegocloud/zego-uikit-prebuilt-live-streaming-rn/lib/typescript/services/defines';
 //import * as ZIM from 'zego-zim-react-native';
@@ -25,6 +28,7 @@ type Props = {
 };
 
 const HostScreen: React.FC<Props> = ({ route }) => {
+  const postID = useSelector((state: RootState) => state.postID.postID);
   const prebuiltRef = useRef<any>();
   const { userID, userName, liveID } = route.params;
   //const navigation = useNavigation<NavigationProp<RootStackParamList>>();
@@ -33,10 +37,13 @@ const HostScreen: React.FC<Props> = ({ route }) => {
     navigation.getParent()?.setOptions({ tabBarStyle: {display:'none'}});
   }, []);
   const { user } = useMyContext();
+console.log("dsfjksljdfljsfla",postID);
 
-  const handleLeaveLiveStreaming = async() => {
-    navigation.navigate('LiveWithZego' as never);
-    await AsyncStorage.removeItem("liveID")
+  const handleLeaveLiveStreaming =() => {
+    handleDeletePost();
+   
+    
+    // await AsyncStorage.removeItem("liveID")
   };
   const foregroundBuilder = ({ userInfo }: { userInfo: any }) => (
     <View style={styles.foreground}>
@@ -47,10 +54,17 @@ const HostScreen: React.FC<Props> = ({ route }) => {
       <Text style={styles.userName}>{userInfo.userName}</Text>
     </View>
   );
-
+  const handleDeletePost = async () => {
+    try {
+        await deletePost(postID);
+        navigation.navigate('LiveWithZego' as never);
+    } catch (error) {
+        console.error(error);
+    }
+};
   const createLivePost = async () => {
     try {
-        const type = 2;
+        const type = 3;
         const content = liveID
         const permission = 1;
      

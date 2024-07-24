@@ -2,14 +2,14 @@ import React, { useEffect, useRef } from 'react';
 import { Animated, View, StyleSheet, Easing, Modal, Image, Dimensions } from 'react-native';
 
 const ExplosionModal = ({ visible, onClose, emoji }) => {
-  const animationValues = [useRef(new Animated.Value(0)).current, useRef(new Animated.Value(0)).current, useRef(new Animated.Value(0)).current];
+  const animationValues = [useRef(new Animated.Value(0)).current, useRef(new Animated.Value(0)).current, useRef(new Animated.Value(0)).current, useRef(new Animated.Value(0)).current, useRef(new Animated.Value(0)).current];
 
   useEffect(() => {
     if (visible) {
       const animations = animationValues.map(animationValue =>
         Animated.timing(animationValue, {
           toValue: 1,
-          duration: 1000,
+          duration: 950,
           easing: Easing.out(Easing.exp),
           useNativeDriver: true,
         })
@@ -22,7 +22,7 @@ const ExplosionModal = ({ visible, onClose, emoji }) => {
   }, [visible, animationValues]);
 
   const getRandomSize = () => {
-    const size = Math.floor(Math.random() * 50) + 50; // Random size between 50 and 100
+    const size = Math.floor(Math.random() * 50) + 50; 
     return {
       width: size,
       height: size,
@@ -31,8 +31,8 @@ const ExplosionModal = ({ visible, onClose, emoji }) => {
 
   const getRandomPosition = () => {
     const { width, height } = Dimensions.get('window');
-    const top = Math.floor(Math.random() * (height - 100)); // Subtract the max size of emoji
-    const left = Math.floor(Math.random() * (width - 100)); // Subtract the max size of emoji
+    const top = Math.floor(Math.random() * (height - 100)); 
+    const left = Math.floor(Math.random() * (width - 100));
     return {
       top,
       left,
@@ -96,7 +96,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    backgroundColor: 'rgba(0, 0, 0, 0.2)',
   },
   emojiContainer: {
     position: 'absolute',
