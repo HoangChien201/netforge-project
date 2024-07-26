@@ -47,38 +47,14 @@ const ListMessageItem = ({ group }: { group: GroupChatType }) => {
         }
     }
     const onPress = () => {
-        // //single
-        // if (id_user) {
-
-            navigation.navigate('MessageManagementScreen',{screen:'MessageScreen', params:{
+            navigation.navigate('MessageScreen',{
                 group_id: group.id,
                 fullname: name,
                 avatar: avatar,
                 messages: group.messages,
                 members:group.members
 
-            }})
-
-        //     return 
-        // }
- 
-        // //group
-        // navigation.navigate('MessageManagementScreen', {
-        //     group_id: group.id,
-        //     fullname: name,
-        //     avatar: avatar,
-        //     messages: group.messages,
-        //     members:group.members
-        // })
-        navigation.navigate('MessageManagementScreen',{screen:'MessageScreen', params:{
-            group_id: group.id,
-            fullname: name,
-            avatar: avatar,
-            messages: group.messages,
-            members:group.members,
-
-        }})
-
+            })
     }
     const messageLastest = group.messages[0]
     const messageUnSeen =
