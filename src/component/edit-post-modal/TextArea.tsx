@@ -130,7 +130,7 @@ const TextArea: React.FC<Props> = ({ content, setContent, friends, setFriends })
 const styles = StyleSheet.create({
     container: {
         padding: 10,
-        zIndex:999
+        zIndex:999,
     },
     textArea: {
         height: 150,
@@ -159,7 +159,8 @@ const styles = StyleSheet.create({
         padding: 10,
         borderColor: 'gray',
         borderRadius: 5,
-        height:50
+        height:50,
+        marginTop:10
     },
     avatar: {
         width: 30,
