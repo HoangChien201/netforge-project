@@ -4,10 +4,8 @@ import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
 import EmojiList from './EmojiList';
 import Emotions from './Emotions';
 import { COLOR } from '../../constant/color';
-import ICON from 'react-native-vector-icons/AntDesign'
-import ImagePicker from 'react-native-image-picker';
+import IconAnt from 'react-native-vector-icons/AntDesign'
 import { useNavigation } from '@react-navigation/native';
-import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
 import Swiper from 'react-native-swiper';
 
 export type fileType = {
@@ -153,7 +151,7 @@ const Options: React.FC<Op> = ({ onSelectMedia, onSelectEmoji, setShowAI, imageU
                         <TouchableOpacity onPress={() => setShowEmojiModal(false)}
                             style={{ position: 'absolute', end: 8, top: 5 }}
                         >
-                            <Text style={styles.closeButton}>Đóng</Text>
+                            <IconAnt name='close' size={24} color='#000'/>
                         </TouchableOpacity>
                         <Swiper
                             showsButtons={false}

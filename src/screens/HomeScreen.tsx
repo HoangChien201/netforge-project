@@ -162,7 +162,6 @@ const HomeScreen = () => {
                     <View style={styles.headerRight}>
                         <TouchableOpacity style={{ alignItems: 'center' }} onPress={handlerClick}>
                             <Image source={{ uri: user.avatar }} style={styles.userAvatar} />
-                            <Text style={styles.userName}>{user.fullname}</Text>
                         </TouchableOpacity>
                     </View>
                     {hidden && (
