@@ -8,6 +8,8 @@ import ListImageDetail from "../listpost/ListImageDetail";
 import StoryDetail from "../storys/StoryDetail";
 import StoryText from "../storys/StoryText";
 import MessageManagementScreen from "../../screens/message/MessageManagementScreen";
+// @ts-ignore
+import {ZegoUIKitPrebuiltCallWaitingScreen,ZegoUIKitPrebuiltCallInCallScreen,} from '@zegocloud/zego-uikit-prebuilt-call-rn';
 
 export type NetworkStackNavigationProp = StackNavigationProp<
     NetworkRootStackParams,
@@ -22,6 +24,7 @@ export enum NetworkRootStackEnum {
     StoryText = "StoryText",
     CameraStory = "CameraStory",
     ListImageDetail = "ListImageDetail",
+
 }
 
 export type NetworkRootStackParams = {
@@ -52,7 +55,7 @@ export type NetworkRootStackParams = {
     CameraStory: undefined;
     ListImageDetail: undefined;
     StoryText: undefined;
-
+    
 
 }
 

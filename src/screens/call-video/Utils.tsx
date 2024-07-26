@@ -1,25 +1,20 @@
 import * as ZIM from 'zego-zim-react-native';
 // @ts-ignore
-import ZegoUIKitPrebuiltCallService, { ZegoMenuBarButtonName } from '@zegocloud/zego-uikit-prebuilt-call-rn';
+import ZegoUIKitPrebuiltCallService from '@zegocloud/zego-uikit-prebuilt-call-rn';
 import KeyCenter from './KeyCenter';
-import { useNavigation } from '@react-navigation/native';
-import { Image, Text, View } from 'react-native';
+import { Image, View } from 'react-native';
 import React from 'react';
-import * as ZPNs from 'zego-zpns-react-native';
-import { useMyContext } from '../../component/navigation/UserContext';
 
-export const onUserLogin = async (userID: any, userName: string, avatar: string) => {
+
+export const onUserLogin = async (userID: any, userName: string, avatar: string, navigation: any) => {
     try {
-        await ZegoUIKitPrebuiltCallService.init(
+        return await ZegoUIKitPrebuiltCallService.init(
             KeyCenter.appID,
             KeyCenter.appSign,
             userID.toString(),
             userName.toString(),
             [ZIM],
-
-<<<<<<< HEAD
             {
-
                 ringtoneConfig: {
                     incomingCallFileName: 'zego_incoming.mp3',
                     outgoingCallFileName: 'zego_outgoing.mp3',
@@ -47,82 +42,54 @@ export const onUserLogin = async (userID: any, userName: string, avatar: string)
                         innerText: {
                             incomingVideoCallDialogTitle: "%10",
                             incomingVideoCallDialogMessage: "Đang gọi...",
+                            incomingVoiceCallDialogTitle: '',
+                            incomingVoiceCallDialogMessage: 'Đang gọi...',
+                            incomingVideoCallPageTitle: '',
+                            incomingVideoCallPageMessage: '',
+                            incomingVoiceCallPageTitle: '',
+                            incomingVoiceCallPageMessage: '',
+                            incomingGroupVideoCallDialogTitle: '',
+                            incomingGroupVideoCallDialogMessage: '',
+                            incomingGroupVoiceCallDialogTitle: '',
+                            incomingGroupVoiceCallDialogMessage: '',
+                            incomingGroupVideoCallPageTitle: '',
+                            incomingGroupVideoCallPageMessage: '',
+                            incomingGroupVoiceCallPageTitle: '',
+                            incomingGroupVoiceCallPageMessage: '',
                         },
-                        // foregroundBuilder: () => {
-                        //     return (<Text>hihi</Text>);
-                        // },
                         timingConfig: {
                             isDurationVisible: true,
                             onDurationUpdate: (duration: any) => {
-                                if (duration === 10 * 60) {
+                                // console.log('duration', data);
+                                if (duration === 5 * 60) {
                                     ZegoUIKitPrebuiltCallService.hangUp();
                                 }
                             },
+                            onCallEnd: (callID, reason, duration) => {
+                                console.log('########CallWithInvitation onCallEnd duration', callID, reason, duration);
+                                console.log('########CallWithInvitation onCallEnd inviter', userID);
+                                console.log('########CallWithInvitation onCallEnd invitee', data);
+                                ZegoUIKitPrebuiltCallService.hangUp();
+                                navigation.goBack();
+                            },
                         },
-
-                        onCallEnd: (callID: any, reason: any, duration: any) => {
-                            console.log('########CallWithInvitation onCallEnd', callID, reason, duration);
-                        },
-                        //   topMenuBarConfig: {
-                        //       buttons: [ZegoMenuBarButtonName.minimizingButton],
-                        //   },
-                        // onWindowMinimized: () => {
-                        //     navigation.navigate('MessageScreen');
-                        // },
-                        // onWindowMaximized: () => {
-                        //     navigation.navigate('ZegoUIKitPrebuiltCallInCallScreen');
-                        // },
                     };
-
                 },
-
                 notifyWhenAppRunningInBackgroundOrQuit: true,
                 isIOSSandboxEnvironment: true,
-                
             }
-        );
-        console.log("User logged in successfully:", userID, userName);
+
+        ).then(() => {
+            ZegoUIKitPrebuiltCallService.requestSystemAlertWindow({
+                message: 'Chúng tôi cần sự đồng ý của bạn đối với các quyền sau để sử dụng đúng chức năng cuộc gọi ngoại tuyến',
+                allow: 'Cho phép',
+                deny: 'Từ chối',
+            });
+        });
 
     } catch (error) {
         console.error("Error logging in user Utils:", error);
     }
-=======
-                      </View>
-                  );
-              },
-              requireConfig: (data: any) => {
-                  return {
-                    innerText: {
-                        incomingVideoCallDialogTitle: "%10",
-                        incomingVideoCallDialogMessage: "Đang gọi...",
-                    },
-                    // foregroundBuilder: () => {
-                    //     return (<Text>hihi</Text>);
-                    // },
-                      timingConfig: {
-                          isDurationVisible: true,
-                          onDurationUpdate: (duration: any) => {
-                            console.log('duration',duration);
-                            
-                              if (duration === 10 * 60) {
-                                  ZegoUIKitPrebuiltCallService.hangUp();
-                              }
-                          },
-                      },
-                  };
-                  
-              },
-              
-              notifyWhenAppRunningInBackgroundOrQuit: true,
-              isIOSSandboxEnvironment: true,
-          }
-      );
-      console.log("User logged in successfully:", userID, userName);
-      
-  } catch (error) {
-      console.error("Error logging in user Utils:", error);
-  }
->>>>>>> main
 };
 
 export const onUserLogout = async () => {

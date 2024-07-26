@@ -1,18 +1,10 @@
-import React, { useEffect, useState } from 'react'
-import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
-import MaterialIcon from 'react-native-vector-icons/MaterialIcons'
-import { COLOR } from '../../constant/color'
-import { useNavigation, useRoute } from '@react-navigation/native'
-import { postLocalNotification } from '../../notifications/Events'
-import { onUserLogin, onUserLogout } from '../../screens/call-video/Utils';
+import React from 'react'
+import { Image, StyleSheet, Text,  View } from 'react-native'
+import { useRoute } from '@react-navigation/native'
 // @ts-ignore
-import ZegoUIKitPrebuiltCallService, { ZegoSendCallInvitationButton, ZegoMenuBarButtonName } from '@zegocloud/zego-uikit-prebuilt-call-rn';
-import { socket } from '../../http/SocketHandle'
-import { multiply } from 'lodash'
+import { ZegoSendCallInvitationButton } from '@zegocloud/zego-uikit-prebuilt-call-rn';
 import { useMyContext } from '../navigation/UserContext'
 import { MessageScreenRouteProp } from '../../screens/message/MessageScreen'
-import KeyCenter from '../../screens/call-video/KeyCenter'
-import * as ZIM from 'zego-zim-react-native';
 type InviteeType={
     userID:string,
     userName:string
@@ -22,7 +14,7 @@ type InviteeType={
 const HeaderMessageComponent = ({ partner }: { partner: any }) => {
 
     const route: MessageScreenRouteProp = useRoute()
-    const { fullname, avatar,members } = route.params;
+    const { fullname, avatar, members } = route.params;
     const { user } = useMyContext();
     const invitees:Array<InviteeType>
                     =members.map(m=>{
@@ -56,8 +48,7 @@ const HeaderMessageComponent = ({ partner }: { partner: any }) => {
                 <View style={styles.options}>
                     <ZegoSendCallInvitationButton
                         invitees={invitees}
-                        props={navigation}
-                        resourceID={"zego_call"}
+                        isVideoCall={false}
                         backgroundColor={'rgba(255,255,255,0.2)'}
                         icon={require('../../media/icon/telephone-call.png')}
 
@@ -66,7 +57,7 @@ const HeaderMessageComponent = ({ partner }: { partner: any }) => {
                         invitees={invitees}
                         isVideoCall={true}
                         backgroundColor={'rgba(255,255,255,0.2)'}
-                        resourceID={"zego_call"}
+                        // resourceID={"zego_call"}
                         icon={require('../../media/icon/facetime-button.png')}
                     />
                 </View>
