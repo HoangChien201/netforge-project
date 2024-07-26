@@ -1,24 +1,31 @@
-import React, { useState, useCallback, FC } from 'react';
+import React, { useState, useCallback, FC, useRef } from 'react';
 import { StyleSheet, TouchableOpacity, View, Image, Modal, FlatList, Text } from 'react-native';
 import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
 import { EmojiData } from '../../constant/emoji';
 import EmojiList from './EmojiList';
 import { COLOR } from '../../constant/color';
 import ICON from 'react-native-vector-icons/AntDesign'
+import Swiper from 'react-native-swiper';
+import Emotions from '../create-post-screen/Emotions';
 export type fileType = {
     fileName: string,
     uri: string,
-    type: string
+    type: string,
+    
 }
 interface optionsProps {
     onSelectNewMedia: (permission: string) => void;
     onSelectEmoji: (permission: string) => void;
     setShowModal: (show: boolean) => void;
-    dataShare: any
+    dataShare: any,
+    setEmotions: (value: any) => void,
+    emotions: any
 }
 
-const Options: React.FC<optionsProps> = ({ onSelectNewMedia, onSelectEmoji, setShowModal, dataShare }) => {
+const Options: React.FC<optionsProps> = ({ onSelectNewMedia, onSelectEmoji, setShowModal, dataShare,emotions, setEmotions }) => {
     const [showEmojiModal, setShowEmojiModal] = useState(false);
+    const [currentIndex, setCurrentIndex] = useState(0);
+    const swiperRef = useRef(null);
 
     const openCamera = useCallback(async () => {
         const options = {
@@ -37,7 +44,24 @@ const Options: React.FC<optionsProps> = ({ onSelectNewMedia, onSelectEmoji, setS
         };
         launchImageLibrary(options, takePhoto);
     }, []);
+    const handleEmojiSelect = (emoji: any) => {
+        onSelectEmoji(emoji);
+        //setShowEmojiModal(false);
+    };
+    const handleEmotionSelect = (item: any) => {
+        setEmotions(item);
+        setShowEmojiModal(false);
 
+    };
+    const handleIndexChanged = (index) => {
+        setCurrentIndex(index);
+    };
+
+    const handleButtonPress = (index) => {
+        if (swiperRef.current) {
+            swiperRef.current.scrollBy(index - currentIndex, true);
+        }
+    };
     const takePhoto = useCallback(async (response) => {
         if (response.didCancel) return;
         if (response.errorCode) return;
@@ -55,10 +79,6 @@ const Options: React.FC<optionsProps> = ({ onSelectNewMedia, onSelectEmoji, setS
             onSelectNewMedia(newImages);
         }
     }, []);
-    const handleEmojiSelect = (emoji: any) => {
-        onSelectEmoji(emoji);
-        //setShowEmojiModal(false);
-    };
     const showEdit = () => {
         setShowModal(true)
     }
@@ -82,11 +102,38 @@ const Options: React.FC<optionsProps> = ({ onSelectNewMedia, onSelectEmoji, setS
             </TouchableOpacity>
             <Modal visible={showEmojiModal} animationType="slide" transparent={true}>
                 <View style={styles.modalContainer}>
+
                     <View style={styles.modalContent}>
-                        <TouchableOpacity onPress={() => setShowEmojiModal(false)}>
+                        <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 10, marginBottom: -5 }}>
+                            <TouchableOpacity
+                                style={{ marginHorizontal: 5, padding: 5, backgroundColor: COLOR.primary300, borderRadius: 10, alignItems: 'center', justifyContent: 'center' }}
+                                onPress={() => { handleButtonPress(0) }}
+                            >
+                                <Text style={styles.closeButton}>Cảm xúc</Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity
+                                style={{ marginHorizontal: 5, padding: 5, backgroundColor: COLOR.primary300, borderRadius: 10, alignItems: 'center', justifyContent: 'center' }}
+                                onPress={() => { handleButtonPress(1) }}
+                            >
+                                <Text style={styles.closeButton}>Biểu tượng</Text>
+                            </TouchableOpacity>
+                        </View>
+                        <TouchableOpacity onPress={() => setShowEmojiModal(false)}
+                            style={{ position: 'absolute', end: 8, top: 5 }}
+                        >
                             <Text style={styles.closeButton}>Đóng</Text>
                         </TouchableOpacity>
-                        <EmojiList onSelectEmoji={handleEmojiSelect} />
+                        <Swiper
+                            showsButtons={false}
+                            ref={swiperRef}
+                            loop={false}
+                            style={{ marginTop: -5 }}
+                            onIndexChanged={handleIndexChanged}
+                        >
+                            <Emotions onSelectEmotion={handleEmotionSelect} />
+                            <EmojiList onSelectEmoji={handleEmojiSelect} />
+                        </Swiper>
+
                     </View>
                 </View>
             </Modal>
@@ -141,7 +188,7 @@ const styles = StyleSheet.create({
     },
     modalContent: {
         width: '90%', // Điều chỉnh kích thước chiều rộng của modal
-        height: '30%', // Điều chỉnh kích thước chiều cao của modal
+        height: '50%', // Điều chỉnh kích thước chiều cao của modal
         backgroundColor: 'white',
         borderRadius: 10,
         padding: 10,

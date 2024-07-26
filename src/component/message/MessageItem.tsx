@@ -10,7 +10,7 @@ import StateMessage from './StateMessage'
 import { socket } from '../../http/SocketHandle'
 import { useMyContext } from '../navigation/UserContext';
 import { MessageProvider } from './class/MessageProvider';
-
+import test from './test';
 export type messageType = {
   id: number,
   create_at: string,

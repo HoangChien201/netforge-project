@@ -29,6 +29,9 @@ const CreatePostScreen = memo(() => {
   const type = 1;
   const isFocused = useIsFocused()
   const [permission, setPermission] = useState(1);
+  const [emotions,setEmotions]=useState(null);
+  const [emotion,setEmotion]=useState(0);
+
   const [sendAll, setSendAll] = useState(true);
   const { sendNCreateNewPostHistory,sendTagFriend } = useSendNotification();
 
@@ -37,7 +40,8 @@ const CreatePostScreen = memo(() => {
   const navigation = useNavigation();
   const contentRef = useRef(content);
   const mediaRef = useRef(media);
-  const [hiddenView,setHiddenView] = useState(false)
+  const emotionRef = useRef(emotions);
+  const [hiddenView,setHiddenView] = useState(false);
   // const [imageUrl, setImageUrl] = useState('https://oaidalleapiprodscus.blob.core.windows.net/private/org-xPqRqNjg7rhJctL5M8HgZuVW/user-7aLXFzohKCutW9RLwKG25OxW/img-OV7ku7s8LUd6BUMEu0hbXT4v.png?st=2024-07-11T14%3A47%3A14Z&se=2024-07-11T16%3A47%3A14Z&sp=r&sv=2023-11-03&sr=b&rscd=inline&rsct=image/png&skoid=6aaadede-4fb3-4698-a8f6-684d7786b067&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2024-07-10T23%3A22%3A00Z&ske=2024-07-11T23%3A22%3A00Z&sks=b&skv=2023-11-03&sig=5g5HtkuVSHgbNk%2By60LIx7FLtyaxDdXcR%2BenAaz3CCA%3D');
   useEffect(() => {
     contentRef.current = content;
@@ -46,16 +50,27 @@ const CreatePostScreen = memo(() => {
   useEffect(() => {
     mediaRef.current = media;
   }, [media]);
+  useEffect(() => {
+    emotionRef.current = emotions;
+  }, [emotions]);
+  useEffect(()=>{
+    if(emotions){
+      setEmotion(Number(emotions.type))
+    }else{
+      setEmotion(0);
+    }
 
+  },[emotions])
   const clear = () => {
     setContent('');
     setMedia([]);
     setPermission(1);
     setImageUrl('');
+    setEmotions(null);
   };
 
   const handleLeaveScreen = useCallback(() => {
-    if (contentRef.current.trim().length > 0 || mediaRef.current.length > 0) {
+    if (contentRef.current.trim().length > 0 || mediaRef.current.length > 0 || emotionRef.current) {
       Alert.alert(
         'Bài viết chưa được đăng!',
         'Bạn có muốn giữ lại dữ liệu?',
@@ -119,24 +134,39 @@ const CreatePostScreen = memo(() => {
         //   console.log('Added imageUrl to media paths:', medias);
         // }
         //Create new post with the uploaded media paths
-        const newPost = await createNewPost({ content, type, tags, medias, permission });
+        const newPost = await createNewPost({ content, type, tags, medias, permission,emotion });
         console.log('Bài viết đã được tạo:', JSON.stringify(newPost));
-        if (newPost && permission == 1) {
+        if (newPost.status==1 && permission == 1) {
           handleSendReaction(newPost);
           handleSendTags(newPost);
         }
-        setTimeout(() => {
-          setIsLoading(false);
-          setStatus('Tạo bài viết thành công');
-          setShowPopup(true);
-          setIsError(false);
+        if(newPost.status==1){
           setTimeout(() => {
-            setStatus('');
-            setShowPopup(false);
+            setIsLoading(false);
+            setStatus('Tạo bài viết thành công');
+            setShowPopup(true);
+            setIsError(false);
+            setTimeout(() => {
+              setStatus('');
+              setShowPopup(false);
+              setIsError(true);
+            }, 1500);
+            clear();
+          }, 1000);
+        }else{
+          console.error('Lỗi khi tạo bài viết!', newPost.message);
+          setTimeout(() => {
+            setIsLoading(false);
+            setStatus('Có lỗi khi tạo');
+            setShowPopup(true);
             setIsError(true);
-          }, 1500);
-          clear();
-        }, 1000);
+            setTimeout(() => {
+              setStatus('');
+              setShowPopup(false);
+            }, 1500);
+          }, 1000);
+        }
+
       } else if (content.length > 0) {
         // upload post withought media
         let medias: { url: any; resource_type: any }[] = [];
@@ -148,23 +178,38 @@ const CreatePostScreen = memo(() => {
           console.log('Added imageUrl to media paths:', medias);
         }
         console.log('here: ' + JSON.stringify(media));
-        const newPost = await createNewPost({ content, type, tags, medias, permission });
+        const newPost = await createNewPost({ content, type, tags, medias, permission,emotion });
         console.log('Bài viết đã được tạo không medias:', newPost);
-        if (newPost && permission == 1) {
+        if (newPost.status==1 && permission == 1) {
           handleSendReaction(newPost);
           handleSendTags(newPost);
         }
-        setTimeout(() => {
-          setIsLoading(false);
-          setStatus('Tạo bài viết thành công');
-          setShowPopup(true);
-          setIsError(false);
+        if(newPost.status==1){
           setTimeout(() => {
-            setStatus('');
-            setShowPopup(false);
-          }, 1500);
-          clear();
-        }, 1000);
+            setIsLoading(false);
+            setStatus('Tạo bài viết thành công');
+            setShowPopup(true);
+            setIsError(false);
+            setTimeout(() => {
+              setStatus('');
+              setShowPopup(false);
+            }, 1500);
+            clear();
+          }, 1000);
+        }else{
+          console.error('Lỗi khi tạo bài viết:', newPost.message);
+          setTimeout(() => {
+            setIsLoading(false);
+            setStatus('Có lỗi khi tạo');
+            setShowPopup(true);
+            setIsError(true);
+            setTimeout(() => {
+              setStatus('');
+              setShowPopup(false);
+            }, 1500);
+          }, 1000);
+        }
+
       } else {
         setTimeout(() => {
           setIsLoading(false);
@@ -221,7 +266,7 @@ const CreatePostScreen = memo(() => {
 
   const log = () => {
 
-    console.log(content, media, type, permission, tags, imageUrl, 'bạn' +friends);
+    console.log(content, media, type, permission, tags, imageUrl, 'bạn' +friends, emotion);
 
   }
   useFocusEffect(
@@ -271,7 +316,7 @@ useEffect(() => {
       <Loading isLoading={isLoading} />
       <View style={styles.header} >
         <Text style={styles.headerText}>Tạo bài viết</Text>
-        <TouchableOpacity onPress={uploadPost} style={styles.buttonD}>
+        <TouchableOpacity onPress={log} style={styles.buttonD}>
           <Text style={styles.headerPostText} >Đăng</Text>
         </TouchableOpacity>
       </View>
@@ -289,6 +334,8 @@ useEffect(() => {
         setFriends={setFriends}
         setShowAI={setShowAI}
         imageUrl={imageUrl}
+        emotions={emotions}
+        setEmotions={setEmotions}
       />
       {showPopup ? (
         isError ? (

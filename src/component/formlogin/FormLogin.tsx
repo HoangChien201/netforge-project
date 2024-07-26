@@ -1,5 +1,5 @@
 import { Alert, StyleSheet, Text, TextInput, ToastAndroid, TouchableOpacity, View } from 'react-native'
-import React, { useContext, useRef, useState } from 'react'
+import React, { useContext, useEffect, useRef, useState } from 'react'
 
 
 import { COLOR } from '../../constant/color'
@@ -13,6 +13,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage'
 import { login } from '../../http/userHttp/user'
 import { NavigationProp, ParamListBase, useNavigation } from '@react-navigation/native'
 import { UserRootStackEnum } from '../stack/UserRootStackParams'
+import { onUserLogin, onUserLogout } from '../../screens/call-video/Utils'
 
 
 interface user {
@@ -29,7 +30,7 @@ export type valid = {
 const FormLogin = ({ setModal, setStatus, setIsLoading }: { setModal: (value: boolean) => void, setStatus: (value: boolean) => void, setIsLoading: (value: boolean) => void }) => {
   const navigation: NavigationProp<ParamListBase> = useNavigation();
 
-  const [valueF, setValueF] = useState<user>({ email: 'hoangchien@gmail.com', password: '123456' })
+  const [valueF, setValueF] = useState<user>({ email: 'tuong123@gmail.com', password: '1234' })
 
   const [valid, setValid] = useState<valid>({ email: true, password: true })
 
@@ -46,6 +47,7 @@ const FormLogin = ({ setModal, setStatus, setIsLoading }: { setModal: (value: bo
   const handleForgotPassword = () => {
     navigation.navigate(UserRootStackEnum.ForgotPassword);
   }
+
 
   const submit = async () => {
     //await AsyncStorage.clear();
@@ -65,13 +67,19 @@ const FormLogin = ({ setModal, setStatus, setIsLoading }: { setModal: (value: bo
         await AsyncStorage.setItem('email', email);
         await AsyncStorage.setItem('password', password);
         const result = await login(email, password);
-        console.log(result);
-        setIsLoading(false);
 
         if (result) {
-          setUser(result.data);
+          const { data } = result
+          const { id, avatar, fullname } = data
+
+          //login zego
+          onUserLogin(id, fullname, avatar,navigation).then(() => {
+            setIsLoading(false);
+            setUser(data);
+          })
+
+
         }
-        console.log(result);
         await AsyncStorage.setItem('userToken', result?.data.token);
         handleLoginResult(result);
         setIsLoading(false);
@@ -90,8 +98,7 @@ const FormLogin = ({ setModal, setStatus, setIsLoading }: { setModal: (value: bo
         setUser(result.data);
       }, 2000);
       await AsyncStorage.setItem('token', result.data.token);
-      //console.log("Token set: ", result.token);
-      //console.log("user: " + JSON.stringify(result));  
+ 
       setModal(true);
       setStatus(true);
       setTimeout(() => {
@@ -138,7 +145,7 @@ const FormLogin = ({ setModal, setStatus, setIsLoading }: { setModal: (value: bo
       <InputLogin invalid={!valid.password} label="Mật khẩu" value={valueF.password} onchangText={onChangText.bind(this, 'password')} iconPass password={true} />
       <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center", paddingHorizontal: 12 }}>
         <Remember />
-       
+
       </View>
       <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingHorizontal: 14 }}>
         <ButtonLogin textLogin chilren='Đăng nhập' textColor='#fff' onPress={submit} />

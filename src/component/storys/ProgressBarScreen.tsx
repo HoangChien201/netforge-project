@@ -1,32 +1,31 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
-import { View, Image, TouchableOpacity, StyleSheet, Animated, Easing, Text } from 'react-native';
+import { View, Image, TouchableOpacity, StyleSheet, Animated, Easing, Text, Modal, TouchableWithoutFeedback } from 'react-native';
 import ProgressBar from './ProgressBar';
 import Reaction from './Reaction';
 import { COLOR } from '../../constant/color';
 import FontAwesome6 from 'react-native-vector-icons/FontAwesome6';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import { DateOfTimePost } from '../../format/DateOfTimePost';
-import { deletePost, getPostById } from '../../http/userHttp/getpost';
+import { deletePost } from '../../http/userHttp/getpost';
 import { NavigationProp, ParamListBase, useNavigation } from '@react-navigation/native';
 import { useMyContext } from '../navigation/UserContext';
-import { LiveRootStackScreens } from '../stack/LiveRootStackParams';
 import { HomeRootStackEnum } from '../stack/HomeRootStackParams';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useDispatch } from 'react-redux';
+import { setPostid } from '../store/postIDSlice';
 
 const ProgressBarScreen = ({ listpostStory, setCurrentIndex, currentIndex, dataLength }) => {
+    const dispatch = useDispatch();
     const [activeIndex, setActiveIndex] = useState(0);
     const [check, setCheck] = useState(false);
     const [paused, setPaused] = useState(false);
     const [hidden, setHidden] = useState(false);
-    const [idPosts,setIdpost] = useState(0)
+    const [idPosts, setIdpost] = useState(0);
+    const [modalVisible, setModalVisible] = useState(false);
     const showReactions = useRef(new Animated.Value(0)).current;
     const spinValue = useRef(new Animated.Value(0)).current;
-    const navigation:NavigationProp<ParamListBase> = useNavigation();
+    const navigation: NavigationProp<ParamListBase> = useNavigation();
     const { user } = useMyContext();
-
-    useEffect(() => {
-        console.log("ProgressBarScreen");
-    }, []);
 
     const handleImagePressR = useCallback(() => {
         if (!check) {
@@ -93,6 +92,8 @@ const ProgressBarScreen = ({ listpostStory, setCurrentIndex, currentIndex, dataL
 
     const handleClick = useCallback(() => {
         setHidden(pre => !pre);
+        setPaused(pre => !pre);
+        setModalVisible(true)
     }, []);
 
     const handleDeletePost = useCallback(async () => {
@@ -103,62 +104,36 @@ const ProgressBarScreen = ({ listpostStory, setCurrentIndex, currentIndex, dataL
             console.error(error);
         }
     }, [activeIndex, listpostStory, navigation]);
-    
-//   useEffect(() => {
-    
-//     const getDetailByPost = async() =>{
-//         try {
-//           const result = await getPostById(listpostStory[activeIndex].id);
-//           console.log("re",result);
-          
-//           if(result){
-//             setIdpost(result?.reaction)
-//           }
-//         } catch (error) {
-          
-//         }
-//     }
-//     getDetailByPost()
-//   }, [listpostStory[activeIndex].id]);
 
-    // const handleDetailLiveStream = async ()=>{
-      
-    //         try {
-    //             const value = await AsyncStorage.getItem("liveID");
-    //             console.log("Retrieved liveID:", value);
-               
-    //                 const userName = user.fullname;
-    //                 const userID = String(Math.floor(Math.random() * 100000));
-    //                 // navigation.navigate(HomeRootStackEnum.LiveStack, {
-    //                 //     userID,
-    //                 //     userName,
-    //                 //     liveID:value,
-    //                 // });
-    //                 console.log("LiveID found:", value);
-                
-    //         } catch (error) {
-    //             console.error('Error retrieving liveID:', error);
-    //         }
+    const handleOutsidePress = () => {
+        setModalVisible(false);
+        setPaused(pre => !pre);
+    };
+    const getLivePostContent = useCallback(() => {
+
+        const livePost = listpostStory.find(post => post.type === 3);
        
         
-       
-       
-       
-    // }
-
+        return livePost ? livePost.content : null;
+    }, [listpostStory]);
+    const getLivePostID = useCallback(() => {
+        const livePost = listpostStory.find(post => post.type === 3);
+        return livePost ? livePost.id : null;
+    }, [listpostStory]);
+    const hanleLiveStream = () => {
+        dispatch(setPostid(getLivePostID()))
+        navigation.navigate(HomeRootStackEnum.LiveStack,{
+            userID: '12345',
+            userName: user.fullname,
+            liveID: getLivePostContent()
+        })
+    }
     return (
         <View style={styles.container}>
             {listpostStory[activeIndex]?.creater.id === user.id && (
-                <TouchableOpacity onPress={handleClick} style={styles.ellipsisButton}>
+                <TouchableOpacity onPress={() =>handleClick() } style={styles.ellipsisButton}>
                     <AntDesign name='ellipsis1' size={25} color='#000' />
                 </TouchableOpacity>
-            )}
-            {hidden && (
-                <View style={styles.deleteButtonContainer}>
-                    <TouchableOpacity onPress={handleDeletePost} style={styles.deleteButton}>
-                        <Text style={styles.deleteButtonText}>Xóa</Text>
-                    </TouchableOpacity>
-                </View>
             )}
             {listpostStory[activeIndex]?.media[0]?.url ? (
                 <>
@@ -168,10 +143,10 @@ const ProgressBarScreen = ({ listpostStory, setCurrentIndex, currentIndex, dataL
                 </>
             ) : (
                 <>
-                <View style={styles.fullscreenImage1}>
-                    <Text style={styles.dateText}>{DateOfTimePost(listpostStory[activeIndex].create_at)}</Text>
-                </View>
-                <TouchableOpacity  style={styles.textContent}><Text style={styles.textContent}>{listpostStory[activeIndex]?.content}</Text></TouchableOpacity>
+                    <View style={styles.fullscreenImage1}>
+                        <Text style={styles.dateText}>{DateOfTimePost(listpostStory[activeIndex].create_at)}</Text>
+                    </View>
+                    <TouchableOpacity style={styles.textContent} disabled={listpostStory[activeIndex].type === 3 ? false : true } onPress={hanleLiveStream}><Text style={styles.imageContent}>{listpostStory[activeIndex].type === 3 ? "Nhấn vào để xem Live" : listpostStory[activeIndex]?.content }</Text></TouchableOpacity>
                 </>
             )}
             <View style={styles.progressBarContainer}>
@@ -205,12 +180,37 @@ const ProgressBarScreen = ({ listpostStory, setCurrentIndex, currentIndex, dataL
                 <TouchableOpacity onPress={() => {
                     spin();
                     toggleReactions();
+                    setPaused(pre => !pre);
                 }}>
                     <Animated.View style={{ transform: [{ rotate: spinAnimation }] }}>
                         <FontAwesome6 name='face-smile' size={30} color="black" style={styles.smileIcon} />
                     </Animated.View>
                 </TouchableOpacity>
             </View>
+            {/* Modal for delete confirmation */}
+            <Modal
+                transparent={true}
+                visible={modalVisible}
+                animationType="fade"
+                onRequestClose={handleOutsidePress}
+            >
+                <TouchableWithoutFeedback onPress={handleOutsidePress}>
+                    <View style={styles.modalBackground}>
+                        <View style={styles.modalContainer}>
+                            <Text style={styles.modalText}>Bạn có chắc chắn muốn xóa bài viết ?</Text>
+                            <View style={styles.btnClick}>
+                                <TouchableOpacity onPress={handleOutsidePress} style={[styles.modalButton,{backgroundColor:'red'}]}>
+                                    <Text style={styles.modalButtonText}>Hủy</Text>
+                                </TouchableOpacity>
+                                <TouchableOpacity onPress={handleDeletePost} style={styles.modalButton}>
+                                    <Text style={styles.modalButtonText}>Xóa</Text>
+                                </TouchableOpacity>
+
+                            </View>
+                        </View>
+                    </View>
+                </TouchableWithoutFeedback>
+            </Modal>
         </View>
     );
 };
@@ -265,44 +265,25 @@ const styles = StyleSheet.create({
         right: '13%',
         zIndex: 3132,
     },
-    deleteButtonContainer: {
-        padding: 4,
-        width: 80,
-        height: 30,
-        backgroundColor: "#E9E6E6",
-        position: 'absolute',
-        top: '5%',
-        right: '5%',
-        zIndex: 3132,
-    },
-    deleteButton: {
-        borderColor: '#fff',
-        borderWidth: 1,
-        borderRadius: 2,
-        backgroundColor: '#fff',
-        height: "100%",
-        width: "100%",
-    },
-    deleteButtonText: {
-        color: '#000',
-        fontWeight: 'bold',
-        textAlign: 'center',
-    },
     imageContent: {
+        width: '90%',
         fontSize: 30,
         color: '#fff',
         position: 'absolute',
         top: '50%',
-        left: '25%',
+        left: '10%',
+        flexWrap: 'wrap',
     },
     textContent: {
+        width: '90%',
         fontSize: 30,
-        color: "#000",
+        color: '#fff',
         position: 'absolute',
-        top: '40%',
-        left: '25%',
-        zIndex:99999999,
-        backgroundColor:'red'
+        top: '50%',
+        left: '10%',
+        flexWrap: 'wrap',
+        zIndex: 99999999,
+        backgroundColor: 'red',
     },
     dateText: {
         color: 'white',
@@ -320,6 +301,47 @@ const styles = StyleSheet.create({
     smileIcon: {
         marginHorizontal: 10,
     },
+    modalBackground: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    },
+    modalContainer: {
+        width: '80%',
+        padding: 20,
+        backgroundColor: '#fff',
+        borderRadius: 10,
+        alignItems: 'center',
+    },
+    modalText: {
+        fontSize: 15,
+        textAlign: 'center',
+        marginBottom: 20,
+        fontWeight:'800',
+        color:'black'
+    },
+    modalButton: {
+        width: '40%',
+        alignItems: 'center',
+        marginTop: 10,
+        paddingVertical: 10,
+        paddingHorizontal: 20,
+        borderRadius: 5,
+        backgroundColor: COLOR.PrimaryColor,
+    },
+    modalButtonText: {
+        color: '#fff',
+        fontSize: 16,
+        fontWeight:'bold'
+
+    },
+    btnClick: {
+        flexDirection: 'row',
+        justifyContent: 'space-evenly',
+        
+        width: '100%'
+    }
 });
 
 export default ProgressBarScreen;

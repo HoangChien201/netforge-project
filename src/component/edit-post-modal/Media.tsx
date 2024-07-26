@@ -9,33 +9,43 @@ import SwiperFlatList from 'react-native-swiper-flatlist';
 import Icon from 'react-native-vector-icons/Feather';
 import { imageType } from './Body';
 
-interface renderMedia{
-    images:string;
-    media:string;
-    setMedia: (Permission:string) => void;
-    setShowModal: (Permission:boolean) => void;
+interface renderMedia {
+    images: any;
+    media: any;
+    setMedia: (Permission: any) => void;
+    setShowModal: (Permission: boolean) => void;
+    hiddenView:any
 };
 
-const renderMedia:React.FC<renderMedia> = ({images, media, setMedia, setShowModal }) => {
+const renderMedia: React.FC<renderMedia> = ({ images, media, setMedia, setShowModal,hiddenView }) => {
     const [playingVideo, setPlayingVideo] = useState(null);
     const [viewMore, setViewMore] = useState(false);
+    const mediaLength = images.length;
     const togglePlayVideo = (uri) => {
         setPlayingVideo(playingVideo === uri ? null : uri);
     };
-
-    if (!images || images.length === 0) {
-        return null;
+    if (!images || images.length == 0) {
+        return (
+            <Text>không có ảnh</Text>
+        );
+    }
+    if (hiddenView == true) {
+        return (
+            <View style={{ width: '100%', justifyContent: 'center', paddingBottom: 10 }}>
+                <Text style={{ color: COLOR.PrimaryColor, fontSize: 16, fontWeight: "400", marginStart:20 }}>Đã ẩn {mediaLength} tệp</Text>
+            </View>
+        )
     }
     const numMedia = images.length;
     if (numMedia === 1) {
         return (
             <View style={styles.oneMediaContainer}>
 
-                {images.map((item:imageType, index) => (
+                {images.map((item: imageType, index) => (
                     item.url.endsWith('.mp4') ? (
                         <View key={index.toString()} style={styles.mediaContainer}>
                             <Video
-                                source={{uri: item.url }}
+                                source={{ uri: item.url }}
                                 style={styles.oneMedia}
                                 resizeMode="cover"
                                 paused={playingVideo !== item.url}
@@ -61,9 +71,9 @@ const renderMedia:React.FC<renderMedia> = ({images, media, setMedia, setShowModa
         );
     } else if (numMedia === 2) {
         return (
-            
+
             <View style={styles.twoMediaContainer}>
-                {images.map((item:imageType, index) => (
+                {images.map((item: imageType, index) => (
                     item.url.endsWith('.mp4') ? (
                         <View key={index.toString()} style={styles.mediaContainer}>
                             <Video
@@ -84,7 +94,7 @@ const renderMedia:React.FC<renderMedia> = ({images, media, setMedia, setShowModa
                         </View>
                     ) : (
                         <View style={styles.mediaContainer} key={index.toString()}>
-                            <Image  source={{ uri: item.url }} style={styles.oneMedia} resizeMode="cover" />
+                            <Image source={{ uri: item.url }} style={styles.oneMedia} resizeMode="cover" />
                         </View>
                     )
                 ))}
@@ -315,7 +325,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
         height: 300,
-        
+
     },
     media1ContainerOf3: {
         height: '100%',

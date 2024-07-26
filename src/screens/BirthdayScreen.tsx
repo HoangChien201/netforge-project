@@ -1,4 +1,4 @@
-import { Modal, StyleSheet, Text, TouchableOpacity, View, } from 'react-native'
+import { Modal, Pressable, StyleSheet, Text, TouchableOpacity, View, } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { useIsFocused, useNavigation } from '@react-navigation/native';
 import Sound from 'react-native-sound';
@@ -13,6 +13,7 @@ import { FriendType } from '../component/message/ModalNewMessage';
 import { useMyContext } from '../component/navigation/UserContext';
 import ToolBar from '../component/message/ToolBar';
 import { getFriends } from '../http/QuyetHTTP';
+import FastImage from 'react-native-fast-image';
 
 
 const BirthDayScreen = ({ visible, setVisible }: { visible: boolean, setVisible: any }) => {
@@ -26,41 +27,6 @@ const BirthDayScreen = ({ visible, setVisible }: { visible: boolean, setVisible:
     const isFocus = useIsFocused()
     // console.log('birt', birthdaySound);
 
-
-    useEffect(() => {
-        getFriendAll()
-        const sound = new Sound('happy_birthday.mp3', Sound.MAIN_BUNDLE, (error) => {
-            if (error) {
-                console.log('Lỗi âm thanh', error);
-                return;
-            }
-            setBirthdaySound(sound); // Lưu sound vào state
-        });
-
-        return () => {
-            // Release sound resource when the component unmounts
-            if (birthdaySound) {
-                birthdaySound.release();
-            }
-        }
-    }, [])
-
-    // happy birthday to you
-    useEffect(() => {
-        const today = new Date()
-        const userBirthday = new Date(user.dateOfBirth)
-        if (today.getDate() === userBirthday.getDate() &&
-            today.getMonth() === userBirthday.getMonth()) {
-            console.log(today);
-            setIsVisibleBirtday(true);
-            if (birthdaySound) {
-                birthdaySound.play()
-                // console.log('nhac',birthdaySound);
-
-            }
-        }
-    }, [birthdaySound]);
-    
     useEffect(() => {
         if (isFocus) {
             navigation.getParent()?.setOptions({
@@ -70,6 +36,12 @@ const BirthDayScreen = ({ visible, setVisible }: { visible: boolean, setVisible:
             });
         }
     }, [isFocus]);
+    useEffect(() => {
+        getFriendAll()
+    }, [])
+
+
+
 
     //happy birthday friend
     useEffect(() => {
@@ -127,38 +99,32 @@ const BirthDayScreen = ({ visible, setVisible }: { visible: boolean, setVisible:
             style={styles.modal}
             visible={visible}
         >
-
             <View style={styles.container}>
-                {/* toolbar */}
-                <View style={styles.toolbar}>
-                    <TouchableOpacity activeOpacity={.7} onPress={()=>setVisible(false)}>
-                        <Ionicon name='arrow-back' size={24} color={'#000'} />
-                    </TouchableOpacity>
-                </View>
-                {/* toolbar */}
 
-
-                {/* <ModalBirtday IsVisible={isVisibleBirtday} onClose={() => {
-                    setIsVisibleBirtday(false)
-                    if (birthdaySound) {
-                        birthdaySound.stop()
-                    }
-                }} /> */}
+                <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center', position: 'relative', height: 50, backgroundColor: '#fff' }}>
+            <Pressable onPress={()=>setVisible(false)} style={{ position: 'absolute', left: 15 }}>
+            <Ionicon name='arrow-back' size={24} color={'#000'} />
+            </Pressable>
+            <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', }}>
+                <Text style={{ fontSize: 20, fontWeight: '700', color: '#000' }}>Sinh nhật</Text>
+            </View>
+        </View>
                 <Text style={{ fontSize: 20, fontWeight: 'bold', color: '#000', marginLeft: 12, top: 10 }}>Hôm nay</Text>
                 {
-                    todayFriends ? (
+                    todayFriends.length > 0 ? (
                         <FlatList
                             data={todayFriends}
                             keyExtractor={(item) => item.user.id.toString()}
                             renderItem={({ item }) => <ItemBirthday item={item} />} // Sử dụng component ItemBirthday
                         />
                     ) : (
-                        <View style={{ justifyContent: 'center', alignItems: 'center' }}>
-                            <Text style={{ fontSize: 20, fontWeight: 'bold' }}>Hôm nay không có sinh nhật</Text>
+                        <View style = {{justifyContent: 'center', alignItems: 'center', top: 150}}>
+                            <FastImage style={{ width: 120, height: 120 }} source={require('../media/icon_tuong/cake-birthday.gif')} />
+                            <Text style = {{fontSize: 18, fontWeight: '700', marginTop: 5}}>Hôm nay không có sinh nhật</Text>
                         </View>
-
                     )
                 }
+             
             </View>
         </Modal>
     )
