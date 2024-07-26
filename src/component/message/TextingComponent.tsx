@@ -20,11 +20,12 @@ const TextingComponent = ({ addMessage, reply, setReply }: { addMessage: any, re
         }
 
         const messageCreate = new MessageProvider({
-            message:valueInput ? valueInput : '😂',
+            message:valueInput ? valueInput.trimEnd() : '😂',
             type:'text',
             sender:user.id,
             parent:reply ? reply : null
         })
+        
         addMessage(messageCreate)
 
         setValueInput('')

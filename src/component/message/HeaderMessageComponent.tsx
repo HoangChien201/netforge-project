@@ -12,25 +12,25 @@ import { multiply } from 'lodash'
 import { useMyContext } from '../navigation/UserContext'
 import { MessageScreenRouteProp } from '../../screens/message/MessageScreen'
 
-type InviteeType={
-    userID:string,
-    userName:string
+type InviteeType = {
+    userID: string,
+    userName: string
 }
 
 
 const HeaderMessageComponent = ({ partner }: { partner: any }) => {
 
     const route: MessageScreenRouteProp = useRoute()
-    const { fullname, avatar,members } = route.params;
+    const { fullname, avatar, members } = route.params;
     const { user } = useMyContext();
-    const invitees:Array<InviteeType>
-                    =members.map(m=>{
-                            return {
-                                userID:m.user.id.toString(),
-                                userName:m.user.fullname
-                            }
-                        
-                    }).filter(invitee=>invitee.userID !== user.id.toString())
+    const invitees: Array<InviteeType>
+        = members.map(m => {
+            return {
+                userID: m.user.id.toString(),
+                userName: m.user.fullname
+            }
+
+        }).filter(invitee => invitee.userID !== user.id.toString())
     // const [invitees, setInvitees]
     //     = useState<Array<
     //         {
@@ -59,7 +59,25 @@ const HeaderMessageComponent = ({ partner }: { partner: any }) => {
     //     };
     // }, [invitees, fullname]);
     // //call-end
+    // // login zegoCloud để thực hiện cuộc gọi
+    // useEffect(() => {
+    //     const initializeCallService = async () => {
+    //         try {
+    //             await onUserLogin(user.id, user.fullname, user.avatar);
+    //             console.log("User logged in successfully:", user.id, user.fullname);
+    //         } catch (error) {
+    //             console.error("Error logging in user on HomeScreen:", error);
+    //         }
+    //     };
+    //     initializeCallService();
 
+    //     return () => {
+    //         onUserLogout();
+    //         console.log("User logged out on ");
+    //     };
+
+    // }, [user.id, user.fullname]);
+    // // //end zegoCloud
     return (
         <View style={styles.container}>
             <View style={{
@@ -84,7 +102,7 @@ const HeaderMessageComponent = ({ partner }: { partner: any }) => {
                     <ZegoSendCallInvitationButton
                         invitees={invitees}
                         isVideoCall={false}
-                        resourceID={"zego_call"}
+                        // resourceID={"zego_call"}
                         backgroundColor={'rgba(255,255,255,0.2)'}
                         icon={require('../../media/icon/telephone-call.png')}
 
@@ -93,7 +111,7 @@ const HeaderMessageComponent = ({ partner }: { partner: any }) => {
                         invitees={invitees}
                         isVideoCall={true}
                         backgroundColor={'rgba(255,255,255,0.2)'}
-                        resourceID={"zego_call"}
+                        // resourceID={"zego_call"}
                         icon={require('../../media/icon/facetime-button.png')}
                     />
                 </View>
