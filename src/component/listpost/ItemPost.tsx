@@ -1,42 +1,35 @@
+import React, { memo, useEffect, useMemo, useRef, useState } from 'react';
 import { Image, Pressable, StyleSheet, Animated, Text, TouchableOpacity, View, Modal } from 'react-native';
-import React, { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { NavigationProp, ParamListBase, useNavigation } from '@react-navigation/native';
+import AntDesignIcon from 'react-native-vector-icons/AntDesign';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 import ActionBar from './ActionBar';
 import { DateOfTimePost } from '../../format/DateOfTimePost';
 import ItemImg from './ItemImg';
 import { useMyContext } from '../navigation/UserContext';
-import AntDesignIcon from 'react-native-vector-icons/AntDesign';
 import { SharePost } from '../../http/userHttp/getpost';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import ModalFriendProfile from '../profile/FriendProfile';
-import { NavigationProp, ParamListBase, useFocusEffect, useNavigation } from '@react-navigation/native';
 import { ProfileRootStackEnum } from '../stack/ProfileRootStackParams';
-
-import { deletePost } from '../../http/QuyetHTTP'
-import AxiosInstance from '../../http/AxiosInstance';
-import { set } from 'lodash';
 import { emotions } from '../../constant/emoji';
 
-const ItemPost = memo(({ index, data, onrefresh, userId, onPressProfile, setShowModalEdit, setSelectedId, showDelete, setShowDelete }) => {
+const ItemPost = memo(({ data, setShowModalEdit, setSelectedId, setShowDelete }) => {
 
     const [checkLike, setCheckLike] = useState(false);
     const [datas, setData] = useState(data);
     const [shareId, setshareId] = useState(null);
     const [postsShares, setPostShare] = useState({});
     const { user } = useMyContext();
-    const menu = useRef(new Animated.Value(0)).current;
-    const [hidden, setHidden] = useState(false);
     const [renderShare, setRenderShare] = useState(false);
     const navigation: NavigationProp<ParamListBase> = useNavigation();
     const [isModalVisible, setIsModalVisible] = useState(false);
-    const [selectedUserId, setSelectedUserId] = useState(null);
     const loggedInUserId = user.id;
 
     useEffect(() => {
         setData(data)
     }, [data])
 
-    const { creater, share_count, reaction, content, media, comment_count, create_at, id, like_count, share,emotion } = datas;
-console.log("emotion",datas);
+    const { creater, share_count, reaction, content, media, comment_count, create_at, id, like_count, share, emotion } = datas;
+    console.log("emotion", datas);
 
     useEffect(() => {
         setRenderShare(false)
@@ -98,7 +91,7 @@ console.log("emotion",datas);
         if (reactionMap) {
             return (
                 <>
-                    <Text style={{color:'#000',marginLeft:5,fontWeight:'400'}}>{reactionMap.title}</Text>
+                    <Text style={{ color: '#000', marginLeft: 5, fontWeight: '400' }}>{reactionMap.title}</Text>
                 </>
             );
         }
@@ -137,7 +130,7 @@ console.log("emotion",datas);
 
     return (
         <Pressable onPress={handleItemPress} style={{ margin: 5, marginBottom: 6, backgroundColor: "#fff" }}>
-            {shareId && renderShare   ? (
+            {shareId && renderShare ? (
                 <>
                     <View style={styles.home1}>
                         <View style={styles.containerAvt}>
@@ -148,9 +141,9 @@ console.log("emotion",datas);
                                     <Image source={require('../../media/icon/phuking.jpg')} style={styles.avt} />
                                 )}
                                 <View>
-                                   <View style={{ flexDirection: 'row'}}>
+                                    <View style={{ flexDirection: 'row' }}>
                                         <Text style={styles.nameUser}>{creater.fullname === null ? "Người dùng" : creater.fullname}</Text>
-                                       <ViewReaction/>
+                                        <ViewReaction />
                                     </View>
                                     <View style={{ flexDirection: 'row', alignItems: 'center', marginVertical: 3 }}>
                                         <Text style={{ marginRight: 10 }}>{DateOfTimePost(create_at)}</Text>
@@ -200,42 +193,42 @@ console.log("emotion",datas);
                     )}
                     {
                         <View style={styles.sharedPost}>
-                        <View style={styles.home}>
-                            <View style={styles.containerAvt}>
-                                <TouchableOpacity style={styles.containerAvt} onPress={() => handleToProfile(postsShares?.creater?.id)}>
-                                    {postsShares?.creater?.avatar ? (
-                                        <Image source={{ uri: postsShares?.creater?.avatar }} style={styles.avt} />
-                                    ) : (
-                                        <Image source={require('../../media/Dicons/nguoidung.jpg')} style={styles.avt} />
-                                    )}
-                                    <View>
-                                    <View style={{ flexDirection: 'row'}}>
-                                         <Text style={[styles.nameUser, { marginTop: postsShares?.creater?.fullname ? 0 : 15 }]}>{postsShares?.creater?.fullname || "Người dùng"}</Text>
-                                         <ViewReaction/>
-                                    </View>
-                                       
-                                        <View style={styles.postInfo}>
-                                            <Text style={styles.postDate}>{postsShares?.create_at ? DateOfTimePost(postsShares?.create_at) : null}</Text>
-                                            {postsShares?.create_at ? <Image source={require('../../media/icon/icon-hour-light.png')} /> : null}
+                            <View style={styles.home}>
+                                <View style={styles.containerAvt}>
+                                    <TouchableOpacity style={styles.containerAvt} onPress={() => handleToProfile(postsShares?.creater?.id)}>
+                                        {postsShares?.creater?.avatar ? (
+                                            <Image source={{ uri: postsShares?.creater?.avatar }} style={styles.avt} />
+                                        ) : (
+                                            <Image source={require('../../media/Dicons/nguoidung.jpg')} style={styles.avt} />
+                                        )}
+                                        <View>
+                                            <View style={{ flexDirection: 'row' }}>
+                                                <Text style={[styles.nameUser, { marginTop: postsShares?.creater?.fullname ? 0 : 15 }]}>{postsShares?.creater?.fullname || "Người dùng"}</Text>
+                                                <ViewReaction />
+                                            </View>
+
+                                            <View style={styles.postInfo}>
+                                                <Text style={styles.postDate}>{postsShares?.create_at ? DateOfTimePost(postsShares?.create_at) : null}</Text>
+                                                {postsShares?.create_at ? <Image source={require('../../media/icon/icon-hour-light.png')} /> : null}
+                                            </View>
                                         </View>
-                                    </View>
-                                </TouchableOpacity>
+                                    </TouchableOpacity>
+                                </View>
                             </View>
+                            {postsShares?.content?.length > 0 ? (
+                                <View style={styles.sharedPostContainer}>
+                                    {formatContents}
+                                </View>
+                            ) : (
+                                <View style={{ padding: 5 }}>
+                                    <Text style={{ textAlign: 'center' }}>Bài viết này đã được xóa</Text>
+                                </View>
+                            )}
+                            {postsShares?.media?.length > 0 && <ItemImg image={postsShares?.media} />
+                            }
                         </View>
-                        {postsShares?.content?.length > 0 ? (
-                            <View style={styles.sharedPostContainer}>
-                                {formatContents}
-                            </View>
-                        ) : (
-                            <View style={{ padding: 5 }}>
-                                <Text style={{ textAlign: 'center' }}>Bài viết này đã được xóa</Text>
-                            </View>
-                        )}
-                        {postsShares?.media?.length > 0 && <ItemImg image={postsShares?.media} />}
-                    </View>
                     }
-                   
-                    <ActionBar share={share.id} checkLike={checkLike} setCheckLike={setCheckLike} postId={id} type={reaction} comment_count={comment_count} share_count={share_count} like_count={like_count} />
+                    <ActionBar creater={creater} share={share.id} checkLike={checkLike} setCheckLike={setCheckLike} postId={id} type={reaction} comment_count={comment_count} share_count={share_count} like_count={like_count} />
                 </>
             ) : (
                 <>
@@ -248,11 +241,11 @@ console.log("emotion",datas);
                                     <Image source={require('../../media/icon/phuking.jpg')} style={styles.avt} />
                                 )}
                                 <View>
-                                <View style={{ flexDirection: 'row'}}>
-                                <Text style={styles.nameUser}>{creater.fullname === null ? "Người dùng" : creater.fullname}</Text>
-                                         <ViewReaction/>
+                                    <View style={{ flexDirection: 'row' }}>
+                                        <Text style={styles.nameUser}>{creater.fullname === null ? "Người dùng" : creater.fullname}</Text>
+                                        <ViewReaction />
                                     </View>
-                                  
+
                                     <View style={{ flexDirection: 'row', alignItems: 'center', marginVertical: 3 }}>
                                         <Text style={{ marginRight: 10 }}>{DateOfTimePost(create_at)}</Text>
                                         <Image source={require('../../media/icon/icon-hour-light.png')} />
@@ -296,7 +289,7 @@ console.log("emotion",datas);
                     </View>
                     {formatContent}
                     {media.length > 0 && <ItemImg image={media} />}
-                    <ActionBar checkLike={checkLike} setCheckLike={setCheckLike} postId={id} type={reaction} comment_count={comment_count} share_count={share_count} like_count={like_count} />
+                    <ActionBar creater={creater} checkLike={checkLike} setCheckLike={setCheckLike} postId={id} type={reaction} comment_count={comment_count} share_count={share_count} like_count={like_count} />
                 </>
             )}
         </Pressable>

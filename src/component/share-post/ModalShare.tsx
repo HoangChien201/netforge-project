@@ -7,23 +7,21 @@ import { createNewPost, getPostById } from '../../http/QuyetHTTP';
 import { sharePost } from '../../http/PhuHTTP';
 import TextArea from '../create-post-screen/TextArea';
 import { useSendNotification } from '../../constant/notify';
-import { useMyContext } from '../navigation/UserContext';
 
 
 interface ModalShareProps{
     isVisible: boolean,
     onClose: () => void, 
     idPost :any,
-    share: any
+    share: any,
+    creater:any
 }
 
-const ModalShare:React.FC<ModalShareProps> = ({ isVisible, onClose, idPost, share }) => {
-    const {user} = useMyContext();
+const ModalShare:React.FC<ModalShareProps> = ({creater, isVisible, onClose, idPost, share }) => {
     const [content, setContent] = useState<string | null>('');
     const [permission, setPermission] = useState(1);
-    const type = 1;
+    // const type = 1;
     const [friends, setFriends] = useState([]);
-    const tags = friends.map(id => ({ user: String(id) }));
     const { sendNSharePost} = useSendNotification();
     
     useEffect(() => {
@@ -39,20 +37,19 @@ const ModalShare:React.FC<ModalShareProps> = ({ isVisible, onClose, idPost, shar
     }
 
     const handleShare = async () => {
-        //console.log(idPost);
         try {
             if(share) {
-                const response = await sharePost(share, content, permission, type);
+                const response = await sharePost(share, content, permission, 1);
                 handleClose()
                 ToastAndroid.show('Chia sẻ bài viết thành công', ToastAndroid.SHORT);
                 handleSendNotification(response)
             } else{
-                const response = await sharePost(idPost, content, permission, type);
+                const response = await sharePost(idPost, content, permission, 1);
                 handleClose()
                 ToastAndroid.show('Chia sẻ bài viết thành công', ToastAndroid.SHORT);
             }
         } catch (error) {
-            
+            console.log("lỗi share post: ", error)
         }
     };
 
@@ -60,7 +57,7 @@ const ModalShare:React.FC<ModalShareProps> = ({ isVisible, onClose, idPost, shar
         const data = {
             postId: post.id,
             body: post.contain,
-            receiver: user.id
+            receiver: creater.id
         };
         sendNSharePost(data);
         console.log(data);
@@ -82,11 +79,6 @@ return (
                     <View  style={styles.input}>
                         <TextArea content={content} setContent={setContent} setFriends={setFriends} friends={friends}/>
                     </View>
-                    {/* <TextInput
-                        style={styles.input}
-                        placeholder="Hãy nhập nội dung bạn muốn chia sẻ"
-                        value={content}
-                        onChangeText={setContent}/> */}
                     <View style={styles.buttonContainer}>
                         <TouchableOpacity style={styles.button} onPress={handleShare} >
                             <Text style={styles.txtShare}>Chia sẻ ngay</Text>

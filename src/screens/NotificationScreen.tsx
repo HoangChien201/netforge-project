@@ -40,7 +40,7 @@ const NotificationScreen = () => {
     fetchData();
     socket.on(`notification-${user.id}`, (data) => {
       console.log('Notification received:', data);
-      const exists = notifications.some(notification => notification.id === data.id);
+      const exists = notifications.some(notification => notification.id == data.id);
       if (!exists) {
         // showLocalNotification(data);
         addNotification(data);
