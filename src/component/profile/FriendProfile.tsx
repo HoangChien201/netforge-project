@@ -38,7 +38,6 @@ const FriendProfile:React.FC<ModalFriendProfileProps> = () => {
   const route = useRoute();
   const userId = route.params?.userId;
   const [friends, setFriends] = useState<any[]>([]);
-
   const token = user.token;
   const [userData, setUserData] = useState<any>();
 
@@ -79,7 +78,7 @@ const FriendProfile:React.FC<ModalFriendProfileProps> = () => {
         }
       };
       fetchUserData();
-    }, [setUserData])
+    }, [])
   );
 
   useEffect(() => {

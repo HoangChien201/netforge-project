@@ -208,7 +208,7 @@ const ItemPost = memo(({ index, data, onrefresh, userId, onPressProfile, setShow
                         )}
                         {postsShares?.media?.length > 0 && <ItemImg image={postsShares?.media} />}
                     </View>
-                    <ActionBar share={share.id} checkLike={checkLike} setCheckLike={setCheckLike} postId={id} type={reaction} comment_count={comment_count} share_count={share_count} like_count={like_count} />
+                    <ActionBar creater={creater} share={share.id} checkLike={checkLike} setCheckLike={setCheckLike} postId={id} type={reaction} comment_count={comment_count} share_count={share_count} like_count={like_count} />
                 </>
             ) : (
                 <>
@@ -265,7 +265,7 @@ const ItemPost = memo(({ index, data, onrefresh, userId, onPressProfile, setShow
                     </View>
                     {formatContent}
                     {media.length > 0 && <ItemImg image={media} />}
-                    <ActionBar checkLike={checkLike} setCheckLike={setCheckLike} postId={id} type={reaction} comment_count={comment_count} share_count={share_count} like_count={like_count} />
+                    <ActionBar  creater={creater} checkLike={checkLike} setCheckLike={setCheckLike} postId={id} type={reaction} comment_count={comment_count} share_count={share_count} like_count={like_count} />
                 </>
             )}
         </Pressable>

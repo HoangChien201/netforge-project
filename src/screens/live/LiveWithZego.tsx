@@ -74,7 +74,7 @@ const LiveWithZego: React.FC = () => {
           onPress={() => onJoinPress(false)}
         />
       </View>
-      <View style={[styles.imageContainer, styles.leftPadding]}>
+      {/* <View style={[styles.imageContainer, styles.leftPadding]}>
         <TouchableOpacity onPress={() => onJoinPress(false)}>
           <Image
             source={{ uri: user.avatar}}
@@ -82,7 +82,7 @@ const LiveWithZego: React.FC = () => {
           />
           <Text style={styles.thumbnailText}>Bấm để xem trực tiếp</Text>
         </TouchableOpacity>
-      </View>
+      </View> */}
     </View>
   );
 };

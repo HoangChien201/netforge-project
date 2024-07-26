@@ -31,7 +31,7 @@ const TextArea: React.FC<Props> = ({ content, setContent, friends, setFriends })
             const status = 2;
             const result = await getFriends(status);
             setValue(result);
-            console.log('lũ bạn:' + JSON.stringify(result));
+            //console.log('lũ bạn:' + JSON.stringify(result));
         } catch (error) {
             console.log('getFriends error:' + error);
             throw error;
@@ -194,7 +194,7 @@ const styles = StyleSheet.create({
         zIndex: 999,
         marginTop: 85,
         height: 160,
-        backgroundColor: '#FFF4E9'
+        backgroundColor: 'white'
     }
 });
 
