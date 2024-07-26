@@ -30,7 +30,7 @@ export type valid = {
 const FormLogin = ({ setModal, setStatus, setIsLoading }: { setModal: (value: boolean) => void, setStatus: (value: boolean) => void, setIsLoading: (value: boolean) => void }) => {
   const navigation: NavigationProp<ParamListBase> = useNavigation();
 
-  const [valueF, setValueF] = useState<user>({ email: 'hoangchien@gmail.com', password: '123456' })
+  const [valueF, setValueF] = useState<user>({ email: 'tuong123@gmail.com', password: '1234' })
 
   const [valid, setValid] = useState<valid>({ email: true, password: true })
 
