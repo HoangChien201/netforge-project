@@ -5,6 +5,7 @@ import { getFriends } from '../../http/QuyetHTTP';
 import { COLOR } from '../../constant/color';
 import { TextInput } from 'react-native-gesture-handler';
 import { useFocusEffect } from '@react-navigation/native';
+import  Icon  from 'react-native-vector-icons/AntDesign';
 
 type Props = {
     content: any,
@@ -139,13 +140,14 @@ const TextArea: React.FC<Props> = ({ content, setContent, friends, setFriends })
                 style={styles.input}
                 placeholder=" Nhập @tên để gắn thẻ bạn bè"
             />
+
         </View>
     );
 };
 
 const styles = StyleSheet.create({
     container: {
-        padding: 10,
+        padding: 5,
     },
     textArea: {
         height: 150,

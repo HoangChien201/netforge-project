@@ -1,15 +1,12 @@
 import * as ZIM from 'zego-zim-react-native';
 // @ts-ignore
-import ZegoUIKitPrebuiltCallService, { ZegoMenuBarButtonName, ZegoMultiCertificate, ZegoUIKit } from '@zegocloud/zego-uikit-prebuilt-call-rn';
+import ZegoUIKitPrebuiltCallService from '@zegocloud/zego-uikit-prebuilt-call-rn';
 import KeyCenter from './KeyCenter';
-import { useNavigation } from '@react-navigation/native';
-import { Image, Text, View } from 'react-native';
+import { Image, View } from 'react-native';
 import React from 'react';
-import * as ZPNs from 'zego-zpns-react-native';
-import { useMyContext } from '../../component/navigation/UserContext';
-import { NavigateToMessage } from '../../component/message/NavigateToMessage';
 
-export const onUserLogin = async (userID: any, userName: string, avatar: string,navigation:any) => {
+
+export const onUserLogin = async (userID: any, userName: string, avatar: string, navigation: any) => {
     try {
         return await ZegoUIKitPrebuiltCallService.init(
             KeyCenter.appID,
@@ -17,9 +14,7 @@ export const onUserLogin = async (userID: any, userName: string, avatar: string,
             userID.toString(),
             userName.toString(),
             [ZIM],
-
             {
-
                 ringtoneConfig: {
                     incomingCallFileName: 'zego_incoming.mp3',
                     outgoingCallFileName: 'zego_outgoing.mp3',
@@ -28,7 +23,6 @@ export const onUserLogin = async (userID: any, userName: string, avatar: string,
                     channelID: "Zego_call",
                     channelName: "Zego_call",
                 },
-
                 avatarBuilder: ({ userInfo }) => {
                     return (
                         <View style={{ width: '100%', height: '100%' }}>
@@ -43,7 +37,6 @@ export const onUserLogin = async (userID: any, userName: string, avatar: string,
                         </View>
                     );
                 },
-
                 requireConfig: (data: any) => {
                     return {
                         innerText: {
@@ -68,27 +61,24 @@ export const onUserLogin = async (userID: any, userName: string, avatar: string,
                             isDurationVisible: true,
                             onDurationUpdate: (duration: any) => {
                                 // console.log('duration', data);
-
                                 if (duration === 5 * 60) {
                                     ZegoUIKitPrebuiltCallService.hangUp();
                                 }
                             },
+                            onCallEnd: (callID, reason, duration) => {
+                                console.log('########CallWithInvitation onCallEnd duration', callID, reason, duration);
+                                console.log('########CallWithInvitation onCallEnd inviter', userID);
+                                console.log('########CallWithInvitation onCallEnd invitee', data);
+                                ZegoUIKitPrebuiltCallService.hangUp();
+                                navigation.goBack();
+                            },
                         },
-                        onCallEnd: (callID, reason, duration) => {
-                            
-                            console.log('########CallWithInvitation onCallEnd duration', callID, reason, duration);
-                            console.log('########CallWithInvitation onCallEnd inviter', userID);
-                            console.log('########CallWithInvitation onCallEnd invitee',data);
-                            ZegoUIKitPrebuiltCallService.hangUp();
-                            navigation.goBack();
-                          },
                     };
-
                 },
-
                 notifyWhenAppRunningInBackgroundOrQuit: true,
-                isIOSSandboxEnvironment: false,
+                isIOSSandboxEnvironment: true,
             }
+
         ).then(() => {
             ZegoUIKitPrebuiltCallService.requestSystemAlertWindow({
                 message: 'Chúng tôi cần sự đồng ý của bạn đối với các quyền sau để sử dụng đúng chức năng cuộc gọi ngoại tuyến',

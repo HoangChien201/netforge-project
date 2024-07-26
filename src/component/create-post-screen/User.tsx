@@ -80,6 +80,8 @@ const styles = StyleSheet.create({
         width: 40,
         height: 40,
         borderRadius:100,
+        borderColor:COLOR.PrimaryColor1,
+        borderWidth:1
     },
     userInforName: {
         width: '70%',
