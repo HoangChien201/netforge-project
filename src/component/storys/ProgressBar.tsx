@@ -2,22 +2,26 @@ import React, { useEffect, useRef, useState, memo } from 'react';
 import { View, StyleSheet, Animated, Easing } from 'react-native';
 
 const ProgressBar = ({ paused, active, index, setActi, length, setcurrentIndex, currentIndex, dataLength }) => {
-    const [shouldAnimate, setShouldAnimate] = useState(false);
+    const [progressValue, setProgressValue] = useState(0);
     const progress = useRef(new Animated.Value(0)).current;
-    const remainingTimeRef = useRef(5000); // Thời gian còn lại khi paused
+    const duration = 5000;
 
+   
     useEffect(() => {
-        setShouldAnimate(index === active);
-        progress.setValue(0);
+        if (index === active) {
+            progress.setValue(progressValue);
+        } else {
+            progress.setValue(0);
+            setProgressValue(0);
+        }
     }, [index, active]);
 
     useEffect(() => {
-        if (shouldAnimate) {
+        if (index === active) {
             if (!paused) {
-                const duration = remainingTimeRef.current;
                 Animated.timing(progress, {
                     toValue: 1,
-                    duration,
+                    duration: (1 - progressValue) * duration,
                     easing: Easing.linear,
                     useNativeDriver: false,
                 }).start(({ finished }) => {
@@ -34,11 +38,12 @@ const ProgressBar = ({ paused, active, index, setActi, length, setcurrentIndex, 
                     }
                 });
             } else {
-                const currentProgress = progress.__getValue();
-                remainingTimeRef.current = (1 - currentProgress) * 5000;
+                progress.stopAnimation((value) => {
+                    setProgressValue(value);
+                });
             }
         }
-    }, [progress, shouldAnimate, paused]);
+    }, [paused, index, active]);
 
     const getProgressBar = () => {
         if (active > index) {
@@ -50,8 +55,7 @@ const ProgressBar = ({ paused, active, index, setActi, length, setcurrentIndex, 
                 outputRange: ['0%', '100%'],
             });
         }
-        progress.setValue(0);
-        return '0%';
+        return 0;
     };
 
     return (

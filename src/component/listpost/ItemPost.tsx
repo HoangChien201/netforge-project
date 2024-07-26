@@ -14,6 +14,7 @@ import { ProfileRootStackEnum } from '../stack/ProfileRootStackParams';
 import { deletePost } from '../../http/QuyetHTTP'
 import AxiosInstance from '../../http/AxiosInstance';
 import { set } from 'lodash';
+import { emotions } from '../../constant/emoji';
 
 const ItemPost = memo(({ index, data, onrefresh, userId, onPressProfile, setShowModalEdit, setSelectedId, showDelete, setShowDelete }) => {
 
@@ -24,7 +25,7 @@ const ItemPost = memo(({ index, data, onrefresh, userId, onPressProfile, setShow
     const { user } = useMyContext();
     const menu = useRef(new Animated.Value(0)).current;
     const [hidden, setHidden] = useState(false);
-
+    const [renderShare, setRenderShare] = useState(false);
     const navigation: NavigationProp<ParamListBase> = useNavigation();
     const [isModalVisible, setIsModalVisible] = useState(false);
     const [selectedUserId, setSelectedUserId] = useState(null);
@@ -34,15 +35,18 @@ const ItemPost = memo(({ index, data, onrefresh, userId, onPressProfile, setShow
         setData(data)
     }, [data])
 
-    const { creater, share_count, reaction, content, media, comment_count, create_at, id, like_count, share } = datas;
+    const { creater, share_count, reaction, content, media, comment_count, create_at, id, like_count, share,emotion } = datas;
+console.log("emotion",datas);
 
     useEffect(() => {
+        setRenderShare(false)
         if (share) {
             setshareId(share);
             const getPostShare = async () => {
                 const token = await AsyncStorage.getItem('userToken');
                 const result = await SharePost(share.id);
                 setPostShare(result);
+                setRenderShare(true)
             }
             getPostShare();
         }
@@ -55,6 +59,7 @@ const ItemPost = memo(({ index, data, onrefresh, userId, onPressProfile, setShow
     const hiddenMenu1 = () => {
         setIsModalVisible(false);
     };
+
 
     const formatContent = useMemo(() => {
         const format = content?.split(/@\[([^\]]+)\]\(\d+\)/g);
@@ -88,6 +93,18 @@ const ItemPost = memo(({ index, data, onrefresh, userId, onPressProfile, setShow
         );
     }, [postsShares?.content, media]);
 
+    const ViewReaction = () => {
+        const reactionMap = emotions.find(item => item.type === emotion);
+        if (reactionMap) {
+            return (
+                <>
+                    <Text style={{color:'#000',marginLeft:5,fontWeight:'400'}}>{reactionMap.title}</Text>
+                </>
+            );
+        }
+        return null;
+    };
+
     const handleItemPress = () => {
         hiddenMenu1();
         setCheckLike(false);
@@ -120,7 +137,7 @@ const ItemPost = memo(({ index, data, onrefresh, userId, onPressProfile, setShow
 
     return (
         <Pressable onPress={handleItemPress} style={{ margin: 5, marginBottom: 6, backgroundColor: "#fff" }}>
-            {shareId ? (
+            {shareId && renderShare   ? (
                 <>
                     <View style={styles.home1}>
                         <View style={styles.containerAvt}>
@@ -131,7 +148,10 @@ const ItemPost = memo(({ index, data, onrefresh, userId, onPressProfile, setShow
                                     <Image source={require('../../media/icon/phuking.jpg')} style={styles.avt} />
                                 )}
                                 <View>
-                                    <Text style={styles.nameUser}>{creater.fullname === null ? "Người dùng" : creater.fullname}</Text>
+                                   <View style={{ flexDirection: 'row'}}>
+                                        <Text style={styles.nameUser}>{creater.fullname === null ? "Người dùng" : creater.fullname}</Text>
+                                       <ViewReaction/>
+                                    </View>
                                     <View style={{ flexDirection: 'row', alignItems: 'center', marginVertical: 3 }}>
                                         <Text style={{ marginRight: 10 }}>{DateOfTimePost(create_at)}</Text>
                                         <Image source={require('../../media/icon/icon-hour-light.png')} />
@@ -178,7 +198,8 @@ const ItemPost = memo(({ index, data, onrefresh, userId, onPressProfile, setShow
                             {formatContent}
                         </View>
                     )}
-                    <View style={styles.sharedPost}>
+                    {
+                        <View style={styles.sharedPost}>
                         <View style={styles.home}>
                             <View style={styles.containerAvt}>
                                 <TouchableOpacity style={styles.containerAvt} onPress={() => handleToProfile(postsShares?.creater?.id)}>
@@ -188,7 +209,11 @@ const ItemPost = memo(({ index, data, onrefresh, userId, onPressProfile, setShow
                                         <Image source={require('../../media/Dicons/nguoidung.jpg')} style={styles.avt} />
                                     )}
                                     <View>
-                                        <Text style={[styles.nameUser, { marginTop: postsShares?.creater?.fullname ? 0 : 15 }]}>{postsShares?.creater?.fullname || "Người dùng"}</Text>
+                                    <View style={{ flexDirection: 'row'}}>
+                                         <Text style={[styles.nameUser, { marginTop: postsShares?.creater?.fullname ? 0 : 15 }]}>{postsShares?.creater?.fullname || "Người dùng"}</Text>
+                                         <ViewReaction/>
+                                    </View>
+                                       
                                         <View style={styles.postInfo}>
                                             <Text style={styles.postDate}>{postsShares?.create_at ? DateOfTimePost(postsShares?.create_at) : null}</Text>
                                             {postsShares?.create_at ? <Image source={require('../../media/icon/icon-hour-light.png')} /> : null}
@@ -208,6 +233,8 @@ const ItemPost = memo(({ index, data, onrefresh, userId, onPressProfile, setShow
                         )}
                         {postsShares?.media?.length > 0 && <ItemImg image={postsShares?.media} />}
                     </View>
+                    }
+                   
                     <ActionBar share={share.id} checkLike={checkLike} setCheckLike={setCheckLike} postId={id} type={reaction} comment_count={comment_count} share_count={share_count} like_count={like_count} />
                 </>
             ) : (
@@ -221,7 +248,11 @@ const ItemPost = memo(({ index, data, onrefresh, userId, onPressProfile, setShow
                                     <Image source={require('../../media/icon/phuking.jpg')} style={styles.avt} />
                                 )}
                                 <View>
-                                    <Text style={styles.nameUser}>{creater.fullname === null ? "Người dùng" : creater.fullname}</Text>
+                                <View style={{ flexDirection: 'row'}}>
+                                <Text style={styles.nameUser}>{creater.fullname === null ? "Người dùng" : creater.fullname}</Text>
+                                         <ViewReaction/>
+                                    </View>
+                                  
                                     <View style={{ flexDirection: 'row', alignItems: 'center', marginVertical: 3 }}>
                                         <Text style={{ marginRight: 10 }}>{DateOfTimePost(create_at)}</Text>
                                         <Image source={require('../../media/icon/icon-hour-light.png')} />
