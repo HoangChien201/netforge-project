@@ -6,6 +6,7 @@ import TouchID from 'react-native-touch-id';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { flatMap } from 'lodash';
 
+import ZegoUIKitPrebuiltCallService, { ZegoSendCallInvitationButton, ZegoMenuBarButtonName } from '@zegocloud/zego-uikit-prebuilt-call-rn';
 
 import ListStory from '../component/storys/ListStory';
 import ListPorts from '../component/listpost/ListPorts';
@@ -27,24 +28,6 @@ const HomeScreen = () => {
     const navigation = useNavigation();
     const { user } = useMyContext();
     const [visible, setVisible] = useState(false);
-
-    // // login zegoCloud để thực hiện cuộc gọi
-    // useEffect(() => {
-    //     const initializeCallService = async () => {
-    //         try {
-    //             await onUserLogin(user.id, user.fullname, user.avatar);
-    //             console.log("User logged in successfully on HomeScreen:", user.id, user.fullname);
-    //         } catch (error) {
-    //             console.error("Error logging in user on HomeScreen:", error);
-    //         }
-    //     };
-    //     initializeCallService();
-    //     return () => {
-    //         onUserLogout();
-    //         console.log("User logged out on HomeScreen");
-    //     };
-    // }, [user.id, user.fullname]);
-    // //end zegoCloud
 
     const checkTouchIdLogin = () => {
         TouchID.isSupported()
@@ -247,6 +230,19 @@ const HomeScreen = () => {
                         onRefresh={onRefresh}
                     />
                 </View>
+            <View style={styles.options}>
+                    <ZegoSendCallInvitationButton
+                        isVideoCall={false}
+                        resourceID={"zego_call"}
+                        backgroundColor={'rgba(255,255,255,0.2)'}
+
+                    />
+                    <ZegoSendCallInvitationButton
+                        isVideoCall={true}
+                        backgroundColor={'rgba(255,255,255,0.2)'}
+                        resourceID={"zego_call"}
+                    />
+                </View>
             </View>
         </TouchableWithoutFeedback>
     );
@@ -255,6 +251,10 @@ const HomeScreen = () => {
 export default HomeScreen;
 
 const styles = StyleSheet.create({
+    options:{
+        height:0,
+        width:0
+    },
     container: {
         flex: 1,
         backgroundColor: '#fff',

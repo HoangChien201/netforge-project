@@ -7,19 +7,16 @@ type PartnerType = {
 }
 export function NavigateToMessage(partner: PartnerType, navigation: MessageScreenNavigationProp) {
     const { fullname, avatar } = partner
-    navigation.navigate('MessageManagementScreen',
-        {
-            screen: "MessageScreen",
-            params: {
-                fullname,
-                avatar,
-                members: [
-                    {
-                        user: partner
-                    }
-                ]
+    navigation.navigate("MessageScreen", {
+        fullname,
+        avatar,
+        members: [
+            {
+                user: partner
             }
-        }
-    )
+        ]
+
+    })
+    
 }
 

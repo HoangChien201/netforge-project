@@ -57,6 +57,7 @@ export default function NetworkBottomTab(): React.JSX.Element {
                 },
                 headerShown: false,
             }}
+            backBehavior='history'
         >
             {NetworkRootBottomTabScreens.map((item) => (
                 <Tab.Screen
@@ -67,7 +68,7 @@ export default function NetworkBottomTab(): React.JSX.Element {
                 />
             ))}
             {/* nhận cuộc gọi ở bất kỳ screen nào */}
-            <Tab.Screen
+            {/* <Tab.Screen
                 name="ZegoUIKitPrebuiltCallInCallScreen"
                 component={ZegoUIKitPrebuiltCallInCallScreen}
                 options={{ tabBarButton: () => null,  tabBarStyle: { display: 'none' },}}
@@ -76,7 +77,7 @@ export default function NetworkBottomTab(): React.JSX.Element {
                 name="ZegoUIKitPrebuiltCallWaitingScreen"
                 component={ZegoUIKitPrebuiltCallWaitingScreen}
                 options={{ tabBarButton: () => null,  tabBarStyle: { display: 'none' },}}
-            />
+            /> */}
         </Tab.Navigator>
     );
 }
