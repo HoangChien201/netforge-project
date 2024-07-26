@@ -33,25 +33,26 @@ const NotificationScreen = () => {
   const [notifications, setNotifications] = useState([]);
   const { user } = useMyContext();
   const [groupedNotifications, setGroupedNotifications] = useState<any>([]);
-  const userId = user.id;
+  // const userId = user.id;
   const { sendNCommentPost } = useSendNotification();
 
   useEffect(() => {
     fetchData();
-    socket.on(`notification-${userId}`, (data) => {
+    socket.on(`notification-${user.id}`, (data) => {
       console.log('Notification received:', data);
       const exists = notifications.some(notification => notification.id === data.id);
       if (!exists) {
-        showLocalNotification(data);
+        // showLocalNotification(data);
         addNotification(data);
       }
     });
+    console.log('render');
     return () => {
-      socket.off(`notification-${userId}`);
+      socket.off(`notification-${user.id}`);
     };
+    
 
-
-  }, [userId]);  // Include notifications in dependencies to ensure up-to-date check
+  }, [user.id]);  // Include notifications in dependencies to ensure up-to-date check
 
   useEffect(() => {
     if (notifications.length > 0) {
@@ -118,6 +119,8 @@ const NotificationScreen = () => {
 
 
   const showLocalNotification = (notification) => {
+    console.log('show');
+    
     PushNotification.localNotification({
       channelId: "channel-id-1",
       autoCancel: true,

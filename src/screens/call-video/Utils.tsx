@@ -17,6 +17,7 @@ export const onUserLogin = async (userID: any, userName: string, avatar: string)
             userName.toString(),
             [ZIM],
 
+<<<<<<< HEAD
             {
 
                 ringtoneConfig: {
@@ -85,6 +86,43 @@ export const onUserLogin = async (userID: any, userName: string, avatar: string)
     } catch (error) {
         console.error("Error logging in user Utils:", error);
     }
+=======
+                      </View>
+                  );
+              },
+              requireConfig: (data: any) => {
+                  return {
+                    innerText: {
+                        incomingVideoCallDialogTitle: "%10",
+                        incomingVideoCallDialogMessage: "Đang gọi...",
+                    },
+                    // foregroundBuilder: () => {
+                    //     return (<Text>hihi</Text>);
+                    // },
+                      timingConfig: {
+                          isDurationVisible: true,
+                          onDurationUpdate: (duration: any) => {
+                            console.log('duration',duration);
+                            
+                              if (duration === 10 * 60) {
+                                  ZegoUIKitPrebuiltCallService.hangUp();
+                              }
+                          },
+                      },
+                  };
+                  
+              },
+              
+              notifyWhenAppRunningInBackgroundOrQuit: true,
+              isIOSSandboxEnvironment: true,
+          }
+      );
+      console.log("User logged in successfully:", userID, userName);
+      
+  } catch (error) {
+      console.error("Error logging in user Utils:", error);
+  }
+>>>>>>> main
 };
 
 export const onUserLogout = async () => {

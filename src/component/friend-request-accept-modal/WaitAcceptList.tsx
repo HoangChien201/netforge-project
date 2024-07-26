@@ -19,8 +19,6 @@ type Wait = {
 }
 const WaitAcceptList: React.FC<Wait> = ({ dataWaitAccept, setDataWaitAccept, setShowModalFriend ,reload, setReload,refreshing, setRefreshing}) => {
     const navigation = useNavigation();
-    const { user } = useMyContext();
-    const userId = user.id;
     const { sendAcceptFriend } = useSendNotification();
     const loadData = useCallback(() => {
         setRefreshing(true);

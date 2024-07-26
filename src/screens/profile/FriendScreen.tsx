@@ -118,6 +118,7 @@ const FriendScreen: React.FC<Friends> = () => {
     getRequestList(status1);
     getWaitAcceptList();
   };
+<<<<<<< HEAD
   useEffect(() => {
     socket.on(`notification-${userId}`, (data) => {
       console.log('Notification received:', data);
@@ -129,6 +130,19 @@ const FriendScreen: React.FC<Friends> = () => {
       socket.off(`notification-${userId}`);
     };
   }, [userId]);
+=======
+//   useEffect(() => {
+//     socket.on(`notification-${userId}`, (data) => {
+//       console.log('Notification received:', data);
+//         if(data){
+//             setReload(prevState => !prevState)
+//         }
+//     });
+//     return () => {
+//         socket.off(`notification-${userId}`);
+//     };
+// }, [userId]);
+>>>>>>> main
   useEffect(() => {
     if (isFocus) {
       navigation.getParent()?.setOptions({

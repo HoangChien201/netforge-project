@@ -28,6 +28,7 @@ const ManageNavigation: React.FC = () => {
     const [showSplash, setShowSplash] = useState(true);
     const { user, setUser } = useMyContext();
     const [notifications, setNotifications] = useState([]);
+    
 
     const handleAutoLogin = async () => {
         try {
@@ -182,7 +183,7 @@ const ManageNavigation: React.FC = () => {
     return (
         <GestureHandlerRootView>
             <NavigationContainer>
-                 {/*ZegoCallInvitationDialog hiện dialog nhận cuộc gọi */}
+                {/*ZegoCallInvitationDialog hiện dialog nhận cuộc gọi */}
                 <ZegoCallInvitationDialog />
                 {user ? <NetworkStack /> : <UserStack />}
             </NavigationContainer>

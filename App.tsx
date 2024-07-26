@@ -30,8 +30,7 @@ function App(): React.JSX.Element {
   });
   useEffect(() => {
     RequestNotificationPermission()
-    registerRemoteNotificationsEvent()
-  });
+  },[]);
   LogBox.ignoreLogs([
     '[Reanimated] Tried to modify key `reduceMotion` of an object which has been already passed to a worklet.',
   ]);
