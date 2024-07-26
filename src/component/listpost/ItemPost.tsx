@@ -38,12 +38,6 @@ const ItemPost = memo(({ index, data, onrefresh, userId, onPressProfile, setShow
     const { creater, share_count, reaction, content, media, comment_count, create_at, id, like_count, share,emotion } = datas;
 console.log("emotion",datas);
 
-    useFocusEffect(
-        useCallback(() => {
-            const { creater, share_count, reaction, content, media, comment_count, create_at, id, like_count, share } = datas;
-        }, [datas])
-    );
-
     useEffect(() => {
         setRenderShare(false)
         if (share) {

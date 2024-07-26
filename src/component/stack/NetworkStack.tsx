@@ -1,12 +1,15 @@
 import 'react-native-gesture-handler';
-import React from "react";
+import React, { } from "react";
 
-import { Image, Pressable, StyleSheet, Text, View } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
-import { COLOR } from '../../constant/color';
+import { StyleSheet } from 'react-native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { NetworkRootStackParams,NetworkRootStackScreens } from './NetworkRootStackParams';
-
+import { NetworkRootStackParams, NetworkRootStackScreens } from './NetworkRootStackParams';
+import MessageScreen from '../../screens/message/MessageScreen';
+// @ts-ignore
+import {
+    ZegoUIKitPrebuiltCallWaitingScreen,
+    ZegoUIKitPrebuiltCallInCallScreen,
+  } from '@zegocloud/zego-uikit-prebuilt-call-rn';
 const Stack = createNativeStackNavigator<NetworkRootStackParams>();
 
 export default function NetworkStack(): React.JSX.Element {
@@ -27,11 +30,16 @@ export default function NetworkStack(): React.JSX.Element {
                     />
                 })
             }
+            <Stack.Screen name='MessageScreen' component={MessageScreen} options={{ headerShown: false }} />
+
+            <Stack.Screen name='ZegoUIKitPrebuiltCallWaitingScreen' component={ZegoUIKitPrebuiltCallWaitingScreen} options={{ headerShown: false }} />
+            <Stack.Screen name='ZegoUIKitPrebuiltCallInCallScreen' component={ZegoUIKitPrebuiltCallInCallScreen} options={{ headerShown: false }} />
+
         </Stack.Navigator>
     )
 }
 
 const styles = StyleSheet.create({
-    
-    
+
+
 })

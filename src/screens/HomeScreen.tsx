@@ -1,17 +1,17 @@
 import React, { useCallback, useRef, useState, useEffect } from 'react';
 import { StyleSheet, View, Animated, Image, Text, TouchableOpacity, ScrollView, ImageBackground, TouchableWithoutFeedback } from 'react-native';
-import ListStory from '../component/storys/ListStory';
-import ListPorts from '../component/listpost/ListPorts';
 import { useNavigation } from '@react-navigation/native';
-import { COLOR } from '../constant/color';
-import AntDesignIcon from 'react-native-vector-icons/AntDesign';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import { useMyContext } from '../component/navigation/UserContext';
-import TouchId from '../component/Modal/TouchId';
+import AntDesignIcon from 'react-native-vector-icons/AntDesign';
 import TouchID from 'react-native-touch-id';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+
+import ListStory from '../component/storys/ListStory';
+import ListPorts from '../component/listpost/ListPorts';
+import { COLOR } from '../constant/color';
+import { useMyContext } from '../component/navigation/UserContext';
+import TouchId from '../component/Modal/TouchId';
 import { NetworkRootStackEnum } from '../component/stack/NetworkRootStackParams';
-import FastImage from 'react-native-fast-image';
 import CaptionSlide from '../component/listpost/CaptionSlide';
 
 const HomeScreen = () => {
@@ -25,7 +25,6 @@ const HomeScreen = () => {
     const navigation = useNavigation();
     const { user } = useMyContext();
     const [visible, setVisible] = useState(false);
-    console.log("HomeScreen");
 
     const checkTouchIdLogin = () => {
         TouchID.isSupported()
@@ -201,6 +200,7 @@ const HomeScreen = () => {
                         onRefresh={onRefresh}
                     />
                 </View>
+            
             </View>
         </TouchableWithoutFeedback>
     );

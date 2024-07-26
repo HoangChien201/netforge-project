@@ -47,10 +47,7 @@ const ListMessageItem = ({ group }: { group: GroupChatType }) => {
         }
     }
     const onPress = () => {
-        //single
-        if (id_user) {
-
-            navigation.navigate('MessageScreen', {
+            navigation.navigate('MessageScreen',{
                 group_id: group.id,
                 fullname: name,
                 avatar: avatar,
@@ -58,18 +55,6 @@ const ListMessageItem = ({ group }: { group: GroupChatType }) => {
                 members:group.members
 
             })
-
-            return 
-        }
- 
-        //group
-        navigation.navigate('MessageScreen', {
-            group_id: group.id,
-            fullname: name,
-            avatar: avatar,
-            messages: group.messages,
-            members:group.members
-        })
     }
     const messageLastest = group.messages[0]
     const messageUnSeen =

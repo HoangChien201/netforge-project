@@ -1,19 +1,29 @@
-
 import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import React from 'react'
 import Icon from 'react-native-vector-icons/MaterialIcons'
 import { COLOR } from '../../constant/color'
 import { DateOfTimePost } from '../../format/DateOfTimePost'
 import { useNavigation } from '@react-navigation/native'
+import { NavigateToMessage } from '../message/NavigateToMessage'
+import { NetworkStackNavigationProp } from '../stack/NetworkRootStackParams'
 type Item = {
     notification: any
 }
 const ItemMessage:React.FC<Item> = ({ notification }) => {
-    const navigation = useNavigation();
+    const navigation:NetworkStackNavigationProp = useNavigation();
     const displayDate = DateOfTimePost(notification.data[0].timestamp);
+    function onPress(){
+        const userInfo=notification.data[0].userInfo
+        userInfo.id=userInfo.receiver
+        
+        NavigateToMessage(
+            userInfo,
+            navigation
+        )
+    }
     return (
         <TouchableOpacity style={styles.container} key={notification.idv4.toString()} 
-        onPress={()=> navigation.navigate('MessageStack')}
+        onPress={onPress}
         >
         <View style={styles.iconFriend} >
             <Image style={styles.avatar} source={{ uri: notification.data[0].userInfo.avatar }} />
@@ -136,7 +146,7 @@ const styles = StyleSheet.create({
         marginStart: 5
     },
     viewTime: {
-        flex: 0.5,
+        flex: 0.9,
         height:'100%'
     }
 })

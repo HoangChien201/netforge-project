@@ -9,8 +9,6 @@ import { useMyContext } from '../navigation/UserContext';
 
 const Reaction = memo(({ like_count, type, commentId, render, checkReaction, setCheckReaction }: {setCheckReaction:(Value:boolean)=>void,checkReaction?:boolean,type: number, commentId?: number,like_count?:number }) => {
     const [islike, setIsLike] = useState(false);
-    
-    
     const navigation = useNavigation();
     const { user } = useMyContext();
     const [numberLike, setNumberLike] = useState<number>(like_count);
@@ -132,7 +130,7 @@ const Reaction = memo(({ like_count, type, commentId, render, checkReaction, set
                             {ViewReaction(number, commentId)}
                         </View>
                     }
-                    <Text style={styles.text}>{numberLike === null ? (<View></View>) : format(numberLike)}</Text>
+                    <Text style={styles.text}>{numberLike === null ? 0 : numberLike}</Text>
                 </View>
 
 
@@ -162,15 +160,10 @@ const Reaction = memo(({ like_count, type, commentId, render, checkReaction, set
                             <TouchableOpacity key={index} style={{ paddingHorizontal: 5 }} onPress={() => {
                                 setNumber(item.type);
                                 setIsLike(false)
-                                if(item.Emoji){
-                                    numberLike === null ? setNumberLike(1) : setNumberLike(pre => parseInt(pre.toString()) + 0)
+                                
+                                    numberLike === null ? setNumberLike(1) : (numberLike == 0 && setNumberLike(pre=>pre+1) )
                                     number === null ? addLikeComment(commentId, item.type) : updateLike(commentId, item.type)
-                                }else{
-                                    number === null ? addLikeComment(commentId, item.type) : updateLike(commentId, item.type)
-                                    numberLike === null ? setNumberLike(1) : setNumberLike(pre => parseInt(pre.toString()) + 1)
-                                }
-                              
-                               
+                             
                             }}>
                                 <Image source={item.Emoji} style={{ width: 20, height: 20, marginVertical: 6 }} />
                             </TouchableOpacity>

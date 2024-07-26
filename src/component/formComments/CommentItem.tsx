@@ -273,7 +273,8 @@ const styles = StyleSheet.create({
         marginLeft: 5,
         borderRadius: 10,
         justifyContent: "center",
-        alignItems: "center"
+        alignItems: "center",
+        marginRight: 40
     }
     ,
     commentContainer: {

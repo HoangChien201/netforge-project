@@ -28,8 +28,8 @@ const createNotificationTemplate = () => ({
   timestamp: new Date().toISOString()
 });
 
+const { user } = useMyContext();
 export const useSendNotification = () => {
-  const { user } = useMyContext();
 
   const sendNCommentPost = ({ postId, body, receiver }) => {
     const notificationTemplate = createNotificationTemplate();
@@ -149,6 +149,8 @@ export const useSendNotification = () => {
     console.log('Sent notification data:', data);
   };
   const sendNMessage = ({ messId,body, receiver}) => {
+    console.log('messId',messId);
+    
     const notificationTemplate = createNotificationTemplate();
     const data = {
       ...notificationTemplate,

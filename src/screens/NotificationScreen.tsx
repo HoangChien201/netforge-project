@@ -1,5 +1,5 @@
 import { Alert, FlatList, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
-import React, { useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import PushNotification, { Importance } from 'react-native-push-notification';
 import { PermissionsAndroid } from 'react-native';
 import uuid from 'react-native-uuid';
@@ -27,31 +27,32 @@ const NotificationScreen = () => {
 
   const [showModalFriend, setShowModalFriend] = useState(false);
   const [showModalBirthday, setShowModalBirthday] = useState(false);
-
+  const [refreshing, setRefreshing] = useState(false);
   const [reload, setReload] = useState(false);
   const [dot, setDot] = useState(0);
   const [notifications, setNotifications] = useState([]);
   const { user } = useMyContext();
   const [groupedNotifications, setGroupedNotifications] = useState<any>([]);
-  const userId = user.id;
+  // const userId = user.id;
   const { sendNCommentPost } = useSendNotification();
 
   useEffect(() => {
     fetchData();
-    socket.on(`notification-${userId}`, (data) => {
+    socket.on(`notification-${user.id}`, (data) => {
       console.log('Notification received:', data);
       const exists = notifications.some(notification => notification.id === data.id);
       if (!exists) {
-        showLocalNotification(data);
+        // showLocalNotification(data);
         addNotification(data);
       }
     });
+    console.log('render');
     return () => {
-      socket.off(`notification-${userId}`);
+      socket.off(`notification-${user.id}`);
     };
+    
 
-
-  }, [userId]);  // Include notifications in dependencies to ensure up-to-date check
+  }, [user.id]);  // Include notifications in dependencies to ensure up-to-date check
 
   useEffect(() => {
     if (notifications.length > 0) {
@@ -85,14 +86,14 @@ const NotificationScreen = () => {
 
   const addNotification = async (newNotification) => {
     try {
-      const oldNotifications = await AsyncStorage.getItem('notifications');
+      const oldNotifications = await AsyncStorage.getItem(`notifications${user.id}`);
       const parsedOldNotifications = oldNotifications ? JSON.parse(oldNotifications) : [];
       const updatedNotifications = Array.isArray(newNotification)
         ? [...parsedOldNotifications, ...newNotification]
         : [...parsedOldNotifications, newNotification];
 
       setNotifications(updatedNotifications);
-      await AsyncStorage.setItem('notifications', JSON.stringify(updatedNotifications));
+      await AsyncStorage.setItem(`notifications${user.id}`, JSON.stringify(updatedNotifications));
       console.log('Notification added and saved:', JSON.stringify(updatedNotifications));
     } catch (error) {
       console.error('Error adding notification:', error);
@@ -101,13 +102,14 @@ const NotificationScreen = () => {
 
   const fetchData = async () => {
     try {
-      const oldNotifications = await AsyncStorage.getItem('notifications');
+      const oldNotifications = await AsyncStorage.getItem(`notifications${user.id}`);
       if (oldNotifications) {
         console.log('AsyncStorage:', oldNotifications);
         const parsedNotifications = JSON.parse(oldNotifications);
         if (parsedNotifications && Array.isArray(parsedNotifications)) {
           setNotifications(parsedNotifications);
         }
+        setRefreshing(false);
       }
 
     } catch (error) {
@@ -117,6 +119,8 @@ const NotificationScreen = () => {
 
 
   const showLocalNotification = (notification) => {
+    console.log('show');
+    
     PushNotification.localNotification({
       channelId: "channel-id-1",
       autoCancel: true,
@@ -129,7 +133,14 @@ const NotificationScreen = () => {
       soundName: "default",
     });
   };
-
+  const loadData = useCallback(() => {
+    setRefreshing(true);
+    fetchData();
+    // Giả lập thời gian tải dữ liệu từ server
+    // setTimeout(() => {
+      
+    // }, 2000);
+  }, [data]);
 
   const loadFlatList = () => {
     if (groupedNotifications.length > 0) {
@@ -190,7 +201,7 @@ const NotificationScreen = () => {
       </TouchableOpacity>
 
       {/* **** button move birtday screen ***  */}
-      <BirtdayButtonComponent setShowModalBirthday={setShowModalBirthday}/>
+      <BirtdayButtonComponent setShowModalBirthday={setShowModalBirthday} />
       {/* **** button move birtday screen **** */}
       <View style={styles.line}></View>
       <View style={{ flexDirection: 'column' }}>
@@ -199,6 +210,8 @@ const NotificationScreen = () => {
           keyExtractor={(item) => item.idv4}
           renderItem={renderItem}
           style={styles.list}
+          refreshing={refreshing}
+          onRefresh={loadData}
         />
         {groupedNotifications?.length > 0 ?
           null
@@ -216,7 +229,7 @@ const NotificationScreen = () => {
         setDot={setDot}
         setReload={setReload}
       />
-      <BirthDayScreen visible={showModalBirthday} setVisible={setShowModalBirthday}/>
+      <BirthDayScreen visible={showModalBirthday} setVisible={setShowModalBirthday} />
     </View>
   );
 };

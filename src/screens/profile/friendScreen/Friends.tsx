@@ -14,6 +14,8 @@ import { COLOR } from '../../../constant/color';
 import { NavigateToMessage } from '../../../component/message/NavigateToMessage';
 import { FriendType } from '../../../component/message/ModalNewMessage';
 import { NetworkStackNavigationProp } from '../../../component/stack/NetworkRootStackParams';
+import BottomDeleteFriend from './BottomDeleteFriend';
+import { login } from '../../../http/userHttp/user';
 type Friend = {
   friends: any,
   setFriends: () => void;
@@ -25,8 +27,9 @@ const Friends: React.FC<Friend> = () => {
   const [user2, setUser2] = useState<number>(0);
   const navigation: NavigationProp<ParamListBase> = useNavigation();
   const [friends, setFriends] = useState<Array<FriendType>>([]);
-
-  const getFriendList = async () => {
+  const [isVisible, setIsVisible] = useState(false);
+  const [data , setData] = useState();
+   const getFriendList = async () => {
     try {
       const result = await getFriends(2);
       if (result) {
@@ -68,10 +71,14 @@ const Friends: React.FC<Friend> = () => {
     }, navigation)
   }
   //navigate to message
-
+  const showBottomS =(data:any)=>{
+    setIsVisible(true)
+    setData(data)
+    
+  }
   return (
+    <View style={{flex:1}}>
     <ScrollView style={styles.container}>
-      
       {friends.map((friend: { user: { id:number; avatar: string; fullname: string } }) => (
         <TouchableOpacity key={friend.id.toString()} onPress={() => handleToFriendProfile(friend.user.id)}>
           <View style={styles.itemWA}>
@@ -91,7 +98,8 @@ const Friends: React.FC<Friend> = () => {
               {/* nếu là bạn của bạn bè thì đổi icon này thành icon add friend, còn xem bb của mình thì kh hiện icon ... 
                 nhấn vào dấu ... hiện sự lựa chọn là hủy kb,...
               */}
-              <TouchableOpacity style={styles.buttonAccept} >
+              <TouchableOpacity style={styles.buttonAccept}
+              onPress={()=>{showBottomS(friend.user)}}>
                 <AntDesignIcon name='ellipsis1' size={22} color={'#000'} />
               </TouchableOpacity>
             </View>
@@ -100,8 +108,11 @@ const Friends: React.FC<Friend> = () => {
         </TouchableOpacity>
       ))
       }
-      <DeleteFriend show={show} setShow={setShow} user2={user2} setFriends={setFriends} />
+
     </ScrollView >
+    {/* <DeleteFriend show={show} setShow={setShow} user2={user2} setFriends={setFriends} /> */}
+    <BottomDeleteFriend isVisible={isVisible} setIsVisible={setIsVisible} data={data} setFriends={setFriends} friends={friends}/>
+    </View>
   )
 }
 
@@ -110,7 +121,7 @@ export default Friends
 const styles = StyleSheet.create({
   container:{
     backgroundColor:"#fff",
-    paddingHorizontal:8
+    paddingHorizontal:8,
   },
   headerText: {
     marginStart: 10,

@@ -1,51 +1,65 @@
-import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
-import React, { useEffect, useState } from 'react'
+import { Image, RefreshControl, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import React, { useCallback, useEffect, useState } from 'react'
 import EmptyReq from './EmptyReq'
-import {cancelRequest} from '../../http/QuyetHTTP'
+import { cancelRequest } from '../../http/QuyetHTTP'
 import { useNavigation } from '@react-navigation/native';
+import { COLOR } from '../../constant/color';
 
-type Req ={
-    dataRequest:any, 
-    setDataRequest:(value:any)=>void, 
-    setReload:(value:any)=>void, 
-    setShowModalFriend:(value:any) => void,
+type Req = {
+    dataRequest: any,
+    setDataRequest: (value: any) => void,
+    setReload: (value: any) => void,
+    setShowModalFriend: (value: any) => void,
+    reload:any,
+    refreshing:any, setRefreshing:any
 }
-const RequestList:React.FC<Req> = ({ dataRequest, setDataRequest, setReload,setShowModalFriend }) => {
+const RequestList: React.FC<Req> = ({ dataRequest, setDataRequest, setReload, setShowModalFriend,refreshing, setRefreshing ,reload}) => {
     const navigation = useNavigation();
-const cancelReq = async (friendId: number)=>{
-    try {
-        await cancelRequest(friendId);
-        setDataRequest((prevData: any[]) => prevData.filter(friend => friend.user.id !== friendId));
-    } catch (error) {
-        console.log(error);
-        console.log(friendId);
-        
+    const cancelReq = async (friendId: number) => {
+        try {
+            await cancelRequest(friendId);
+            setDataRequest((prevData: any[]) => prevData.filter(friend => friend.user.id !== friendId));
+        } catch (error) {
+            console.log(error);
+            console.log(friendId);
+
+        }
     }
-}
-const openProfile = (id: any)=>{
-    const userId = id;
-    navigation.navigate('FriendProfile', {userId});
-    setShowModalFriend(false);
-}
+    const openProfile = (id: any) => {
+        const userId = id;
+        navigation.navigate('FriendProfile', { userId });
+        setShowModalFriend(false);
+    }
+    const loadData = useCallback(() => {
+        setRefreshing(true);
+        setReload((pre: any) =>!pre);
+    }, []);
     if (!dataRequest || dataRequest.length === 0) {
-        return <EmptyReq/>; // Hoặc hiển thị một thông báo khác tùy ý
+        return <EmptyReq />; // Hoặc hiển thị một thông báo khác tùy ý
     }
     return (
-        <View style={styles.container}>
-            {dataRequest.map((friend: { user: { id: React.Key | null | undefined | any; avatar: any; fullname: string | undefined |any } }) => (
-                
+        <ScrollView style={styles.container}
+        refreshControl={
+            <RefreshControl refreshing={refreshing} onRefresh={loadData} />
+        }
+        >
+            <View style={{ margin: 5 }}>
+                <Text style={{ color: COLOR.PrimaryColor, fontSize: 20, fontWeight: '500' }}>Lời mời đã gửi</Text>
+            </View>
+            {dataRequest.map((friend: { user: { id: React.Key | null | undefined | any; avatar: any; fullname: string | undefined | any } }) => (
+
                 <TouchableOpacity style={styles.itemWA} key={friend.user.id}
-                onPress={() => openProfile(friend.user.id)}
+                    onPress={() => openProfile(friend.user.id)}
                 >
                     <View style={styles.user}>
-                        {friend.user.avatar? <Image source={{uri: friend.user.avatar}} style={styles.avatarne}/>  : 
-                        <View style={{height:48, width:48, borderRadius:50, borderWidth:1,borderColor:'gray', backgroundColor:'#DDDDDD',marginStart:10,}}/>
+                        {friend.user.avatar ? <Image source={{ uri: friend.user.avatar }} style={styles.avatarne} /> :
+                            <View style={{ height: 48, width: 48, borderRadius: 50, borderWidth: 1, borderColor: 'gray', backgroundColor: '#DDDDDD', marginStart: 10, }} />
                         }
-                        
+
                         <Text style={styles.userName}>{friend.user.fullname}</Text>
                     </View>
                     <View style={styles.button}>
-                        <TouchableOpacity style={styles.buttonReject} onPress={()=>{
+                        <TouchableOpacity style={styles.buttonReject} onPress={() => {
                             cancelReq(friend.user.id)
                         }}>
                             <Text style={styles.textAccept}>Hủy bỏ</Text>
@@ -53,7 +67,7 @@ const openProfile = (id: any)=>{
                     </View>
                 </TouchableOpacity>
             ))}
-        </View>
+        </ScrollView>
     )
 }
 
@@ -121,11 +135,11 @@ const styles = StyleSheet.create({
         color: 'white',
         fontWeight: '500'
     },
-    avatarne:{
-        height:48,
-        width:48,
-        marginStart:10,
-        borderRadius:50
+    avatarne: {
+        height: 48,
+        width: 48,
+        marginStart: 10,
+        borderRadius: 50
     }
 
 

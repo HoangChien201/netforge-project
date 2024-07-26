@@ -1,5 +1,5 @@
-import { Image, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
-import React, { useEffect, useState } from 'react'
+import { Image, RefreshControl, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import React, { useCallback, useEffect, useState } from 'react'
 import Icon from 'react-native-vector-icons/AntDesign'
 import { useNavigation } from '@react-navigation/native';
 import { COLOR } from '../../constant/color'
@@ -7,46 +7,23 @@ import { cancelWaitAccept, acceptRequest, getRequest } from '../../http/QuyetHTT
 import EmptyWA from './EmptyWA'
 import { socket } from '../../http/SocketHandle';
 import { useMyContext } from '../navigation/UserContext';
-import {useSendNotification} from '../../constant/notify'
+import { useSendNotification } from '../../constant/notify'
 import { ProfileRootStackEnum } from '../stack/ProfileRootStackParams';
 type Wait = {
     dataWaitAccept: any,
     setDataWaitAccept: (value: any) => void,
     setShowModalFriend: (value: any) => void,
-    getWaitAcceptList: () => void
+    getWaitAcceptList: () => void,
+    reload:any, setReload:any,
+    refreshing:any, setRefreshing:any
 }
-const WaitAcceptList: React.FC<Wait> = ({ dataWaitAccept, setDataWaitAccept, setShowModalFriend, getWaitAcceptList }) => {
+const WaitAcceptList: React.FC<Wait> = ({ dataWaitAccept, setDataWaitAccept, setShowModalFriend ,reload, setReload,refreshing, setRefreshing}) => {
     const navigation = useNavigation();
-    const { user } = useMyContext();
-    const userId = user.id;
-    const [reload, setReload] = useState(false);
-    const {sendAcceptFriend} = useSendNotification();
-    // useEffect(() => {
-    //     getWaitAccept();
-    // }, [reload]);
-    // useEffect(() => {
-    //     socket.on(`notification-${userId}`, (data) => {
-    //         console.log('Notification received:', data);
-    //         if (data) {
-    //             setReload(prevState => !prevState)
-    //             console.log('oh');
-
-    //         }
-    //     });
-    //     return () => {
-    //         socket.off(`notification-${userId}`);
-    //     };
-    // }, [userId]);
-    // const getWaitAccept = async () => {
-    //     try {
-    //         const result = await getRequest();
-    //         //console.log('danh sách bạn bè chờ chấp nhận: ' + JSON.stringify(result));
-    //         setDataWaitAccept(result);
-    //         console.log('Accept: ' + JSON.stringify(result));
-    //     } catch (error) {
-    //         console.log(error);
-    //     }
-    // };
+    const { sendAcceptFriend } = useSendNotification();
+    const loadData = useCallback(() => {
+        setRefreshing(true);
+        setReload((pre: any) =>!pre);
+    }, []);
     const cancelReq = async (friendId: number) => {
         try {
             const result = await cancelWaitAccept(friendId);
@@ -64,7 +41,7 @@ const WaitAcceptList: React.FC<Wait> = ({ dataWaitAccept, setDataWaitAccept, set
             const result = await acceptRequest(friendId);
             if (result.status == 1) {
                 setDataWaitAccept(prevData => prevData.filter(friend => friend.user.id !== friendId));
-                const data ={
+                const data = {
                     friendId
                 }
                 sendAcceptFriend(data)
@@ -85,16 +62,24 @@ const WaitAcceptList: React.FC<Wait> = ({ dataWaitAccept, setDataWaitAccept, set
     }
     const handleToFriendProfile = (userId: any) => {
         navigation.navigate(ProfileRootStackEnum.FriendProfile, { userId });
-      };
+    };
     const renderList = (friends: any) => {
         if (!friends) {
             return <EmptyWA></EmptyWA>;
         }
         return (
-            <ScrollView style={styles.container}>
+            <ScrollView style={styles.container}
+                refreshControl={
+                    <RefreshControl refreshing={refreshing} onRefresh={loadData} />
+                }
+
+            >
+                <View style={{ margin: 5 }}>
+                    <Text style={{ color: COLOR.PrimaryColor, fontSize: 20, fontWeight: '500' }}>Lời mời kết bạn</Text>
+                </View>
                 {friends.map(friend => (
                     <TouchableOpacity style={styles.itemWA} key={friend.user.id}
-                    onPress={() => handleToFriendProfile(friend.user.id)}
+                        onPress={() => handleToFriendProfile(friend.user.id)}
                     >
                         <View style={styles.user}>
                             {friend.user.avatar ? <Image source={{ uri: friend.user.avatar }} style={styles.avatarne} /> :
