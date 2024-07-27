@@ -28,7 +28,7 @@ type Bpob = {
 }
 const Body: React.FC<Bpob> = ({ hiddenView, content, setContent, media, setMedia, permission, setPermission, setStatus, setShowPopup, friends, setFriends, setShowAI, imageUrl, emotions, setEmotions }) => {
     //const [media, setMedia] = useState([]);
-    
+
     const [playingVideo, setPlayingVideo] = useState(null);
     const [viewMore, setViewMore] = useState(false);
     const [uries, setUries] = useState<any>([]);
@@ -48,9 +48,15 @@ const Body: React.FC<Bpob> = ({ hiddenView, content, setContent, media, setMedia
             };
         }, [])
     );
-    useEffect(()=>{
+    useEffect(() => {
         console.log('emo', emotions);
-    },[emotions])
+    }, [emotions])
+    useEffect(()=>{
+        if(viewMore){
+            setCurrentIndex(0)
+        }
+    },[viewMore])
+
     useEffect(() => {
         //console.log('media:', JSON.stringify(media, null, 2));
         // const uris = media.map((file: fileType) => file.uri)
@@ -63,8 +69,8 @@ const Body: React.FC<Bpob> = ({ hiddenView, content, setContent, media, setMedia
         //     console.log('Added imageUrl to media paths:', media);
         // }
         console.log('total:', media);
-        setMediaLength(media.length);
         pushAImage();
+        setMediaLength(media.length);
     }, [imageUrl || media]);
     const pushAImage = () => {
         if (imageUrl) {
@@ -99,7 +105,7 @@ const Body: React.FC<Bpob> = ({ hiddenView, content, setContent, media, setMedia
         if (hiddenView == true) {
             return (
                 <View style={{ width: '100%', justifyContent: 'center', marginStart: 20 }}>
-                    <Text style={{ color: COLOR.PrimaryColor, fontSize: 16, fontWeight: "400" }}>Đã ẩn {mediaLength} tệp</Text>
+                    <Text style={{ color: COLOR.PrimaryColor, fontSize: 16, fontWeight: "400" }}>Đã ẩn hình ảnh</Text>
                 </View>
             )
         }
@@ -343,8 +349,15 @@ const Body: React.FC<Bpob> = ({ hiddenView, content, setContent, media, setMedia
     };
     // Media edit
     const switchMedia = (item: string | any[] | any) => {
-        if (!item || item.length === 0 || hiddenView == true) {
+        if (!item || item.length === 0) {
             return null;
+        }
+        if (hiddenView == true) {
+            return (
+                <View style={{ width: '100%', justifyContent: 'center', marginStart: 20 }}>
+                    <Text style={{ color: COLOR.PrimaryColor, fontSize: 16, fontWeight: "400" }}>Đã ẩn hình ảnh</Text>
+                </View>
+            )
         }
         if (item) {
             return (
@@ -407,16 +420,16 @@ const Body: React.FC<Bpob> = ({ hiddenView, content, setContent, media, setMedia
                 <USER setPermission={setPermission} />
                 {/*----------------------- danh sách media chia theo khung ----------------*/}
                 {/* ---------------------danh sách hiển thị theo list -------------------------*/}
-                {!emotions?
+                {!emotions ?
                     null
                     :
                     <View style={styles.emotions}>
                         <Text>{emotions.Emoji}</Text>
                         <Text style={{ color: 'black' }}> {emotions.title}</Text>
-                        <TouchableOpacity onPress={()=>{setEmotions(null)}}
-                        style={{marginStart:5}}
+                        <TouchableOpacity onPress={() => { setEmotions(null) }}
+                            style={{ marginStart: 5 }}
                         >
-                            <Icon name='delete' size={20} color={COLOR.PrimaryColor}/>
+                            <Icon name='delete' size={20} color={COLOR.PrimaryColor} />
                         </TouchableOpacity>
                     </View>
                 }
@@ -425,14 +438,17 @@ const Body: React.FC<Bpob> = ({ hiddenView, content, setContent, media, setMedia
                 {viewMore ?
                     <View >
                         {switchMedia(media)}
-                        {renderDots()}
-                        {!viewMore || media.length == 0 ?
+
+                        {!viewMore || media.length == 0 || hiddenView ?
                             null
                             :
-                            <TouchableOpacity style={styles.buttonCloseSwitch} onPress={() => { setViewMore(false) }}>
+                            <><TouchableOpacity style={styles.buttonCloseSwitch} onPress={() => { setViewMore(false) }}>
                                 {/* <Icon name='x' color={'#fff'} size={24} /> */}
                                 <Text style={{ color: COLOR.primary300, fontWeight: '400' }}>Đóng</Text>
                             </TouchableOpacity>
+                            {renderDots()}
+                            </>
+
                         }
                     </View>
                     :
@@ -456,11 +472,11 @@ const styles = StyleSheet.create({
         borderTopStartRadius: 20,
         borderTopEndRadius: 20,
     },
-    emotions:{
-        height:40,
-        width:'100%',
-        flexDirection:'row',
-        marginHorizontal:20
+    emotions: {
+        height: 40,
+        width: '100%',
+        flexDirection: 'row',
+        marginHorizontal: 20
     },
     hiddent: {
         height: '60%',

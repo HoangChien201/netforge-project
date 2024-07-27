@@ -32,7 +32,7 @@ const renderMedia: React.FC<renderMedia> = ({ images, media, setMedia, setShowMo
     if (hiddenView == true) {
         return (
             <View style={{ width: '100%', justifyContent: 'center', paddingBottom: 10 }}>
-                <Text style={{ color: COLOR.PrimaryColor, fontSize: 16, fontWeight: "400", marginStart:20 }}>Đã ẩn {mediaLength} tệp</Text>
+                <Text style={{ color: COLOR.PrimaryColor, fontSize: 16, fontWeight: "400", marginStart:20 }}>Đã ẩn hình ảnh</Text>
             </View>
         )
     }

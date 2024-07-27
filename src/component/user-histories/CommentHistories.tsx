@@ -55,7 +55,7 @@ const CommentHistories: React.FC<Comment> = ({ dataComment,load }) => {
                                     <Text style={styles.text}>bài viết</Text>
                                     <Text style={styles.text1}> của </Text>
                                     <Text style={styles.text1}>{item.posts.creater.fullname}</Text>
-                                    <Text style={styles.text1}>" {item.content} "</Text>
+                                    <Text style={styles.text1}> " {item.content} "</Text>
                                 </Text>
                                 <View style={{ width: 60, height: '100%', alignItems: 'flex-end' }}>
                                     <Text style={{ color: 'gray', fontSize: 12, marginTop: 30 }}>{GetTimeComment(item.create_at)} trước</Text>
