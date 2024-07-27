@@ -25,7 +25,10 @@ type routeType = RouteProp<{ params: { value: string } }, 'params'>
 export type RootStackParamList = {
 
 };
-const ManageNavigation: React.FC = () => {
+type Manager ={
+    screen:any
+}
+const ManageNavigation: React.FC<Manager> = ({screen}) => {
     const [showSplash, setShowSplash] = useState(true);
     const { user, setUser } = useMyContext();
     const [notifications, setNotifications] = useState([]);
@@ -150,6 +153,12 @@ const ManageNavigation: React.FC = () => {
             vibration: 300,
             playSound: true,
             soundName: "default",
+            userInfo: {
+                screen: "HomeScreen", // Thay thế bằng tên màn hình đích của bạn
+                params: {
+                    // Thêm bất kỳ tham số nào bạn cần để điều hướng
+                }
+            }
         });
 
     };
@@ -183,7 +192,7 @@ const ManageNavigation: React.FC = () => {
 
     return (
         <GestureHandlerRootView>
-            <NavigationContainer>
+            <NavigationContainer ref={screen}>
                 {/*ZegoCallInvitationDialog hiện dialog nhận cuộc gọi */}
                 <ZegoCallInvitationDialog />
                 {user ? <NetworkStack /> : <UserStack />}

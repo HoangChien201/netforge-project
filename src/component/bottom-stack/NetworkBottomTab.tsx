@@ -1,10 +1,10 @@
 import 'react-native-gesture-handler';
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState, useRef, useCallback } from "react";
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { NetworkRootBottomTabParams, NetworkRootBottomTabScreens } from "./NetworkRootBottomTabParams";
 import { Keyboard, Animated, Easing } from 'react-native';
 import { ZegoUIKitPrebuiltCallWaitingScreen, ZegoUIKitPrebuiltCallInCallScreen } from '@zegocloud/zego-uikit-prebuilt-call-rn';
-import { useIsFocused } from '@react-navigation/native';
+import { useFocusEffect, useIsFocused } from '@react-navigation/native';
 
 const Tab = createBottomTabNavigator<NetworkRootBottomTabParams>();
 
@@ -12,7 +12,8 @@ export default function NetworkBottomTab(): React.JSX.Element {
     const [keyboardVisible, setKeyboardVisible] = useState(false);
     const tabBarAnimation = useRef(new Animated.Value(1)).current; // Initial opacity 1 (visible)
 
-    useEffect(() => {
+    useFocusEffect(
+        useCallback(() => {
         const keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', () => {
             setKeyboardVisible(true);
             Animated.timing(tabBarAnimation, {
@@ -36,7 +37,8 @@ export default function NetworkBottomTab(): React.JSX.Element {
             keyboardDidHideListener.remove();
             keyboardDidShowListener.remove();
         };
-    }, []);
+    },[])
+);
 
     const isInCallScreen = useIsFocused();
     
