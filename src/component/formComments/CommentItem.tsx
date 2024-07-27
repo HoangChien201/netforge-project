@@ -180,7 +180,7 @@ const CommentItem = ({ comment, onReply, depth = 0, render, parent, setText, set
                              
                             </Pressable>
                             </View>
-                            <View style={{ marginTop: 5, alignItems: 'center',  bottom: comment.image && !comment.content && 10, marginBottom: comment.image && !comment.content && -10 }}>
+                            <View style={{ marginTop: 5, alignItems: 'center',  bottom: comment.image && !comment.content && 10, marginBottom: comment.image && !comment.content && -10, right: 15 }}>
                                     {comment.image ? (
                                         comment.image.endsWith('.mp4') ? (
                                             <Pressable style={{ width: 100, height: 150, }} onPress={() => handleImagePress(comment.image)} onLongPress={() => handleCommentPress()}>
@@ -283,7 +283,7 @@ const styles = StyleSheet.create({
     },
     userContainer: {
         flexDirection: 'row',
-        marginStart: 10
+        marginStart: 10,
 
     },
     avatar: {
