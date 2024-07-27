@@ -6,15 +6,15 @@ import { reaction } from '../../constant/emoji';
 import * as Animatable from 'react-native-animatable';
 import { addLikeComments, deleteLikeComments, updateLikeComment } from '../../http/TuongHttp';
 import { useMyContext } from '../navigation/UserContext';
-
-const Reaction = memo(({ like_count, type, commentId, render, checkReaction, setCheckReaction }: {setCheckReaction:(Value:boolean)=>void,checkReaction?:boolean,type: number, commentId?: number,like_count?:number }) => {
+import { useSendNotification } from '../../constant/notify';
+const Reaction = memo(({ like_count, type, commentId, render,Cmt,postId,userPostId, checkReaction, setCheckReaction }: {setCheckReaction:(Value:boolean)=>void,checkReaction?:boolean,type: number, commentId?: number,like_count?:number }) => {
     const [islike, setIsLike] = useState(false);
     const navigation = useNavigation();
     const { user } = useMyContext();
     const [numberLike, setNumberLike] = useState<number>(like_count);
     const [number, setNumber] = useState<number | null>(type);
     const animationRef = useRef(null);
-
+    const {sendNReactionComment} = useSendNotification()
     useLayoutEffect(() => {
         setNumber(type)
     }, [type])
@@ -36,6 +36,10 @@ const Reaction = memo(({ like_count, type, commentId, render, checkReaction, set
     const addLikeComment = async (commentId: number, type: number) => {
         try {
             const result = await addLikeComments(commentId, type);
+            //postId1,commentId, body, receiver,reactionType
+            if(userPostId.id != user.id){
+                sendNReactionComment({postId1: postId,commentId, body: Cmt.content, receiver:Cmt.user.id,reactionType:type})
+            }
             
             console.log('Thêm like thành công');
             console.log(result);

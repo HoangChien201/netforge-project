@@ -89,6 +89,7 @@ export const useSendNotification = () => {
     socket.emit('notification', data);
     console.log('Sent notification data:', data);
   };
+
   const sendNReactionComment = ({ postId1,commentId, body, receiver,reactionType }) => {
     const notificationTemplate = createNotificationTemplate();
     const data = {
