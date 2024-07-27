@@ -1,5 +1,5 @@
-import { StyleSheet, Text, View, Modal, TouchableOpacity, Dimensions, ScrollView } from 'react-native'
-import React, { useEffect, useMemo, useRef, useState } from 'react'
+import { StyleSheet, Text, View, Modal, TouchableOpacity, Dimensions, ScrollView, RefreshControl } from 'react-native'
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import CommentHistories from './CommentHistories'
 import LikeHistories from './LikeHistories'
 import Icon from 'react-native-vector-icons/AntDesign'
@@ -20,7 +20,8 @@ const Body: React.FC<BodyH> = ({ }) => {
     const navigation = useNavigation();
     const [load, setLoad] = useState(false);
     const [currentIndex, setCurrentIndex] = useState(0);
-    
+    const [refreshing, setRefreshing] = useState(false);
+
     function navigationScreen(screen: string) {
         navigation.navigate(`${screen}`)
     };
@@ -34,16 +35,21 @@ const Body: React.FC<BodyH> = ({ }) => {
             setDataLike([...likeComments, ...likePosts]);
             setDataComment(result.comments);
             setLoad(false);
+            setRefreshing(false)
         } catch (error) {
             console.log('Lỗi lấy useHistories: ' + error);
             setLoad(false);
+            setRefreshing(false)
         }
     };
 
     useEffect(() => {
         getData();
     }, []);
-
+    const loadData = useCallback(() => {
+        setRefreshing(true);
+        getData();
+    }, []);
     const handleIndexChanged = (index) => {
         setCurrentIndex(index);
     };
@@ -85,7 +91,11 @@ const Body: React.FC<BodyH> = ({ }) => {
                         <View style={styles.header}>
                             <Text style={styles.headerText}>Lịch sử thích</Text>
                         </View>
-                        <ScrollView style={styles.page}>
+                        <ScrollView style={styles.page}
+                            refreshControl={
+                                <RefreshControl refreshing={refreshing} onRefresh={loadData} />
+                            }
+                        >
                             {memoizedLikeHistories}
                         </ScrollView>
                     </View>
@@ -94,7 +104,11 @@ const Body: React.FC<BodyH> = ({ }) => {
                         <View style={styles.header}>
                             <Text style={styles.headerText}>Lịch sử bình luận</Text>
                         </View>
-                        <ScrollView style={styles.page}>
+                        <ScrollView style={styles.page}
+                            refreshControl={
+                                <RefreshControl refreshing={refreshing} onRefresh={loadData} />
+                            }
+                        >
                             {memoizedCommentHistories}
                         </ScrollView>
                     </View>
@@ -128,6 +142,7 @@ const styles = StyleSheet.create({
         borderRadius: 10,
         backgroundColor: COLOR.primary300,
         flexDirection: 'row',
+        margin:5
     },
     commentButton: {
         height: 32,

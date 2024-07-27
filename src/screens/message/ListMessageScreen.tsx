@@ -6,9 +6,9 @@ import { useMyContext } from '../../component/navigation/UserContext'
 import { getGroupsAPI } from '../../http/ChienHTTP'
 import { socket } from '../../http/SocketHandle'
 import { StackNavigationProp } from '@react-navigation/stack'
-import { MessageRootStackParams } from '../../component/stack/MessageRootStackParams'
 import { RouteProp, useIsFocused, useNavigation, useRoute } from '@react-navigation/native'
 import ModalNewMessage from '../../component/message/ModalNewMessage'
+import { onUserLogin, onUserLogout } from '../call-video/Utils'
 
 const ListMessageScreen = () => {
   const {user}=useMyContext()
@@ -39,7 +39,6 @@ const ListMessageScreen = () => {
     } 
   }
 
-  
   return (
     
     <View style={styles.container}>
@@ -60,6 +59,7 @@ const ListMessageScreen = () => {
             keyExtractor={(item)=>item.id.toString()}
             showsVerticalScrollIndicator={false}
           />
+          
       </View>
       <ModalNewMessage visible={visibleModalNewMessage} setVisible={SetVisibleModalNewMessage}/>
     </View>

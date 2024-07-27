@@ -5,6 +5,7 @@ import { getFriends } from '../../http/QuyetHTTP';
 import { COLOR } from '../../constant/color';
 import { TextInput } from 'react-native-gesture-handler';
 import { useFocusEffect } from '@react-navigation/native';
+import  Icon  from 'react-native-vector-icons/AntDesign';
 
 type Props = {
     content: any,
@@ -31,7 +32,7 @@ const TextArea: React.FC<Props> = ({ content, setContent, friends, setFriends })
             const status = 2;
             const result = await getFriends(status);
             setValue(result);
-            console.log('lũ bạn:' + JSON.stringify(result));
+            //console.log('lũ bạn:' + JSON.stringify(result));
         } catch (error) {
             console.log('getFriends error:' + error);
             throw error;
@@ -139,13 +140,14 @@ const TextArea: React.FC<Props> = ({ content, setContent, friends, setFriends })
                 style={styles.input}
                 placeholder=" Nhập @tên để gắn thẻ bạn bè"
             />
+
         </View>
     );
 };
 
 const styles = StyleSheet.create({
     container: {
-        padding: 10,
+        padding: 5,
     },
     textArea: {
         height: 150,
@@ -194,7 +196,7 @@ const styles = StyleSheet.create({
         zIndex: 999,
         marginTop: 85,
         height: 160,
-        backgroundColor: '#FFF4E9'
+        backgroundColor: 'white'
     }
 });
 

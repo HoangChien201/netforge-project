@@ -9,7 +9,7 @@ import { useMyContext } from '../navigation/UserContext';
 import ModalShare from '../share-post/ModalShare';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-const ActionBar = memo(({onPressProfile, like_count,type, postId, comment_count, share_count,checkLike,setCheckLike, share }: {setCheckLike:(Value:boolean)=>void,checkLike?:boolean,type: number, postId?: number, comment_count?: number, share_count?: number,like_count?:number,share?: number }) => {
+const ActionBar = memo(({ creater,onPressProfile, like_count,type, postId, comment_count, share_count,checkLike,setCheckLike, share }: {setCheckLike:(Value:boolean)=>void,checkLike?:boolean,type: number, postId?: number, comment_count?: number, share_count?: number,like_count?:number,share?: number,creater?:any }) => {
     const [islike, setIsLike] = useState(false);
     const [shares, setShare] = useState(share);
     const navigation = useNavigation();
@@ -147,7 +147,7 @@ const ActionBar = memo(({onPressProfile, like_count,type, postId, comment_count,
                     <AntDesignIcon name='sharealt' size={22} color='#000' style={styles.comment} />
                     <Text style={styles.text}>{share_count ? share_count : 0}</Text>
                 </TouchableOpacity>
-                <ModalShare isVisible={isModalVisible} onClose={toggleModal} idPost={postId} share= {shares}/>
+                <ModalShare creater={creater} isVisible={isModalVisible} onClose={toggleModal} idPost={postId} share= {shares}/>
             </View>
             {(islike && checkLike)  &&
            

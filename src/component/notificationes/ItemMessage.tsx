@@ -1,4 +1,3 @@
-
 import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import React from 'react'
 import Icon from 'react-native-vector-icons/MaterialIcons'
@@ -147,7 +146,7 @@ const styles = StyleSheet.create({
         marginStart: 5
     },
     viewTime: {
-        flex: 0.5,
+        flex: 0.9,
         height:'100%'
     }
 })

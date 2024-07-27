@@ -1,20 +1,18 @@
 import React, { useCallback, useRef, useState, useEffect } from 'react';
 import { StyleSheet, View, Animated, Image, Text, TouchableOpacity, ScrollView, ImageBackground, TouchableWithoutFeedback } from 'react-native';
-import { useNavigation, useIsFocused, useFocusEffect } from '@react-navigation/native';
+import { useNavigation } from '@react-navigation/native';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import AntDesignIcon from 'react-native-vector-icons/AntDesign';
 import TouchID from 'react-native-touch-id';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { flatMap } from 'lodash';
-
 
 import ListStory from '../component/storys/ListStory';
 import ListPorts from '../component/listpost/ListPorts';
 import { COLOR } from '../constant/color';
-import AntDesignIcon from 'react-native-vector-icons/AntDesign';
 import { useMyContext } from '../component/navigation/UserContext';
 import TouchId from '../component/Modal/TouchId';
-import { onUserLogin, onUserLogout } from '../screens/call-video/Utils'
 import { NetworkRootStackEnum } from '../component/stack/NetworkRootStackParams';
+import CaptionSlide from '../component/listpost/CaptionSlide';
 
 const HomeScreen = () => {
     const initialData = [{ key: 'stories' }, { key: 'posts' }];
@@ -27,24 +25,6 @@ const HomeScreen = () => {
     const navigation = useNavigation();
     const { user } = useMyContext();
     const [visible, setVisible] = useState(false);
-
-    // // login zegoCloud để thực hiện cuộc gọi
-    // useEffect(() => {
-    //     const initializeCallService = async () => {
-    //         try {
-    //             await onUserLogin(user.id, user.fullname, user.avatar);
-    //             console.log("User logged in successfully on HomeScreen:", user.id, user.fullname);
-    //         } catch (error) {
-    //             console.error("Error logging in user on HomeScreen:", error);
-    //         }
-    //     };
-    //     initializeCallService();
-    //     return () => {
-    //         onUserLogout();
-    //         console.log("User logged out on HomeScreen");
-    //     };
-    // }, [user.id, user.fullname]);
-    // //end zegoCloud
 
     const checkTouchIdLogin = () => {
         TouchID.isSupported()
@@ -68,39 +48,11 @@ const HomeScreen = () => {
                 console.log('TouchID not supported', error);
             });
     };
+
     useEffect(() => {
         checkTouchIdLogin();
     }, []);
-    useEffect(() => {
-        setHidden(false)
-    }, [prevScrollY]);
-    useFocusEffect(
-        useCallback(() => {
-            setHidden(false);
-        }, [])
-    );
-    useFocusEffect(
-        React.useCallback(() => {
-            // Khi màn hình được focus, hiển thị lại bottom-tab
-            navigation.getParent()?.setOptions({
-                tabBarStyle: {
-                    position: 'absolute',
-                    backgroundColor: '#1F1F2F',
-                    margin: 20,
-                    borderRadius: 15,
-                },
-            });
 
-            // Cleanup function khi màn hình mất focus
-            return () => {
-                navigation.getParent()?.setOptions({
-                    tabBarStyle: {
-                        display: 'none',
-                    },
-                });
-            };
-        }, [navigation])
-    );
     useEffect(() => {
         const listener = tabBarTranslateY.addListener(({ value }) => {
             navigation.getParent()?.setOptions({
@@ -156,10 +108,6 @@ const HomeScreen = () => {
             if (item.key === 'stories' || item.key.startsWith('new_post')) {
                 return (
                     <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-                        {/* <View style={{marginLeft:10,position:'absolute'}}>
-                <Text style={{color:'#000',fontWeight:'bold'}}>Bảng tin</Text>
-            </View> */}
-
                         <View style={styles.storyContainer}>
                             <View style={styles.borderContainer}>
                                 <ImageBackground source={{ uri: user.avatar }} style={styles.imageBackground} imageStyle={styles.imageStyle}>
@@ -214,7 +162,6 @@ const HomeScreen = () => {
                     <View style={styles.headerRight}>
                         <TouchableOpacity style={{ alignItems: 'center' }} onPress={handlerClick}>
                             <Image source={{ uri: user.avatar }} style={styles.userAvatar} />
-                            {/* <Text style={styles.userName}>{user.fullname}</Text> */}
                         </TouchableOpacity>
                     </View>
                     {hidden && (
@@ -231,6 +178,11 @@ const HomeScreen = () => {
                             </View>
                         </View>
                     )}
+
+                </View>
+                <View style={{ marginHorizontal: 12,  flexDirection: 'row', alignItems: 'center' }}>
+
+                    <CaptionSlide userimge = {user.avatar} />
                 </View>
                 <View style={styles.contentContainer}>
                     <Animated.FlatList
@@ -247,6 +199,7 @@ const HomeScreen = () => {
                         onRefresh={onRefresh}
                     />
                 </View>
+            
             </View>
         </TouchableWithoutFeedback>
     );
@@ -281,8 +234,8 @@ const styles = StyleSheet.create({
     },
     headerTitle: {
         color: COLOR.PrimaryColor,
-        fontSize: 24,
-        fontWeight: '700',
+        fontSize: 20,
+        fontWeight: 'bold',
     },
     hiddenMenu: {
         zIndex: 9999,

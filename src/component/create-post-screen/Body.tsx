@@ -22,15 +22,19 @@ type Bpob = {
     setFriends: (value: any) => void,
     setShowAI: (value: any) => void,
     imageUrl: any,
-    hiddenView: any
+    hiddenView: any,
+    setEmotions: (value: any) => void,
+    emotions: any
 }
-const Body: React.FC<Bpob> = ({ hiddenView,content, setContent, media, setMedia, permission, setPermission, setStatus, setShowPopup, friends, setFriends, setShowAI, imageUrl }) => {
+const Body: React.FC<Bpob> = ({ hiddenView, content, setContent, media, setMedia, permission, setPermission, setStatus, setShowPopup, friends, setFriends, setShowAI, imageUrl, emotions, setEmotions }) => {
     //const [media, setMedia] = useState([]);
+    
     const [playingVideo, setPlayingVideo] = useState(null);
     const [viewMore, setViewMore] = useState(false);
     const [uries, setUries] = useState<any>([]);
     const [currentIndex, setCurrentIndex] = useState(0);
     const [swiperKey, setSwiperKey] = useState(0);
+    const [mediaLength, setMediaLength] = useState(0);
     //const [image, setImage] = useState('https://oaidalleapiprodscus.blob.core.windows.net/private/org-xPqRqNjg7rhJctL5M8HgZuVW/user-7aLXFzohKCutW9RLwKG25OxW/img-RFhiItBxeWWhJB6zSWW1fTyj.png?st=2024-07-12T10%3A13%3A46Z&se=2024-07-12T12%3A13%3A46Z&sp=r&sv=2023-11-03&sr=b&rscd=inline&rsct=image/png&skoid=6aaadede-4fb3-4698-a8f6-684d7786b067&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2024-07-11T23%3A21%3A08Z&ske=2024-07-12T23%3A21%3A08Z&sks=b&skv=2023-11-03&sig=B9SF8LnWfmVdzVpLZWRMcxdoSdMcL0xIDszFD6hkK7c%3D')
     const handleEmojiSelect = (emoji: any) => {
         setContent(content + emoji);
@@ -44,6 +48,9 @@ const Body: React.FC<Bpob> = ({ hiddenView,content, setContent, media, setMedia,
             };
         }, [])
     );
+    useEffect(()=>{
+        console.log('emo', emotions);
+    },[emotions])
     useEffect(() => {
         //console.log('media:', JSON.stringify(media, null, 2));
         // const uris = media.map((file: fileType) => file.uri)
@@ -56,7 +63,7 @@ const Body: React.FC<Bpob> = ({ hiddenView,content, setContent, media, setMedia,
         //     console.log('Added imageUrl to media paths:', media);
         // }
         console.log('total:', media);
-
+        setMediaLength(media.length);
         pushAImage();
     }, [imageUrl || media]);
     const pushAImage = () => {
@@ -86,8 +93,15 @@ const Body: React.FC<Bpob> = ({ hiddenView,content, setContent, media, setMedia,
     };
     // View danh sách media
     const renderMedia = (item: any) => {
-        if (!item || item.length === 0 || hiddenView==true) {
+        if (!item || item.length === 0) {
             return null;
+        }
+        if (hiddenView == true) {
+            return (
+                <View style={{ width: '100%', justifyContent: 'center', marginStart: 20 }}>
+                    <Text style={{ color: COLOR.PrimaryColor, fontSize: 16, fontWeight: "400" }}>Đã ẩn {mediaLength} tệp</Text>
+                </View>
+            )
         }
         const numMedia = item.length;
         if (numMedia === 1) {
@@ -329,13 +343,13 @@ const Body: React.FC<Bpob> = ({ hiddenView,content, setContent, media, setMedia,
     };
     // Media edit
     const switchMedia = (item: string | any[] | any) => {
-        if (!item || item.length === 0 || hiddenView==true) {
+        if (!item || item.length === 0 || hiddenView == true) {
             return null;
         }
         if (item) {
             return (
                 <SwiperFlatList
-                key={swiperKey} 
+                    key={swiperKey}
                     data={item}
                     renderItem={({ item }) => (
                         <View style={styles.imageContainer} key={item.toString()}>
@@ -389,17 +403,30 @@ const Body: React.FC<Bpob> = ({ hiddenView,content, setContent, media, setMedia,
     };
     return (
         <View style={[styles.container]} >
-            <View style={[styles.header,hiddenView == true && styles.hiddent]}>
+            <View style={[styles.header, hiddenView == true && styles.hiddent]}>
                 <USER setPermission={setPermission} />
                 {/*----------------------- danh sách media chia theo khung ----------------*/}
                 {/* ---------------------danh sách hiển thị theo list -------------------------*/}
+                {!emotions?
+                    null
+                    :
+                    <View style={styles.emotions}>
+                        <Text>{emotions.Emoji}</Text>
+                        <Text style={{ color: 'black' }}> {emotions.title}</Text>
+                        <TouchableOpacity onPress={()=>{setEmotions(null)}}
+                        style={{marginStart:5}}
+                        >
+                            <Icon name='delete' size={20} color={COLOR.PrimaryColor}/>
+                        </TouchableOpacity>
+                    </View>
+                }
 
                 <TEXTAREA content={content} setContent={setContent} setFriends={setFriends} friends={friends} />
                 {viewMore ?
                     <View >
                         {switchMedia(media)}
                         {renderDots()}
-                        {!viewMore || media.length==0?
+                        {!viewMore || media.length == 0 ?
                             null
                             :
                             <TouchableOpacity style={styles.buttonCloseSwitch} onPress={() => { setViewMore(false) }}>
@@ -413,7 +440,7 @@ const Body: React.FC<Bpob> = ({ hiddenView,content, setContent, media, setMedia,
                         {renderMedia(media)}
                     </View>
                 }
-                <OPTIONS onSelectEmoji={handleEmojiSelect} onSelectMedia={handleMediaSelect} setShowAI={setShowAI} imageUrl={imageUrl} />
+                <OPTIONS onSelectEmoji={handleEmojiSelect} onSelectMedia={handleMediaSelect} setShowAI={setShowAI} imageUrl={imageUrl} emotions={emotions} setEmotions={setEmotions} />
             </View>
         </View>
     );
@@ -429,7 +456,13 @@ const styles = StyleSheet.create({
         borderTopStartRadius: 20,
         borderTopEndRadius: 20,
     },
-    hiddent:{
+    emotions:{
+        height:40,
+        width:'100%',
+        flexDirection:'row',
+        marginHorizontal:20
+    },
+    hiddent: {
         height: '60%',
     },
     buttonCloseSwitch: {

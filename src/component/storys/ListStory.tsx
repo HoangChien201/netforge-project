@@ -7,9 +7,13 @@ import ItemStory from './ItemStory';
 
 const ListStory = ({ onrefresh }) => {
   const [data, setData] = useState([]);
+  const [postss, setPostID] = useState([]);
   const flatRef = useRef(null);
   const [index, setIndex] = useState(0);
   const { width, height } = Dimensions.get('screen');
+
+
+  
 
   useEffect(() => {
     if (data.length > 0) {
@@ -24,7 +28,7 @@ const ListStory = ({ onrefresh }) => {
       if (response.length > 0) {
         const createrMap = new Map();
         response.forEach((post) => {
-          if (post.type === 2) {
+          if (post.type === 2 || post.type === 3) {
             const createdAtDate = new Date(post.create_at);
             const currentDate = new Date();
             const differenceInMilliseconds = currentDate - createdAtDate;
@@ -70,7 +74,7 @@ const ListStory = ({ onrefresh }) => {
   useFocusEffect(
     useCallback(() => {
       getAllPost();
-    }, [getAllPost])
+    }, [getAllPost,onrefresh])
   );
 
  

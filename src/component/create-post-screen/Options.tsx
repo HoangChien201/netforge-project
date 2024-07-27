@@ -1,12 +1,12 @@
-import React, { useState, useCallback, useEffect } from 'react';
+import React, { useState, useCallback, useEffect, useRef } from 'react';
 import { StyleSheet, TouchableOpacity, View, Image, Modal, FlatList, Text } from 'react-native';
 import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
 import EmojiList from './EmojiList';
+import Emotions from './Emotions';
 import { COLOR } from '../../constant/color';
-import ICON from 'react-native-vector-icons/AntDesign'
-import ImagePicker from 'react-native-image-picker';
+import IconAnt from 'react-native-vector-icons/AntDesign'
 import { useNavigation } from '@react-navigation/native';
-import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
+import Swiper from 'react-native-swiper';
 
 export type fileType = {
     fileName: string,
@@ -17,14 +17,17 @@ type Op = {
     onSelectMedia: (value: any) => void,
     onSelectEmoji: (value: any) => void,
     setShowAI: (value: any) => void,
-    imageUrl: any
+    imageUrl: any,
+    setEmotions: (value: any) => void,
+    emotions: any
 }
 
-const Options:React.FC<Op> = ({ onSelectMedia, onSelectEmoji,setShowAI,imageUrl }) => {
+const Options: React.FC<Op> = ({ onSelectMedia, onSelectEmoji, setShowAI, imageUrl, emotions, setEmotions }) => {
     const navigation = useNavigation();
     const [showEmojiModal, setShowEmojiModal] = useState(false);
-    
-    useEffect(()=>{
+    const [currentIndex, setCurrentIndex] = useState(0);
+    const swiperRef = useRef(null);
+    useEffect(() => {
 
         //openLibrary();
 
@@ -74,7 +77,11 @@ const Options:React.FC<Op> = ({ onSelectMedia, onSelectEmoji,setShowAI,imageUrl 
         onSelectEmoji(emoji);
         //setShowEmojiModal(false);
     };
+    const handleEmotionSelect = (item: any) => {
+        setEmotions(item);
+        setShowEmojiModal(false);
 
+    };
     /*
     phu update
     */
@@ -82,6 +89,16 @@ const Options:React.FC<Op> = ({ onSelectMedia, onSelectEmoji,setShowAI,imageUrl 
         navigation.navigate('LiveStack' as never);
     };
     //
+
+    const handleIndexChanged = (index) => {
+        setCurrentIndex(index);
+    };
+
+    const handleButtonPress = (index) => {
+        if (swiperRef.current) {
+            swiperRef.current.scrollBy(index - currentIndex, true);
+        }
+    };
 
     return (
         <View style={styles.container}>
@@ -101,7 +118,7 @@ const Options:React.FC<Op> = ({ onSelectMedia, onSelectEmoji,setShowAI,imageUrl 
                 {/* <Image style={styles.icon} source={require('../../media/quyet_icon/smile_p.png')} /> */}
                 <Text style={{ fontSize: 18, fontWeight: 'bold', color: COLOR.PrimaryColor }}>AI</Text>
                 {imageUrl ?
-                    <View style={{height:6,width:6, position:'absolute', top:2, end:2, backgroundColor:'red',borderRadius:50}}></View>
+                    <View style={{ height: 6, width: 6, position: 'absolute', top: 2, end: 2, backgroundColor: 'red', borderRadius: 50 }}></View>
                     :
                     null
                 }
@@ -115,14 +132,51 @@ const Options:React.FC<Op> = ({ onSelectMedia, onSelectEmoji,setShowAI,imageUrl 
             {/* phu update */}
             <Modal visible={showEmojiModal} animationType="slide" transparent={true}>
                 <View style={styles.modalContainer}>
+
+                    <View style={styles.modalContent}>
+                        <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 10, marginBottom: -5 }}>
+                            <TouchableOpacity
+                                style={{ marginHorizontal: 5, padding: 5, backgroundColor: COLOR.primary300, borderRadius: 10, alignItems: 'center', justifyContent: 'center' }}
+                                onPress={() => { handleButtonPress(0) }}
+                            >
+                                <Text style={styles.closeButton}>Cảm xúc</Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity
+                                style={{ marginHorizontal: 5, padding: 5, backgroundColor: COLOR.primary300, borderRadius: 10, alignItems: 'center', justifyContent: 'center' }}
+                                onPress={() => { handleButtonPress(1) }}
+                            >
+                                <Text style={styles.closeButton}>Biểu tượng</Text>
+                            </TouchableOpacity>
+                        </View>
+                        <TouchableOpacity onPress={() => setShowEmojiModal(false)}
+                            style={{ position: 'absolute', end: 8, top: 5 }}
+                        >
+                            <IconAnt name='close' size={24} color='#000'/>
+                        </TouchableOpacity>
+                        <Swiper
+                            showsButtons={false}
+                            ref={swiperRef}
+                            loop={false}
+                            style={{ marginTop: -5 }}
+                            onIndexChanged={handleIndexChanged}
+                        >
+                            <Emotions onSelectEmotion={handleEmotionSelect} />
+                            <EmojiList onSelectEmoji={handleEmojiSelect} />
+                        </Swiper>
+
+                    </View>
+                </View>
+            </Modal>
+            {/* <Modal visible={showEmojiModal} animationType="slide" transparent={true}>
+                <View style={styles.modalContainer}>
                     <View style={styles.modalContent}>
                         <TouchableOpacity onPress={() => setShowEmojiModal(false)}>
                             <Text style={styles.closeButton}>Đóng</Text>
                         </TouchableOpacity>
-                        <EmojiList onSelectEmoji={handleEmojiSelect} />
+                        <Emotions onSelectEmotion={handleEmojiSelect} />
                     </View>
                 </View>
-            </Modal>
+            </Modal> */}
         </View>
     );
 };
@@ -175,7 +229,7 @@ const styles = StyleSheet.create({
     },
     modalContent: {
         width: '90%',
-        height: '30%',
+        height: '50%',
         backgroundColor: 'white',
         borderRadius: 10,
         padding: 10,

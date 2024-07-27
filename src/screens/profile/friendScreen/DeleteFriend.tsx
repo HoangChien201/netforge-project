@@ -6,9 +6,11 @@ type Mo = {
   show: boolean;
   setShow: (value: any) => void;
   user2: number;
-  setFriends: () => void;
+  setFriends: (value:any) => void;
+  name:any,
+  setDeleted:(value:any) =>void
 }
-const DeleteFriend: React.FC<Mo> = ({ show, setShow, user2 ,setFriends}) => {
+const DeleteFriend: React.FC<Mo> = ({ show, setShow, user2 ,setFriends,name,setDeleted}) => {
   const { user } = useMyContext();
   const deleteF = async (id: number) => {
     const user1 = Number(user.id);
@@ -19,6 +21,7 @@ const DeleteFriend: React.FC<Mo> = ({ show, setShow, user2 ,setFriends}) => {
         setShow(false);
         setFriends((prevFriends) => prevFriends.filter(friend => friend.user.id !== user2));
         console.log('đã xóa idol :' + user2);
+        setDeleted(pre =>!pre);
       }
       
       
@@ -39,7 +42,7 @@ const DeleteFriend: React.FC<Mo> = ({ show, setShow, user2 ,setFriends}) => {
       <View style={styles.modalBackground}>
         <View style={styles.modalContainer}>
           <Text style={styles.title}>Xác nhận</Text>
-          <Text style={styles.message}>Bạn có chắc chắn muốn xóa bạn bè?</Text>
+          <Text style={styles.message}>Xóa bạn bè với {name}?</Text>
           <View style={styles.buttonContainer}>
             <TouchableOpacity style={styles.button} onPress={() => setShow(false)}>
               <Text style={styles.buttonText}>Hủy</Text>

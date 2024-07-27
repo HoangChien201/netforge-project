@@ -57,4 +57,5 @@ PushNotification.configure({
    */
   requestPermissions: Platform.OS === 'ios'
 });
+
 AppRegistry.registerComponent(appName, () => App);
