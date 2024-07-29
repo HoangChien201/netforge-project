@@ -39,17 +39,21 @@ export default Emotions
 
 const styles = StyleSheet.create({
   container:{
-    flex:1
+    flex:1,
+    marginTop:10
   },
   emoji: {
     fontSize: 24,
+    color:'white',
+    marginStart:10
   },
   listContainer: {
     marginTop:16
   },
   title: {
-    fontSize: 20,
-    marginStart: 5
+    fontSize: 22,
+    marginStart: 10,
+    color:'black'
   },
   emotionItem: {
     flexDirection: 'row',

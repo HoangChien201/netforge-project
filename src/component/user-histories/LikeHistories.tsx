@@ -62,7 +62,7 @@ const LikeHistories: React.FC<Like> = ({ dataLike, load }) => {
 
     const renderItem = (item: { reaction: any, posts: { id: number }, creater: { fullname: string } }, index: { toString: () => React.Key | null | undefined; }) => {
         const { text, iconName, iconColor, linkImage } = getReactionDetails(item.reaction);
-        const postId = item.posts?.id;
+        const postId = item.posts ? item.posts.id : item.id;
 
         return (
             <TouchableOpacity style={styles.itemContainer} key={index.toString()}
@@ -76,8 +76,8 @@ const LikeHistories: React.FC<Like> = ({ dataLike, load }) => {
                     {item.posts ? (
                         <Text numberOfLines={2} ellipsizeMode="tail" >
                             <Text style={styles.text}>Bạn đã bày tỏ </Text>
-                            <Text style={styles.text}>{text}</Text>
-                            <Text style={styles.text1}>bài viết</Text>
+                            <Text style={styles.text1}>{text}</Text>
+                            <Text style={styles.text}>bài viết</Text>
                             <Text style={styles.text}> của </Text>
                             <Text style={styles.text1}>{item.posts?.creater.fullname}</Text>
                         </Text>
@@ -87,7 +87,7 @@ const LikeHistories: React.FC<Like> = ({ dataLike, load }) => {
                             <Text style={styles.text1}>{text}</Text>
                             <Text style={styles.text}>bình luận</Text>
                             <Text style={styles.text}> của </Text>
-                            <Text style={styles.text1}>{item.posts?.creater.fullname}</Text>
+                            <Text style={styles.text1}>{item?.user.fullname}</Text>
                         </Text>
                     )}
                 </View>

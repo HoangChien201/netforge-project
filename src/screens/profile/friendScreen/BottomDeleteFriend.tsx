@@ -1,9 +1,11 @@
 import { StyleSheet, Text, View, Button, TouchableOpacity, Image } from 'react-native';
 import React, { useEffect, useMemo, useRef, useState } from 'react';
-import BottomSheet, { BottomSheetView } from '@gorhom/bottom-sheet';
+import BottomSheet, { BottomSheetBackdrop, BottomSheetView } from '@gorhom/bottom-sheet';
 import { COLOR } from '../../../constant/color';
 import Icon from 'react-native-vector-icons/AntDesign';
 import DeleteFriend from './DeleteFriend';
+import { NavigateToMessage } from '../../../component/message/NavigateToMessage';
+import { NavigationProp, ParamListBase, useNavigation } from '@react-navigation/native';
 type Bottom = {
   isVisible: boolean, setIsVisible: (value: boolean) => void, data: any,
   setFriends: (value: any) => void,
@@ -16,6 +18,7 @@ const BottomDeleteFriend: React.FC<Bottom> = ({ isVisible, setIsVisible, data, s
   const [user2, setUser2] = useState<number>(0);
   const [name, setName] = useState('');
   const [deteted, setDeleted] = useState(false);
+  const navigation: NavigationProp<ParamListBase> = useNavigation();
   useEffect(() => {
     if (isVisible) {
       bottomSheetRef.current?.snapToIndex(0);
@@ -35,6 +38,23 @@ const BottomDeleteFriend: React.FC<Bottom> = ({ isVisible, setIsVisible, data, s
   useEffect(() => {
     handleClosePress()
   }, [deteted])
+    //navigate to message
+    function IconMessageOnPressHandle(user:{fullname:string,avatar:string,id:number}) {
+      const { fullname, avatar, id } = user
+      NavigateToMessage({
+        fullname,
+        avatar,
+        id: id
+      }, navigation)
+    };
+    const renderBackdrop = (props) => (
+      <BottomSheetBackdrop
+        {...props}
+        disappearsOnIndex={-1}
+        appearsOnIndex={2}
+        pressBehavior="close"
+      />
+    );
   return (
     <>
 
@@ -43,6 +63,7 @@ const BottomDeleteFriend: React.FC<Bottom> = ({ isVisible, setIsVisible, data, s
           ref={bottomSheetRef}
           snapPoints={snapPointsE}
           enablePanDownToClose={true}
+          backdropComponent={renderBackdrop}
           onClose={() => setIsVisible(false)} // Set visibility to false when the sheet is closed
         >
           <BottomSheetView
@@ -59,7 +80,9 @@ const BottomDeleteFriend: React.FC<Bottom> = ({ isVisible, setIsVisible, data, s
                 }
                 <Text style={{ flex: 4, fontSize: 16, color: 'black', fontWeight: '400' }}>{data.fullname}</Text>
               </View>
-              <TouchableOpacity style={styles.itemButton}>
+              <TouchableOpacity style={styles.itemButton}
+              onPress={IconMessageOnPressHandle.bind(this,data)}
+              >
                 <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }} >
                   <Icon name='message1' size={24} color={COLOR.PrimaryColor1} style={{ padding: 8 }} />
                 </View>

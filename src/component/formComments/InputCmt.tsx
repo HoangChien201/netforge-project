@@ -133,7 +133,7 @@ const InputCmt = ({ fetchComments, onMediaSelected, parent = null , postId, text
         }
     }
     return (
-        <KeyboardAvoidingView style={{
+        <View style={{
             flex: 1,
             position: 'absolute',
             bottom: 0,
@@ -196,7 +196,7 @@ const InputCmt = ({ fetchComments, onMediaSelected, parent = null , postId, text
                     </TouchableOpacity>
                 </View>
             </View>
-        </KeyboardAvoidingView>
+        </View>
     )
 }
 
