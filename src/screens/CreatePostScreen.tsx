@@ -77,7 +77,10 @@ const CreatePostScreen = memo(() => {
         [
           {
             text: 'Giữ lại',
-            style: 'cancel',
+            onPress: () => {
+              //clear();
+              navigation.goBack();
+            },
           },
           {
             text: 'Xóa bỏ',
@@ -302,15 +305,17 @@ const handleKeyboardHide = useCallback(() => {
     });
     setHiddenView(false)
 }, []);
-useEffect(() => {
+useFocusEffect(
+  useCallback(() => {
   // Lắng nghe sự kiện hiển thị và ẩn bàn phím
   const keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', handleKeyboardShow);
   const keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', handleKeyboardHide);
   return () => {
-      keyboardDidShowListener.remove();
-      keyboardDidHideListener.remove();
+    keyboardDidShowListener.remove();
+    keyboardDidHideListener.remove();
   };
-}, [handleKeyboardShow, handleKeyboardHide]);
+}, [handleKeyboardShow, handleKeyboardHide]),
+);
   return (
     <KeyboardAvoidingView style={styles.container}>
       <Loading isLoading={isLoading} />

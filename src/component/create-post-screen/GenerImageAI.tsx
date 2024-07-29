@@ -5,6 +5,7 @@ import FastImage from 'react-native-fast-image';
 import { COLOR } from '../../constant/color';
 import Loading from '../../component/Modal/Loading';
 import ICON from 'react-native-vector-icons/AntDesign'
+import { useFocusEffect } from '@react-navigation/native';
 type AI = {
   showAI: any,
   setShowAI: (value: any) => void,
@@ -43,15 +44,17 @@ const GenerImageAI: React.FC<AI> = ({ showAI, setShowAI, imageUrl, setImageUrl }
 
     setHiddenView(false)
   }, []);
-  useEffect(() => {
-    // Lắng nghe sự kiện hiển thị và ẩn bàn phím
-    const keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', handleKeyboardShow);
-    const keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', handleKeyboardHide);
-    return () => {
-      keyboardDidShowListener.remove();
-      keyboardDidHideListener.remove();
-    };
-  }, [handleKeyboardShow, handleKeyboardHide]);
+  useFocusEffect(
+    useCallback(() => {
+      // Lắng nghe sự kiện hiển thị và ẩn bàn phím
+      const keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', handleKeyboardShow);
+      const keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', handleKeyboardHide);
+      return () => {
+        keyboardDidShowListener.remove();
+        keyboardDidHideListener.remove();
+      };
+    }, [handleKeyboardShow, handleKeyboardHide]),
+  );
 
   const generImage = async () => {
     if (!textInputValue) {
@@ -63,7 +66,7 @@ const GenerImageAI: React.FC<AI> = ({ showAI, setShowAI, imageUrl, setImageUrl }
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "Authorization": "Bearer",
+          "Authorization": "Bearer sk-proj-FXl9zJprWkg2zN8uG9HIT3BlbkFJb8528aJjnN2erR2rYaXh",
         },
         body: JSON.stringify({
           prompt: textInputValue,
@@ -76,6 +79,7 @@ const GenerImageAI: React.FC<AI> = ({ showAI, setShowAI, imageUrl, setImageUrl }
         const jsonResponse = await response.json();
         const generatedImageUrl = jsonResponse.data[0].url;
         setImage(generatedImageUrl);
+        setTextInputValue('')
         console.log('res nè: ', jsonResponse);
         console.log('ảnh nè: ', generatedImageUrl);
 
@@ -94,15 +98,12 @@ const GenerImageAI: React.FC<AI> = ({ showAI, setShowAI, imageUrl, setImageUrl }
     setShowAI(false)
   }
   const useImage = () => {
-    if (imageUrl) {
-      Alert.alert('ảnh đã được sử dụng'
-      )
-    } else {
-      setImageUrl(image);
-      setTimeout(() => {
-        setShowAI(false)
-      }, 500);
-    }
+    setImageUrl(image);
+    setTimeout(() => {
+      setShowAI(false)
+      setImage('');
+    }, 500);
+
 
   }
   const deleteImage = () => {
@@ -120,6 +121,7 @@ const GenerImageAI: React.FC<AI> = ({ showAI, setShowAI, imageUrl, setImageUrl }
             onPress: () => {
               setImage('');
               setImageUrl('');
+              setTextInputValue('')
               setTimeout(() => {
                 setShowAI(false);
               }, 500);
@@ -131,6 +133,7 @@ const GenerImageAI: React.FC<AI> = ({ showAI, setShowAI, imageUrl, setImageUrl }
           onDismiss: () => {
             setImage('');
             setImageUrl('');
+            setTextInputValue('')
             setTimeout(() => {
               setShowAI(false);
             }, 500);
@@ -151,7 +154,7 @@ const GenerImageAI: React.FC<AI> = ({ showAI, setShowAI, imageUrl, setImageUrl }
       return null;
     }
     return (
-      <Animated.View style={{ transform: [{ translateY: slideAnim }], height:120 }}>
+      <Animated.View style={{ transform: [{ translateY: slideAnim }], height: 120 }}>
         <Text style={styles.textEx}>Từ khóa gợi ý </Text>
         <View style={styles.example}>
           {data.map((item) => (
@@ -253,7 +256,7 @@ export default GenerImageAI;
 
 const styles = StyleSheet.create({
   container: {
-    height:'100%'
+    height: '100%'
   },
   contentContainer: {
     backgroundColor: COLOR.primary300,

@@ -117,11 +117,6 @@ const Options: React.FC<Op> = ({ onSelectMedia, onSelectEmoji, setShowAI, imageU
             <TouchableOpacity style={styles.button} onPress={() => setShowAI(true)}>
                 {/* <Image style={styles.icon} source={require('../../media/quyet_icon/smile_p.png')} /> */}
                 <Text style={{ fontSize: 18, fontWeight: 'bold', color: COLOR.PrimaryColor }}>AI</Text>
-                {imageUrl ?
-                    <View style={{ height: 6, width: 6, position: 'absolute', top: 2, end: 2, backgroundColor: 'red', borderRadius: 50 }}></View>
-                    :
-                    null
-                }
 
             </TouchableOpacity>
             {/* phu update */}
@@ -238,7 +233,6 @@ const styles = StyleSheet.create({
     closeButton: {
         fontSize: 18,
         fontWeight: 'bold',
-        marginBottom: 10,
         alignSelf: 'flex-end',
         color: COLOR.PrimaryColor,
     },
