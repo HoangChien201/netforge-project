@@ -51,7 +51,6 @@ const LoginScreen = () => {
                             color: "#000",
                             fontWeight: "bold",
                             fontSize: 20,
-                            paddingLeft: 30,
                             textAlign:'center'
                         }}>Đăng nhập</Text>
                     </View>
