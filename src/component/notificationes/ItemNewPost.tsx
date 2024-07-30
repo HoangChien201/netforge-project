@@ -5,18 +5,20 @@ import Icon from 'react-native-vector-icons/MaterialIcons'
 import { COLOR } from '../../constant/color'
 import { DateOfTimePost } from '../../format/DateOfTimePost'
 import { useNavigation } from '@react-navigation/native';
+import { CommentsScreenNavigationProp } from '../stack/NetworkRootStackParams'
 type Item = {
     notification: any
 }
 const ItemNewPost:React.FC<Item> = ({ notification }) => {
-    const navigation = useNavigation();
+    const navigation:CommentsScreenNavigationProp = useNavigation();
+    const postId = notification?.data[0].postId || notification?.data[0].postId1
     function navigationScreen(screen: string) {
         navigation.navigate(`${screen}`)
     }
     const displayDate = DateOfTimePost(notification.data[0].timestamp);
     return (
         <TouchableOpacity style={styles.container} key={notification.idv4.toString()} 
-        onPress={()=> navigation.navigate('HomeScreen')}
+        onPress={() => navigation.navigate('CommentsScreen', { postId })}
         >
         <View style={styles.iconFriend} >
             <Image style={styles.avatar} source={{ uri: notification.data[0].userInfo.avatar }} />
@@ -111,17 +113,17 @@ const styles = StyleSheet.create({
         overflow:'hidden', 
     },
     textUser_Post: {
-        fontSize: 16,
-        fontWeight: '600',
+        fontSize: 15,
+        fontWeight: '500',
         fontStyle: "normal",
         color: 'black',
 
     },
     text1: {
-        fontSize: 13,
-        fontWeight: '400',
+        fontSize: 15,
+        fontWeight: '500',
         fontStyle: "normal",
-        color: 'black',
+        color: COLOR.PrimaryColor,
         marginEnd:5
     },
 

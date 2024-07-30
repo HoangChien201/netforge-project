@@ -1,24 +1,50 @@
-
 import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import React from 'react'
-import Icon from 'react-native-vector-icons/FontAwesome'
+import Icon from 'react-native-vector-icons/AntDesign'
 import { COLOR } from '../../constant/color'
 import { DateOfTimePost } from '../../format/DateOfTimePost'
-import { useNavigation } from '@react-navigation/native'
+import PushNotification from 'react-native-push-notification';
+import { useNavigation } from '@react-navigation/native';
 import { navigationRef } from '../navigation/NavigationRef'
+import { CommentsScreenNavigationProp } from '../stack/NetworkRootStackParams'
+
+
 type Item = {
     notification: any
 }
-const ItemBirth: React.FC<Item> = ({ notification }) => {
-    const navigation = useNavigation();
+const ItemLikeComment: React.FC<Item> = ({ notification }) => {
+    const navigation:CommentsScreenNavigationProp = useNavigation();
     function navigationScreen(screen: string) {
         navigation.navigate(`${screen}`)
     }
-    const postId = notification.id
+    const reaction = notification.data[0].reaction.type
     const displayDate = DateOfTimePost(notification.data[0].timestamp);
+    const postId = notification?.data[0].postId || notification?.data[0].postId1
+    const log = () => {
+        console.log(notification , postId);
+
+    }
+    const getReactionDetails = (reaction: any) => {
+        switch (reaction) {
+            case 1:
+                return { text: "thích ", iconName: "like1", iconColor: '#0000FF', linkImage: require("../../media/Dicons/thumb-up.png") };
+            case 2:
+                return { text: "ha ha ", iconName: "heart", iconColor: '#FF0000', linkImage: require("../../media/Dicons/happy-face.png") };
+            case 3:
+                return { text: "thương thương ", iconName: "meho", iconColor: '#FFFF00', linkImage: require("../../media/Dicons/smile.png") };
+            case 4:
+                return { text: "yêu thích ", iconName: "dislike1", iconColor: '#FF7F00', linkImage: require("../../media/Dicons/heartF.png") };
+            case 5:
+                return { text: "tức giận ", iconName: "question", iconColor: 'blue', linkImage: require("../../media/Dicons/wow.png") };
+            default:
+                return { text: "Tức giận ", iconName: "question", iconColor: 'blue', linkImage: require("../../media/Dicons/angry.png") };
+        }
+    };
+    const { text, iconName, iconColor, linkImage } = getReactionDetails(reaction);
     return (
-        <TouchableOpacity style={styles.container} key={notification.idv4.toString()}
-            onPress={() => navigationRef.navigate('NotificationScreen')}
+        <TouchableOpacity style={styles.container} key={notification.idv4.toString()} 
+           onPress={() => navigation.navigate('CommentsScreen', { postId })}
+            //onPress={log}
         >
             <View style={styles.iconFriend} >
                 <Image style={styles.avatar} source={{ uri: notification.data[0].userInfo.avatar }} />
@@ -37,11 +63,10 @@ const ItemBirth: React.FC<Item> = ({ notification }) => {
                     :
                     null
                 }
-                <Icon style={styles.iconHeart} name='birthday-cake' size={18} color={COLOR.PrimaryColor} />
+                <Image source={linkImage} style={styles.iconHeart} />
             </View>
             <View style={styles.text}>
                 <Text >
-                    <Text style={styles.textUser_Post}>Hôm nay là sinh nhật của  </Text>
                     <Text style={styles.textUser_Post} numberOfLines={2} >{notification.data[0].userInfo.fullname}</Text>
                     {notification.data[1] ?
                         <Text style={styles.textUser_Post}>, {notification.data[1].userInfo.fullname}</Text>
@@ -53,8 +78,10 @@ const ItemBirth: React.FC<Item> = ({ notification }) => {
                         :
                         null
                     }
+                    <Text style={styles.textUser_Post}> đã bày tỏ cảm xúc bình luận </Text>
+
                 </Text>
-                <Text>{notification.data[0].body}</Text>
+                <Text style={styles.text1} numberOfLines={1} ellipsizeMode="tail"  >" {notification.data[0].body} "</Text>
             </View>
             <View style={styles.viewTime}>
                 <Text style={styles.textTime}>{displayDate}</Text>
@@ -64,7 +91,7 @@ const ItemBirth: React.FC<Item> = ({ notification }) => {
     )
 }
 
-export default ItemBirth
+export default ItemLikeComment
 
 const styles = StyleSheet.create({
     container: {

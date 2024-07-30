@@ -29,7 +29,7 @@ const ItemPost = memo(({ data, setShowModalEdit, setSelectedId, setShowDelete })
     }, [data])
 
     const { creater, share_count, reaction, content, media, comment_count, create_at, id, like_count, share, emotion } = datas;
-    console.log("emotion", datas);
+    //console.log("emotion", datas);
 
     useEffect(() => {
         setRenderShare(false)
@@ -116,7 +116,7 @@ const ItemPost = memo(({ data, setShowModalEdit, setSelectedId, setShowDelete })
         setShowModalEdit(true);
 
         hiddenMenu1();
-        setHidden(false);
+        //setHidden(false);
 
     };
 
@@ -125,7 +125,7 @@ const ItemPost = memo(({ data, setShowModalEdit, setSelectedId, setShowDelete })
         setShowDelete(true);
 
         hiddenMenu1();
-        setHidden(false);
+        //setHidden(false);
     };
 
     return (
