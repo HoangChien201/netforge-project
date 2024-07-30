@@ -13,8 +13,8 @@ type Suggest = {
   setData: () => void,
 }
 const SuggestFriends: React.FC<Suggest> = ({ data, setData }) => {
-  const snapPoints = useMemo(() => ['20%', '50%', '100%'], []);
-  const snapPointsE = useMemo(() => ['15%'], []);
+  const snapPoints = useMemo(() => ['10%', '100%'], []);
+  const snapPointsE = useMemo(() => ['10%'], []);
   const bottomSheetRef = useRef<BottomSheet>(null);
   const [textReqState, setTextReqState] = useState({});
   const [disabledButtons, setDisabledButtons] = useState({});

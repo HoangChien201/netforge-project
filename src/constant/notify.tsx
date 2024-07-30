@@ -1,9 +1,10 @@
 import uuid from 'react-native-uuid';
 import { socket } from '../http/SocketHandle';
 import { useMyContext } from '../component/navigation/UserContext';
-import React from 'react';
+import React, { useCallback, useEffect } from 'react';
 import { number } from 'yup';
 import Friend from '../component/scanQR-modal/Friend';
+import { useFocusEffect } from '@react-navigation/native';
 
 const createNotificationTemplate = () => ({
   id: uuid.v4(),
@@ -26,7 +27,7 @@ const createNotificationTemplate = () => ({
     type: null
   },
   navigate: {
-    screen: 'HomeScreen',
+    screen: null,
     params: null
   },
   timestamp: new Date().toISOString()
@@ -40,7 +41,7 @@ export const useSendNotification = () => {
     const data = {
       ...notificationTemplate,
       type: 2,
-      postId,
+      postId:postId,
       title: `${user.fullname} đã bình luận bài viết`,
       body,
       userInfo: {
@@ -50,8 +51,8 @@ export const useSendNotification = () => {
         avatar: user.avatar,
       },
       navigate: {
-        screen: 'HomeScreen',
-        params: null
+        screen: 'CommentsScreen',
+        params: Number(postId)
       },
     };
     socket.emit('notification', data);
@@ -62,7 +63,7 @@ export const useSendNotification = () => {
     const data = {
       ...notificationTemplate,
       type: 2,
-      postId1,
+      postId1:postId1,
       commentId,
       title: `${user.fullname} đã trả lời bình luận `,
       body,
@@ -73,8 +74,8 @@ export const useSendNotification = () => {
         avatar: user.avatar,
       },
       navigate: {
-        screen: 'HomeScreen',
-        params: null
+        screen: 'CommentsScreen',
+        params: Number(postId1)
       },
     };
     socket.emit('notification', data);
@@ -85,7 +86,7 @@ export const useSendNotification = () => {
     const data = {
       ...notificationTemplate,
       type: 1,
-      postId,
+      postId:postId,
       title: `${user.fullname} bày tỏ cảm xúc với bài viết `,
       body,
       userInfo: {
@@ -98,8 +99,8 @@ export const useSendNotification = () => {
         type: reactionType
       },
       navigate: {
-        screen: 'HomeScreen',
-        params: null
+        screen: 'CommentsScreen',
+        params: Number(postId)
       },
     };
     socket.emit('notification', data);
@@ -109,8 +110,8 @@ export const useSendNotification = () => {
     const notificationTemplate = createNotificationTemplate();
     const data = {
       ...notificationTemplate,
-      type: 1,
-      postId1,
+      type: 10,
+      postId1:postId1,
       commentId,
       title: `${user.fullname} đã bày tỏ cảm xúc với bình luận `,
       body,
@@ -124,8 +125,8 @@ export const useSendNotification = () => {
         type: reactionType
       },
       navigate: {
-        screen: 'HomeScreen',
-        params: null
+        screen: 'CommentsScreen',
+        params: Number(postId1)
       },
     };
     socket.emit('notification', data);
@@ -136,7 +137,7 @@ export const useSendNotification = () => {
     const data = {
       ...notificationTemplate,
       type: 4,
-      postId,
+      postId:postId,
       title: `${user.fullname} đã tạo bài viết mới `,
       body,
       userInfo: {
@@ -146,8 +147,8 @@ export const useSendNotification = () => {
         multiple: true
       },
       navigate: {
-        screen: 'HomeScreen',
-        params: null
+        screen: 'CommentsScreen',
+        params: Number(postId)
       },
     };
     socket.emit('notification', data);
@@ -169,7 +170,7 @@ export const useSendNotification = () => {
         avatar: user.avatar,
       },
       navigate: {
-        screen: 'FriendScreen',
+        screen: 'NotificationScreen',
         params: null
       },
     };
@@ -194,8 +195,7 @@ export const useSendNotification = () => {
 
       },
       navigate: {
-        screen: 'MessageScreen',
-        params: null
+        screen: 'ListMessageScreen',
       },
 
     };
@@ -207,7 +207,7 @@ export const useSendNotification = () => {
     const data = {
       ...notificationTemplate,
       type: 5,
-      postId,
+      postId:postId,
       title: `${user.fullname} đã chia sẻ bài viết `,
       body,
       userInfo: {
@@ -218,8 +218,8 @@ export const useSendNotification = () => {
 
       },
       navigate: {
-        screen: 'HomeScreen',
-        params: null
+        screen: 'CommentsScreen',
+        params: Number(postId)
       },
 
     };
@@ -250,7 +250,7 @@ export const useSendNotification = () => {
     const data = {
       ...notificationTemplate,
       type: 8,
-      friendId,
+      friendId:user.id,
       title: `${user.fullname} đã chấp nhận lời mời kết bạn!`,
       body: "",
       userInfo: {
@@ -261,7 +261,7 @@ export const useSendNotification = () => {
       },
       navigate: {
         screen: 'FriendScreen',
-        params: null
+        params: user.id
       },
     };
     socket.emit('notification', data);
@@ -282,8 +282,8 @@ export const useSendNotification = () => {
         avatar: user.avatar,
       },
       navigate: {
-        screen: 'HomeScreen',
-        params: null
+        screen: 'CommentsScreen',
+        params: Number(postId)
       },
     };
     socket.emit('notification', data);

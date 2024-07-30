@@ -26,7 +26,7 @@ const renderMedia: React.FC<renderMedia> = ({ images, media, setMedia, setShowMo
     };
     if (!images || images.length == 0) {
         return (
-            <Text>không có ảnh</Text>
+            null
         );
     }
     if (hiddenView == true) {

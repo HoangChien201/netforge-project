@@ -3,6 +3,7 @@ import { StyleSheet, View, TextInput, Text, FlatList, Image, ToastAndroid } from
 import { MentionInput, MentionSuggestionsProps, replaceMentionValues } from 'react-native-controlled-mentions';
 import { COLOR } from '../../constant/color';
 import { getFriends } from '../../http/QuyetHTTP'
+import { removeDiacritics } from '../message/format/Diacritics';
 interface User {
     id: string;
     fullname: string;
@@ -60,13 +61,22 @@ const TextArea: React.FC<Props> = ({ content, setContent, friends, setFriends })
         }
         const idsToExclude = mentions.map(mention => Number(mention.id)); // Chuyển đổi id trong mentions thành số
 
+        // const suggestions = value.filter(user => {
+        //     const userId = Number(user.user.id); // Chuyển đổi id của user thành số
+        //     return (
+        //         user.user.fullname.toLowerCase().includes(keyword.toLowerCase()) &&
+        //         !idsToExclude.includes(userId)
+        //     );
+        // });
         const suggestions = value.filter(user => {
             const userId = Number(user.user.id); // Chuyển đổi id của user thành số
+            const normalizedFullname = removeDiacritics(user.user.fullname).toLowerCase();
+            const normalizedKeyword = removeDiacritics(keyword).toLowerCase();
             return (
-                user.user.fullname.toLowerCase().includes(keyword.toLowerCase()) &&
-                !idsToExclude.includes(userId)
+              normalizedFullname.includes(normalizedKeyword) &&
+              !idsToExclude.includes(userId)
             );
-        });
+          })
 
         return (
             <FlatList
@@ -130,7 +140,7 @@ const TextArea: React.FC<Props> = ({ content, setContent, friends, setFriends })
 const styles = StyleSheet.create({
     container: {
         padding: 10,
-        zIndex:999,
+        zIndex:99999,
     },
     textArea: {
         height: 150,
@@ -170,8 +180,7 @@ const styles = StyleSheet.create({
     },
     flatList: {
         position: 'absolute',
-        zIndex: 999,
-        marginTop: -110,
+        marginTop: 50,
         height: 300
     }
 });

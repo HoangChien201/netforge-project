@@ -5,7 +5,8 @@ import { getFriends } from '../../http/QuyetHTTP';
 import { COLOR } from '../../constant/color';
 import { TextInput } from 'react-native-gesture-handler';
 import { useFocusEffect } from '@react-navigation/native';
-import  Icon  from 'react-native-vector-icons/AntDesign';
+import Icon from 'react-native-vector-icons/AntDesign';
+import { removeDiacritics } from '../message/format/Diacritics';
 
 type Props = {
     content: any,
@@ -75,13 +76,22 @@ const TextArea: React.FC<Props> = ({ content, setContent, friends, setFriends })
         }
         const idsToExclude = mentions.map(mention => Number(mention.id)); // Chuyển đổi id trong mentions thành số
 
+        // const suggestions = value.filter(user => {
+        //     const userId = Number(user.user.id); // Chuyển đổi id của user thành số
+        //     return (
+        //         user.user.fullname.toLowerCase().includes(keyword.toLowerCase()) &&
+        //         !idsToExclude.includes(userId)
+        //     );
+        // });
         const suggestions = value.filter(user => {
             const userId = Number(user.user.id); // Chuyển đổi id của user thành số
+            const normalizedFullname = removeDiacritics(user.user.fullname).toLowerCase();
+            const normalizedKeyword = removeDiacritics(keyword).toLowerCase();
             return (
-                user.user.fullname.toLowerCase().includes(keyword.toLowerCase()) &&
+                normalizedFullname.includes(normalizedKeyword) &&
                 !idsToExclude.includes(userId)
             );
-        });
+        })
         return (
             <FlatList
                 style={styles.flatList}
