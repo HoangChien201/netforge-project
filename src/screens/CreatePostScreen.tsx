@@ -16,11 +16,13 @@ import { useSendNotification } from '../constant/notify'
 import GenerImageAI from '../component/create-post-screen/GenerImageAI'
 import { useFocusEffect, useIsFocused } from '@react-navigation/native'
 import { useNavigation } from '@react-navigation/native'
+import { useSelector } from 'react-redux'
+import { RootState } from '../component/store/store'
 const CreatePostScreen = memo(() => {
   const [status, setStatus] = useState('');
   const [showPopup, setShowPopup] = useState(false);
   const [isError, setIsError] = useState(false);
-  const { user } = useMyContext();
+  const user = useSelector((state : RootState)=>state.user.user)
   const [friends, setFriends] = useState([]);
   const [content, setContent] = useState('');
   // const [tags, setTags] = useState([]);

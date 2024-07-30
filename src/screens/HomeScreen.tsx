@@ -13,6 +13,8 @@ import { useMyContext } from '../component/navigation/UserContext';
 import TouchId from '../component/Modal/TouchId';
 import { NetworkRootStackEnum } from '../component/stack/NetworkRootStackParams';
 import CaptionSlide from '../component/listpost/CaptionSlide';
+import { useSelector } from 'react-redux';
+import { RootState } from '../component/store/store';
 
 const HomeScreen = () => {
     const initialData = [{ key: 'stories' }, { key: 'posts' }];
@@ -23,9 +25,12 @@ const HomeScreen = () => {
     const [hidden, setHidden] = useState(false);
     const [prevScrollY, setPrevScrollY] = useState(0);
     const navigation = useNavigation();
-    const { user } = useMyContext();
+    const user = useSelector((state : RootState)=>state.user.user)
     const [visible, setVisible] = useState(false);
 
+
+    console.log("userne",user);
+    
     const checkTouchIdLogin = () => {
         TouchID.isSupported()
             .then(async biometryType => {
@@ -110,7 +115,7 @@ const HomeScreen = () => {
                     <ScrollView horizontal showsHorizontalScrollIndicator={false}>
                         <View style={styles.storyContainer}>
                             <View style={styles.borderContainer}>
-                                <ImageBackground source={{ uri: user.avatar }} style={styles.imageBackground} imageStyle={styles.imageStyle}>
+                                <ImageBackground source={{ uri: user?.data?.avatar }} style={styles.imageBackground} imageStyle={styles.imageStyle}>
                                     <TouchableOpacity
                                         style={styles.avt1}
                                         onPress={() => {
@@ -131,7 +136,7 @@ const HomeScreen = () => {
             }
             return null;
         },
-        [refreshing, navigation, user.avatar]
+        [refreshing, navigation, user?.avatar]
     );
 
     const handlerClick = () => {
@@ -161,7 +166,7 @@ const HomeScreen = () => {
                     </View>
                     <View style={styles.headerRight}>
                         <TouchableOpacity style={{ alignItems: 'center' }} onPress={handlerClick}>
-                            <Image source={{ uri: user.avatar }} style={styles.userAvatar} />
+                            <Image source={{ uri: user?.data.avatar }} style={styles.userAvatar} />
                         </TouchableOpacity>
                     </View>
                     {hidden && (
@@ -182,7 +187,7 @@ const HomeScreen = () => {
                 </View>
                 <View style={{ marginHorizontal: 12,  flexDirection: 'row', alignItems: 'center' }}>
 
-                    <CaptionSlide userimge = {user.avatar} />
+                    <CaptionSlide userimge = {user?.data.avatar} />
                 </View>
                 <View style={styles.contentContainer}>
                     <Animated.FlatList

@@ -6,6 +6,8 @@ import { useMyContext } from '../navigation/UserContext';
 import { NavigationProp, ParamListBase, useNavigation } from '@react-navigation/native';
 import { ProfileRootStackEnum } from '../stack/ProfileRootStackParams';
 import { UseFetchPostByUser } from './UseFetchPostByUser';
+import { useSelector } from 'react-redux';
+import { RootState } from '../store/store';
 
 interface ListPortsByUserProps{
   userId: any,
@@ -58,8 +60,8 @@ const ListPortsByUser:React.FC<ListPortsByUserProps> = React.memo(({ userId, onR
     ) : null;
   };
 
-  const { user } = useMyContext();
-  const loggedInUserId = user.id;
+  const user = useSelector((state : RootState)=>state.user.user)
+  const loggedInUserId = user?.data.id;
   const handleToProfile = (userId: React.SetStateAction<null>, userName: string) => {
     if (userId === loggedInUserId) {
         navigation.navigate(ProfileRootStackEnum.ProfileScreen);

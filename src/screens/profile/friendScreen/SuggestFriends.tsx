@@ -8,6 +8,8 @@ import { useMyContext } from '../../../component/navigation/UserContext';
 import { socket } from '../../../http/SocketHandle';
 import { useSendNotification } from '../../../constant/notify';
 import { useNavigation } from '@react-navigation/native';
+import { useSelector } from 'react-redux';
+import { RootState } from '../../../component/store/store';
 type Suggest = {
   data: any,
   setData: () => void,
@@ -18,7 +20,7 @@ const SuggestFriends: React.FC<Suggest> = ({ data, setData }) => {
   const bottomSheetRef = useRef<BottomSheet>(null);
   const [textReqState, setTextReqState] = useState({});
   const [disabledButtons, setDisabledButtons] = useState({});
-  const { user } = useMyContext();
+  const user = useSelector((state : RootState)=>state.user.user)
   const navigation = useNavigation();
   const { sendNRequestFriend } = useSendNotification();
   LogBox.ignoreLogs([

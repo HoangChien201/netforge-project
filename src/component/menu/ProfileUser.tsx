@@ -4,6 +4,8 @@ import { useMyContext } from '../navigation/UserContext';
 import { NavigationProp, ParamListBase, useFocusEffect, useNavigation } from '@react-navigation/native';
 import { getUSerByID } from '../../http/PhuHTTP';
 import { ProfileRootStackEnum } from '../stack/ProfileRootStackParams';
+import { useSelector } from 'react-redux';
+import { RootState } from '../store/store';
 
 interface User {
     email: string;
@@ -17,9 +19,9 @@ interface User {
 
 const ProfileUser = () => {
     const navigation: NavigationProp<ParamListBase> = useNavigation();
-    const { user } = useMyContext();
-    const userID = user.id;
-    const token = user.token;
+    const user = useSelector((state : RootState)=>state.user.user)
+    const userID = user?.data.id;
+    const token = user?.data.token;
     const [userData, setUserData] = useState<User | null>(null);
 
     useFocusEffect(

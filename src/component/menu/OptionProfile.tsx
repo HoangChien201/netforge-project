@@ -6,9 +6,12 @@ import { useMyContext } from '../navigation/UserContext'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { NetworkStackNavigationProp } from '../stack/NetworkRootStackParams'
 import { NavigateToMessage } from '../message/NavigateToMessage'
+import { useDispatch } from 'react-redux'
+import { deleteUser } from '../store/userSlice'
 
 const OptionProfile = () => {
     const { setUser } = useMyContext();
+    const dispatch = useDispatch()
     const navigation:NetworkStackNavigationProp = useNavigation()
 
     function OptionHorizontalItem({ image, text, onPress }: { image: any, text: string, onPress?: any }) {
@@ -42,7 +45,7 @@ const OptionProfile = () => {
     }
 
     async function LogoutHandle() {
-        setUser(null)
+        dispatch(deleteUser())
         try {
             await AsyncStorage.clear();
             console.log('All items removed from AsyncStorage');

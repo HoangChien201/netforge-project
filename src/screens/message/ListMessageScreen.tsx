@@ -9,9 +9,11 @@ import { StackNavigationProp } from '@react-navigation/stack'
 import { RouteProp, useIsFocused, useNavigation, useRoute } from '@react-navigation/native'
 import ModalNewMessage from '../../component/message/ModalNewMessage'
 import { onUserLogin, onUserLogout } from '../call-video/Utils'
+import { useSelector } from 'react-redux'
+import { RootState } from '../../component/store/store'
 
 const ListMessageScreen = () => {
-  const {user}=useMyContext()
+  const user = useSelector((state:RootState)=>state.user.user)
   const [groups,setGroups]=useState<Array<GroupChatType>>([])
   const [visibleModalNewMessage,SetVisibleModalNewMessage]=useState(false)
   const isFocus=useIsFocused()

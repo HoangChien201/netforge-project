@@ -5,6 +5,8 @@ import { useRoute } from '@react-navigation/native'
 import { ZegoSendCallInvitationButton } from '@zegocloud/zego-uikit-prebuilt-call-rn';
 import { useMyContext } from '../navigation/UserContext'
 import { MessageScreenRouteProp } from '../../screens/message/MessageScreen'
+import { useSelector } from 'react-redux';
+import { RootState } from '../store/store';
 type InviteeType={
     userID:string,
     userName:string
@@ -15,7 +17,7 @@ const HeaderMessageComponent = ({ partner }: { partner: any }) => {
 
     const route: MessageScreenRouteProp = useRoute()
     const { fullname, avatar, members } = route.params;
-    const { user } = useMyContext();
+    const user = useSelector((state : RootState)=>state.user.user)
     const invitees:Array<InviteeType>
                     =members.map(m=>{
                             return {
@@ -23,7 +25,7 @@ const HeaderMessageComponent = ({ partner }: { partner: any }) => {
                                 userName:m.user.fullname
                             }
                         
-                    }).filter(invitee=>invitee.userID !== user.id.toString())
+                    }).filter(invitee=>invitee.userID !== user?.data.id.toString())
 
     return (
         <View style={styles.container}>

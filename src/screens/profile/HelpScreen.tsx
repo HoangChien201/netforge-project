@@ -10,9 +10,11 @@ import { FlatList } from 'react-native-gesture-handler';
 import { date } from 'yup';
 import ItemBirthday from '../../birtday/ItemBirthday';
 import { FriendType } from '../../component/message/ModalNewMessage';
+import { useSelector } from 'react-redux';
+import { RootState } from '../../component/store/store';
 
 const HelpScreen = () => {
-  const { user } = useMyContext();
+  const user = useSelector((state : RootState)=>state.user.user)
   const [friend, setFriend] = useState<Array<FriendType>>([])
   const [todayFriends, setTodayFriends] = useState<Array<FriendType>>([]);
   const [birthdaySound, setBirthdaySound] = useState(null);
@@ -43,7 +45,7 @@ const HelpScreen = () => {
   // happy birthday to you
   useEffect(() => {
     const today = new Date()
-    const userBirthday = new Date(user.dateOfBirth)
+    const userBirthday = new Date(user?.data.dateOfBirth)
     if (today.getDate() === userBirthday.getDate() &&
       today.getMonth() === userBirthday.getMonth()) {
       console.log(today);

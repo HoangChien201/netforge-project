@@ -13,6 +13,7 @@ import FriendScreen from './profile/FriendScreen';
 import Friends from './profile/friendScreen/Friends';
 import { getFriends } from '../http/QuyetHTTP';
 import { COLOR } from '../constant/color';
+import { useSelector } from 'react-redux';
 
 
 const { height: SCREEN_HEIGHT } = Dimensions.get('window');
@@ -20,7 +21,7 @@ const { height: SCREEN_HEIGHT } = Dimensions.get('window');
 const Tab = createMaterialTopTabNavigator();
 
 const TestProfile = () => {
-  const { user } = useMyContext();
+  const user = useSelector((state : RootState)=>state.user.user)
   const navigation = useNavigation();
   const scrollOffsetY = useRef(new Animated.Value(0)).current;
   const headerHeight = 420; // Chiều cao của header
@@ -28,11 +29,11 @@ const TestProfile = () => {
   const [currentTab, setCurrentTab] = useState('MyPost'); // Khởi tạo tab mặc định
   const [tabBarPosition, setTabBarPosition] = useState(headerHeight);
 
-  const userID = user.id;
-  const token = user.token;
+  const userID = user?.data.id;
+  const token = user?.data.token;
   const [userData, setUserData] = useState<any>();
   let dateOfBirth = useState(null);
-  const nameUser = user.fullname;
+  const nameUser = user?.data.fullname;
   const [friends, setFriends] = useState<any[]>([]);
 
   useEffect(() => {
@@ -81,7 +82,7 @@ const TestProfile = () => {
   
   useEffect(() => {
     navigation.getParent()?.setOptions({ tabBarStyle: { display: 'none' } });
-  }, [user]);
+  }, [user?.data]);
 
   const handleToCreateStory = () => {
     
@@ -97,13 +98,13 @@ const TestProfile = () => {
     
     return (
       <>
-        <HeaderBanner value={scrollOffsetY} userId={user.id} />
+        <HeaderBanner value={scrollOffsetY} userId={user?.data.id} />
         <View style={{marginTop:260}}></View>
           <ProfileHeader
           avatar={userData.avatar} //chiến mới thêm -- nếu đã đọc được vui lòng xóa comment này <3
           fullname={userData.fullname}
-          userId={user.id}
-          loggedInUserId={user.id} 
+          userId={user?.data.id}
+          loggedInUserId={user?.data.id} 
           relationship={undefined}/>
       </>
     );

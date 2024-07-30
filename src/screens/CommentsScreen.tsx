@@ -16,9 +16,11 @@ import { ActivityIndicator } from 'react-native';
 import { COLOR } from '../constant/color';
 import FastImage from 'react-native-fast-image';
 import { UIActivityIndicator } from 'react-native-indicators';
+import { useSelector } from 'react-redux';
+import { RootState } from '../component/store/store';
 const CommentsScreen = () => {
     const navigation = useNavigation<navigationType>()
-    const { user } = useMyContext();
+    const user = useSelector((state : RootState)=>state.user.user)
     const [modalGetLikePostVisible, setModalGetLikePostVisible] = useState(false);
     const [commentUserId, setCommentUserId] = useState(null);
     const [text, setText] = useState(null);
@@ -104,7 +106,7 @@ const CommentsScreen = () => {
     }, [commentCount]);
 
 
-    const loggedInUserId = user.id;
+    const loggedInUserId =user?.data.id;
     const handleToProfile = (userId) => {
         // //setSelectedUserId(userId);
         console.log("userID: ", userId);

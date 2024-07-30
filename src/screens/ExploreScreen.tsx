@@ -12,10 +12,12 @@ import { ProfileRootStackEnum } from '../component/stack/ProfileRootStackParams'
 import FastImage from 'react-native-fast-image';
 import Icon from 'react-native-vector-icons/Entypo'
 import { UIActivityIndicator } from 'react-native-indicators';
+import { useSelector } from 'react-redux';
+import { RootState } from '../component/store/store';
 
 const ExploreScreen = () => {
   const navigation = useNavigation()
-  const { user } = useMyContext();
+  const user = useSelector((state : RootState)=>state.user.user)
   const timerRef = useRef(null);
   // modal comments
   const [keyword, setKeyword] = useState('');
@@ -66,7 +68,7 @@ const ExploreScreen = () => {
   }
   const loadRecentUsers = async () => {
     try {
-      const recentUsersJSON = await AsyncStorage.getItem(`recentUsers_${user.id}`);
+      const recentUsersJSON = await AsyncStorage.getItem(`recentUsers_${user?.data.id}`);
       if (recentUsersJSON) {
         setRecentUsers(JSON.parse(recentUsersJSON));
       }
@@ -76,7 +78,7 @@ const ExploreScreen = () => {
   };
   const saveRecentUsers = async (users: any) => {
     try {
-      await AsyncStorage.setItem(`recentUsers_${user.id}`, JSON.stringify(users));
+      await AsyncStorage.setItem(`recentUsers_${user?.data.id}`, JSON.stringify(users));
     } catch (error) {
       console.error('Lỗi khi lưu danh sách gần đây:', error);
     }
@@ -87,7 +89,7 @@ const ExploreScreen = () => {
     setUser([])
     setIsSearching(true)
     const userId = item.id
-    if (userId === user.id) {
+    if (userId === user?.data.id) {
       //setIsModalVisible(false);
       navigation.navigate(ProfileRootStackEnum.ProfileScreen);
     } else {
@@ -105,7 +107,7 @@ const ExploreScreen = () => {
   const handleDleteAll = async () => {
     setRecentUsers([]);
     try {
-      await AsyncStorage.removeItem(`recentUsers_${user.id}`);
+      await AsyncStorage.removeItem(`recentUsers_${user?.data.id}`);
     } catch (error) {
       console.error('Lỗi khi xóa tất cả danh sách gần đây:', error);
     }

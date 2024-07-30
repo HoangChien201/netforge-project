@@ -16,6 +16,8 @@ import Swiper from 'react-native-swiper';
 import { socket } from '../../http/SocketHandle';
 import { useMyContext } from '../../component/navigation/UserContext';
 import { useSendNotification } from '../../constant/notify';
+import { useSelector } from 'react-redux';
+import { RootState } from '../../component/store/store';
 // import { BounceIn, FadeIn, ReduceMotion, useReducedMotion } from 'react-native-reanimated';
 type Friends = {
 }
@@ -29,8 +31,8 @@ const FriendScreen: React.FC<Friends> = () => {
   const [friends, setFriends] = useState<any[]>([]);
   const status2 = 2;
   const status1 = 1;
-  const { user } = useMyContext();
-  const userId = user.id
+  const user = useSelector((state : RootState)=>state.user.user)
+  const userId = user?.data.id
   const [showModalFriend, setShowModalFriend] = useState(false);
   const [dot, setDot] = useState(Number);
   const [reload, setReload] = useState(false);

@@ -6,11 +6,13 @@ import { reaction } from '../../constant/emoji';
 import * as Animatable from 'react-native-animatable';
 import { addLikeComments, deleteLikeComments, updateLikeComment } from '../../http/TuongHttp';
 import { useMyContext } from '../navigation/UserContext';
+import { useSelector } from 'react-redux';
+import { RootState } from '../store/store';
 
 const Reaction = memo(({ like_count, type, commentId, render, checkReaction, setCheckReaction }: {setCheckReaction:(Value:boolean)=>void,checkReaction?:boolean,type: number, commentId?: number,like_count?:number }) => {
     const [islike, setIsLike] = useState(false);
     const navigation = useNavigation();
-    const { user } = useMyContext();
+    const user = useSelector((state : RootState)=>state.user.user)
     const [numberLike, setNumberLike] = useState<number>(like_count);
     const [number, setNumber] = useState<number | null>(type);
     const animationRef = useRef(null);
@@ -23,7 +25,7 @@ const Reaction = memo(({ like_count, type, commentId, render, checkReaction, set
     const DeleteLikeComment = async (commentId: number) => {
         try {
           
-            const result: any = await deleteLikeComments(commentId, user.id);
+            const result: any = await deleteLikeComments(commentId, user?.data.id);
             console.log(result);
             console.log('Xóa like thành công');
 
@@ -46,7 +48,7 @@ const Reaction = memo(({ like_count, type, commentId, render, checkReaction, set
     };
     const updateLike = async (commentId: number, type: number) => {
         try {
-            const result: any = await updateLikeComment(commentId, user.id, type);
+            const result: any = await updateLikeComment(commentId, user?.data.id, type);
             // console.log(result);
             // console.log(type);
             // console.log(commentId);

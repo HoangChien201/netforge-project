@@ -11,8 +11,9 @@ import { NavigationProp, ParamListBase, useNavigation } from '@react-navigation/
 import { useMyContext } from '../navigation/UserContext';
 import { HomeRootStackEnum } from '../stack/HomeRootStackParams';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { setPostid } from '../store/postIDSlice';
+import { RootState } from '../store/store';
 
 const ProgressBarScreen = ({ listpostStory, setCurrentIndex, currentIndex, dataLength }) => {
     const dispatch = useDispatch();
@@ -25,7 +26,7 @@ const ProgressBarScreen = ({ listpostStory, setCurrentIndex, currentIndex, dataL
     const showReactions = useRef(new Animated.Value(0)).current;
     const spinValue = useRef(new Animated.Value(0)).current;
     const navigation: NavigationProp<ParamListBase> = useNavigation();
-    const { user } = useMyContext();
+    const user = useSelector((state : RootState)=>state.user.user)
 
     const handleImagePressR = useCallback(() => {
         if (!check) {
@@ -110,10 +111,7 @@ const ProgressBarScreen = ({ listpostStory, setCurrentIndex, currentIndex, dataL
         setPaused(pre => !pre);
     };
     const getLivePostContent = useCallback(() => {
-
         const livePost = listpostStory.find(post => post.type === 3);
-       
-        
         return livePost ? livePost.content : null;
     }, [listpostStory]);
     const getLivePostID = useCallback(() => {
@@ -124,13 +122,13 @@ const ProgressBarScreen = ({ listpostStory, setCurrentIndex, currentIndex, dataL
         dispatch(setPostid(getLivePostID()))
         navigation.navigate(HomeRootStackEnum.LiveStack,{
             userID: '12345',
-            userName: user.fullname,
+            userName: user?.data.fullname,
             liveID: getLivePostContent()
         })
     }
     return (
         <View style={styles.container}>
-            {listpostStory[activeIndex]?.creater.id === user.id && (
+            {listpostStory[activeIndex]?.creater.id === user?.data.id && (
                 <TouchableOpacity onPress={() =>handleClick() } style={styles.ellipsisButton}>
                     <AntDesign name='ellipsis1' size={25} color='#000' />
                 </TouchableOpacity>

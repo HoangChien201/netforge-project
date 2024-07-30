@@ -14,6 +14,8 @@ import { login } from '../../http/userHttp/user'
 import { NavigationProp, ParamListBase, useNavigation } from '@react-navigation/native'
 import { UserRootStackEnum } from '../stack/UserRootStackParams'
 import { onUserLogin, onUserLogout } from '../../screens/call-video/Utils'
+import { useDispatch } from 'react-redux'
+import { setUsers } from '../store/userSlice'
 
 
 interface user {
@@ -33,8 +35,8 @@ const FormLogin = ({ setModal, setStatus, setIsLoading }: { setModal: (value: bo
   const [valueF, setValueF] = useState<user>({ email: 'tuong123@gmail.com', password: '1234' })
 
   const [valid, setValid] = useState<valid>({ email: true, password: true })
+  const dispatch = useDispatch();
 
-  const { setUser } = useMyContext();
 
   function onChangText(key: string, values: string) {
     setValueF({
@@ -75,7 +77,7 @@ const FormLogin = ({ setModal, setStatus, setIsLoading }: { setModal: (value: bo
           //login zego
           onUserLogin(id, fullname, avatar,navigation).then(() => {
             setIsLoading(false);
-            setUser(data);
+            dispatch(setUsers(data))
           })
 
 
@@ -95,7 +97,7 @@ const FormLogin = ({ setModal, setStatus, setIsLoading }: { setModal: (value: bo
   const handleLoginResult = async (result) => {
     if (result) {
       setTimeout(() => {
-        setUser(result.data);
+        dispatch(setUsers(result))
       }, 2000);
       await AsyncStorage.setItem('token', result.data.token);
  

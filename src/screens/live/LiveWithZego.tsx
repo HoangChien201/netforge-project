@@ -4,6 +4,8 @@ import { useNavigation } from '@react-navigation/native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useMyContext } from '../../component/navigation/UserContext';
 import { createNewPost } from '../../http/QuyetHTTP';
+import { useSelector } from 'react-redux';
+import { RootState } from '../../component/store/store';
 
 const LiveWithZego: React.FC = () => {
   const navigation = useNavigation();
@@ -11,8 +13,8 @@ const LiveWithZego: React.FC = () => {
     navigation.getParent()?.setOptions({ tabBarStyle: { display: 'none' } });
   }, []);
   
-  const { user } = useMyContext();
-  const name = user.fullname;
+  const user = useSelector((state : RootState)=>state.user.user)
+  const name = user?.data.fullname;
   const onJoinPress =  (isHost: boolean) => {
     //await createLivePost(liveID)
     navigation.navigate(isHost ? 'HostScreen' : 'AudienceScreen', {

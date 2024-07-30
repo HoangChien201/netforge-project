@@ -9,10 +9,12 @@ import Icon from 'react-native-vector-icons/Feather'
 import IconPhoto from 'react-native-vector-icons/Foundation'
 import IconSend from 'react-native-vector-icons/FontAwesome'
 import { COLOR } from '../../constant/color'
+import { useSelector } from 'react-redux'
+import { RootState } from '../store/store'
 
 
 const InputCmt = ({ fetchComments, onMediaSelected, parent = null , postId, text,setParent, setText, comment }) => {
-    const { user } = useMyContext();
+    const user = useSelector((state : RootState)=>state.user.user)
     const [comments, setComments] = useState('')
     const [media, setMedia] = useState(null);
     const [imagePath, setImagePath] = useState(null);
@@ -23,7 +25,7 @@ const InputCmt = ({ fetchComments, onMediaSelected, parent = null , postId, text
   
     useEffect(() => {
         if (text) {
-            if(user.id === comment){
+            if(user?.data.id === comment){
                 
                 setText('chính mình')
             }else{

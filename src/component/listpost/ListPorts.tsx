@@ -98,8 +98,8 @@ const ListPorts = memo(({ onrefresh }: { onrefresh: boolean }) => {
   };
 
 
-  const { user } = useMyContext();
-  const loggedInUserId = user.id;
+  const user = useSelector((state : RootState)=>state.user.user)
+  const loggedInUserId = user?.data.id;
 
   const handleToProfile = (userId: React.SetStateAction<null>) => {
     //console.log("userID: ",userId);

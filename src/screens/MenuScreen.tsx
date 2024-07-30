@@ -11,7 +11,7 @@ import { COLOR } from '../constant/color';
 const MenuScreen = () => {
     const navigation = useNavigation()
     const isFocus= useIsFocused()
-    const {user} = useMyContext()
+   
     useEffect(() => {
 
         if(isFocus){

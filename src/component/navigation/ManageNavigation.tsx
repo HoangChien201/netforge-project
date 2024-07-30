@@ -18,6 +18,9 @@ import { socket } from '../../http/SocketHandle'
 // @ts-ignore
   
   import { ZegoCallInvitationDialog,ZegoUIKitPrebuiltCallFloatingMinimizedView } from '@zegocloud/zego-uikit-prebuilt-call-rn';
+import { useDispatch, useSelector } from 'react-redux'
+import { RootState } from '../store/store'
+import { setUsers } from '../store/userSlice'
 
 
 export type navigationType = StackNavigationProp<RootStackParamList>
@@ -30,7 +33,8 @@ type Manager ={
 }
 const ManageNavigation: React.FC<Manager> = ({screen}) => {
     const [showSplash, setShowSplash] = useState(true);
-    const { user, setUser } = useMyContext();
+    const dispatch = useDispatch()
+    const user = useSelector((state:RootState)=>state.user.user)
     const [notifications, setNotifications] = useState([]);
     
 
@@ -46,7 +50,8 @@ const ManageNavigation: React.FC<Manager> = ({screen}) => {
                     const password = String(stPassword);
                     try {
                         const result = await login(email, password);
-                        setUser(result.data)
+                        dispatch(setUsers(result?.data))
+                      
                     } catch (error) {
                         console.log(error);
 

@@ -14,10 +14,12 @@ import { useNavigation } from '@react-navigation/native';
 import { navigationType } from '../stack/UserStack';
 import { reaction } from '../../constant/emoji';
 import Reaction from './Reaction';
+import { useSelector } from 'react-redux';
+import { RootState } from '../store/store';
 
 
 const CommentItem = ({ comment, onReply, depth = 0, render, parent, setText, setUserId}) => {
-    const { user } = useMyContext();
+    const user = useSelector((state : RootState)=>state.user.user)
     const navigation = useNavigation<navigationType>()
     const [modalReactionVisible, setModaReactionlVisible] = useState(false);
     const [likeIcon, setLikeIcon] = useState(null);
@@ -54,7 +56,7 @@ const CommentItem = ({ comment, onReply, depth = 0, render, parent, setText, set
         }
     };
     const handleCommentPress = () => {
-        if (user.id === comment.user.id) {
+        if (user?.data.id === comment.user.id) {
             setIsDleteVisible(true);
         } else {
             setIsOtherDleteVisible(true)
@@ -140,7 +142,7 @@ const CommentItem = ({ comment, onReply, depth = 0, render, parent, setText, set
         //setSelectedUserId(userId);
         console.log("userID: ", comment.user.id);
         const userId = comment.user.id
-        if (userId === user.id) {
+        if (userId === user?.data.id) {
             //setIsModalVisible(false);
             navigation.navigate(ProfileRootStackEnum.ProfileScreen);
         } else {
