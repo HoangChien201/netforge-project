@@ -139,7 +139,7 @@ const ActionBar = memo(({ creater,onPressProfile, like_count,type, postId, comme
                     }
                     <Text style={styles.text}>{numberLike === null ? 0 : numberLike}</Text>
                 </View>
-                <TouchableOpacity onPress={()=> navigation.navigate('CommentsScreen',{postId, numberLike, onPressProfile})} style={{ flexDirection: 'row', alignItems: 'center', marginHorizontal: 20 }}>
+                <TouchableOpacity onPress={()=> navigation.navigate('CommentsScreen',{postId, numberLike, onPressProfile, creater})} style={{ flexDirection: 'row', alignItems: 'center', marginHorizontal: 20 }}>
                     <AntDesignIcon name='message1' size={24} color='#000' style={styles.comment} />
                     <Text style={styles.text}>{comment_count ? comment_count : 0}</Text>
                 </TouchableOpacity>

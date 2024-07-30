@@ -16,7 +16,7 @@ import { reaction } from '../../constant/emoji';
 import Reaction from './Reaction';
 
 
-const CommentItem = ({ comment, onReply, depth = 0, render, parent, setText, setUserId}) => {
+const CommentItem = ({ comment, onReply, depth = 0, render, parent, setText, setUserId, postId,  userPostId}) => {
     const { user } = useMyContext();
     const navigation = useNavigation<navigationType>()
     const [modalReactionVisible, setModaReactionlVisible] = useState(false);
@@ -110,6 +110,8 @@ const CommentItem = ({ comment, onReply, depth = 0, render, parent, setText, set
                             render={render}
                             setText={setText}
                             setUserId={setUserId}
+                            postId={postId}
+                            userPostId = {userPostId}
                          
                         />
                     ))}
@@ -128,6 +130,8 @@ const CommentItem = ({ comment, onReply, depth = 0, render, parent, setText, set
                             render={render}
                             setText={setText}
                             setUserId={setUserId}
+                            postId={postId}
+                            userPostId = {userPostId}
                             
                         />
                     ))}
@@ -180,7 +184,7 @@ const CommentItem = ({ comment, onReply, depth = 0, render, parent, setText, set
                              
                             </Pressable>
                             </View>
-                            <View style={{ marginTop: 5, alignItems: 'center',  bottom: comment.image && !comment.content && 10, marginBottom: comment.image && !comment.content && -10 }}>
+                            <View style={{ marginTop: 5, alignItems: 'center',  bottom: comment.image && !comment.content && 10, marginBottom: comment.image && !comment.content && -10, right: 15 }}>
                                     {comment.image ? (
                                         comment.image.endsWith('.mp4') ? (
                                             <Pressable style={{ width: 100, height: 150, }} onPress={() => handleImagePress(comment.image)} onLongPress={() => handleCommentPress()}>
@@ -209,7 +213,8 @@ const CommentItem = ({ comment, onReply, depth = 0, render, parent, setText, set
                             </>
 
                         <Text style={{ fontWeight: 'bold', fontSize: 14, color: 'black', marginLeft: 5 }}>᛫</Text>
-                        <Reaction like_count = {comment.like_count} type={comment.reaction} commentId={comment.id} checkReaction = {checkLike} setCheckReaction = {setCheckLike} render={render}/>
+                        <Reaction like_count = {comment.like_count} type={comment.reaction} 
+                        commentId={comment.id} checkReaction = {checkLike} setCheckReaction = {setCheckLike} render={render} Cmt = {comment} postId= {postId}  userPostId = {userPostId}/>
 
                     </View>
                 </View>
@@ -283,7 +288,7 @@ const styles = StyleSheet.create({
     },
     userContainer: {
         flexDirection: 'row',
-        marginStart: 10
+        marginStart: 10,
 
     },
     avatar: {

@@ -34,6 +34,7 @@ const CommentsScreen = () => {
     const route = useRoute();
     const { postId } = route.params;
     const { numberLike } = route.params;
+    const { creater } = route.params;
 
 
     console.log('postId', postId); 
@@ -61,6 +62,8 @@ const CommentsScreen = () => {
         try {
             //goo
             const response: any = await getComments(postId);
+            // console.log(re);
+            
 
             setComments(response.reverse());
             setCommentCount(response.length);
@@ -171,7 +174,7 @@ return (
                     </View>
                 ) : (
                     comment.map(comment => (
-                        <CommentItem key={comment.id} comment={comment} onReply={handleReply} render={fetchComments} parent={replyTo} setText={setText} setUserId={setCommentUserId} />
+                        <CommentItem key={comment.id} comment={comment} onReply={handleReply} render={fetchComments} parent={replyTo} setText={setText} setUserId={setCommentUserId} postId={postId}  userPostId = {creater}/>
                     ))
                 )
                 }
@@ -187,6 +190,7 @@ return (
                     setLike={setLike} />
             ) : (
                 <InputCmt
+                    userPostId = {creater}
                     comment={commentUserId}
                     setText={setText}
                     text={text}
