@@ -9,13 +9,11 @@ import { useFocusEffect, useIsFocused } from '@react-navigation/native';
 const Tab = createBottomTabNavigator<NetworkRootBottomTabParams>();
 
 export default function NetworkBottomTab(): React.JSX.Element {
-    const [keyboardVisible, setKeyboardVisible] = useState(false);
     const tabBarAnimation = useRef(new Animated.Value(1)).current; // Initial opacity 1 (visible)
 
     useFocusEffect(
         useCallback(() => {
         const keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', () => {
-            setKeyboardVisible(true);
             Animated.timing(tabBarAnimation, {
                 toValue: 0, // animate to opacity 0 (hidden)
                 duration: 300,
@@ -24,7 +22,6 @@ export default function NetworkBottomTab(): React.JSX.Element {
             }).start();
         });
         const keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', () => {
-            setKeyboardVisible(false);
             Animated.timing(tabBarAnimation, {
                 toValue: 1, // animate to opacity 1 (visible)
                 duration: 300,
