@@ -1,9 +1,10 @@
 import uuid from 'react-native-uuid';
 import { socket } from '../http/SocketHandle';
 import { useMyContext } from '../component/navigation/UserContext';
-import React from 'react';
+import React, { useCallback, useEffect } from 'react';
 import { number } from 'yup';
 import Friend from '../component/scanQR-modal/Friend';
+import { useFocusEffect } from '@react-navigation/native';
 
 const createNotificationTemplate = () => ({
   id: uuid.v4(),
@@ -25,6 +26,10 @@ const createNotificationTemplate = () => ({
   reaction: {
     type: null
   },
+  navigate: {
+    screen: null,
+    params: null
+  },
   timestamp: new Date().toISOString()
 });
 
@@ -36,45 +41,53 @@ export const useSendNotification = () => {
     const data = {
       ...notificationTemplate,
       type: 2,
-      postId,
-      title:`${user.fullname} đã bình luận bài viết`,
+      postId:postId,
+      title: `${user.fullname} đã bình luận bài viết`,
       body,
       userInfo: {
         receiver,
         sender: user.id,
         fullname: user.fullname,
         avatar: user.avatar,
-      }
+      },
+      navigate: {
+        screen: 'CommentsScreen',
+        params: Number(postId)
+      },
     };
     socket.emit('notification', data);
     console.log('Sent notification data:', data);
   };
-  const sendNRepComment = ({ postId1, body,commentId, receiver }) => {
+  const sendNRepComment = ({ postId1, body, commentId, receiver }) => {
     const notificationTemplate = createNotificationTemplate();
     const data = {
       ...notificationTemplate,
       type: 2,
-      postId1,
+      postId1:postId1,
       commentId,
-      title:`${user.fullname} đã trả lời bình luận `,
+      title: `${user.fullname} đã trả lời bình luận `,
       body,
       userInfo: {
         receiver,
         sender: user.id,
         fullname: user.fullname,
         avatar: user.avatar,
-      }
+      },
+      navigate: {
+        screen: 'CommentsScreen',
+        params: Number(postId1)
+      },
     };
     socket.emit('notification', data);
     console.log('Sent notification data:', data);
   };
-  const sendNReaction = ({ postId, body, receiver,reactionType }) => {
+  const sendNReaction = ({ postId, body, receiver, reactionType }) => {
     const notificationTemplate = createNotificationTemplate();
     const data = {
       ...notificationTemplate,
       type: 1,
-      postId,
-      title:`${user.fullname} bày tỏ cảm xúc với bài viết `,
+      postId:postId,
+      title: `${user.fullname} bày tỏ cảm xúc với bài viết `,
       body,
       userInfo: {
         receiver,
@@ -85,19 +98,22 @@ export const useSendNotification = () => {
       reaction: {
         type: reactionType
       },
+      navigate: {
+        screen: 'CommentsScreen',
+        params: Number(postId)
+      },
     };
     socket.emit('notification', data);
     console.log('Sent notification data:', data);
   };
-
-  const sendNReactionComment = ({ postId1,commentId, body, receiver,reactionType }) => {
+  const sendNReactionComment = ({ postId1, commentId, body, receiver, reactionType }) => {
     const notificationTemplate = createNotificationTemplate();
     const data = {
       ...notificationTemplate,
-      type: 1,
-      postId1,
+      type: 10,
+      postId1:postId1,
       commentId,
-      title:`${user.fullname} đã bày tỏ cảm xúc với bình luận `,
+      title: `${user.fullname} đã bày tỏ cảm xúc với bình luận `,
       body,
       userInfo: {
         receiver,
@@ -108,17 +124,21 @@ export const useSendNotification = () => {
       reaction: {
         type: reactionType
       },
+      navigate: {
+        screen: 'CommentsScreen',
+        params: Number(postId1)
+      },
     };
     socket.emit('notification', data);
     console.log('Sent notification data:', data);
   };
-  const sendNCreateNewPostHistory = ({ postId,body, }) => {
+  const sendNCreateNewPostHistory = ({ postId, body, }) => {
     const notificationTemplate = createNotificationTemplate();
     const data = {
       ...notificationTemplate,
       type: 4,
-      postId,
-      title:`${user.fullname} đã tạo bài viết mới `,
+      postId:postId,
+      title: `${user.fullname} đã tạo bài viết mới `,
       body,
       userInfo: {
         sender: user.id,
@@ -126,38 +146,46 @@ export const useSendNotification = () => {
         avatar: user.avatar,
         multiple: true
       },
-
+      navigate: {
+        screen: 'CommentsScreen',
+        params: Number(postId)
+      },
     };
     socket.emit('notification', data);
     console.log('Sent notification data:', data);
   };
-  const sendNRequestFriend = ({receiver }) => {
+  // gửi kết bạn
+  const sendNRequestFriend = ({ receiver }) => {
     const notificationTemplate = createNotificationTemplate();
     const data = {
       ...notificationTemplate,
       type: 3,
-      friendId:user.id,
-      title:`${user.fullname} đã gửi lời mời kết bạn `,
-      body:'Kết bạn với nhau nào!',
+      friendId: user.id,
+      title: `${user.fullname} đã gửi lời mời kết bạn `,
+      body: 'Kết bạn với nhau nào!',
       userInfo: {
         receiver,
         sender: user.id,
         fullname: user.fullname,
         avatar: user.avatar,
       },
+      navigate: {
+        screen: 'NotificationScreen',
+        params: null
+      },
     };
     socket.emit('notification', data);
     console.log('Sent notification data:', data);
   };
-  const sendNMessage = ({ messId,body, receiver}) => {
-    console.log('messId',messId);
-    
+  const sendNMessage = ({ messId, body, receiver }) => {
+    console.log('messId', messId);
+
     const notificationTemplate = createNotificationTemplate();
     const data = {
       ...notificationTemplate,
       type: 6,
       messId,
-      title:`${user.fullname} đã gửi tin nhắn mới  `,
+      title: `${user.fullname} đã gửi tin nhắn mới  `,
       body,
       userInfo: {
         receiver,
@@ -166,18 +194,21 @@ export const useSendNotification = () => {
         avatar: user.avatar,
 
       },
+      navigate: {
+        screen: 'ListMessageScreen',
+      },
 
     };
     socket.emit('notification', data);
     console.log('Sent notification data:', data);
   };
-  const sendNSharePost = ( {postId,body,receiver}) => {
+  const sendNSharePost = ({ postId, body, receiver }) => {
     const notificationTemplate = createNotificationTemplate();
     const data = {
       ...notificationTemplate,
       type: 5,
-      postId,
-      title:`${user.fullname} đã chia sẻ bài viết `,
+      postId:postId,
+      title: `${user.fullname} đã chia sẻ bài viết `,
       body,
       userInfo: {
         receiver,
@@ -186,52 +217,63 @@ export const useSendNotification = () => {
         avatar: user.avatar,
 
       },
+      navigate: {
+        screen: 'CommentsScreen',
+        params: Number(postId)
+      },
 
     };
     socket.emit('notification', data);
     console.log('Sent notification data:', data);
   };
-  const sendBirthDay = ( {friendId,fullname,avatar}) => {
+  const sendBirthDay = ({ friendId, fullname, avatar }) => {
     const notificationTemplate = createNotificationTemplate();
     const data = {
       ...notificationTemplate,
       type: 7,
       friendId,
-      title:`Hôm nay là sinh nhật của ${fullname}`,
+      title: `Hôm nay là sinh nhật của ${fullname}`,
       userInfo: {
-        receiver:user.id,
+        receiver: user.id,
         avatar,
       },
-
+      navigate: {
+        screen: 'NotificationScreen',
+        params: null
+      },
     };
     socket.emit('notification', data);
     console.log('Sent notification data:', data);
   };
-  const sendAcceptFriend = ( {friendId}) => {
+  const sendAcceptFriend = ({ friendId }) => {
     const notificationTemplate = createNotificationTemplate();
     const data = {
       ...notificationTemplate,
       type: 8,
-      friendId,
-      title:`${user.fullname} đã chấp nhận lời mời kết bạn!`,
-      body:"",
+      friendId:user.id,
+      title: `${user.fullname} đã chấp nhận lời mời kết bạn!`,
+      body: "",
       userInfo: {
-        receiver:friendId,
+        receiver: friendId,
         sender: user.id,
         fullname: user.fullname,
         avatar: user.avatar,
+      },
+      navigate: {
+        screen: 'FriendScreen',
+        params: user.id
       },
     };
     socket.emit('notification', data);
     console.log('Sent notification data:', data);
   };
-  const sendTagFriend = ( {postId,receiver,body}) => {
+  const sendTagFriend = ({ postId, receiver, body }) => {
     const notificationTemplate = createNotificationTemplate();
     const data = {
       ...notificationTemplate,
-      type:9,
+      type: 9,
       postId,
-      title:`${user.fullname} đã gắn thẻ bạn trong một bài viết`,
+      title: `${user.fullname} đã gắn thẻ bạn trong một bài viết`,
       body,
       userInfo: {
         receiver,
@@ -239,7 +281,10 @@ export const useSendNotification = () => {
         fullname: user.fullname,
         avatar: user.avatar,
       },
-
+      navigate: {
+        screen: 'CommentsScreen',
+        params: Number(postId)
+      },
     };
     socket.emit('notification', data);
     console.log('Sent notification data:', data);
@@ -287,7 +332,7 @@ type data = {
     mutiple: false // true = gửi cho tất cả bạn bè (dùng trong tạo bài viết + history)
   },
   reaction: {
-    type: number 
+    type: number
     // 1 thích - 2 ha ha - 3 thương thương - 4 yêu thích - 5 tức giận
   },
 }

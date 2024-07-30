@@ -29,7 +29,7 @@ const ItemPost = memo(({ data, setShowModalEdit, setSelectedId, setShowDelete })
     }, [data])
 
     const { creater, share_count, reaction, content, media, comment_count, create_at, id, like_count, share, emotion } = datas;
-    console.log("emotion", datas);
+    //console.log("emotion", datas);
 
     useEffect(() => {
         setRenderShare(false)
@@ -57,7 +57,7 @@ const ItemPost = memo(({ data, setShowModalEdit, setSelectedId, setShowDelete })
     const formatContent = useMemo(() => {
         const format = content?.split(/@\[([^\]]+)\]\(\d+\)/g);
         return (
-            <View style={{ marginHorizontal: 20, paddingBottom: media.length > 0 ? 0 : 10, flexDirection: 'row', flexWrap: 'wrap' }}>
+            <View style={{ marginHorizontal: 20, paddingBottom: media?.length > 0 ? 0 : 10, flexDirection: 'row', flexWrap: 'wrap' }}>
                 {format?.map((fomat, index) => (
                     <Text
                         key={`${fomat}-${index}`}
@@ -91,7 +91,7 @@ const ItemPost = memo(({ data, setShowModalEdit, setSelectedId, setShowDelete })
         if (reactionMap) {
             return (
                 <>
-                    <Text style={{ color: '#000', marginLeft: 5, fontWeight: '400' }}>{reactionMap.title}</Text>
+                    <Text style={{ color: '#000', marginLeft: 5, fontWeight: '400' }}>{reactionMap.Emoji}{" "}{reactionMap.title}</Text>
                 </>
             );
         }
@@ -116,7 +116,7 @@ const ItemPost = memo(({ data, setShowModalEdit, setSelectedId, setShowDelete })
         setShowModalEdit(true);
 
         hiddenMenu1();
-        setHidden(false);
+        //setHidden(false);
 
     };
 
@@ -125,7 +125,7 @@ const ItemPost = memo(({ data, setShowModalEdit, setSelectedId, setShowDelete })
         setShowDelete(true);
 
         hiddenMenu1();
-        setHidden(false);
+        //setHidden(false);
     };
 
     return (
@@ -235,14 +235,14 @@ const ItemPost = memo(({ data, setShowModalEdit, setSelectedId, setShowDelete })
                     <View style={styles.home}>
                         <View style={styles.containerAvt}>
                             <TouchableOpacity style={styles.containerAvt} onPress={() => handleToProfile(creater.id)}>
-                                {creater.avatar ? (
+                                {creater?.avatar ? (
                                     <Image source={{ uri: creater.avatar }} style={styles.avt} />
                                 ) : (
                                     <Image source={require('../../media/icon/phuking.jpg')} style={styles.avt} />
                                 )}
                                 <View>
                                     <View style={{ flexDirection: 'row' }}>
-                                        <Text style={styles.nameUser}>{creater.fullname === null ? "Người dùng" : creater.fullname}</Text>
+                                        <Text style={styles.nameUser}>{creater?.fullname === null ? "Người dùng" : creater?.fullname}</Text>
                                         <ViewReaction />
                                     </View>
 

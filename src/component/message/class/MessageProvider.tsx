@@ -130,6 +130,9 @@ export class MessageProvider {
                 avatar: avatarSender,
 
             },
+            navigate: {
+                screen: 'ListMessageScreen',
+            },
 
         };
         socket.emit('notification', data);

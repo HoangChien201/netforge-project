@@ -1,6 +1,6 @@
 import React, { useCallback, useRef, useState, useEffect } from 'react';
 import { StyleSheet, View, Animated, Image, Text, TouchableOpacity, ScrollView, ImageBackground, TouchableWithoutFeedback } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
+import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import AntDesignIcon from 'react-native-vector-icons/AntDesign';
 import TouchID from 'react-native-touch-id';
@@ -102,7 +102,11 @@ const HomeScreen = () => {
             setRefreshing(false);
         }, 2000);
     };
-
+    useFocusEffect(
+        useCallback(()=>{
+            setHidden(false)
+        },[])
+    )
     const renderItem = useCallback(
         ({ item }) => {
             if (item.key === 'stories' || item.key.startsWith('new_post')) {

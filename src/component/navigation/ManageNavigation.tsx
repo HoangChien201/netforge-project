@@ -16,8 +16,9 @@ import PushNotification, { Importance } from 'react-native-push-notification';
 import { Alert, PermissionsAndroid } from 'react-native';
 import { socket } from '../../http/SocketHandle'
 // @ts-ignore
-  
-  import { ZegoCallInvitationDialog,ZegoUIKitPrebuiltCallFloatingMinimizedView } from '@zegocloud/zego-uikit-prebuilt-call-rn';
+
+import { ZegoCallInvitationDialog, ZegoUIKitPrebuiltCallFloatingMinimizedView } from '@zegocloud/zego-uikit-prebuilt-call-rn';
+import { navigationRef } from './NavigationRef'
 
 
 export type navigationType = StackNavigationProp<RootStackParamList>
@@ -25,11 +26,12 @@ type routeType = RouteProp<{ params: { value: string } }, 'params'>
 export type RootStackParamList = {
 
 };
-const ManageNavigation: React.FC = () => {
+type Manager = {
+    notification: any
+}
+const ManageNavigation = () => {
     const [showSplash, setShowSplash] = useState(true);
     const { user, setUser } = useMyContext();
-    const [notifications, setNotifications] = useState([]);
-    
 
     const handleAutoLogin = async () => {
         try {
@@ -72,37 +74,32 @@ const ManageNavigation: React.FC = () => {
     useEffect(() => {
         if (user) {
             const id = user.id;
-            console.log('Socket connected:', socket.connected);
-
+            //console.log('Socket connected:', socket.connected);
             socket.on(`notification-${id}`, (data) => {
-                console.log('Notification received:', data);
-
-                // Check if the notification already exists in notifications
-                const exists = notifications.some(notification => notification.id === data.id);
-
-                // Add notification only if it doesn't already exist
-                if (!exists) {
-                    addNotification(data);
-                    showLocal(data);
-                }
+                console.log('Notification received in Navigate:', data);
+                addNotification(data);
+                showLocal(data);
+                // const exists = notifications.some(notification => notification.id == data.id);
+                // if (!exists) {
+                //     addNotification(data);
+                //     showLocal(data);
+                // }
             });
-
-            return () => {
-                socket.off(`notification-${id}`);
-            };
         }
 
     }, [user]);
     const addNotification = async (newNotification) => {
         try {
-            const updatedNotifications = [...notifications, newNotification];
-            setNotifications(updatedNotifications);
-            await AsyncStorage.setItem('notifications', JSON.stringify(updatedNotifications));
-            console.log('Notification added and saved:', newNotification);
+            const oldNotifications = await AsyncStorage.getItem(`notifications-${user.id}`);
+            const parsedNotifications = oldNotifications ? JSON.parse(oldNotifications) : [];
+            const updatedNotifications = [...parsedNotifications, newNotification];
+            await AsyncStorage.setItem(`notifications-${user.id}`, JSON.stringify(updatedNotifications));
+            console.log('Notification added and saved');
         } catch (error) {
             console.error('Error adding notification:', error);
         }
     };
+
     const requestNotificationPermission = async () => {
         try {
             const granted = await PermissionsAndroid.request(
@@ -150,6 +147,10 @@ const ManageNavigation: React.FC = () => {
             vibration: 300,
             playSound: true,
             soundName: "default",
+            userInfo: {
+                    screen: notification.navigate.screen || 'HomeScreen',
+                    params: notification.navigate.params || null,
+            }
         });
 
     };
@@ -173,21 +174,17 @@ const ManageNavigation: React.FC = () => {
             console.warn(err);
         }
     };
-
-
-
-
     if (showSplash) {
         return <SplashScreen />;
     }
 
     return (
         <GestureHandlerRootView>
-            <NavigationContainer>
+            <NavigationContainer ref={navigationRef}>
                 {/*ZegoCallInvitationDialog hiện dialog nhận cuộc gọi */}
                 <ZegoCallInvitationDialog />
                 {user ? <NetworkStack /> : <UserStack />}
-                <ZegoUIKitPrebuiltCallFloatingMinimizedView/>
+                <ZegoUIKitPrebuiltCallFloatingMinimizedView />
             </NavigationContainer>
         </GestureHandlerRootView>
     )

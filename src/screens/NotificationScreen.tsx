@@ -23,6 +23,7 @@ import ItemFriendAccept from '../component/notificationes/ItemFriendAccept';
 import ItemNewPostTag from '../component/notificationes/ItemNewPostTag';
 import BirtdayButtonComponent from '../component/notificationes/BirtdayButtonComponent';
 import BirthDayScreen from './BirthdayScreen';
+import ItemLikeComment from '../component/notificationes/ItemLikeComment';
 const NotificationScreen = () => {
 
   const [showModalFriend, setShowModalFriend] = useState(false);
@@ -35,24 +36,19 @@ const NotificationScreen = () => {
   const [groupedNotifications, setGroupedNotifications] = useState<any>([]);
   // const userId = user.id;
   const { sendNCommentPost } = useSendNotification();
-
+  const [push, setPush] = useState(false);
   useEffect(() => {
-    fetchData();
     socket.on(`notification-${user.id}`, (data) => {
-      console.log('Notification received:', data);
-      const exists = notifications.some(notification => notification.id == data.id);
-      if (!exists) {
-        // showLocalNotification(data);
-        addNotification(data);
-      }
+      fetchData();
     });
     console.log('render');
     return () => {
       socket.off(`notification-${user.id}`);
     };
-    
-
-  }, [user.id]);  // Include notifications in dependencies to ensure up-to-date check
+  }, [user.id]);
+  useEffect(() => {
+    fetchData();
+  }, []); 
 
   useEffect(() => {
     if (notifications.length > 0) {
@@ -79,10 +75,9 @@ const NotificationScreen = () => {
 
       }, []);
       setGroupedNotifications(grouped);
-      console.log('dulieumoi:' + JSON.stringify(grouped));
-
+      //console.log('dulieumoi:' + JSON.stringify(grouped));
     }
-  }, [notifications]);
+  }, [notifications || push]);
 
   const addNotification = async (newNotification) => {
     try {
@@ -102,7 +97,7 @@ const NotificationScreen = () => {
 
   const fetchData = async () => {
     try {
-      const oldNotifications = await AsyncStorage.getItem(`notifications${user.id}`);
+      const oldNotifications = await AsyncStorage.getItem(`notifications-${user.id}`);
       if (oldNotifications) {
         console.log('AsyncStorage:', oldNotifications);
         const parsedNotifications = JSON.parse(oldNotifications);
@@ -111,16 +106,13 @@ const NotificationScreen = () => {
         }
         setRefreshing(false);
       }
-
     } catch (error) {
       console.error('AsyncStorage:', error);
     }
   };
-
-
   const showLocalNotification = (notification) => {
     console.log('show');
-    
+
     PushNotification.localNotification({
       channelId: "channel-id-1",
       autoCancel: true,
@@ -138,7 +130,7 @@ const NotificationScreen = () => {
     fetchData();
     // Giả lập thời gian tải dữ liệu từ server
     // setTimeout(() => {
-      
+
     // }, 2000);
   }, [data]);
 
@@ -176,6 +168,8 @@ const NotificationScreen = () => {
         return <ItemFriendAccept notification={item} />;
       case 9:
         return <ItemNewPostTag notification={item} />;
+      case 10:
+        return <ItemLikeComment notification={item} />;
       default:
         return null;
     }
@@ -204,7 +198,7 @@ const NotificationScreen = () => {
       <BirtdayButtonComponent setShowModalBirthday={setShowModalBirthday} />
       {/* **** button move birtday screen **** */}
       <View style={styles.line}></View>
-      <View style={{ flexDirection: 'column' }}>
+      <View style={{ flexDirection: 'column' , marginStart:4 }}>
         <FlatList
           data={groupedNotifications}
           keyExtractor={(item) => item.idv4}

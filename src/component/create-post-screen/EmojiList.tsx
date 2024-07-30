@@ -25,6 +25,7 @@ export default EmojiList
 const styles = StyleSheet.create({
     emoji: {
         fontSize: 32,
+        color:'white'
     },
     listContainer: {
         flexGrow: 1,

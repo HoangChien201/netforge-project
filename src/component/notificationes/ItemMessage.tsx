@@ -116,17 +116,17 @@ const styles = StyleSheet.create({
         
     },
     textUser_Post: {
-        fontSize: 16,
+        fontSize: 15,
         fontWeight: '500',
         fontStyle: "normal",
         color: 'black',
 
     },
     text1: {
-        fontSize: 13,
-        fontWeight: '400',
+        fontSize: 15,
+        fontWeight: '500',
         fontStyle: "normal",
-        color: 'black',
+        color: COLOR.PrimaryColor,
         marginEnd:5
     },
     textTime: {

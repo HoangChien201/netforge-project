@@ -1,9 +1,10 @@
 import 'react-native-gesture-handler';
-import React, { useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import { StackNavigationProp, createStackNavigator } from '@react-navigation/stack';
 import { RootStackParamList } from '../navigation/ManageNavigation';
 import { CreatePostRootStackScreens, CreatePostStackEnum, CreatePostStackParams } from './CreatePostStackParams';
 import { Animated, Easing, Keyboard } from 'react-native';
+import { useFocusEffect } from '@react-navigation/native';
 
 const Stack =createStackNavigator<CreatePostStackParams>();
 export type navigationType = StackNavigationProp<RootStackParamList>
@@ -11,7 +12,8 @@ export default function CreatePostStack():React.JSX.Element{
     const [keyboardVisible, setKeyboardVisible] = useState(false);
     const tabBarAnimation = useRef(new Animated.Value(1)).current; // Initial opacity 1 (visible)
 
-    useEffect(() => {
+    useFocusEffect(
+        useCallback(() => {
         const keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', () => {
             setKeyboardVisible(true);
             Animated.timing(tabBarAnimation, {
@@ -35,7 +37,8 @@ export default function CreatePostStack():React.JSX.Element{
             keyboardDidHideListener.remove();
             keyboardDidShowListener.remove();
         };
-    }, []);
+    },[])
+);
 
     return (
         <Stack.Navigator

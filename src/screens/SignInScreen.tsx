@@ -1,11 +1,13 @@
 import { Image, KeyboardAvoidingView, Platform, StatusBar, StyleSheet, Text, View, ScrollView } from 'react-native';
 import React, { useState } from 'react';
+import Ionicon from 'react-native-vector-icons/Ionicons'
+import { TouchableOpacity } from 'react-native-gesture-handler';
+import { useNavigation } from '@react-navigation/native';
+
 import { COLOR } from '../constant/color';
 import Form from '../component/form/Form';
 import ModalPoup from '../component/Modal/ModalPoup';
-import { useNavigation } from '@react-navigation/native';
 import { navigationType } from '../component/stack/UserStack';
-import { TouchableOpacity } from 'react-native-gesture-handler';
 
 const SignupScreen: React.FC = () => {
     const [modal, setModal] = useState(false);
@@ -15,14 +17,13 @@ const SignupScreen: React.FC = () => {
         <>
             <StatusBar barStyle="light-content" backgroundColor={COLOR.PrimaryColor} />
             <View style={styles.container}>
-                <View style={{ flexDirection: "row", padding: 20 }}>
-                    <View style={[styles.viewToolbar, styles.viewAll]}>
-                        <TouchableOpacity onPress={() => navigation.goBack()} style={{ flexDirection: "row", alignItems: "center" }}>
-                            <Image source={require("../media/Dicons/back.png")} style={styles.image} />
-                            <Text style={{ color: "white" }}>Trở về</Text>
+                <View style={ styles.viewToolbar}>
+                    <View style={[styles.viewAll]}>
+                        <TouchableOpacity onPress={() => navigation.goBack()} style={styles.iconBack}>
+                            <Ionicon name='arrow-back' size={24} color={'#fff'} />
                         </TouchableOpacity>
                     </View>
-                    <View style={[styles.viewAll]}>
+                    <View>
                         <Text style={styles.labelLogin}>Tạo tài khoản</Text>
                     </View>
                     <View style={styles.viewAll}></View>
@@ -70,27 +71,26 @@ const styles = StyleSheet.create({
         flex: 1,
         backgroundColor: COLOR.PrimaryColor,
     },
-    image: {
-        width: 20,
-        height: 15,
-        tintColor: "white"
+    iconBack: {
     },
     viewToolbar: {
         flexDirection: "row",
-        alignItems: "center"
+        alignItems: "center",
+        justifyContent:'space-between',
+        height:55,
+        paddingHorizontal:20
     },
     viewAll: {
-        flex: 1
+        width:24
     },
     labelLogin: {
         color: "#fff",
         fontWeight: "bold",
-        fontSize: 16
+        fontSize: 24,
     },
     viewContent: {
         backgroundColor: "#ffff",
         flex: 1,
-        marginTop: 15,
         borderTopEndRadius: 30,
         borderTopStartRadius: 30,
         padding: 18

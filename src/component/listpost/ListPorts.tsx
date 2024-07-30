@@ -46,7 +46,7 @@ const ListPorts = memo(({ onrefresh }: { onrefresh: boolean }) => {
    
     try {
       const response: any = await getAll(token, user.id);
-      console.log("sdasdasdasdqwewqe1232321",response);
+      console.log("đã lấy ds tại ListPort");
       if (response.length > 0) {
         const getByTypeOne = response.filter(post => post.type === 1)
  

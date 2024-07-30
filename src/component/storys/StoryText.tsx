@@ -1,12 +1,12 @@
-import { Image, Platform, StyleSheet, Text, TextInput, TouchableOpacity, View, Keyboard, Animated, FlatList, Modal, TouchableWithoutFeedback } from 'react-native';
-import React, { useState, useRef, useEffect } from 'react';
+import { Image, Platform, StyleSheet, Text, TextInput, TouchableOpacity, View, Keyboard, Animated, FlatList, Modal, TouchableWithoutFeedback, Easing } from 'react-native';
+import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { createNewPost } from '../../http/QuyetHTTP';
 import { COLOR } from '../../constant/color';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import ModalFail from '../Modal/ModalFail';
 import ModalPoup from '../Modal/ModalPoup';
 import Loading from '../Modal/Loading';
-import { useNavigation } from '@react-navigation/native';
+import { useFocusEffect, useNavigation } from '@react-navigation/native';
 
 const StoryText = () => {
     const [status, setStatus] = useState('');
@@ -18,7 +18,7 @@ const StoryText = () => {
     const [isTextInputVisible, setIsTextInputVisible] = useState(false);
     const [isModalVisible, setIsModalVisible] = useState(false);
     const [selectedCaption, setSelectedCaption] = useState('');
-
+    const tabBarAnimation = useRef(new Animated.Value(1)).current;
     const textInputRef = useRef(null);
     const textHiddenRef = useRef(null);
     const navigation = useNavigation();
@@ -45,35 +45,33 @@ const StoryText = () => {
         "Hãy theo đuổi đam mê của bạn, thành công sẽ theo đuổi bạn."
     ];
 
-    useEffect(() => {
-        const keyboardDidShowListener = Keyboard.addListener(
-            'keyboardDidShow',
-            () => {
-                setKeyboardVisible(true);
-                Animated.timing(animatedBottom, {
-                    toValue: 10,
-                    duration: 300,
-                    useNativeDriver: false,
-                }).start();
-            }
-        );
-        const keyboardDidHideListener = Keyboard.addListener(
-            'keyboardDidHide',
-            () => {
-                setKeyboardVisible(false);
-                Animated.timing(animatedBottom, {
-                    toValue: 50,
-                    duration: 300,
-                    useNativeDriver: false,
-                }).start();
-            }
-        );
+    useFocusEffect(
+        useCallback(() => {
+        const keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', () => {
+            setKeyboardVisible(true);
+            Animated.timing(tabBarAnimation, {
+                toValue: 0, // animate to opacity 0 (hidden)
+                duration: 300,
+                easing: Easing.linear,
+                useNativeDriver: true,
+            }).start();
+        });
+        const keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', () => {
+            setKeyboardVisible(false);
+            Animated.timing(tabBarAnimation, {
+                toValue: 1, // animate to opacity 1 (visible)
+                duration: 300,
+                easing: Easing.linear,
+                useNativeDriver: true,
+            }).start();
+        });
 
         return () => {
-            keyboardDidShowListener.remove();
             keyboardDidHideListener.remove();
+            keyboardDidShowListener.remove();
         };
-    }, []);
+    },[])
+);
 
     useEffect(() => {
         textInputRef?.current?.focus();

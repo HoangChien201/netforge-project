@@ -54,7 +54,7 @@ const CaptionSlide = memo(({ userimge }) => {
       const permission = 1;
       let emotion = 1
      const result = await createNewPost({ type, permission, content, emotion });
-     console.log("sdasdasdasdqwewqe1232321",result);
+     console.log("đã tạo bài viết tại captonSlide");
      if(result){
         Animated.timing(progressWidth, {
             toValue: 0,

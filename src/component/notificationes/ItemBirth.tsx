@@ -5,6 +5,7 @@ import Icon from 'react-native-vector-icons/FontAwesome'
 import { COLOR } from '../../constant/color'
 import { DateOfTimePost } from '../../format/DateOfTimePost'
 import { useNavigation } from '@react-navigation/native'
+import { navigationRef } from '../navigation/NavigationRef'
 type Item = {
     notification: any
 }
@@ -17,7 +18,7 @@ const ItemBirth: React.FC<Item> = ({ notification }) => {
     const displayDate = DateOfTimePost(notification.data[0].timestamp);
     return (
         <TouchableOpacity style={styles.container} key={notification.idv4.toString()}
-            onPress={() => navigation.navigate('CommentsScreen', { postId })}
+            onPress={() => navigationRef.navigate('NotificationScreen')}
         >
             <View style={styles.iconFriend} >
                 <Image style={styles.avatar} source={{ uri: notification.data[0].userInfo.avatar }} />
@@ -137,18 +138,18 @@ const styles = StyleSheet.create({
         overflow: 'hidden',
     },
     textUser_Post: {
-        fontSize: 16,
-        fontWeight: '600',
+        fontSize: 15,
+        fontWeight: '500',
         fontStyle: "normal",
         color: 'black',
 
     },
     text1: {
-        fontSize: 13,
-        fontWeight: '400',
+        fontSize: 15,
+        fontWeight: '500',
         fontStyle: "normal",
-        color: 'black',
-        marginEnd: 5
+        color: COLOR.PrimaryColor,
+        marginEnd:5
     },
 
     textTime: {

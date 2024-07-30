@@ -1,4 +1,4 @@
-import { Image, KeyboardAvoidingView, Modal, Platform, StatusBar, StyleSheet, Text, View } from 'react-native'
+import { Image, KeyboardAvoidingView, Modal, Platform, ScrollView, StatusBar, StyleSheet, Text, View } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { COLOR } from '../constant/color'
 import ModalPoup from '../component/Modal/ModalPoup'
@@ -21,7 +21,7 @@ const LoginScreen = () => {
     const [visible, setVisible] = useState(true)
     const handleForgotPassword = () => {
         navigation.navigate(UserRootStackEnum.ForgotPassword);
-      }
+    }
     const hanlerRegiter = () => {
         navigation.navigate(UserRootStackEnum.SignUp);
     }
@@ -33,9 +33,9 @@ const LoginScreen = () => {
                     <View style={{ position: "absolute", right: 0, top: 0, flex: 0.6 }}>
                         <Image source={require('../media/Dicons/elip.png')} />
                     </View>
-                    <View style={[{ width: 245,height:150,justifyContent:'center' }]}>
+                    <View style={[{ width: 245, height: 150, justifyContent: 'center' }]}>
                         <Text style={styles.labelLogin}>Chào mừng ! đến với Netfore</Text>
-                        
+
                     </View>
                     <View style={{ position: "absolute", left: 0, bottom: 0, flex: 0.5 }}>
                         <Image source={require('../media/Dicons/tron.png')} />
@@ -46,30 +46,31 @@ const LoginScreen = () => {
                 </View>
 
                 <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'null'} style={styles.viewContent}>
-                    <View style={[styles.viewAll]}>
-                        <Text style={{
-                            color: "#000",
-                            fontWeight: "bold",
-                            fontSize: 20,
-                            paddingLeft: 30,
-                            textAlign:'center'
-                        }}>Đăng nhập</Text>
-                    </View>
-                    <Loading isLoading={isLoading} />
-                    <FormLogin setIsLoading={setIsLoading} setStatus={setStatus} setModal={setShowModal} />
-                    <View style={{ alignItems: "center", padding: 10 }}>
-                       <Text onPress={handleForgotPassword} style={{ color: "#000" }}> Quên mật khẩu ?</Text>
-                    </View>
-                    <View style={{ flexDirection: "row", justifyContent: 'center', alignItems: 'center', padding: 15 }}>
-                        <View style={{ height: 0.2, backgroundColor: "black", width: "36%" }}></View>
-                        <View style={{ width: "29%" }}>
-                            <Text style={{ textAlign: 'center', paddingHorizontal: 2 }}>hoặc</Text>
+                    <ScrollView>
+                        <View style={[styles.viewAll]}>
+                            <Text style={{
+                                color: "#000",
+                                fontWeight: "bold",
+                                fontSize: 20,
+                                textAlign: 'center'
+                            }}>Đăng nhập</Text>
                         </View>
-                        <View style={{ height: 0.2, backgroundColor: "black", width: "36%" }}></View>
-                    </View>
-                    <View style={{ alignItems: "center", padding: 10 }}>
-                        <Text>Nếu bạn chưa có tài khoản ?<Text onPress={hanlerRegiter} style={{ color: COLOR.PrimaryColor }}> Đăng kí</Text></Text>
-                    </View>
+                        <Loading isLoading={isLoading} />
+                        <FormLogin setIsLoading={setIsLoading} setStatus={setStatus} setModal={setShowModal} />
+                        <View style={{ alignItems: "center", padding: 10 }}>
+                            <Text onPress={handleForgotPassword} style={{ color: "#000" }}> Quên mật khẩu ?</Text>
+                        </View>
+                        <View style={{ flexDirection: "row", justifyContent: 'center', alignItems: 'center', padding: 15 }}>
+                            <View style={{ height: 0.2, backgroundColor: "black", width: "36%" }}></View>
+                            <View style={{ width: "29%" }}>
+                                <Text style={{ textAlign: 'center', paddingHorizontal: 2 }}>hoặc</Text>
+                            </View>
+                            <View style={{ height: 0.2, backgroundColor: "black", width: "36%" }}></View>
+                        </View>
+                        <View style={{ alignItems: "center", padding: 10 }}>
+                            <Text>Nếu bạn chưa có tài khoản ?<Text onPress={hanlerRegiter} style={{ color: COLOR.PrimaryColor }}> Đăng kí</Text></Text>
+                        </View>
+                    </ScrollView>
                 </KeyboardAvoidingView>
                 {status ? (
                     <ModalPoup text="Đăng nhập thành công" visible={showModal} />

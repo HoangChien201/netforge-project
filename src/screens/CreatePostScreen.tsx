@@ -16,6 +16,7 @@ import { useSendNotification } from '../constant/notify'
 import GenerImageAI from '../component/create-post-screen/GenerImageAI'
 import { useFocusEffect, useIsFocused } from '@react-navigation/native'
 import { useNavigation } from '@react-navigation/native'
+import { replaceMentionValues } from 'react-native-controlled-mentions'
 const CreatePostScreen = memo(() => {
   const [status, setStatus] = useState('');
   const [showPopup, setShowPopup] = useState(false);
@@ -29,11 +30,11 @@ const CreatePostScreen = memo(() => {
   const type = 1;
   const isFocused = useIsFocused()
   const [permission, setPermission] = useState(1);
-  const [emotions,setEmotions]=useState(null);
-  const [emotion,setEmotion]=useState(0);
+  const [emotions, setEmotions] = useState(null);
+  const [emotion, setEmotion] = useState(0);
 
   const [sendAll, setSendAll] = useState(true);
-  const { sendNCreateNewPostHistory,sendTagFriend } = useSendNotification();
+  const { sendNCreateNewPostHistory, sendTagFriend } = useSendNotification();
 
   const [showAI, setShowAI] = useState(false);
   const [imageUrl, setImageUrl] = useState('');
@@ -41,26 +42,44 @@ const CreatePostScreen = memo(() => {
   const contentRef = useRef(content);
   const mediaRef = useRef(media);
   const emotionRef = useRef(emotions);
-  const [hiddenView,setHiddenView] = useState(false);
+  const [hiddenView, setHiddenView] = useState(false);
   // const [imageUrl, setImageUrl] = useState('https://oaidalleapiprodscus.blob.core.windows.net/private/org-xPqRqNjg7rhJctL5M8HgZuVW/user-7aLXFzohKCutW9RLwKG25OxW/img-OV7ku7s8LUd6BUMEu0hbXT4v.png?st=2024-07-11T14%3A47%3A14Z&se=2024-07-11T16%3A47%3A14Z&sp=r&sv=2023-11-03&sr=b&rscd=inline&rsct=image/png&skoid=6aaadede-4fb3-4698-a8f6-684d7786b067&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2024-07-10T23%3A22%3A00Z&ske=2024-07-11T23%3A22%3A00Z&sks=b&skv=2023-11-03&sig=5g5HtkuVSHgbNk%2By60LIx7FLtyaxDdXcR%2BenAaz3CCA%3D');
+  let textContent: { name: string; id: string }[] = [];
+  let textOnly = '';
+  const format = content?.split(/@\[([^\]]+)\]\(\d+\)/g);
   useEffect(() => {
     contentRef.current = content;
   }, [content]);
-
+  let replacedContent  = replaceMentionValues(
+    content,
+    mention => {
+      const { name, id } = mention;
+      if (!textContent.some(m => m.id === id)) {
+        textContent.push({ name, id });
+      }
+      return name;
+    }
+  );
+  textContent.forEach(mention => {
+    const name = mention.name;
+    const regex = new RegExp(`${name} 'g' `);
+    replacedContent = replacedContent.replace(regex, '');
+  });
+  textOnly = replacedContent.trim();
   useEffect(() => {
     mediaRef.current = media;
   }, [media]);
   useEffect(() => {
     emotionRef.current = emotions;
   }, [emotions]);
-  useEffect(()=>{
-    if(emotions){
+  useEffect(() => {
+    if (emotions) {
       setEmotion(Number(emotions.type))
-    }else{
+    } else {
       setEmotion(0);
     }
 
-  },[emotions])
+  }, [emotions])
   const clear = () => {
     setContent('');
     setMedia([]);
@@ -77,7 +96,10 @@ const CreatePostScreen = memo(() => {
         [
           {
             text: 'Giữ lại',
-            style: 'cancel',
+            onPress: () => {
+              //clear();
+              navigation.goBack();
+            },
           },
           {
             text: 'Xóa bỏ',
@@ -134,13 +156,13 @@ const CreatePostScreen = memo(() => {
         //   console.log('Added imageUrl to media paths:', medias);
         // }
         //Create new post with the uploaded media paths
-        const newPost = await createNewPost({ content, type, tags, medias, permission,emotion });
+        const newPost = await createNewPost({ content, type, tags, medias, permission, emotion });
         console.log('Bài viết đã được tạo:', JSON.stringify(newPost));
-        if (newPost.status==1 && permission == 1) {
+        if (newPost.status == 1 && permission == 1) {
           handleSendReaction(newPost);
           handleSendTags(newPost);
         }
-        if(newPost.status==1){
+        if (newPost.status == 1) {
           setTimeout(() => {
             setIsLoading(false);
             setStatus('Tạo bài viết thành công');
@@ -153,7 +175,7 @@ const CreatePostScreen = memo(() => {
             }, 1500);
             clear();
           }, 1000);
-        }else{
+        } else {
           console.error('Lỗi khi tạo bài viết!', newPost.message);
           setTimeout(() => {
             setIsLoading(false);
@@ -178,13 +200,13 @@ const CreatePostScreen = memo(() => {
           console.log('Added imageUrl to media paths:', medias);
         }
         console.log('here: ' + JSON.stringify(media));
-        const newPost = await createNewPost({ content, type, tags, medias, permission,emotion });
+        const newPost = await createNewPost({ content, type, tags, medias, permission, emotion });
         console.log('Bài viết đã được tạo không medias:', newPost);
-        if (newPost.status==1 && permission == 1) {
+        if (newPost.status == 1 && permission == 1) {
           handleSendReaction(newPost);
           handleSendTags(newPost);
         }
-        if(newPost.status==1){
+        if (newPost.status == 1) {
           setTimeout(() => {
             setIsLoading(false);
             setStatus('Tạo bài viết thành công');
@@ -196,7 +218,7 @@ const CreatePostScreen = memo(() => {
             }, 1500);
             clear();
           }, 1000);
-        }else{
+        } else {
           console.error('Lỗi khi tạo bài viết:', newPost.message);
           setTimeout(() => {
             setIsLoading(false);
@@ -240,24 +262,24 @@ const CreatePostScreen = memo(() => {
 
   const handleSendReaction = (post: any) => {
     const data = {
-      postId: post.id,
-      body: post.contain
+      postId: post.post,
+      body: textOnly
     };
 
     sendNCreateNewPostHistory(data);
 
   };
-  const handleSendTags = (post:any) => {
+  const handleSendTags = (post: any) => {
     if (friends.length > 0) {
       friends.forEach(friend => {
-        const data2 ={
-          postId: post.id,
-          body: post.contain,
-          receiver:Number(friend)
+        const data2 = {
+          postId: post.post,
+          body: textOnly,
+          receiver: Number(friend)
         };
         sendTagFriend(data2);
         //console.log('hh', friend);
-        
+
       });
     } else {
       console.log('No friends to tag');
@@ -266,7 +288,7 @@ const CreatePostScreen = memo(() => {
 
   const log = () => {
 
-    console.log(content, media, type, permission, tags, imageUrl, 'bạn' +friends, emotion);
+    console.log(content, media, type, permission, tags, imageUrl, 'bạn' + friends, emotion,'text1: ' + textOnly, 'text: ' + format);
 
   }
   useFocusEffect(
@@ -285,32 +307,34 @@ const CreatePostScreen = memo(() => {
 
   const handleKeyboardShow = useCallback(() => {
     navigation.getParent()?.setOptions({
-        tabBarStyle: {
-            display: 'none',
-        }
+      tabBarStyle: {
+        display: 'none',
+      }
     });
     setHiddenView(true)
-}, []);
-const handleKeyboardHide = useCallback(() => {
+  }, []);
+  const handleKeyboardHide = useCallback(() => {
     navigation.getParent()?.setOptions({
-        tabBarStyle: {
-            position: 'absolute',
-            backgroundColor: '#1F1F2F',
-            margin: 20,
-            borderRadius: 15
-        },
+      tabBarStyle: {
+        position: 'absolute',
+        backgroundColor: '#1F1F2F',
+        margin: 20,
+        borderRadius: 15
+      },
     });
     setHiddenView(false)
-}, []);
-useEffect(() => {
-  // Lắng nghe sự kiện hiển thị và ẩn bàn phím
-  const keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', handleKeyboardShow);
-  const keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', handleKeyboardHide);
-  return () => {
-      keyboardDidShowListener.remove();
-      keyboardDidHideListener.remove();
-  };
-}, [handleKeyboardShow, handleKeyboardHide]);
+  }, []);
+  useFocusEffect(
+    useCallback(() => {
+      // Lắng nghe sự kiện hiển thị và ẩn bàn phím
+      const keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', handleKeyboardShow);
+      const keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', handleKeyboardHide);
+      return () => {
+        keyboardDidShowListener.remove();
+        keyboardDidHideListener.remove();
+      };
+    }, [handleKeyboardShow, handleKeyboardHide]),
+  );
   return (
     <KeyboardAvoidingView style={styles.container}>
       <Loading isLoading={isLoading} />
@@ -320,7 +344,7 @@ useEffect(() => {
           <Text style={styles.headerPostText} >Đăng</Text>
         </TouchableOpacity>
       </View>
-      <BODY 
+      <BODY
         hiddenView={hiddenView}
         content={content}
         setContent={setContent}

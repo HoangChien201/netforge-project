@@ -3,11 +3,11 @@ import React, { useEffect, useState, useRef } from 'react';
 import { getAllUser, getFriends, getRequest, getSuggest } from '../../http/QuyetHTTP';
 import Icon from 'react-native-vector-icons/AntDesign';
 import Swiper from 'react-native-swiper';
-
+import Icon1 from 'react-native-vector-icons/Entypo'
 import { COLOR } from '../../constant/color';
 import RequestList from './RequestList';
 import WaitAcceptList from './WaitAcceptList';
-import { useFocusEffect } from '@react-navigation/native';
+import { useFocusEffect, useNavigation } from '@react-navigation/native';
 type Bob = {
     reload: any,
     showModalFriend: any,
@@ -29,6 +29,10 @@ const Body: React.FC<Bob> = ({ reload, showModalFriend, setShowModalFriend, setD
     const status2 = 2;
     const slideAnim = useRef(new Animated.Value(-500)).current;
     const swiperRef = useRef(null);
+    const [currentIndex, setCurrentIndex] = useState(0);
+    const navigation = useNavigation();
+    const [numReq, setNumReq] = useState(0);
+    const [numWA, setNumWA] = useState(0);
     // const OpenCloseRA = () => {
     //     setShowRA(!showRA);
     //     if (swiperRef.current) {
@@ -68,6 +72,7 @@ const Body: React.FC<Bob> = ({ reload, showModalFriend, setShowModalFriend, setD
             const result = await getFriends(num);
             //console.log('danh sách bạn bè 1: ' + JSON.stringify(result));
             setDataRequest(result);
+            setNumReq(result.length)
             //console.log('request: ' + JSON.stringify(result));
         } catch (error) {
             console.log(error);
@@ -79,6 +84,7 @@ const Body: React.FC<Bob> = ({ reload, showModalFriend, setShowModalFriend, setD
             const result = await getRequest();
             //console.log('danh sách bạn bè chờ chấp nhận: ' + JSON.stringify(result));
             setDataWaitAccept(result);
+            setNumWA(result.length);
             //console.log('Accept: ' + result);
         } catch (error) {
             console.log(error);
@@ -114,7 +120,14 @@ const Body: React.FC<Bob> = ({ reload, showModalFriend, setShowModalFriend, setD
         slideOut();
         setTimeout(() => setShowModalFriend(false), 300); // Delay to match slide out animation
     };
-
+    const handleIndexChanged = (index) => {
+        setCurrentIndex(index);
+    };
+    const handleButtonPress = (index) => {
+        if (swiperRef.current) {
+            swiperRef.current.scrollBy(index - currentIndex, true);
+        }
+    };
     return (
         <Modal transparent visible={showModalFriend}>
             <Animated.View style={[styles.container, { transform: [{ translateY: slideAnim }] }]}>
@@ -125,7 +138,35 @@ const Body: React.FC<Bob> = ({ reload, showModalFriend, setShowModalFriend, setD
                     <Text style={styles.textHeader}>Yêu cầu kết bạn</Text>
                     <View></View>
                 </View>
-                <Swiper ref={swiperRef} loop={false} showsButtons={false}>
+                <View style={{
+                    height: 60,
+                    flexDirection: 'row',
+                }}>
+                    <TouchableOpacity
+                        style={[styles.buttonS, currentIndex === 0 && styles.activeButton]}
+                        onPress={() => handleButtonPress(0)}
+                    >
+                        <Icon1 name='add-to-list' size={20} color={COLOR.PrimaryColor} />
+                        <Text style={styles.text1}>Yêu cầu</Text>
+                        <View style={{ position: 'absolute', height: 14, width: 12, backgroundColor: COLOR.PrimaryColor1, alignItems: 'center', justifyContent: 'center', borderRadius: 8, end: -2, top: -2 }}>
+                            <Text style={styles.num}>{numWA}</Text>
+                        </View>
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                        style={[styles.buttonS, currentIndex === 1 && styles.activeButton]}
+                        onPress={() => handleButtonPress(1)}
+                    >
+                        <Icon1 name='paper-plane' size={20} color={COLOR.PrimaryColor} />
+                        <Text style={styles.text1}>Lời mời</Text>
+                        <View style={{ position: 'absolute', height: 14, width: 12, backgroundColor: COLOR.PrimaryColor1, alignItems: 'center', justifyContent: 'center', borderRadius: 8, end: -2, top: -2 }}>
+                            <Text style={styles.num}>{numReq}</Text>
+                        </View>
+                    </TouchableOpacity>
+                </View>
+
+                <Swiper ref={swiperRef} loop={false} showsButtons={false}
+                    onIndexChanged={handleIndexChanged}
+                >
                     <View>
                         <WaitAcceptList dataWaitAccept={dataWaitAccept} setDataWaitAccept={setDataWaitAccept} setShowModalFriend={setShowModalFriend} />
                     </View>
@@ -198,5 +239,42 @@ const styles = StyleSheet.create({
         backgroundColor: 'red',
         borderRadius: 5,
     },
+    buttonS: {
+        width: 86,
+        height: 32,
+        borderRadius: 10,
+        margin: 5,
+        backgroundColor: 'white',
+        justifyContent: 'center',
+        alignItems: 'center',
+        flexDirection: 'row'
+    },
+    buttonF: {
+        width: 100,
+        height: 32,
+        borderRadius: 10,
+        backgroundColor: COLOR.primary350,
+        justifyContent: 'center',
+        alignItems: 'center',
+        flexDirection: 'row',
+        position: 'absolute',
+        end: 5,
+        top: 5
 
+    },
+    activeButton: {
+        backgroundColor: COLOR.primary150 // Change to the active color
+    },
+    num: {
+        fontSize: 10,
+        color: 'black',
+        fontWeight: '400'
+    },
+    text1: {
+        fontSize: 16,
+        fontWeight: '400',
+        fontStyle: "normal",
+        color: 'black',
+        marginStart: 3
+    },
 });

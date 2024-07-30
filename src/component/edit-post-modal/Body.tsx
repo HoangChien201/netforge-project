@@ -17,7 +17,7 @@ import ModalFail from '../Modal/ModalFail'
 import ModalPoup from '../Modal/ModalPoup'
 import Loading from '../Modal/Loading';
 import ItemPost from '../listpost/ItemPost';
-import { useNavigation } from '@react-navigation/native';
+import { useFocusEffect, useNavigation } from '@react-navigation/native';
 interface BodyProps {
     showModalEdit: boolean;
     setShowModalEdit: (value: boolean) => void;
@@ -140,15 +140,17 @@ const Body: React.FunctionComponent<BodyProps> = ({ showModalEdit, setShowModalE
         });
         setHiddenView(false)
     }, []);
-    useEffect(() => {
+    useFocusEffect(
+        useCallback(() => {
         // Lắng nghe sự kiện hiển thị và ẩn bàn phím
         const keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', handleKeyboardShow);
         const keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', handleKeyboardHide);
         return () => {
-            keyboardDidShowListener.remove();
-            keyboardDidHideListener.remove();
+          keyboardDidShowListener.remove();
+          keyboardDidHideListener.remove();
         };
-    }, [handleKeyboardShow, handleKeyboardHide]);
+      }, [handleKeyboardShow, handleKeyboardHide]),
+    );
     useEffect(() => {
         //console.log('media mới nè: ' + newMedia);
         //console.log('media sau upload' + media);

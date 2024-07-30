@@ -5,19 +5,24 @@ import { COLOR } from '../../constant/color'
 import { DateOfTimePost } from '../../format/DateOfTimePost'
 import PushNotification from 'react-native-push-notification';
 import { useNavigation } from '@react-navigation/native';
+import { navigationRef } from '../navigation/NavigationRef'
+import { CommentsScreenNavigationProp } from '../stack/NetworkRootStackParams'
 
 
 type Item = {
     notification: any
 }
 const ItemLike: React.FC<Item> = ({ notification }) => {
-    const navigation = useNavigation();
+    const navigation:CommentsScreenNavigationProp = useNavigation();
     function navigationScreen(screen: string) {
         navigation.navigate(`${screen}`)
     }
-    const reaction = notification.type
+    const reaction = notification.data[0].reaction.type
     const displayDate = DateOfTimePost(notification.data[0].timestamp);
-    const postId = notification?.postId || notification?.postId1
+    const postId = notification?.data[0].postId || notification?.data[0].postId1
+    const log = () => {
+        console.log(notification , reaction);
+    }
     const getReactionDetails = (reaction: any) => {
         switch (reaction) {
             case 1:
@@ -38,7 +43,7 @@ const ItemLike: React.FC<Item> = ({ notification }) => {
     return (
         <TouchableOpacity style={styles.container} key={notification.idv4.toString()} 
             onPress={() => navigation.navigate('CommentsScreen', { postId })}
-
+            //onPress={log}
         >
             <View style={styles.iconFriend} >
                 <Image style={styles.avatar} source={{ uri: notification.data[0].userInfo.avatar }} />
@@ -159,18 +164,18 @@ const styles = StyleSheet.create({
         overflow: 'hidden',
     },
     textUser_Post: {
-        fontSize: 16,
-        fontWeight: '600',
+        fontSize: 15,
+        fontWeight: '500',
         fontStyle: "normal",
         color: 'black',
 
     },
     text1: {
-        fontSize: 13,
-        fontWeight: '400',
+        fontSize: 15,
+        fontWeight: '500',
         fontStyle: "normal",
-        color: 'black',
-        marginEnd: 5
+        color: COLOR.PrimaryColor,
+        marginEnd:5
     },
 
     textTime: {

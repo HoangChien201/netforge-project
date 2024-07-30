@@ -219,7 +219,7 @@ const styles = StyleSheet.create({
     backgroundColor: COLOR.primary300,
   },
   container1: {
-    height: '70%',
+    height: '83%',
     backgroundColor: COLOR.primary300,
   },
   reqFriends: {
