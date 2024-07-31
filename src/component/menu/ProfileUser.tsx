@@ -4,6 +4,8 @@ import { useMyContext } from '../navigation/UserContext';
 import { NavigationProp, ParamListBase, useFocusEffect, useNavigation } from '@react-navigation/native';
 import { getUSerByID } from '../../http/PhuHTTP';
 import { ProfileRootStackEnum } from '../stack/ProfileRootStackParams';
+// import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
+
 
 interface User {
     email: string;
@@ -42,6 +44,7 @@ const ProfileUser = () => {
     };
 
     return (
+        // <SkeletonPlaceholder borderRadius={4}>
         <TouchableOpacity onPress={handleToProfileScreen}>
             <View style={styles.profileUser}>
                 <Image 
@@ -70,6 +73,7 @@ const ProfileUser = () => {
                 </View>
             </View>
         </TouchableOpacity>
+        // </SkeletonPlaceholder>
     );
 };
 

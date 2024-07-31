@@ -16,9 +16,11 @@ import PushNotification, { Importance } from 'react-native-push-notification';
 import { Alert, PermissionsAndroid } from 'react-native';
 import { socket } from '../../http/SocketHandle'
 // @ts-ignore
-  
-  import { ZegoCallInvitationDialog,ZegoUIKitPrebuiltCallFloatingMinimizedView } from '@zegocloud/zego-uikit-prebuilt-call-rn';
-
+import { ZegoCallInvitationDialog,ZegoUIKitPrebuiltCallFloatingMinimizedView } from '@zegocloud/zego-uikit-prebuilt-call-rn';
+import { Linking } from 'react-native';
+import HomeScreen from '../../screens/HomeScreen'
+import { navigationRef } from './NavigationRef'
+import CommentsScreen from '../../screens/CommentsScreen'
 
 export type navigationType = StackNavigationProp<RootStackParamList>
 type routeType = RouteProp<{ params: { value: string } }, 'params'>
@@ -33,6 +35,45 @@ const ManageNavigation: React.FC<Manager> = ({screen}) => {
     const { user, setUser } = useMyContext();
     const [notifications, setNotifications] = useState([]);
     
+    const linking = {
+        prefixes: ['https://netforge'],
+        config: {
+          screens: {
+            HomeScreen: 'home',
+            Post: 'post/:id',
+            CommentsScreen: 'comments/:id',
+          },
+        },
+      };
+
+      useEffect(() => {
+        const handleOpenURL = (event) => {
+          const url = event.url;
+          console.log('Opened URL:', url);
+          if (url) {
+            // Parse the URL to get the path and params
+            const route = url.replace(/.*?:\/\//g, '');
+            const [path, postId] = route.split('/');
+            if (path === 'post' && postId) {
+              // Navigate to CommentsScreen with the postId
+              navigationRef.current?.navigate('CommentsScreen', { postId });
+            }
+          }
+        };
+    
+        Linking.getInitialURL().then((url) => {
+          if (url) {
+            handleOpenURL({ url });
+          }
+        });
+    
+        Linking.addEventListener('url', handleOpenURL);
+    
+        // return () => {
+        //   Linking.removeEventListener('url', handleOpenURL);
+        // };
+      }, []);
+
 
     const handleAutoLogin = async () => {
         try {
@@ -192,7 +233,7 @@ const ManageNavigation: React.FC<Manager> = ({screen}) => {
 
     return (
         <GestureHandlerRootView>
-            <NavigationContainer ref={screen}>
+            <NavigationContainer ref={screen} linking={linking}>
                 {/*ZegoCallInvitationDialog hiện dialog nhận cuộc gọi */}
                 <ZegoCallInvitationDialog />
                 {user ? <NetworkStack /> : <UserStack />}

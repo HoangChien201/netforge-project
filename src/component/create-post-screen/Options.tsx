@@ -7,6 +7,7 @@ import { COLOR } from '../../constant/color';
 import IconAnt from 'react-native-vector-icons/AntDesign'
 import { useNavigation } from '@react-navigation/native';
 import Swiper from 'react-native-swiper';
+import { useMyContext } from '../navigation/UserContext';
 
 export type fileType = {
     fileName: string,
@@ -85,8 +86,22 @@ const Options: React.FC<Op> = ({ onSelectMedia, onSelectEmoji, setShowAI, imageU
     /*
     phu update
     */
+    // Tạo trạng thái userID và liveID
+    const [userID, setUserID] = useState('');
+    const [liveID, setLiveID] = useState('');
+
+    useEffect(() => {
+        setUserID(String(Math.floor(Math.random() * 100000)));
+        setLiveID(String(Math.floor(Math.random() * 10000)));
+    }, []);
+    const { user } = useMyContext();
+    const name = user.fullname;
     const handleToLiveStream = () => {
-        navigation.navigate('LiveStack' as never);
+        navigation.navigate('HostScreen', {
+            userID,
+            userName: name,
+            liveID
+        });
     };
     //
 

@@ -4,7 +4,7 @@ import ZegoUIKitPrebuiltLiveStreaming, {
   AUDIENCE_DEFAULT_CONFIG,
 } from '@zegocloud/zego-uikit-prebuilt-live-streaming-rn';
 import KeyCenter from './KeyCenter';
-import {useNavigation, NavigationProp, RouteProp} from '@react-navigation/native';
+import {useNavigation, RouteProp} from '@react-navigation/native';
 import { useMyContext } from '../../component/navigation/UserContext';
 
 type AudienceScreenRouteProp = RouteProp<{

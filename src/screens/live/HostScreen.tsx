@@ -1,10 +1,10 @@
-import React, { useEffect, useRef } from 'react';
-import { StyleSheet, Text, View, Image } from 'react-native';
+import React, { useEffect, useRef, useState } from 'react';
+import { StyleSheet, Text, View, Image, Dimensions } from 'react-native';
 import ZegoUIKitPrebuiltLiveStreaming, {
   HOST_DEFAULT_CONFIG, ZegoMenuBarButtonName
 } from '@zegocloud/zego-uikit-prebuilt-live-streaming-rn';
 import KeyCenter from './KeyCenter';
-import { useNavigation, NavigationProp, RouteProp } from '@react-navigation/native';
+import { useNavigation, RouteProp } from '@react-navigation/native';
 import { useMyContext } from '../../component/navigation/UserContext';
 import { createNewPost } from '../../http/QuyetHTTP';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -27,22 +27,22 @@ type Props = {
   route: HostScreenRouteProp;
 };
 
+const { height } = Dimensions.get('window');
+
 const HostScreen: React.FC<Props> = ({ route }) => {
   const postID = useSelector((state: RootState) => state.postID.postID);
   const prebuiltRef = useRef<any>();
   const { userID, userName, liveID } = route.params;
-  //const navigation = useNavigation<NavigationProp<RootStackParamList>>();
   const navigation=useNavigation()
+
   useEffect(() => {
     navigation.getParent()?.setOptions({ tabBarStyle: {display:'none'}});
   }, []);
   const { user } = useMyContext();
-console.log("dsfjksljdfljsfla",postID);
+  console.log("create live post: ",postID);
 
   const handleLeaveLiveStreaming =() => {
     handleDeletePost();
-   
-    
     // await AsyncStorage.removeItem("liveID")
   };
   const foregroundBuilder = ({ userInfo }: { userInfo: any }) => (
@@ -57,7 +57,7 @@ console.log("dsfjksljdfljsfla",postID);
   const handleDeletePost = async () => {
     try {
         await deletePost(postID);
-        navigation.navigate('LiveWithZego' as never);
+        navigation.navigate('CreatePostScreen' as never);
     } catch (error) {
         console.error(error);
     }
@@ -164,7 +164,7 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     zIndex:1,
     position:'absolute',
-    top:0,
+    top: height/11 ,
     left:20
   },
   avView: {

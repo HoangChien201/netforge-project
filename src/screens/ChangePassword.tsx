@@ -3,11 +3,10 @@ import React, { useEffect, useState } from 'react'
 import { useIsFocused, useNavigation } from '@react-navigation/native';
 import { COLOR } from '../constant/color';
 import ModalFail from '../component/Modal/ModalFail';
-import ModalPoup from '../component/Modal/ModalPoup';
 import ButtonLogin from '../component/form/ButtonLogin';
 import InputLogin from '../component/formlogin/Input';
 import Loading from '../component/Modal/Loading';
-import { changePassword, resetPassword } from '../http/PhuHTTP';
+import { changePassword } from '../http/PhuHTTP';
 import { useMyContext } from '../component/navigation/UserContext';
 
 interface resetPass {
