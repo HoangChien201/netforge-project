@@ -5,7 +5,6 @@ import MCIcon from 'react-native-vector-icons/MaterialCommunityIcons'
 
 import { COLOR } from '../../constant/color';
 import UseMedia from './UseMedia';
-import { useMyContext } from '../navigation/UserContext';
 import { messageType } from './MessageItem';
 import { MessageFactory } from './class/MessageProvider';
 import { useSelector } from 'react-redux';

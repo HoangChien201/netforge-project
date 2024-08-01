@@ -11,7 +11,7 @@ const AxiosInstance = (contentType = 'application/json') => {
     axiosInstance.interceptors.request.use(
         async (config) => {
             try {
-                const token = await AsyncStorage.getItem('AccessToken');
+                const token = await AsyncStorage.getItem('token');
                 if (token) {
                     config.headers['Authorization'] = `Bearer ${token}`;
                 }

@@ -122,7 +122,7 @@ const StoryDetail = ({ route }) => {
             const type = 2;
             const permission = 1;
             setIsLoading(true);
-            const newPost = await createNewPost({ type, medias, permission, content });
+            const newPost = await createNewPost({ type, medias, permission, content,emotion:0 });
             console.log("newPost", newPost);
             setTimeout(() => {
                 setIsLoading(false);

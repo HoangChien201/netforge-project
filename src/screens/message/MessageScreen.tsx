@@ -6,24 +6,18 @@ import HeaderMessageComponent from '../../component/message/HeaderMessageCompone
 import { COLOR } from '../../constant/color'
 import TextingComponent from '../../component/message/TextingComponent'
 import { RouteProp, useFocusEffect, useIsFocused, useNavigation, useRoute } from '@react-navigation/native'
-import MessageCall from '../../component/message/MessageCall'
 import { createGroupsHTTP, getMessageByGroupAPI } from '../../http/ChienHTTP'
-import { useMyContext } from '../../component/navigation/UserContext'
-import PortalMessage from '../../component/message/PortalMessage';
-import { Host } from 'react-native-portalize';
 import { socket } from '../../http/SocketHandle'
 import { StackNavigationProp } from '@react-navigation/stack'
 import { MessageRootStackParams } from '../../component/stack/MessageRootStackParams'
 import {
   BottomSheetModal,
-  BottomSheetView,
   BottomSheetModalProvider,
 } from '@gorhom/bottom-sheet';
 import ShowReactionComponent from '../../component/message/ShowReactionComponent'
 import { GroupChatType } from '../../component/message/ListMessageItem'
 import { MessageManage, Message } from '../../component/message/class/MessageProvider'
 import ToolBar from '../../component/message/ToolBar'
-import { useSendNotification } from '../../constant/notify'
 import { useSelector } from 'react-redux'
 import { RootState } from '../../component/store/store'
 
@@ -41,7 +35,7 @@ export type MessageScreenNavigationProp = StackNavigationProp<
 export type MessageScreenRouteProp = RouteProp<MessageRootStackParams, 'MessageScreen'>;
 
 const MessageScreen = () => {
-  const user = useSelector((state:RootState)=>state.user.value)
+  const user = useSelector((state:RootState)=>state.user?.value)
   const [messages, setMessages] = useState<Array<Message>>([])
   const [partner, setPartner] = useState<{ fullname: string, avatar: string, partner_id: number | null }>({
     fullname: '',
@@ -95,17 +89,18 @@ const MessageScreen = () => {
       getMessages(group_id)
       setPartner(prevValue => { return { ...prevValue, fullname, avatar } })
       setGroupId(group_id)
+
       if (route.params?.messages) {
         const messages = new MessageManage(route.params?.messages).messages
         
         setMessages(messages)
       }
 
-      socket.on(`message-${user.id}`, (message) => {
+      socket.on(`message-${user?.id}`, (message) => {
         if (isFocus) {
           //đọc tin nhắn khi đang trong phần tin nhắn tin nhắn
           socket.emit('read-message', {
-            user: user.id,
+            user: user?.id,
             group: group_id
           })
         }
@@ -143,16 +138,17 @@ const MessageScreen = () => {
   async function createGroupAPIs(friend_id: number) {
     const createGroup = {
       type: 'single',
-      members: [user.id, friend_id]
+      members: [user?.id, friend_id]
     }
     const group: GroupChatType = await createGroupsHTTP(createGroup)
+    
     if (!group) return
 
-    socket.on(`message-${user.id}`, (message) => {
+    socket.on(`message-${user?.id}`, (message) => {
       if (isFocus) {
         //đọc tin nhắn khi đang trong phần tin nhắn tin nhắn
         socket.emit('read-message', {
-          user: user.id,
+          user: user?.id,
           group: group.id
         })
       }
@@ -160,7 +156,7 @@ const MessageScreen = () => {
     })
     //đọc tin nhắn khi vào tin nhắn
     socket.emit('read-message', {
-      user: user.id,
+      user: user?.id,
       group: group.id
     })
 
@@ -182,7 +178,7 @@ const MessageScreen = () => {
           return (
             <MessageItem
               message={item}
-              sender={user.id === sender}
+              sender={user?.id === sender}
               group_id={groupId}
               setMessageReactionsSelected={setMessageReactionsSelected}
               deleteMessage={DeleteMessage}
@@ -226,7 +222,10 @@ const MessageScreen = () => {
         <ToolBar title='Tin nhắn' />
         <HeaderMessageComponent partner={partner} />
         <View style={styles.content}>
+          {
+            groupId &&
             <ListMessage />
+          }
         </View>
 
         <TextingComponent addMessage={addMessage} reply={reply} setReply={setReply} />
