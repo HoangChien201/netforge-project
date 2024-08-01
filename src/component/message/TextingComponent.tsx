@@ -7,7 +7,7 @@ import { COLOR } from '../../constant/color';
 import UseMedia from './UseMedia';
 import { useMyContext } from '../navigation/UserContext';
 import { messageType } from './MessageItem';
-import { MessageProvider } from './class/MessageProvider';
+import { MessageFactory } from './class/MessageProvider';
 
 
 const TextingComponent = ({ addMessage, reply, setReply }: { addMessage: any, reply: messageType | null, setReply: any }) => {
@@ -19,13 +19,13 @@ const TextingComponent = ({ addMessage, reply, setReply }: { addMessage: any, re
             return
         }
 
-        const messageCreate = new MessageProvider({
-            message:valueInput ? valueInput.trimEnd() : '😂',
-            type:'text',
-            sender:user.id,
-            parent:reply ? reply : null
-        })
-        
+        const messageCreate = MessageFactory.newMessageText(
+            { id: user.id, },
+            {
+                message: valueInput ? valueInput.trimEnd() : '😂',
+                parent: reply ? reply : null
+            })
+
         addMessage(messageCreate)
 
         setValueInput('')

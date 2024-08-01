@@ -27,12 +27,6 @@ const ListMessageScreen = () => {
       socket.off(`list-group-${user.id}`)
     }
   }, [isFocus])
-
-  useEffect(() => {
-
-
-
-  }, [])
   async function getGroups() {
     const respone = await getGroupsAPI()
     if (respone) {

@@ -6,7 +6,7 @@ import { NetworkStackNavigationProp } from '../component/stack/NetworkRootStackP
 import { useNavigation } from '@react-navigation/native'
 import { getTextBirthday } from '../constant/birthday'
 import { FriendType } from '../component/message/ModalNewMessage'
-import { MessageProvider } from '../component/message/class/MessageProvider'
+import { MessageFactory, MessageProvider } from '../component/message/class/MessageProvider'
 import { useMyContext } from '../component/navigation/UserContext'
 import Loading from '../component/Modal/Loading'
 
@@ -31,13 +31,12 @@ const ItemBirthday = ({ item }: { item: FriendType }) => {
   const handleSendBirthdayMessage = async (text: string) => {
     const { id: partner_id } = item.user
 
-    const messageCreate = await new MessageProvider(
+    const messageCreate = await MessageFactory.newMessageText(
+      {id:user.id},
       {
         message: text,
-        type: 'text',
-        sender: user.id,
       }
-    ).CreateMessageToAPIByReceiver(user.id, partner_id)
+    ).PostMessage({sender:user.id, receiver:partner_id})
 
     if (messageCreate) {
 

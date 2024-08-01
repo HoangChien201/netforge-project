@@ -5,8 +5,9 @@ import MessageText from './MessageText';
 import Video, { VideoRef } from 'react-native-video';
 import { EmojiReaction } from '../../constant/emoji';
 import MessageCall from './MessageCall';
+import { Message } from './class/MessageProvider';
 
-const MessageItemContent = ({ message, sender }: { message: messageType, sender: boolean }) => {
+const MessageItemContent = ({ message, sender }: { message: Message, sender: boolean }) => {
     const videoRef = useRef<VideoRef>(null);
     function onBuffer(event) {
         console.log(event);
