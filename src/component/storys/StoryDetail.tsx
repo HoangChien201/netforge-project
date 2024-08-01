@@ -244,9 +244,7 @@ const StoryDetail = ({ route }) => {
                                 <TouchableOpacity onPress={handleConfirmPress} style={styles.confirmButton}>
                                     <Text style={styles.confirmButtonText}>Xác nhận</Text>
                                 </TouchableOpacity>
-                                <TouchableOpacity onPress={handleCloseModal} style={styles.closeButton}>
-                                    <Text style={styles.closeButtonText}>Đóng</Text>
-                                </TouchableOpacity>
+                               
                             </View>
                         </TouchableWithoutFeedback>
                     </View>

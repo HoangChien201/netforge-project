@@ -94,6 +94,8 @@ const MessageItem: React.FC<MessageItemProp> = React.memo((
     = useState(
       message.reactions
     )
+
+    
   //
   const [selectedMessage, setSelectedMessage] = useState<messageType | null>(null)
   const [messageCordinates, setMessageCordinates] = useState<MessageCordinatesType>({ x: 0, y: 0 })

@@ -1,8 +1,6 @@
 import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import React from 'react'
-import { navigationType } from '../../navigation/ManageNavigation'
 import { useNavigation } from '@react-navigation/native'
-import { useMyContext } from '../navigation/UserContext'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { NetworkStackNavigationProp } from '../stack/NetworkRootStackParams'
 import { NavigateToMessage } from '../message/NavigateToMessage'
@@ -11,7 +9,7 @@ import { deleteUser } from '../store/userSlice'
 
 const OptionProfile = () => {
     const dispatch = useDispatch()
-    const navigation:NetworkStackNavigationProp = useNavigation()
+    const navigation: NetworkStackNavigationProp = useNavigation()
 
     function OptionHorizontalItem({ image, text, onPress }: { image: any, text: string, onPress?: any }) {
         return (
@@ -44,55 +42,65 @@ const OptionProfile = () => {
     }
 
     async function LogoutHandle() {
-        dispatch(deleteUser())
+        const keysToRemove = [
+            'keep',
+            'email',
+            'password',
+            'touch',
+            'cancelBiometric',
+            'TokenForgot',
+            'liveID'
+        ];
         try {
-            await AsyncStorage.clear();
-            console.log('All items removed from AsyncStorage');
+            await AsyncStorage.multiRemove(keysToRemove);
+
+            console.log('Selected items removed from AsyncStorage');
         } catch (error) {
-            console.error('Error clearing AsyncStorage:', error);
+            console.error('Error clearing selected items from AsyncStorage:', error);
         }
-
-    }
-    //message
-
-    //type members
-    //   members:Array<{
-    //     user:{
-    //         fullname:string,
-    //         avatar:string,
-    //         id:number
-    //     }
-    // }>,
-
-    function messageOnPress(){
-       
+        dispatch(deleteUser());
     }
 
+//message
 
-    //message
-    return (
-        <View style={styles.container}>
-            <View style={styles.optionHorizontal}>
-                <OptionHorizontalItem
-                    text='Thông báo'
-                    image={require('../../media/icon/bell.png')}
-                    onPress={messageOnPress}
-                />
-                <OptionHorizontalItem
-                    text='Cài đặt'
-                    image={require('../../media/icon/setting.png')}
-                    onPress={navigationScreen.bind(this, 'SettingScreen')}
-                />
-            </View>
-            <View style={styles.optionVertical}>
-                <OptionVerticalItem text='Bạn bè' onPress={navigationScreen.bind(this, 'FriendScreen')} />
-                <OptionVerticalItem text='Lịch sử hoạt động' onPress={navigationScreen.bind(this, 'HistoryStack')} />
-                <OptionVerticalItem text='Giúp đỡ' onPress={navigationScreen.bind(this, 'HelpScreen')} />
-                <OptionVerticalItem text='Đăng xuất' onPress={LogoutHandle} />
+//type members
+//   members:Array<{
+//     user:{
+//         fullname:string,
+//         avatar:string,
+//         id:number
+//     }
+// }>,
 
-            </View>
+function messageOnPress() {
+
+}
+
+
+//message
+return (
+    <View style={styles.container}>
+        <View style={styles.optionHorizontal}>
+            <OptionHorizontalItem
+                text='Thông báo'
+                image={require('../../media/icon/bell.png')}
+                onPress={messageOnPress}
+            />
+            <OptionHorizontalItem
+                text='Cài đặt'
+                image={require('../../media/icon/setting.png')}
+                onPress={navigationScreen.bind(this, 'SettingScreen')}
+            />
         </View>
-    )
+        <View style={styles.optionVertical}>
+            <OptionVerticalItem text='Bạn bè' onPress={navigationScreen.bind(this, 'FriendScreen')} />
+            <OptionVerticalItem text='Lịch sử hoạt động' onPress={navigationScreen.bind(this, 'HistoryStack')} />
+            <OptionVerticalItem text='Giúp đỡ' onPress={navigationScreen.bind(this, 'HelpScreen')} />
+            <OptionVerticalItem text='Đăng xuất' onPress={LogoutHandle} />
+
+        </View>
+    </View>
+)
 }
 
 export default OptionProfile

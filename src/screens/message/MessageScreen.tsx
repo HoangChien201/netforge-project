@@ -159,8 +159,8 @@ const MessageScreen = () => {
       user: user?.id,
       group: group.id
     })
-
     getMessages(group.id)
+
     setGroupId(group.id)
     return group;
   }

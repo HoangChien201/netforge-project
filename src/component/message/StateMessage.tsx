@@ -48,13 +48,18 @@ const StateMessage: React.FC<StateMessageType> = ({ message, group_id, sender, l
       switch (message.type) {
 
         case 'text':
+          console.log('g',group_id);
           
           const msgRespone = await message.PostMessage({sender:user.id,group:group_id})
           console.log('msgRespone1',msgRespone);
 
-          if (msgRespone) {
+          if (msgRespone !==  "Gửi tin nhắn lỗi") {
             socket.emit(`message`, msgRespone)
             setState(msgRespone.state)
+          }
+          else{
+            setState(3);
+            
           }
           break;
 
@@ -87,9 +92,13 @@ const StateMessage: React.FC<StateMessageType> = ({ message, group_id, sender, l
         const msgRespone = await message.PostMessage({sender:user.id,group:group_id})
         console.log('msgRespone',msgRespone);
         
-        if (msgRespone) {
+        if (msgRespone !==  "Gửi tin nhắn lỗi") {
           socket.emit(`message`, msgRespone)
           setState(msgRespone.state)
+        }
+        else{
+          setState(3);
+          
         }
 
       } else {
@@ -103,8 +112,9 @@ const StateMessage: React.FC<StateMessageType> = ({ message, group_id, sender, l
   return (
     <View style={styles.container}>
       {
-        sender && lastMessage &&
+        sender && lastMessage && 
         <Text style={styles.status}>{StateMessageFormat(seens.length > 0 ? STATUS_SEEN : state)}</Text>
+
       }
     </View>
   )

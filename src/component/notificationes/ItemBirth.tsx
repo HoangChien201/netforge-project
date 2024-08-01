@@ -16,6 +16,8 @@ const ItemBirth: React.FC<Item> = ({ notification }) => {
     }
     const postId = notification.id
     const displayDate = DateOfTimePost(notification.data[0].timestamp);
+    console.log('ggg',notification.data[0]);
+    
     return (
         <TouchableOpacity style={styles.container} key={notification.idv4.toString()}
             onPress={() => navigationRef.navigate('NotificationScreen')}
@@ -41,10 +43,9 @@ const ItemBirth: React.FC<Item> = ({ notification }) => {
             </View>
             <View style={styles.text}>
                 <Text >
-                    <Text style={styles.textUser_Post}>Hôm nay là sinh nhật của  </Text>
-                    <Text style={styles.textUser_Post} numberOfLines={2} >{notification.data[0].userInfo.fullname}</Text>
+                    <Text style={styles.textUser_Post} numberOfLines={2} >{notification.data[0].title}</Text>
                     {notification.data[1] ?
-                        <Text style={styles.textUser_Post}>, {notification.data[1].userInfo.fullname}</Text>
+                        <Text style={styles.textUser_Post}>, {notification.data[1].title}</Text>
                         :
                         null
                     }

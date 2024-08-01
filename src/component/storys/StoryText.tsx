@@ -225,9 +225,7 @@ const StoryText = () => {
                                 <TouchableOpacity onPress={handleConfirmPress} style={styles.confirmButton}>
                                     <Text style={styles.confirmButtonText}>Xác nhận</Text>
                                 </TouchableOpacity>
-                                <TouchableOpacity onPress={handleCloseModal} style={styles.closeButton}>
-                                    <Text style={styles.closeButtonText}>Đóng</Text>
-                                </TouchableOpacity>
+                                
                             </View>
                         </TouchableWithoutFeedback>
                     </View>
@@ -282,6 +280,7 @@ const styles = StyleSheet.create({
         borderRadius: 10,
         padding: 20,
         alignItems: 'center',
+        maxHeight:'50%'
     },
     captionItem: {
         paddingVertical: 10,
