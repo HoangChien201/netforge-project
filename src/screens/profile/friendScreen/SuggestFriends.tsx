@@ -1,13 +1,13 @@
-import React, { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import React, { useMemo, useRef, useState } from 'react';
 import { StyleSheet, Text, View, TouchableOpacity, Image, LogBox } from 'react-native';
 import BottomSheet, { BottomSheetScrollView, BottomSheetView } from '@gorhom/bottom-sheet';
-import uuid from 'react-native-uuid';
+import { useNavigation } from '@react-navigation/native';
+import { useSelector } from 'react-redux';
+
 import { COLOR } from '../../../constant/color';
 import { sendRequest } from '../../../http/QuyetHTTP';
-import { useMyContext } from '../../../component/navigation/UserContext';
-import { socket } from '../../../http/SocketHandle';
 import { useSendNotification } from '../../../constant/notify';
-import { useNavigation } from '@react-navigation/native';
+import { RootState } from '../../../component/store/store';
 type Suggest = {
   data: any,
   setData: () => void,
@@ -18,7 +18,7 @@ const SuggestFriends: React.FC<Suggest> = ({ data, setData }) => {
   const bottomSheetRef = useRef<BottomSheet>(null);
   const [textReqState, setTextReqState] = useState({});
   const [disabledButtons, setDisabledButtons] = useState({});
-  const { user } = useMyContext();
+  const user = useSelector((state : RootState)=>state.user.value)
   const navigation = useNavigation();
   const { sendNRequestFriend } = useSendNotification();
   LogBox.ignoreLogs([
@@ -33,7 +33,7 @@ const SuggestFriends: React.FC<Suggest> = ({ data, setData }) => {
   // gửi yêu cầu kết bạn
   const status = 1;
   const sendRequestFriend = async (id: number, status: number) => {
-    const user2 = parseInt(id);
+    const user2 = parseInt(id.toString());
     setDisabledButtons((prevState) => ({
       ...prevState,
       [id]: true,

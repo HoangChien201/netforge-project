@@ -1,17 +1,25 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { FlatList, View, StyleSheet, ActivityIndicator, Dimensions, Text, Image } from 'react-native';
+import { useSelector } from 'react-redux';
+import FastImage from 'react-native-fast-image';
+import { NavigationProp, ParamListBase, useNavigation } from '@react-navigation/native';
+
 import ItemPost from './ItemPost';
 import Loading from '../Modal/Loading';
-import { NavigationProp, ParamListBase, useNavigation } from '@react-navigation/native';
 import { ProfileRootStackEnum } from '../stack/ProfileRootStackParams';
-import FastImage from 'react-native-fast-image';
+import { UseFetchPostByUser } from './UseFetchPostByUser';
+import { RootState } from '../store/store';
 
 interface ListPortsByUserProps {
-  data: Post[];
+  data: any[];
   onRefresh: boolean;
 }
 
 const ListPortsByUser: React.FC<ListPortsByUserProps> = ({ data, onRefresh }) => {
+
+  const user = useSelector((state : RootState)=>state.user.value)
+  const loggedInUserId = user?.id;
+
   const [displayData, setDisplayData] = useState<any[]>([]);
   const [loadingMore, setLoadingMore] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);

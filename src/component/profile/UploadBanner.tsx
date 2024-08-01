@@ -6,11 +6,12 @@ import FontistoIcon from 'react-native-vector-icons/Fontisto';
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons';
 import { uploadImage } from '../../http/TuongHttp';
 import { getUSerByID, updateAvatar, updateBackground } from '../../http/PhuHTTP';
-import { useMyContext } from '../navigation/UserContext';
 import ModalPoup from '../Modal/ModalPoup';
 import ModalFail from '../Modal/ModalFail';
 import ImageViewModal from './ImageViewModal';
 import { useFocusEffect } from '@react-navigation/native';
+import { useSelector } from 'react-redux';
+import { RootState } from '../store/store';
 
 interface UploadBannerProps {
   initialImage: string; 
@@ -22,7 +23,7 @@ interface UploadBannerProps {
 const { width: screenWidth } = Dimensions.get('window');
 
 const UploadBanner: React.FC<UploadBannerProps> = ({ initialImage, onImageSelect, userId }) => {
-  const {user} = useMyContext();
+  const user = useSelector((state : RootState)=>state.user.value)
   const [show, setShow] = useState<boolean>(false);
   const [showModal, setShowModal] = useState(false);
   const [status, setStatus] = useState(true);
@@ -34,7 +35,7 @@ const UploadBanner: React.FC<UploadBannerProps> = ({ initialImage, onImageSelect
     React.useCallback(() => {
       const fetchUserData = async () => {
         try {
-          const response = await getUSerByID(userId, user.token);
+          const response = await getUSerByID(userId, user?.token);
           setUserData(response);
           setImage(response.background);
           console.log(image)
@@ -106,7 +107,7 @@ const UploadBanner: React.FC<UploadBannerProps> = ({ initialImage, onImageSelect
 
   const handleUpdateBackground = async (image: string) => {
     try {
-      const response = await updateBackground(user.id, image);
+      const response = await updateBackground(user?.id, image);
       if (response) {
         setShowModal(true);
         setStatus(true);
@@ -137,7 +138,7 @@ const UploadBanner: React.FC<UploadBannerProps> = ({ initialImage, onImageSelect
 
   return (
     <View style={styles.container}>
-      {userId === user.id ? ( 
+      {userId === user?.id ? ( 
       <TouchableOpacity onPress={handleUpLoadAvatar} style={{ position: 'relative' }}>
         <Image
           source={image ? { uri: image } : require('../../media/icon/background_2.jpg')}

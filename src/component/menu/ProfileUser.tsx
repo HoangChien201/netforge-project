@@ -6,6 +6,8 @@ import { getUSerByID } from '../../http/PhuHTTP';
 import { ProfileRootStackEnum } from '../stack/ProfileRootStackParams';
 // import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
 
+import { useSelector } from 'react-redux';
+import { RootState } from '../store/store';
 
 interface User {
     email: string;
@@ -19,9 +21,9 @@ interface User {
 
 const ProfileUser = () => {
     const navigation: NavigationProp<ParamListBase> = useNavigation();
-    const { user } = useMyContext();
-    const userID = user.id;
-    const token = user.token;
+    const user = useSelector((state : RootState)=>state.user.value)
+    const userID = user?.id;
+    const token = user?.token;
     const [userData, setUserData] = useState<User | null>(null);
 
     useFocusEffect(

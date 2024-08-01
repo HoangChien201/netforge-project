@@ -2,12 +2,14 @@ import { configureStore } from '@reduxjs/toolkit';
 import reactionReducer from './reactionSlice';
 import postidReducer from './postIDSlice';
 import loadDataSlice from './loadDataSlice';
+import userSlice from './userSlice';
 
 const store = configureStore({
   reducer: {
     reaction: reactionReducer,
     postID:postidReducer,
-    loading:loadDataSlice
+    loading:loadDataSlice,
+    user:userSlice,
   },
 });
 

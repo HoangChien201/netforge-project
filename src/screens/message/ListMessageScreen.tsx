@@ -1,38 +1,33 @@
 import { FlatList, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import EntypoIcon from 'react-native-vector-icons/Entypo'
+import {useIsFocused} from '@react-navigation/native'
+import { useSelector } from 'react-redux'
+
 import ListMessageItem, { GroupChatType } from '../../component/message/ListMessageItem'
-import { useMyContext } from '../../component/navigation/UserContext'
 import { getGroupsAPI } from '../../http/ChienHTTP'
 import { socket } from '../../http/SocketHandle'
-import { StackNavigationProp } from '@react-navigation/stack'
-import { RouteProp, useIsFocused, useNavigation, useRoute } from '@react-navigation/native'
 import ModalNewMessage from '../../component/message/ModalNewMessage'
-import { onUserLogin, onUserLogout } from '../call-video/Utils'
 import SkelotonMessage from '../../component/message/SkelotonMessage'
+import { RootState } from '../../component/store/store'
 
 const ListMessageScreen = () => {
-  const { user } = useMyContext()
-  const [groups, setGroups] = useState<Array<GroupChatType> | null>(null)
-  const [visibleModalNewMessage, SetVisibleModalNewMessage] = useState(false)
-  const isFocus = useIsFocused()
-  useEffect(() => {
+  const user = useSelector((state:RootState)=>state.user.value)
+  const [groups,setGroups]=useState<Array<GroupChatType>>([])
+  const [visibleModalNewMessage,SetVisibleModalNewMessage]=useState(false)
+  const isFocus=useIsFocused()
+  useEffect(()=>{
     getGroups()
-    socket.on(`list-group-${user.id}`, (message) => {
+    socket.on(`list-group-${user?.id}`, (message) => {
 
       getGroups()
     })
 
     return () => {
-      socket.off(`list-group-${user.id}`)
+      socket.off(`list-group-${user?.id}`)
     }
   }, [isFocus])
 
-  useEffect(() => {
-
-
-
-  }, [])
   async function getGroups() {
     const respone = await getGroupsAPI()
     if (respone) {

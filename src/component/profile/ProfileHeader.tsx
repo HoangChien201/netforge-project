@@ -10,6 +10,8 @@ import { cancelRequest, deleteFriend, sendRequest, getRequest } from '../../http
 import { useSendNotification } from '../../constant/notify';
 import { NetworkRootStackEnum, NetworkStackNavigationProp } from '../stack/NetworkRootStackParams';
 import { NavigateToMessage } from '../message/NavigateToMessage';
+import { useSelector } from 'react-redux';
+import { RootState } from '../store/store';
 
 interface ProfileHeaderProps {
   fullname: string;
@@ -35,7 +37,7 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = (
   const [type, setType] = useState(false);
   const [change, setChange]= useState(0)
   const { sendNRequestFriend } = useSendNotification();
-  const { user } = useMyContext();
+  const user = useSelector((state : RootState)=>state.user.value)
   const [wait, setWait] = useState(true);
   // const [check,setCheck]=useState(false)
   useEffect(() => {
@@ -111,7 +113,7 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = (
 
 
   const deleteF = async (id: number) => {
-    const user1 = Number(user.id);
+    const user1 = Number(user?.data.id);
     const user2 = Number(id);
     try {
       const result = await deleteFriend(user1, user2);

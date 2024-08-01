@@ -2,6 +2,8 @@ import { Modal, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import React, { useEffect } from 'react';
 import { useMyContext } from '../../../component/navigation/UserContext';
 import { deleteFriend } from '../../../http/QuyetHTTP';
+import { useSelector } from 'react-redux';
+import { RootState } from '../../../component/store/store';
 type Mo = {
   show: boolean;
   setShow: (value: any) => void;
@@ -11,9 +13,9 @@ type Mo = {
   setDeleted:(value:any) =>void
 }
 const DeleteFriend: React.FC<Mo> = ({ show, setShow, user2 ,setFriends,name,setDeleted}) => {
-  const { user } = useMyContext();
+  const user = useSelector((state : RootState)=>state.user.user)
   const deleteF = async (id: number) => {
-    const user1 = Number(user.id);
+    const user1 = Number(user?.data.id);
     const user2 = Number(id);
     try {
       const result = await deleteFriend(user1, user2);

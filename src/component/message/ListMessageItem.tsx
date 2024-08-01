@@ -4,6 +4,8 @@ import { useNavigation } from '@react-navigation/native'
 import { useMyContext } from '../navigation/UserContext'
 import { messageType } from './MessageItem'
 import { MessageScreenNavigationProp, MessageScreenRouteProp } from '../../screens/message/MessageScreen'
+import { useSelector } from 'react-redux'
+import { RootState } from '../store/store'
 
 export type GroupChatType = {
     "id": number,
@@ -22,7 +24,7 @@ export type GroupChatType = {
 }
 const STATUS_SEEN = 2
 const ListMessageItem = ({ group }: { group: GroupChatType }) => {
-    const { user } = useMyContext()
+    const user=useSelector((state:RootState)=>state.user.value)
     const navigation: MessageScreenNavigationProp = useNavigation()
 
     let avatar = ''
@@ -35,7 +37,7 @@ const ListMessageItem = ({ group }: { group: GroupChatType }) => {
         name = group.name ? group.name : '';
     }
     else {
-        const userSend = group.members.find(member => member.user.id !== user.id)
+        const userSend = group.members.find(member => member.user?.id !== user?.id)
         if (userSend) {
             avatar = userSend?.user.avatar
             name = userSend.user.fullname
@@ -59,7 +61,7 @@ const ListMessageItem = ({ group }: { group: GroupChatType }) => {
     const messageLastest = group.messages[0]
     const messageUnSeen =
         (messageLastest.reads.length <= 0) &&
-        (typeof messageLastest.sender === 'object' ? messageLastest.sender.id !== user.id : messageLastest.sender !== user.id)
+        (typeof messageLastest.sender === 'object' ? messageLastest.sender.id !== user?.id : messageLastest.sender !== user?.id)
 
     return (
         <TouchableOpacity onPress={onPress}>
@@ -77,7 +79,7 @@ const ListMessageItem = ({ group }: { group: GroupChatType }) => {
                     <View style={{
                         flexDirection: "row"
                     }}>
-                        <Text style={styles.nameSender}>{messageLastest.sender.id === user.id ? 'Bạn: ' : undefined}</Text>
+                        <Text style={styles.nameSender}>{messageLastest.sender.id === user?.id ? 'Bạn: ' : undefined}</Text>
                         <Text style={[styles.message,
                         messageUnSeen ? styles.textMessageUnSeen : undefined]}>
                             {messageLastest.type === 'text' ? messageLastest.message.toString() : messageLastest.type}

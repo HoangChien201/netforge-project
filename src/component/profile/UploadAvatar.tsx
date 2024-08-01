@@ -1,17 +1,19 @@
 import React, { useState, useCallback} from 'react';
 import { StyleSheet, View, TouchableOpacity, Image, Modal, Text, Pressable } from 'react-native';
 import { launchCamera, launchImageLibrary, CameraOptions, ImageLibraryOptions } from 'react-native-image-picker';
+import { useSelector } from 'react-redux';
 import Icon from 'react-native-vector-icons/AntDesign';
 import FontistoIcon from 'react-native-vector-icons/Fontisto';
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons';
 import ImagePicker from 'react-native-image-crop-picker';
+import { useFocusEffect } from '@react-navigation/native';
+
 import { uploadImage } from '../../http/TuongHttp';
 import { getUSerByID, updateAvatar } from '../../http/PhuHTTP';
-import { useMyContext } from '../navigation/UserContext';
 import ModalPoup from '../Modal/ModalPoup';
 import ModalFail from '../Modal/ModalFail';
 import ImageViewModal from './ImageViewModal';
-import { useFocusEffect } from '@react-navigation/native';
+import { RootState } from '../store/store';
 
 interface UpLoadAvatarProps {
   initialImage: string; 
@@ -20,7 +22,7 @@ interface UpLoadAvatarProps {
 }
 
 const UpLoadAvatar: React.FC<UpLoadAvatarProps> = ({ initialImage, onImageSelect, userId }) => {
-  const {user} = useMyContext();
+  const user = useSelector((state : RootState)=>state.user.value)
   const [show, setShow] = useState<boolean>(false);
   const [showModal, setShowModal] = useState(false);
   const [status, setStatus] = useState(true);
@@ -33,7 +35,7 @@ const UpLoadAvatar: React.FC<UpLoadAvatarProps> = ({ initialImage, onImageSelect
         React.useCallback(() => {
             const fetchUserData = async () => {
             try {
-                const response = await getUSerByID(userId, user.token);
+                const response = await getUSerByID(userId, user?.token);
                 setUserData(response);
                 setImage(response.avatar);
             } catch (error) {
@@ -123,7 +125,7 @@ const UpLoadAvatar: React.FC<UpLoadAvatarProps> = ({ initialImage, onImageSelect
 
   const handleUpdateAvatar = async (image:string) => {
     try {
-    const response = await updateAvatar(user.id, image)
+    const response = await updateAvatar(user?.id, image)
       // console.log(response)
       if (response) {
           setShowModal(true);
@@ -161,7 +163,7 @@ const UpLoadAvatar: React.FC<UpLoadAvatarProps> = ({ initialImage, onImageSelect
 
   return (
     <View style={styles.container}>
-      {userId === user.id ? ( 
+      {userId === user?.id ? ( 
       <TouchableOpacity onPress={handleUpLoadAvatar} style={{ position: 'relative' }}>
         <Image
           source={image ? { uri: image } : require('../../media/icon/avatar.png')}

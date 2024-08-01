@@ -3,14 +3,13 @@ import React, { useCallback, useEffect, useState } from 'react'
 import PushNotification, { Importance } from 'react-native-push-notification';
 import { PermissionsAndroid } from 'react-native';
 import uuid from 'react-native-uuid';
+import { useSelector } from 'react-redux';
 
 import { useSendNotification } from '../constant/notify'
 import { socket } from '../http/SocketHandle'
-import BODYMODAL from '../component/edit-post-modal/Body'
 import { COLOR } from '../constant/color'
 import REQFriend from '../component/notificationes/RequestFriend'
 import MODALFRIEND from '../component/friend-request-accept-modal/Body'
-import { useMyContext } from '../component/navigation/UserContext'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import ItemLike from '../component/notificationes/ItemLike'
 import ItemComment from '../component/notificationes/ItemComment'
@@ -24,6 +23,7 @@ import ItemNewPostTag from '../component/notificationes/ItemNewPostTag';
 import BirtdayButtonComponent from '../component/notificationes/BirtdayButtonComponent';
 import BirthDayScreen from './BirthdayScreen';
 import ItemLikeComment from '../component/notificationes/ItemLikeComment';
+import { RootState } from '../component/store/store';
 const NotificationScreen = () => {
 
   const [showModalFriend, setShowModalFriend] = useState(false);
@@ -32,23 +32,27 @@ const NotificationScreen = () => {
   const [reload, setReload] = useState(false);
   const [dot, setDot] = useState(0);
   const [notifications, setNotifications] = useState([]);
-  const { user } = useMyContext();
+  const user = useSelector((state : RootState)=>state.user.value)
   const [groupedNotifications, setGroupedNotifications] = useState<any>([]);
   // const userId = user.id;
   const { sendNCommentPost } = useSendNotification();
   const [push, setPush] = useState(false);
   useEffect(() => {
-    socket.on(`notification-${user.id}`, (data) => {
-      fetchData();
+    fetchData();
+    socket.on(`notification-${user?.id}`, (data) => {
+      console.log('Notification received:', data);
+      const exists = notifications.some(notification => notification.id == data.id);
+      if (!exists) {
+        // showLocalNotification(data);
+        addNotification(data);
+      }
     });
     console.log('render');
     return () => {
-      socket.off(`notification-${user.id}`);
+      socket.off(`notification-${user?.id}`);
     };
   }, [user.id]);
-  useEffect(() => {
-    fetchData();
-  }, []); 
+  
 
   useEffect(() => {
     if (notifications.length > 0) {
@@ -81,14 +85,14 @@ const NotificationScreen = () => {
 
   const addNotification = async (newNotification) => {
     try {
-      const oldNotifications = await AsyncStorage.getItem(`notifications${user.id}`);
+      const oldNotifications = await AsyncStorage.getItem(`notifications${user?.id}`);
       const parsedOldNotifications = oldNotifications ? JSON.parse(oldNotifications) : [];
       const updatedNotifications = Array.isArray(newNotification)
         ? [...parsedOldNotifications, ...newNotification]
         : [...parsedOldNotifications, newNotification];
 
       setNotifications(updatedNotifications);
-      await AsyncStorage.setItem(`notifications${user.id}`, JSON.stringify(updatedNotifications));
+      await AsyncStorage.setItem(`notifications${user?.id}`, JSON.stringify(updatedNotifications));
       console.log('Notification added and saved:', JSON.stringify(updatedNotifications));
     } catch (error) {
       console.error('Error adding notification:', error);
@@ -97,7 +101,8 @@ const NotificationScreen = () => {
 
   const fetchData = async () => {
     try {
-      const oldNotifications = await AsyncStorage.getItem(`notifications-${user.id}`);
+
+      const oldNotifications = await AsyncStorage.getItem(`notifications-${user?.id}`);
       if (oldNotifications) {
         console.log('AsyncStorage:', oldNotifications);
         const parsedNotifications = JSON.parse(oldNotifications);

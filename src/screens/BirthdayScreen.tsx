@@ -14,10 +14,12 @@ import { useMyContext } from '../component/navigation/UserContext';
 import ToolBar from '../component/message/ToolBar';
 import { getFriends } from '../http/QuyetHTTP';
 import FastImage from 'react-native-fast-image';
+import { useSelector } from 'react-redux';
+import { RootState } from '../component/store/store';
 
 
 const BirthDayScreen = ({ visible, setVisible }: { visible: boolean, setVisible: any }) => {
-    const { user } = useMyContext();
+    const user = useSelector((state : RootState)=>state.user.user)
     const [friend, setFriend] = useState<Array<FriendType>>([])
     const [todayFriends, setTodayFriends] = useState<Array<FriendType>>([]);
     const [birthdaySound, setBirthdaySound] = useState(null);
@@ -82,8 +84,8 @@ const BirthDayScreen = ({ visible, setVisible }: { visible: boolean, setVisible:
             type: 7,
             idF: id,
             userInfo: {
-                receiver: user.id,
-                sender: user.id,
+                receiver: user?.data.id,
+                sender: user?.data.id,
                 fullname: fullname,
                 avatar: avatar,
             }

@@ -1,24 +1,23 @@
 import { StyleSheet, Text, View, TouchableOpacity, Image, ScrollView, Pressable } from 'react-native'
 import React, { useMemo, useState, useRef, useEffect } from 'react'
+import { UIActivityIndicator } from 'react-native-indicators';
+import { useNavigation } from '@react-navigation/native'
+import { useRoute } from '@react-navigation/native';
+import Icon from 'react-native-vector-icons/Ionicons'
+import { useSelector } from 'react-redux';
+
 import InputCmt from '../component/formComments/InputCmt';
 import CommentItem from '../component/formComments/CommentItem';
-import { getComments, addComments, getPostById } from '../http/TuongHttp';
-import { useNavigation } from '@react-navigation/native'
+import { getComments, getPostById } from '../http/TuongHttp';
 import { navigationType } from '../component/stack/UserStack'
-import { useRoute } from '@react-navigation/native';
 import ItemPost from '../component/listpost/ItemPost';
 import Modal_GetLikePosts from '../component/formComments/Modal_GetLikePosts';
 import { ProfileRootStackEnum } from '../component/stack/ProfileRootStackParams';
-import { useMyContext } from '../component/navigation/UserContext';
-import Icon from 'react-native-vector-icons/Ionicons'
-import Loading from '../component/Modal/Loading';
-import { ActivityIndicator } from 'react-native';
-import { COLOR } from '../constant/color';
-import FastImage from 'react-native-fast-image';
-import { UIActivityIndicator } from 'react-native-indicators';
+
+import { RootState } from '../component/store/store';
 const CommentsScreen = () => {
     const navigation = useNavigation<navigationType>()
-    const { user } = useMyContext();
+    const user = useSelector((state : RootState)=>state.user.value)
     const [modalGetLikePostVisible, setModalGetLikePostVisible] = useState(false);
     const [commentUserId, setCommentUserId] = useState(null);
     const [text, setText] = useState(null);
@@ -107,7 +106,7 @@ const CommentsScreen = () => {
     }, [commentCount]);
 
 
-    const loggedInUserId = user.id;
+    const loggedInUserId =user?.id;
     const handleToProfile = (userId) => {
         // //setSelectedUserId(userId);
         console.log("userID: ", userId);

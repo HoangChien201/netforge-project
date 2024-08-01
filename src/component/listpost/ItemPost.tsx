@@ -1,4 +1,4 @@
-import React, { memo, useEffect, useMemo, useRef, useState } from 'react';
+import React, { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Image, Pressable, StyleSheet, Animated, Text, TouchableOpacity, View, Modal } from 'react-native';
 import { NavigationProp, ParamListBase, useNavigation } from '@react-navigation/native';
 import AntDesignIcon from 'react-native-vector-icons/AntDesign';
@@ -11,18 +11,22 @@ import { useMyContext } from '../navigation/UserContext';
 import { SharePost } from '../../http/userHttp/getpost';
 import { ProfileRootStackEnum } from '../stack/ProfileRootStackParams';
 import { emotions } from '../../constant/emoji';
+import { useSelector } from 'react-redux';
+import { RootState } from '../store/store';
 
 const ItemPost = memo(({ data, setShowModalEdit, setSelectedId, setShowDelete }) => {
+
+    const user = useSelector((state : RootState)=>state.user.value)
 
     const [checkLike, setCheckLike] = useState(false);
     const [datas, setData] = useState(data);
     const [shareId, setshareId] = useState(null);
     const [postsShares, setPostShare] = useState({});
-    const { user } = useMyContext();
     const [renderShare, setRenderShare] = useState(false);
-    const navigation: NavigationProp<ParamListBase> = useNavigation();
     const [isModalVisible, setIsModalVisible] = useState(false);
-    const loggedInUserId = user.id;
+
+    const navigation: NavigationProp<ParamListBase> = useNavigation();
+    const loggedInUserId = user?.id;
 
     useEffect(() => {
         setData(data)
@@ -35,7 +39,7 @@ const ItemPost = memo(({ data, setShowModalEdit, setSelectedId, setShowDelete })
         setRenderShare(false)
         if (share) {
             setshareId(share);
-            const getPostShare = async () => {
+            const getPostShare =  async () => {
                 const token = await AsyncStorage.getItem('userToken');
                 const result = await SharePost(share.id);
                 setPostShare(result);
@@ -153,7 +157,7 @@ const ItemPost = memo(({ data, setShowModalEdit, setSelectedId, setShowDelete })
                             </TouchableOpacity>
                         </View>
                         <View>
-                            {user.id === creater.id && (
+                            {user?.id === creater.id && (
                                 <TouchableOpacity onPress={hiddenMenu}>
                                     <Image source={require('../../media/Dicons/ellipsis.png')} style={styles.ellips} />
                                 </TouchableOpacity>
@@ -254,7 +258,7 @@ const ItemPost = memo(({ data, setShowModalEdit, setSelectedId, setShowDelete })
                             </TouchableOpacity>
                         </View>
                         <View>
-                            {user.id === creater.id && (
+                            {user?.id === creater.id && (
                                 <TouchableOpacity onPress={hiddenMenu}>
                                     <Image source={require('../../media/Dicons/ellipsis.png')} style={styles.ellips} />
                                 </TouchableOpacity>

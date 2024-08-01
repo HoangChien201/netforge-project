@@ -1,22 +1,24 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { View, Animated, StyleSheet, Dimensions, Text, TouchableOpacity } from 'react-native';
 import { useFocusEffect, useNavigation } from '@react-navigation/native';
+import { useSelector } from 'react-redux';
+import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
+
 import HeaderBanner from '../component/profile/HeaderBanner';
 import ProfileHeader from '../component/profile/ProfileHeader';
-import { useMyContext } from '../component/navigation/UserContext';
-import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import ListPortsByUser from '../component/listpost/ListPostByUser';
 import ProfileDetailData from '../component/profile/ProfileDetailData';
 import { getPostByUser, getUSerByID } from '../http/PhuHTTP';
 import MediaOfUser from '../component/profile/MediaOfUser';
 import { COLOR } from '../constant/color';
+import { RootState } from '../component/store/store';
 
 const { height: SCREEN_HEIGHT } = Dimensions.get('window');
 
 const Tab = createMaterialTopTabNavigator();
 
 const TestProfile = () => {
-  const { user } = useMyContext();
+  const user = useSelector((state : RootState)=>state.user.value)
   const navigation = useNavigation();
   const scrollOffsetY = useRef(new Animated.Value(0)).current;
   const headerHeight = useRef(420).current; // Chiều cao của header
@@ -24,12 +26,14 @@ const TestProfile = () => {
   const [currentTab, setCurrentTab] = useState('MyPost'); // Khởi tạo tab mặc định
   const [tabBarPosition, setTabBarPosition] = useState(headerHeight);
 
-  const userID = user.id;
-  const token = user.token;
+  const userID = user?.id;
+  const token = user?.token;
   const [userData, setUserData] = useState<any>();
   let dateOfBirth = useState(null);
   const [medias, setMedias] = useState<any[]>([]);
   const [post, setPosts] = useState<any[]>([]);
+  const nameUser = user?.fullname;
+  const [friends, setFriends] = useState<any[]>([]);
 
   useEffect(() => {
     navigation.setOptions({
@@ -82,7 +86,7 @@ const TestProfile = () => {
   
   useEffect(() => {
     navigation.getParent()?.setOptions({ tabBarStyle: { display: 'none' } });
-  }, [user]);
+  }, [user?.id]);
 
 
   const handleScroll = Animated.event(
@@ -94,13 +98,13 @@ const TestProfile = () => {
     if (!userData) return null;
     return (
       <>
-        <HeaderBanner value={scrollOffsetY} userId={user.id} />
+        <HeaderBanner value={scrollOffsetY} userId={user?.id} />
         <View style={{marginTop:260}}></View>
           <ProfileHeader
           avatar={userData.avatar}
           fullname={userData.fullname}
-          userId={user.id}
-          loggedInUserId={user.id} 
+          userId={user?.id}
+          loggedInUserId={user?.id} 
           relationship={undefined}/>
       </>
     );

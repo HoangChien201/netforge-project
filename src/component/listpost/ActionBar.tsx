@@ -8,19 +8,22 @@ import { deleteLikePost, likePost, updateLikePost } from '../../http/userHttp/ge
 import { useMyContext } from '../navigation/UserContext';
 import ModalShare from '../share-post/ModalShare';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useSelector } from 'react-redux';
+import { RootState } from '../store/store';
 
 const ActionBar = memo(({ creater,onPressProfile, like_count,type, postId, comment_count, share_count,checkLike,setCheckLike, share }: {setCheckLike:(Value:boolean)=>void,checkLike?:boolean,type: number, postId?: number, comment_count?: number, share_count?: number,like_count?:number,share?: number,creater?:any }) => {
     const [islike, setIsLike] = useState(false);
     const [shares, setShare] = useState(share);
     const navigation = useNavigation();
-    const {user}= useMyContext()
+    const user = useSelector((state:RootState)=>state.user.value)
     const [numberLike, setNumberLike] = useState<number>(like_count);
     const [number, setNumber] = useState<number | null>(type);
     const animationRef = useRef(null);
     const [isModalVisible, setModalVisible] = useState(false);
-    //console.log("ActionBar");
+    console.log("ActionBar",user);
     
     const toggleModal = () => {
+   
       setModalVisible(!isModalVisible);
       setShare(share)
     };
@@ -29,7 +32,8 @@ const ActionBar = memo(({ creater,onPressProfile, like_count,type, postId, comme
       }
     useLayoutEffect(()=>{
         setNumber(type)
-    },[type])
+        setNumberLike(like_count)
+    },[type,like_count])
     
 
     const deleteLike = async (idPost: number) => {
