@@ -11,7 +11,7 @@ import { RootState } from '../store/store';
 
 const OptionMessageComponent = ({ deleteMessage, message, setReply,setSelectedMessage }: { setSelectedMessage:any,deleteMessage: any, message: messageType, setReply: any }) => {
 
-    const user = useSelector((state : RootState)=>state.user.user)
+    const user = useSelector((state : RootState)=>state.user.value)
     function ReplyHandle() {
         setReply(message)
         setSelectedMessage(null)

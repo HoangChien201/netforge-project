@@ -10,7 +10,6 @@ import { useDispatch } from 'react-redux'
 import { deleteUser } from '../store/userSlice'
 
 const OptionProfile = () => {
-    const { setUser } = useMyContext();
     const dispatch = useDispatch()
     const navigation:NetworkStackNavigationProp = useNavigation()
 

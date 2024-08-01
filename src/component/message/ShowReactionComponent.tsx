@@ -8,7 +8,6 @@ import { getReactionByMessageHTTP } from '../../http/ChienHTTP'
 import { EmojiReaction } from '../../constant/emoji'
 
 const ShowReactionComponent = ({ messageReactionsSelected }) => {
-    console.log('reactionsSelected', messageReactionsSelected);
     const [reactions, setReactions] = useState<Array<reactionType>>([])
 
     async function getReactions() {

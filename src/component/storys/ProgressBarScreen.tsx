@@ -26,7 +26,7 @@ const ProgressBarScreen = ({ listpostStory, setCurrentIndex, currentIndex, dataL
     const showReactions = useRef(new Animated.Value(0)).current;
     const spinValue = useRef(new Animated.Value(0)).current;
     const navigation: NavigationProp<ParamListBase> = useNavigation();
-    const user = useSelector((state : RootState)=>state.user.user)
+    const user = useSelector((state : RootState)=>state.user.value)
 
     const handleImagePressR = useCallback(() => {
         if (!check) {
@@ -122,13 +122,13 @@ const ProgressBarScreen = ({ listpostStory, setCurrentIndex, currentIndex, dataL
         dispatch(setPostid(getLivePostID()))
         navigation.navigate(HomeRootStackEnum.LiveStack,{
             userID: '12345',
-            userName: user?.data.fullname,
+            userName: user?.fullname,
             liveID: getLivePostContent()
         })
     }
     return (
         <View style={styles.container}>
-            {listpostStory[activeIndex]?.creater.id === user?.data.id && (
+            {listpostStory[activeIndex]?.creater.id === user?.id && (
                 <TouchableOpacity onPress={() =>handleClick() } style={styles.ellipsisButton}>
                     <AntDesign name='ellipsis1' size={25} color='#000' />
                 </TouchableOpacity>

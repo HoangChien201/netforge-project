@@ -20,6 +20,9 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import UpLoadAvatar from '../component/profile/UploadAvatar';
 import { useMyContext } from '../component/navigation/UserContext';
 import { ScrollView } from 'react-native-gesture-handler';
+import { useDispatch, useSelector } from 'react-redux';
+import { RootState } from '../component/store/store';
+import { setUsers } from '../component/store/userSlice';
 
 interface user {
   email: string;
@@ -50,9 +53,11 @@ const validationSchema = yup.object().shape({
     navigation.getParent()?.setOptions({ tabBarStyle: {display:'none'}});
   }, []);
 
-  const {user, setUser} = useMyContext();
+  const user = useSelector((state:RootState)=>state.user.value)
+  const dispatch = useDispatch()
+
   const [userData, setUserData] = useState<any>(null);
-  const dateOfBirth = user.dateOfBirth;
+  const dateOfBirth = user?.dateOfBirth;
   const [isEditable, setIsEditable] = useState(false); // Trạng thái chỉnh sửa của InputField
 
 
@@ -142,7 +147,8 @@ const handleUpdateProfile = async (values: user) => {
       );
       if (response) {
         setUserData(response);
-        setUser({
+
+        dispatch(setUsers({
           ...user,
           email,
           fullname,
@@ -150,7 +156,8 @@ const handleUpdateProfile = async (values: user) => {
           phone,
           address: updatedAddress,
           gender: updatedGender
-        });
+        }))
+        
           setShowModal(true);
           setStatus(true);
           setIsLoading(false);

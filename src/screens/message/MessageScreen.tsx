@@ -21,9 +21,11 @@ import {
 } from '@gorhom/bottom-sheet';
 import ShowReactionComponent from '../../component/message/ShowReactionComponent'
 import { GroupChatType } from '../../component/message/ListMessageItem'
-import { MessageManage, MessageProvider } from '../../component/message/class/MessageProvider'
+import { MessageManage, Message } from '../../component/message/class/MessageProvider'
 import ToolBar from '../../component/message/ToolBar'
 import { useSendNotification } from '../../constant/notify'
+import { useSelector } from 'react-redux'
+import { RootState } from '../../component/store/store'
 
 export type MessageCordinatesType = {
   x: number,
@@ -39,11 +41,12 @@ export type MessageScreenNavigationProp = StackNavigationProp<
 export type MessageScreenRouteProp = RouteProp<MessageRootStackParams, 'MessageScreen'>;
 
 const MessageScreen = () => {
-  const { user } = useMyContext()
-  const [messages, setMessages] = useState<Array<MessageProvider>>([])
-  const [partner, setPartner] = useState({
+  const user = useSelector((state:RootState)=>state.user.value)
+  const [messages, setMessages] = useState<Array<Message>>([])
+  const [partner, setPartner] = useState<{ fullname: string, avatar: string, partner_id: number | null }>({
     fullname: '',
     avatar: '',
+    partner_id: null
   })
   const [groupId, setGroupId] = useState<number | null>(null)
   const [reply, setReply] = useState<messageType | null>(null)
@@ -56,7 +59,7 @@ const MessageScreen = () => {
   async function getMessages(group_id: number) {
     const messagesAPI = await getMessageByGroupAPI(group_id)
     //convert listMessage to listObject
-    const messages=new MessageManage(messagesAPI).messages
+    const messages = new MessageManage(messagesAPI).messages
     setMessages(messages)
   }
 
@@ -88,12 +91,13 @@ const MessageScreen = () => {
     if (route.params?.group_id) {
       const { fullname, avatar } = route.params
       const group_id = route.params?.group_id
+
       getMessages(group_id)
-      setPartner(prevValue => { return { ...prevValue, fullname, avatar} })
+      setPartner(prevValue => { return { ...prevValue, fullname, avatar } })
       setGroupId(group_id)
-      if(route.params?.messages){
-        const messages=new MessageManage(route.params?.messages).messages
-  
+      if (route.params?.messages) {
+        const messages = new MessageManage(route.params?.messages).messages
+        
         setMessages(messages)
       }
 
@@ -112,11 +116,11 @@ const MessageScreen = () => {
         user: user.id,
         group: group_id
       })
-    }else{
+    } else {
       const { fullname, avatar, members } = route.params
-      const partner_id=members[0].user.id
-      setPartner(prevValue => { return { ...prevValue, fullname, avatar} })
-      if(!partner_id) return
+      const partner_id = members[0].user.id
+      setPartner(prevValue => { return { ...prevValue, fullname, avatar } })
+      if (!partner_id) return
       createGroupAPIs(partner_id)
     }
 
@@ -127,7 +131,7 @@ const MessageScreen = () => {
 
   }, [isFocus]);
 
-  function addMessage(message: MessageProvider) {
+  function addMessage(message: Message) {
     setReply(null)
     setMessages(
       (prevValue) => {
@@ -136,13 +140,13 @@ const MessageScreen = () => {
     )
   }
 
-  async function createGroupAPIs(friend_id: number){
+  async function createGroupAPIs(friend_id: number) {
     const createGroup = {
       type: 'single',
       members: [user.id, friend_id]
     }
-    const group:GroupChatType= await createGroupsHTTP(createGroup)
-    if(!group) return 
+    const group: GroupChatType = await createGroupsHTTP(createGroup)
+    if (!group) return
 
     socket.on(`message-${user.id}`, (message) => {
       if (isFocus) {
@@ -159,7 +163,7 @@ const MessageScreen = () => {
       user: user.id,
       group: group.id
     })
-    
+
     getMessages(group.id)
     setGroupId(group.id)
     return group;
@@ -183,7 +187,7 @@ const MessageScreen = () => {
               setMessageReactionsSelected={setMessageReactionsSelected}
               deleteMessage={DeleteMessage}
               setReply={setReply}
-              lastMessage={index === 0} />
+              lastMessage={index === 0}/>
           )
         }}
         keyExtractor={(item) => item.getId.toString()}
@@ -219,10 +223,10 @@ const MessageScreen = () => {
     <BottomSheetModalProvider>
 
       <View style={styles.container}>
-        <ToolBar title='Tin nhắn'/>
+        <ToolBar title='Tin nhắn' />
         <HeaderMessageComponent partner={partner} />
         <View style={styles.content}>
-          <ListMessage />
+            <ListMessage />
         </View>
 
         <TextingComponent addMessage={addMessage} reply={reply} setReply={setReply} />

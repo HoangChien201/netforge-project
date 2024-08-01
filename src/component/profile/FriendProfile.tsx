@@ -11,6 +11,8 @@ import { getPostByUser, getUSerByID } from '../../http/PhuHTTP';
 import MediaOfUser from './MediaOfUser';
 import { getFriends } from '../../http/QuyetHTTP';
 import { COLOR } from '../../constant/color';
+import { useSelector } from 'react-redux';
+import { RootState } from '../store/store';
 
 interface ModalFriendProfileProps {
     userId:any;
@@ -25,7 +27,8 @@ const { height: SCREEN_HEIGHT } = Dimensions.get('window');
 const Tab = createMaterialTopTabNavigator();
 
 const FriendProfile:React.FC<ModalFriendProfileProps> = () => {
-  const { user } = useMyContext() as ContextType;
+  const user = useSelector((state:RootState)=>state.user.value)
+
   const navigation = useNavigation();
   const scrollOffsetY = useRef(new Animated.Value(0)).current;
   const headerHeight = 420; // Chiều cao của header

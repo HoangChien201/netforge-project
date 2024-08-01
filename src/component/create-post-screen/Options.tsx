@@ -8,6 +8,8 @@ import IconAnt from 'react-native-vector-icons/AntDesign'
 import { useNavigation } from '@react-navigation/native';
 import Swiper from 'react-native-swiper';
 import { useMyContext } from '../navigation/UserContext';
+import { useSelector } from 'react-redux';
+import { RootState } from '../store/store';
 
 export type fileType = {
     fileName: string,
@@ -25,6 +27,8 @@ type Op = {
 
 const Options: React.FC<Op> = ({ onSelectMedia, onSelectEmoji, setShowAI, imageUrl, emotions, setEmotions }) => {
     const navigation = useNavigation();
+    const user = useSelector((state:RootState)=>state.user.value)
+
     const [showEmojiModal, setShowEmojiModal] = useState(false);
     const [currentIndex, setCurrentIndex] = useState(0);
     const swiperRef = useRef(null);
@@ -94,7 +98,7 @@ const Options: React.FC<Op> = ({ onSelectMedia, onSelectEmoji, setShowAI, imageU
         setUserID(String(Math.floor(Math.random() * 100000)));
         setLiveID(String(Math.floor(Math.random() * 10000)));
     }, []);
-    const { user } = useMyContext();
+    
     const name = user.fullname;
     const handleToLiveStream = () => {
         navigation.navigate('HostScreen', {

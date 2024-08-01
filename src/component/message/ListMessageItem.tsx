@@ -25,6 +25,7 @@ export type GroupChatType = {
 const STATUS_SEEN = 2
 const ListMessageItem = ({ group }: { group: GroupChatType }) => {
     const user=useSelector((state:RootState)=>state.user.value)
+    
     const navigation: MessageScreenNavigationProp = useNavigation()
 
     let avatar = ''

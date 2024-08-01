@@ -13,6 +13,7 @@ import { RootState } from '../../component/store/store'
 
 const ListMessageScreen = () => {
   const user = useSelector((state:RootState)=>state.user.value)
+
   const [groups,setGroups]=useState<Array<GroupChatType>>([])
   const [visibleModalNewMessage,SetVisibleModalNewMessage]=useState(false)
   const isFocus=useIsFocused()
@@ -27,7 +28,6 @@ const ListMessageScreen = () => {
       socket.off(`list-group-${user?.id}`)
     }
   }, [isFocus])
-
   async function getGroups() {
     const respone = await getGroupsAPI()
     if (respone) {
