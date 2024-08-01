@@ -338,7 +338,7 @@ const CreatePostScreen = memo(() => {
       <Loading isLoading={isLoading} />
       <View style={styles.header} >
         <Text style={styles.headerText}>Tạo bài viết</Text>
-        <TouchableOpacity onPress={log} style={styles.buttonD}>
+        <TouchableOpacity onPress={uploadPost} style={styles.buttonD}>
           <Text style={styles.headerPostText} >Đăng</Text>
         </TouchableOpacity>
       </View>

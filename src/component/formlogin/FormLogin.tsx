@@ -1,22 +1,19 @@
-import { Alert, StyleSheet, Text, TextInput, ToastAndroid, TouchableOpacity, View } from 'react-native'
-import React, { useContext, useEffect, useRef, useState } from 'react'
+import {  StyleSheet, ToastAndroid, View } from 'react-native'
+import React, {  useState } from 'react'
 
 
-import { COLOR } from '../../constant/color'
 import { emailPattern } from '../../constant/valid'
 import TouchId from './TouchId'
 import ButtonLogin from '../form/ButtonLogin'
 import InputLogin from './Input'
 import Remember from './Remember'
-import { useMyContext } from '../navigation/UserContext'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { login } from '../../http/userHttp/user'
 import { NavigationProp, ParamListBase, useNavigation } from '@react-navigation/native'
 import { UserRootStackEnum } from '../stack/UserRootStackParams'
-import { onUserLogin, onUserLogout } from '../../screens/call-video/Utils'
+import { onUserLogin } from '../../screens/call-video/Utils'
 import { useDispatch } from 'react-redux'
 import { setUsers } from '../store/userSlice'
-import { date } from 'yup'
 
 
 interface user {
@@ -78,7 +75,6 @@ const FormLogin = ({ setModal, setStatus, setIsLoading }: { setModal: (value: bo
           //login zego
           onUserLogin(id, fullname, avatar, navigation).then(() => {
             AsyncStorage.setItem('AccessToken', data.token);
-
             dispatch(setUsers(data))
 
           })
@@ -86,7 +82,6 @@ const FormLogin = ({ setModal, setStatus, setIsLoading }: { setModal: (value: bo
 
         }
         setIsLoading(false);
-
       } catch (error) {
         setIsLoading(false);
         setValid({ email: false, password: false });

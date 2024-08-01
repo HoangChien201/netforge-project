@@ -44,7 +44,7 @@ const ModalNewMessage = ({ visible, setVisible }: { visible: boolean, setVisible
 
     async function CreateGroupHandle() {
         const createGroup = {
-            members:[...members,user?.data.id],
+            members:[...members,user?.id],
             name:nameGroup,
             type: 'group'
         }

@@ -13,8 +13,8 @@ const LiveWithZego: React.FC = () => {
     navigation.getParent()?.setOptions({ tabBarStyle: { display: 'none' } });
   }, []);
   
-  const user = useSelector((state : RootState)=>state.user.user)
-  const name = user?.data.fullname;
+  const user = useSelector((state : RootState)=>state.user.value)
+  const name = user?.fullname;
   const onJoinPress =  (isHost: boolean) => {
     //await createLivePost(liveID)
     navigation.navigate(isHost ? 'HostScreen' : 'AudienceScreen', {

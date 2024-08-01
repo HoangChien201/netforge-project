@@ -30,9 +30,9 @@ const createNotificationTemplate = () => ({
   timestamp: new Date().toISOString()
 });
 
-const user = useSelector((state:RootState)=>state.user?.value)
 
 export const useSendNotification = () => {
+  const user = useSelector((state:RootState)=>state.user?.value)
 
   const sendNCommentPost = ({ postId, body, receiver }) => {
     const notificationTemplate = createNotificationTemplate();

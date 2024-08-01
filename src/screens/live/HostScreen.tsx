@@ -58,7 +58,7 @@ const HostScreen: React.FC<Props> = ({ route }) => {
   const handleDeletePost = async () => {
     try {
         await deletePost(idPost);
-        navigation.navigate('LiveWithZego' as never);
+        navigation.navigate('CreatePostScreen' as never);
     } catch (error) {
         console.error(error);
     }

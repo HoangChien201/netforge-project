@@ -7,7 +7,7 @@ import { RootState } from '../store/store';
 
 const ItemSearch = ({ item, handleItemClick, users }) => {
   console.log('users', item.id);
-  const user = useSelector((state : RootState)=>state.user.user)
+  const user = useSelector((state : RootState)=>state.user.value)
 
 
 
@@ -18,7 +18,7 @@ const ItemSearch = ({ item, handleItemClick, users }) => {
       
       <View style={styles.textContainer}>
         <Text style={styles.fullName}>{item.fullname}</Text>
-        {item.id == user?.data.id && (
+        {item.id == user?.id && (
           <Text style={styles.youTag}>(Bạn)</Text>
         )}
       </View>

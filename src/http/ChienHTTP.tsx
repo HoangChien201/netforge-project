@@ -18,7 +18,9 @@ export type MessageCreateRes = {
       avatar: string
     },
     group: {
-      id: number
+      id: number,
+      type:string,
+      name:string
     }
   },
   receivers: Array<number>

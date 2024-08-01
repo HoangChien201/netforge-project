@@ -14,7 +14,7 @@ type Like = {
 const LikeHistories: React.FC<Like> = ({ dataLike, load }) => {
     const navigation = useNavigation();
     const [totalData, setTotalData] = useState([]);
-    const user = useSelector((state : RootState)=>state.user.user)
+    const user = useSelector((state : RootState)=>state.user.value)
     const [sortedData, setSortedData] = useState<any[]>([]);
     const [dataLikeP, setDataLikeP] = useState<any[]>([]);
     const [dataLikeC, setDataLikeC] = useState<any[]>([]);
@@ -71,7 +71,7 @@ const LikeHistories: React.FC<Like> = ({ dataLike, load }) => {
                 onPress={() => navigation.navigate('CommentsScreen', { postId })}
             >
                 <View style={styles.infor}>
-                    <Image source={{ uri: user?.data.avatar }} style={styles.avatar} />
+                    <Image source={{ uri: user?.avatar }} style={styles.avatar} />
                     <Image source={linkImage} style={styles.icon} />
                 </View>
                 <View style={styles.contain}>

@@ -10,12 +10,12 @@ import { RootState } from '../store/store';
 
 const ItemRencent = ({ item, onPressDelete, users }) => {
   const navigation = useNavigation()
-  const user = useSelector((state : RootState)=>state.user.user)
+  const user = useSelector((state : RootState)=>state.user.value)
   
   const handleToProfile = () => {
     //setSelectedUserId(userId);
     const userId = item.id
-    if (userId === user?.data.id) {
+    if (userId === user?.id) {
       //setIsModalVisible(false);
       navigation.navigate(ProfileRootStackEnum.ProfileScreen);
     } else {
@@ -34,7 +34,7 @@ const ItemRencent = ({ item, onPressDelete, users }) => {
          
          <View style={styles.textContainer}>
            <Text style={styles.fullName}>{item.fullname}</Text>
-           {item.id == user?.data.id && (
+           {item.id == user?.id && (
              <Text style={styles.youTag}>(Bạn)</Text>
            )}
          </View>

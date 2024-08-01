@@ -1,13 +1,12 @@
-import React, {useState, useEffect, useCallback, useContext, useRef} from 'react';
-import {View, Text, TextInput, Button, StyleSheet, Image, KeyboardAvoidingView, TouchableOpacity, Alert} from 'react-native';
+import React, {useState, useEffect, useRef} from 'react';
+import {View, Text, StyleSheet, KeyboardAvoidingView, TouchableOpacity, Alert} from 'react-native';
 import isEqual from 'lodash/isEqual';
 import ModalPoup from '../component/Modal/ModalPoup';
 import ModalFail from '../component/Modal/ModalFail';
 import Loading from '../component/Modal/Loading';
 import { emailPattern, fullNamePattern, phoneNumberPattern } from '../constant/valid';
 import { getUSerByID, updateProfile } from '../http/PhuHTTP';
-import { NavigationProp, ParamListBase, useFocusEffect, useNavigation, useRoute } from '@react-navigation/native';
-import { ProfileRootStackEnum } from '../component/stack/ProfileRootStackParams';
+import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import CustomDatePicker from '../component/profile/CustomDatePicker';
 import CustomHeaderBar from '../component/profile/CustomHeaderBar';
 
@@ -18,7 +17,6 @@ import InputField from '../component/profile/InputField';
 import AddressModal from '../component/profile/AddressModal';
 import Icon from 'react-native-vector-icons/Ionicons';
 import UpLoadAvatar from '../component/profile/UploadAvatar';
-import { useMyContext } from '../component/navigation/UserContext';
 import { ScrollView } from 'react-native-gesture-handler';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../component/store/store';
