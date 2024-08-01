@@ -127,8 +127,10 @@ export class Message {
     // }
     public async PostMessage(data:{group?:number,sender:number,receiver?:number}) {
         try {
+
             const {group,sender,receiver}= data
             if(!group){
+
                 const createGroup = {
                     type: 'single',
                     members: [sender, receiver]

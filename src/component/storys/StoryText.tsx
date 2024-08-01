@@ -99,7 +99,7 @@ const StoryText = () => {
             const type = 2;
             const permission = 1;
             setIsLoading(true);
-            const newPost = await createNewPost({ type, permission, content });
+            const newPost = await createNewPost({ type, permission, content,emotion:0 });
             console.log("newPost", newPost);
             setTimeout(() => {
                 setIsLoading(false);

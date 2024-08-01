@@ -64,6 +64,7 @@ const Friends: React.FC<Friend> = () => {
   //navigate to message
   function IconMessageOnPressHandle(user:{fullname:string,avatar:string,id:number}) {
     const { fullname, avatar, id } = user
+    
     NavigateToMessage({
       fullname,
       avatar,
