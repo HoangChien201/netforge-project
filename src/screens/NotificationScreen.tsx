@@ -32,7 +32,9 @@ const NotificationScreen = () => {
   const [reload, setReload] = useState(false);
   const [dot, setDot] = useState(0);
   const [notifications, setNotifications] = useState([]);
+
   const user = useSelector((state : RootState)=>state.user.value)
+  
   const [groupedNotifications, setGroupedNotifications] = useState<any>([]);
   // const userId = user.id;
   const { sendNCommentPost } = useSendNotification();

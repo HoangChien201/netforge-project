@@ -22,7 +22,7 @@ type Friend = {
 }
 
 const Friends: React.FC<Friend> = () => {
-  const user = useSelector((state : RootState)=>state.user.user)
+  const user = useSelector((state : RootState)=>state.user.value)
   const [show, setShow] = useState(false);
   const [user2, setUser2] = useState<number>(0);
   const navigation: NavigationProp<ParamListBase> = useNavigation();

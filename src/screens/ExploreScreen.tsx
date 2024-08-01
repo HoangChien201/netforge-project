@@ -17,7 +17,7 @@ import { RootState } from '../component/store/store';
 
 const ExploreScreen = () => {
   const navigation = useNavigation()
-  const user = useSelector((state : RootState)=>state.user.user)
+  const user = useSelector((state : RootState)=>state.user.value)
   const timerRef = useRef(null);
   // modal comments
   const [keyword, setKeyword] = useState('');
@@ -68,7 +68,7 @@ const ExploreScreen = () => {
   }
   const loadRecentUsers = async () => {
     try {
-      const recentUsersJSON = await AsyncStorage.getItem(`recentUsers_${user?.data.id}`);
+      const recentUsersJSON = await AsyncStorage.getItem(`recentUsers_${user?.id}`);
       if (recentUsersJSON) {
         setRecentUsers(JSON.parse(recentUsersJSON));
       }
@@ -78,7 +78,7 @@ const ExploreScreen = () => {
   };
   const saveRecentUsers = async (users: any) => {
     try {
-      await AsyncStorage.setItem(`recentUsers_${user?.data.id}`, JSON.stringify(users));
+      await AsyncStorage.setItem(`recentUsers_${user?.id}`, JSON.stringify(users));
     } catch (error) {
       console.error('Lỗi khi lưu danh sách gần đây:', error);
     }
@@ -89,7 +89,7 @@ const ExploreScreen = () => {
     setUser([])
     setIsSearching(true)
     const userId = item.id
-    if (userId === user?.data.id) {
+    if (userId === user?.id) {
       //setIsModalVisible(false);
       navigation.navigate(ProfileRootStackEnum.ProfileScreen);
     } else {
@@ -107,7 +107,7 @@ const ExploreScreen = () => {
   const handleDleteAll = async () => {
     setRecentUsers([]);
     try {
-      await AsyncStorage.removeItem(`recentUsers_${user?.data.id}`);
+      await AsyncStorage.removeItem(`recentUsers_${user?.id}`);
     } catch (error) {
       console.error('Lỗi khi xóa tất cả danh sách gần đây:', error);
     }

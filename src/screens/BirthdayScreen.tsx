@@ -1,17 +1,12 @@
-import { Modal, Pressable, StyleSheet, Text, TouchableOpacity, View, } from 'react-native'
-import React, { useEffect, useState } from 'react'
-import { useIsFocused, useNavigation } from '@react-navigation/native';
-import Sound from 'react-native-sound';
+import { Modal, Pressable, StyleSheet, Text, View, } from 'react-native'
+import React, { useCallback, useEffect, useState } from 'react'
+import { useFocusEffect, useIsFocused, useNavigation } from '@react-navigation/native';
 import { FlatList } from 'react-native-gesture-handler';
-import { date } from 'yup';
 import Ionicon from 'react-native-vector-icons/Ionicons'
 
 import ItemBirthday from '../birtday/ItemBirthday';
-import ModalBirtday from '../birtday/ModalBirtday';
 import { socket } from '../http/SocketHandle';
 import { FriendType } from '../component/message/ModalNewMessage';
-import { useMyContext } from '../component/navigation/UserContext';
-import ToolBar from '../component/message/ToolBar';
 import { getFriends } from '../http/QuyetHTTP';
 import FastImage from 'react-native-fast-image';
 import { useSelector } from 'react-redux';
@@ -19,11 +14,9 @@ import { RootState } from '../component/store/store';
 
 
 const BirthDayScreen = ({ visible, setVisible }: { visible: boolean, setVisible: any }) => {
-    const user = useSelector((state : RootState)=>state.user.user)
+    const user = useSelector((state:RootState)=>state.user.value)
     const [friend, setFriend] = useState<Array<FriendType>>([])
     const [todayFriends, setTodayFriends] = useState<Array<FriendType>>([]);
-    const [birthdaySound, setBirthdaySound] = useState(null);
-    const [isVisibleBirtday, setIsVisibleBirtday] = useState(false);
 
     const navigation = useNavigation()
     const isFocus = useIsFocused()
@@ -31,19 +24,23 @@ const BirthDayScreen = ({ visible, setVisible }: { visible: boolean, setVisible:
 
     useEffect(() => {
         if (isFocus) {
+            
             navigation.getParent()?.setOptions({
                 tabBarStyle: {
                     display: 'none',
                 }
             });
+            
+            console.log('hhii');
+            
         }
     }, [isFocus]);
-    useEffect(() => {
-        getFriendAll()
-    }, [])
-
-
-
+    useFocusEffect(
+        useCallback(()=>{
+            getFriendAll()
+        },[visible == true])
+    )
+    
 
     //happy birthday friend
     useEffect(() => {
@@ -51,6 +48,7 @@ const BirthDayScreen = ({ visible, setVisible }: { visible: boolean, setVisible:
         const friendsToday = friend.filter(friend => {
             const friendBirthday = new Date(friend.user.dateOfBirth);
             return today.getDate() === friendBirthday.getDate() && today.getMonth() === friendBirthday.getMonth();
+            
         });
 
         //sendnotifi
@@ -60,9 +58,10 @@ const BirthDayScreen = ({ visible, setVisible }: { visible: boolean, setVisible:
         //   console.log('Hôm nay là sinh nhật của', fullname);
         //   handleSendNotification(id, fullname, avatar);
         // });
-
         setTodayFriends(friendsToday);
         console.log('friendsToday', friendsToday);
+
+    
 
     }, [friend]);
 
@@ -84,8 +83,7 @@ const BirthDayScreen = ({ visible, setVisible }: { visible: boolean, setVisible:
             type: 7,
             idF: id,
             userInfo: {
-                receiver: user?.data.id,
-                sender: user?.data.id,
+                receiver: user.id,sender: user.id,
                 fullname: fullname,
                 avatar: avatar,
             }

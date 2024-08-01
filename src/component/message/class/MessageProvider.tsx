@@ -146,13 +146,15 @@ export class Message {
 
             if (msgRes) {
                 const {msg,receivers}=msgRes
+                const title=msg.group.type ==='group' ? `nhóm ${msg.group.name} `: 'mới'
                 receivers.forEach(receiver => {
-                    sendNotificatoin({
+                    sendNotification({
                         nameSender: msg.sender.fullname,
                         avatarSender: msg.sender.avatar,
                         sender: msg.sender.id,
                         messId: msg.id,
-                        body: '',
+                        title,
+                        body: msg.message,
                         receiver: receiver
                     })
                 });
@@ -206,13 +208,13 @@ export class MessageManage {
     }
 }
 
-function sendNotificatoin ({ nameSender, avatarSender, sender, messId, body, receiver }) {
+function sendNotification ({ nameSender, avatarSender, sender, messId, body, receiver,title }) {
     const notificationTemplate = createNotificationTemplate();
     const data = {
         ...notificationTemplate,
         type: 6,
         messId,
-        title: `${nameSender} đã gửi tin nhắn mới  `,
+        title: `${nameSender} đã gửi tin nhắn ${title}  `,
         body,
         userInfo: {
             receiver,

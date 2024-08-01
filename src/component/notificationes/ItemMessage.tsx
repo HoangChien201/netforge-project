@@ -14,10 +14,13 @@ const ItemMessage:React.FC<Item> = ({ notification }) => {
     const displayDate = DateOfTimePost(notification.data[0].timestamp);
     function onPress(){
         const userInfo=notification.data[0].userInfo
-        userInfo.id=userInfo.receiver
+        const {fullname,avatar,sender:id}=userInfo
+        console.log('userInfo',userInfo);
         
         NavigateToMessage(
-            userInfo,
+            {
+                id,fullname,avatar
+            },
             navigation
         )
     }

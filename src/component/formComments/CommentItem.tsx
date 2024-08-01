@@ -16,7 +16,7 @@ import { RootState } from '../store/store';
 
 
 const CommentItem = ({ comment, onReply, depth = 0, render, parent, setText, setUserId, postId,  userPostId}) => {
-    const user = useSelector((state : RootState)=>state.user.user)
+    const user = useSelector((state : RootState)=>state.user.value)
     const navigation = useNavigation<navigationType>()
     const [modalReactionVisible, setModaReactionlVisible] = useState(false);
     const [likeIcon, setLikeIcon] = useState(null);

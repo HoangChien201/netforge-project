@@ -1,8 +1,7 @@
-import { ActivityIndicator, FlatList, Image, Modal, Pressable, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import React, { useEffect, useMemo, useState } from 'react';
+import {  Image,StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import React, { useState } from 'react';
 import Icon from 'react-native-vector-icons/AntDesign';
 import { GetTimeComment } from '../../format/FormatDate'
-import { useMyContext } from '../navigation/UserContext'
 import { useNavigation } from '@react-navigation/native'
 import { COLOR } from '../../constant/color';
 import { useSelector } from 'react-redux';
@@ -15,8 +14,7 @@ const CommentHistories: React.FC<Comment> = ({ dataComment,load }) => {
     // const [sortedData, setSortedData] = useState<any[]>([]);
     const [showModal, setShowModal] = useState(false);
     const navigation = useNavigation();
-    const user = useSelector((state : RootState)=>state.user.user)
-    const [loading, setLoading] = useState(true);
+    const user = useSelector((state : RootState)=>state.user.value)
     if (!dataComment || dataComment.length == 0 && load == true) {
         return (
             <View style={styles.containerEmpty}>
@@ -32,12 +30,15 @@ const CommentHistories: React.FC<Comment> = ({ dataComment,load }) => {
     function navigationScreen(screen: string) {
         navigation.navigate(`${screen}`)
     };
-
+    console.log('dataComment',dataComment);
+    
     return (
         <View style={styles.container}>
                 <View style={styles.listContainer}>
-                    {dataComment.map((item: { content: any; create_at: any; posts: { id: number; creater: { fullname: string } } }, index: { toString: () => React.Key | null | undefined; }) => {
-                        const postId = item.posts.id;
+                    {
+                        dataComment.length > 0 &&
+                    dataComment.map((item: { content: any; create_at: any; posts: { id: number; creater: { fullname: string } } }, index: { toString: () => React.Key | null | undefined; }) => {
+                        const postId = item.posts?.id;
                         return (
                             <TouchableOpacity
                                 key={index.toString()}
@@ -45,8 +46,8 @@ const CommentHistories: React.FC<Comment> = ({ dataComment,load }) => {
                                 onPress={() => navigation.navigate('CommentsScreen', { postId })}
                             >
                                 <View style={styles.infor}>
-                                    {user?.data.avatar ?
-                                        <Image source={{ uri: user?.data.avatar }} style={styles.avatar} />
+                                    {user?.avatar ?
+                                        <Image source={{ uri: user?.avatar }} style={styles.avatar} />
                                         :
                                         <View style={[styles.avatar, { backgroundColor: 'gray' }]} ></View>
                                     }

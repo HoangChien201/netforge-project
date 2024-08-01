@@ -42,10 +42,8 @@ export const CreatePostRootStackScreens=[
         name: CreatePostStackEnum.LiveStack,
         component: LiveStack,
         options: {
-            headerShown: true,
-            tabBarShowLabel: false,
-            title:"Phát trực tiếp",
-            headerTitleAlign:'center'
+            headerShown: false,
+            
         
         }
     },

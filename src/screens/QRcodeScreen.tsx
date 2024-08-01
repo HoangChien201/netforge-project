@@ -14,7 +14,7 @@ const isFocused = useIsFocused();
 const QRcodeScreen = () => {
   const navigation = useNavigation()
   // let logoFromFile = require('../media/quyet_icon/netforge.png');
-  const user = useSelector((state : RootState)=>state.user.user)
+  const user = useSelector((state : RootState)=>state.user?.value)
   const ref = useRef();
   const handleToScanner = () => {
     navigation.navigate(ProfileRootStackEnum.Scanner);
@@ -107,7 +107,7 @@ const QRcodeScreen = () => {
   return (
     <View style={styles.container}>
       <View style={styles.infor}>
-        <Image source={{ uri: user?.data.avatar }} style={styles.avatar} />
+        <Image source={{ uri: user?.avatar }} style={styles.avatar} />
         <View style={{ flex: 4, marginStart: 10, flexDirection: 'column' }}>
           <Text style={{ fontSize: 16, color: 'black', fontWeight: '500' }}>Danh thiếp</Text>
 
@@ -118,15 +118,15 @@ const QRcodeScreen = () => {
       </View>
       <ViewShot ref={ref} style={{backgroundColor:'white', padding:5}}>
         <QRCode
-          value={user?.data ? user?.data.id.toString() : ''}
-          logo={user?.data ? user?.data.avatar : logoFromFile}
+          value={user ? user?.id.toString() : ''}
+          logo={user ? user?.avatar : logoFromFile}
           logoSize={40}
           size={250}
           logoBackgroundColor='white'
         />
 
         <View style={{ marginTop: 10, alignItems: 'center', justifyContent: 'center' }}>
-          <Text style={styles.userName}>{user?.data.fullname}</Text>
+          <Text style={styles.userName}>{user?.fullname}</Text>
           <Text>Quét mã QR để kết bạn với tôi!</Text>
         </View>
       </ViewShot >

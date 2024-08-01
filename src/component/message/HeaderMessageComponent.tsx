@@ -17,7 +17,7 @@ const HeaderMessageComponent = ({ partner }: { partner: any }) => {
 
     const route: MessageScreenRouteProp = useRoute()
     const { fullname, avatar, members } = route.params;
-    const user = useSelector((state : RootState)=>state.user.user)
+    const user = useSelector((state : RootState)=>state.user.value)
     const invitees:Array<InviteeType>
                     =members.map(m=>{
                             return {
@@ -25,7 +25,9 @@ const HeaderMessageComponent = ({ partner }: { partner: any }) => {
                                 userName:m.user.fullname
                             }
                         
-                    }).filter(invitee=>invitee.userID !== user?.data.id.toString())
+                    }).filter(invitee=>invitee.userID !== user?.id?.toString())
+                    console.log('invitees',invitees);
+                    
 
     return (
         <View style={styles.container}>

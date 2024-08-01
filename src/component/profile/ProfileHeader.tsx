@@ -113,7 +113,7 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = (
 
 
   const deleteF = async (id: number) => {
-    const user1 = Number(user?.data.id);
+    const user1 = Number(user?.id);
     const user2 = Number(id);
     try {
       const result = await deleteFriend(user1, user2);

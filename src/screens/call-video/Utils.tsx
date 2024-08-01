@@ -61,9 +61,9 @@ export const onUserLogin = async (userID: any, userName: string, avatar: string,
                             isDurationVisible: true,
                             onDurationUpdate: (duration: any) => {
                                 // console.log('duration', data);
-                                if (duration === 5 * 60) {
-                                    ZegoUIKitPrebuiltCallService.hangUp();
-                                }
+                                // if (duration === 5 * 60) {
+                                //     ZegoUIKitPrebuiltCallService.hangUp();
+                                // }
                             },
                             onCallEnd: (callID, reason, duration) => {
                                 console.log('########CallWithInvitation onCallEnd duration', callID, reason, duration);
@@ -80,13 +80,15 @@ export const onUserLogin = async (userID: any, userName: string, avatar: string,
             }
 
         ).then(() => {
+            console.log("logging in user Utils Successs:");
+
             ZegoUIKitPrebuiltCallService.requestSystemAlertWindow({
                 message: 'Chúng tôi cần sự đồng ý của bạn đối với các quyền sau để sử dụng đúng chức năng cuộc gọi ngoại tuyến',
                 allow: 'Cho phép',
                 deny: 'Từ chối',
             });
         });
-
+        
     } catch (error) {
         console.error("Error logging in user Utils:", error);
     }

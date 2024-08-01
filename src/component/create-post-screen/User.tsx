@@ -2,7 +2,6 @@ import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { COLOR } from '../../constant/color'
 import { Image } from 'react-native';
-import { useMyContext } from '../navigation/UserContext';
 import ICON from 'react-native-vector-icons/AntDesign'
 import { useSelector } from 'react-redux';
 import { RootState } from '../store/store';
@@ -10,7 +9,7 @@ const User = ({setPermission}) => {
     const [dropdownVisible, setDropdownVisible] = useState(false);
     const [selectedOption, setSelectedOption] = useState('Bạn bè');
     const [selectIcon,setSelectIcon] = useState('team');
-   const user = useSelector((state:RootState)=>state.user.user)
+   const user = useSelector((state:RootState)=>state.user?.value)
     
     const options = [
         { label: 'Bạn bè', value: 1 , Icon:'team'},
@@ -34,8 +33,8 @@ const User = ({setPermission}) => {
     return (
         <View style={styles.container}>
             <View style={styles.userInfor}>
-                {user.avatar? <Image style={styles.userInforAvatar} source={{uri: user.avatar}}/>  : <Image style={styles.userInforAvatar} source={require('../../media/quyet_icon/smile_p.png')}/>  }
-                <Text style={styles.userInforName}>{user.fullname}</Text>
+                {user?.avatar? <Image style={styles.userInforAvatar} source={{uri: user?.avatar}}/>  : <Image style={styles.userInforAvatar} source={require('../../media/quyet_icon/smile_p.png')}/>  }
+                <Text style={styles.userInforName}>{user?.fullname}</Text>
             </View>
             <View style={styles.type}>
                 <TouchableOpacity style={styles.dropdownButton} onPress={toggleDropdown}>

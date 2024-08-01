@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { StyleSheet, Text, View, Modal, TouchableOpacity, Keyboard, ToastAndroid, Pressable } from 'react-native';
 import Icon from 'react-native-vector-icons/AntDesign';
+
 import User from '../create-post-screen/User';
 import { COLOR } from '../../constant/color';
 import { sharePost } from '../../http/PhuHTTP';
@@ -42,7 +43,7 @@ const ModalShare:React.FC<ModalShareProps> = ({creater, isVisible, onClose, idPo
                 const response = await sharePost(share, content, permission, 1);
                 handleClose()
                 ToastAndroid.show('Chia sẻ bài viết thành công', ToastAndroid.SHORT);
-                handleSendNotification(response)
+                // handleSendNotification(response)
             } else {
                 const response = await sharePost(idPost, content, permission, 1);
                 handleClose()
@@ -53,18 +54,18 @@ const ModalShare:React.FC<ModalShareProps> = ({creater, isVisible, onClose, idPo
         }
     };
 
-    const shareApp = (postId: string) => {
-        const deepLink = `https://netforge/post/${postId}`;
-        const shareOptions = {
-            title: 'Chia sẻ bài viết',
-            // message: `${deepLink}`,
-            url: deepLink,
-        };
+    // const shareApp = (postId: string) => {
+    //     const deepLink = `https://netforge/post/${postId}`;
+    //     const shareOptions = {
+    //         title: 'Chia sẻ bài viết',
+    //         // message: `${deepLink}`,
+    //         url: deepLink,
+    //     };
 
-        Share.open(shareOptions)
-            .then((res) => console.log(res))
-            .catch((err) => err && console.log(err));
-    };
+    //     Share.open(shareOptions)
+    //         .then((res) => console.log(res))
+    //         .catch((err) => err && console.log(err));
+    // };
 
     const handleSendNotification = (post: any) => {
         const data = {
@@ -96,9 +97,9 @@ return (
                         <TouchableOpacity style={styles.button} onPress={handleShare} >
                             <Text style={styles.txtShare}>Chia sẻ ngay</Text>
                         </TouchableOpacity>
-                        <TouchableOpacity style={[styles.button, styles.button]} onPress={() => shareApp(idPost)}>
+                        {/* <TouchableOpacity style={[styles.button, styles.button]} onPress={() => shareApp(idPost)}>
                             <Text style={styles.txtShare}>Share App</Text>
-                        </TouchableOpacity>
+                        </TouchableOpacity> */}
                     </View>
                 </View>
             </View>

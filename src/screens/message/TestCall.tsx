@@ -1,11 +1,10 @@
 import { StyleSheet, Text, View } from 'react-native'
 import React from 'react'
 import ZegoUIKitPrebuiltCallService, { ZegoSendCallInvitationButton, ZegoMenuBarButtonName } from '@zegocloud/zego-uikit-prebuilt-call-rn';
-import { useMyContext } from '../../component/navigation/UserContext';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../component/store/store';
 const TestCall = () => {
-const user = useSelector((state:RootState)=>state.user.user)
+const user = useSelector((state:RootState)=>state.user.value)
 
     const invitees=[{
         userID: user.id ===9 ? '9' : '2',

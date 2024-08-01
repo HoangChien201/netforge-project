@@ -15,10 +15,10 @@ const Friend: React.FC<Fri> = ({ id }) => {
   const [disabledButtons, setDisabledButtons] = useState({});
   const [isYou, setIsYou] = useState(false);
   const status = 1;
-  const user = useSelector((state : RootState)=>state.user.user)
+  const user = useSelector((state : RootState)=>state.user.value)
   const {sendNRequestFriend} = useSendNotification();
   useEffect(() => {
-    if (user?.data.id == id) {
+    if (user?.id == id) {
       setIsYou(true);
     }
   })
