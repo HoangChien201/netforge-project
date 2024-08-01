@@ -17,9 +17,11 @@ import { Alert, PermissionsAndroid } from 'react-native';
 import { socket } from '../../http/SocketHandle'
 // @ts-ignore
 
-import { ZegoCallInvitationDialog, ZegoUIKitPrebuiltCallFloatingMinimizedView } from '@zegocloud/zego-uikit-prebuilt-call-rn';
+import { ZegoCallInvitationDialog,ZegoUIKitPrebuiltCallFloatingMinimizedView } from '@zegocloud/zego-uikit-prebuilt-call-rn';
+import { Linking } from 'react-native';
+import HomeScreen from '../../screens/HomeScreen'
 import { navigationRef } from './NavigationRef'
-
+import CommentsScreen from '../../screens/CommentsScreen'
 
 export type navigationType = StackNavigationProp<RootStackParamList>
 type routeType = RouteProp<{ params: { value: string } }, 'params'>

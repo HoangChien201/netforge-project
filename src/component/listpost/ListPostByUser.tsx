@@ -1,54 +1,44 @@
+import React, { useCallback, useEffect, useState } from 'react';
 import { FlatList, View, StyleSheet, ActivityIndicator, Dimensions, Text, Image } from 'react-native';
-import React, { memo,useCallback, useEffect, useRef, useState } from 'react';
 import ItemPost from './ItemPost';
 import Loading from '../Modal/Loading';
-import { useMyContext } from '../navigation/UserContext';
 import { NavigationProp, ParamListBase, useNavigation } from '@react-navigation/native';
 import { ProfileRootStackEnum } from '../stack/ProfileRootStackParams';
-import { UseFetchPostByUser } from './UseFetchPostByUser';
+import FastImage from 'react-native-fast-image';
 
-interface ListPortsByUserProps{
-  userId: any,
-  onRefresh: boolean
+interface ListPortsByUserProps {
+  data: Post[];
+  onRefresh: boolean;
 }
 
-const ListPortsByUser:React.FC<ListPortsByUserProps> = React.memo(({ userId, onRefresh }) => {
-  const { post, fetchPosts, loading } = UseFetchPostByUser();
-  const [displayData, setDisplayData] = useState<any>([]);
+const ListPortsByUser: React.FC<ListPortsByUserProps> = ({ data, onRefresh }) => {
+  const [displayData, setDisplayData] = useState<any[]>([]);
   const [loadingMore, setLoadingMore] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const navigation: NavigationProp<ParamListBase> = useNavigation();
-  const [isFetching, setIsFetching] = useState(true); // Thêm biến trạng thái để kiểm soát hiển thị
+  const [isFetching, setIsFetching] = useState(true);
 
   const PAGE_SIZE = 10;
-  useEffect(() => {
-    const fetchData = async () => {
-      setIsFetching(true);
-      await fetchPosts(userId);
-      setIsFetching(false);
-    };
-    fetchData();
-  }, [fetchPosts, userId, onRefresh]);
 
   useEffect(() => {
-    setDisplayData(post.slice(0, PAGE_SIZE));
-  }, [post]);
+    setDisplayData(data.slice(0, PAGE_SIZE));
+    setIsFetching(false);
+  }, [data, onRefresh]);
 
-  const loadMoreData = () => {
-    if (loadingMore || displayData.length >= post.length) return;
+  const loadMoreData = useCallback(() => {
+    if (loadingMore || displayData.length >= data.length) return;
     setLoadingMore(true);
     const newPage = currentPage + 1;
     const startIndex = (newPage - 1) * PAGE_SIZE;
     const endIndex = startIndex + PAGE_SIZE;
-    const newData = post.slice(startIndex, endIndex);
-    
+    const newData = data.slice(startIndex, endIndex);
+
     setTimeout(() => {
-      setDisplayData((prevData: any) => [...prevData, ...newData]);
+      setDisplayData((prevData) => [...prevData, ...newData]);
       setCurrentPage(newPage);
       setLoadingMore(false);
-    }, 1000); 
-  };
-
+    }, 1000);
+  }, [loadingMore, displayData, data, currentPage]);
 
   const renderFooter = () => {
     return loadingMore ? (
@@ -58,25 +48,24 @@ const ListPortsByUser:React.FC<ListPortsByUserProps> = React.memo(({ userId, onR
     ) : null;
   };
 
-  const { user } = useMyContext();
-  const loggedInUserId = user.id;
-  const handleToProfile = (userId: React.SetStateAction<null>, userName: string) => {
+  const handleToProfile = (userId: any, userName: string) => {
     if (userId === loggedInUserId) {
-        navigation.navigate(ProfileRootStackEnum.ProfileScreen);
+      navigation.navigate(ProfileRootStackEnum.ProfileScreen);
     } else {
-        navigation.navigate(ProfileRootStackEnum.FriendProfile, { userId});
-    } 
+      navigation.navigate(ProfileRootStackEnum.FriendProfile, { userId });
+    }
   };
+
   return (
     <View style={{ backgroundColor: 'rgba(155,155,155,0.2)' }}>
       {isFetching ? (
         <Loading isLoading={true} />
       ) : (
-        post.length > 0 ? (
+        data.length > 0 ? (
           <FlatList
             data={displayData}
             renderItem={({ item, index }) => {
-              return <ItemPost onrefresh={onRefresh} index={index} data={item}  />;
+              return <ItemPost onrefresh={onRefresh} index={index} data={item} />;
             }}
             keyExtractor={(item) => item.id.toString()}
             showsVerticalScrollIndicator={false}
@@ -88,16 +77,12 @@ const ListPortsByUser:React.FC<ListPortsByUserProps> = React.memo(({ userId, onR
           <>
             <View style={{ borderWidth: 0.7, borderColor: '#ddd', marginHorizontal: 18,}}></View>
             <View style={styles.messageContainer}>
-              <Image 
-                source={userId === loggedInUserId
-                  ? require('../../media/quyet_icon/netforge1.jpg')
-                  : require('../../media/quyet_icon/netforge1.jpg')} 
+              <FastImage
+                source={require('../../media/Dicons/gitne.jpg')} 
                 style={styles.noImage} 
               />
               <Text style={styles.messageText}>
-                {userId === loggedInUserId
-                  ? 'Tạo và chia sẻ những câu chuyện đặc biệt của bạn!'
-                  : 'Không có bài viết nào để hiển thị'}
+                {'Không có bài viết nào để hiển thị'}
               </Text>
             </View>
           </>
@@ -105,7 +90,7 @@ const ListPortsByUser:React.FC<ListPortsByUserProps> = React.memo(({ userId, onR
       )}
     </View>
   );
-});
+};
 
 export default ListPortsByUser;
 
@@ -120,17 +105,16 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     flex: 1,
     backgroundColor: '#fff',
-    height: Dimensions.get('screen').height / 2.5,
-    paddingHorizontal: 30
-},
+    height: Dimensions.get('screen').height / 2,
+  },
   messageText: {
-      fontSize: 20,
-      color: '#000',
-      fontWeight: 'bold',
-      marginTop:15
+    fontSize: 20,
+    color: '#000',
+    fontWeight: 'bold',
+    marginTop: 15
   },
   noImage: {
-    width:80,
-    height:80
+    width: '49%',
+    height: '40%'
   },
 });

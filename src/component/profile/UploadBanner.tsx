@@ -126,6 +126,11 @@ const UploadBanner: React.FC<UploadBannerProps> = ({ initialImage, onImageSelect
     setIsImageViewerVisible(true);
   };
 
+  const handleCloseShowBanner = () => {
+    setShow(false);
+    setIsImageViewerVisible(false);
+  }
+
   const handleClose = () => {
     setShow(false);
   };
@@ -176,7 +181,7 @@ const UploadBanner: React.FC<UploadBannerProps> = ({ initialImage, onImageSelect
 
       <ImageViewModal
         visible={isImageViewerVisible}
-        onClose={() => setIsImageViewerVisible(false)}
+        onClose={handleCloseShowBanner }
         imageUri={image}
       />
 

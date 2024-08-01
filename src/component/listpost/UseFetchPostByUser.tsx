@@ -23,13 +23,11 @@ interface UseFetchPostsReturn {
   medias: Media[];
   post: Post[];
   fetchPosts: (userId: any) => Promise<void>;
-  loading: boolean;
 }
 
 export const UseFetchPostByUser = (): UseFetchPostsReturn => {
   const [medias, setMedias] = useState<Media[]>([]);
   const [post, setPosts] = useState<Post[]>([]);
-  const [loading, setLoading] = useState(false);
 
   const fetchPosts = useCallback(async (userId: any) => {
     try {
@@ -49,5 +47,5 @@ export const UseFetchPostByUser = (): UseFetchPostsReturn => {
     }
   }, []);
 
-  return { medias, post, fetchPosts, loading };
+  return { medias, post, fetchPosts};
 };

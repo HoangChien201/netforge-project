@@ -1,5 +1,5 @@
-import React, { useState, useCallback, useRef } from 'react';
-import { StyleSheet, View, TouchableOpacity, Image, Modal, Text, Alert, Platform, Pressable } from 'react-native';
+import React, { useState, useCallback} from 'react';
+import { StyleSheet, View, TouchableOpacity, Image, Modal, Text, Pressable } from 'react-native';
 import { launchCamera, launchImageLibrary, CameraOptions, ImageLibraryOptions } from 'react-native-image-picker';
 import Icon from 'react-native-vector-icons/AntDesign';
 import FontistoIcon from 'react-native-vector-icons/Fontisto';

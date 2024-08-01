@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, ToastAndroid, Modal, Pressable, Dimensions } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import AntDesign from 'react-native-vector-icons/AntDesign';
@@ -7,9 +7,6 @@ import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import { COLOR } from '../../constant/color';
 import { useMyContext } from '../navigation/UserContext';
 import { cancelRequest, deleteFriend, sendRequest, getRequest } from '../../http/QuyetHTTP';
-import DeleteFriend from '../../screens/profile/friendScreen/DeleteFriend'
-import uuid from 'react-native-uuid';
-import { socket } from '../../http/SocketHandle';
 import { useSendNotification } from '../../constant/notify';
 import { NetworkRootStackEnum, NetworkStackNavigationProp } from '../stack/NetworkRootStackParams';
 import { NavigateToMessage } from '../message/NavigateToMessage';
@@ -19,10 +16,7 @@ interface ProfileHeaderProps {
   userId: number;
   loggedInUserId: number;
   relationship: any;
-  avatar:string; //chiến mới thêm //--nếu đã thấy vui lòng xóa comment này
-
-  // onAddStory: () => void;
-  // onEditProfile: () => void;
+  avatar:string;
 }
 
 const ProfileHeader: React.FC<ProfileHeaderProps> = (
@@ -30,7 +24,7 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = (
     userId, 
     loggedInUserId, 
     relationship, 
-    avatar, //chiến mới thêm //--nếu đã thấy vui lòng xóa comment này
+    avatar,
   }) => {
   const navigation:NetworkStackNavigationProp = useNavigation();
   const [cancelAdd, setCancelAdd] = useState(false);
@@ -43,7 +37,7 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = (
   const { sendNRequestFriend } = useSendNotification();
   const { user } = useMyContext();
   const [wait, setWait] = useState(true);
-    const [check,setCheck]=useState(false)
+  // const [check,setCheck]=useState(false)
   useEffect(() => {
     checkFiend();
     //getWaitAcept();

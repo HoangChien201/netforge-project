@@ -1,17 +1,13 @@
 import ProfileScreen from "../../screens/ProfileScreen";
 import EditProfileScreen from "../../screens/EditProfileScreen";
 import SettingScreen from "../../screens/profile/SettingScreen";
-import HistoryActivityScreen from "../../screens/profile/HistoryActivityScreen";
 import HelpScreen from "../../screens/profile/HelpScreen";
 import FriendScreen from "../../screens/profile/FriendScreen";
 import MenuScreen from "../../screens/MenuScreen";
-import NaviStack from "../../component/stack/NaviStack"
 import ChangePassword from "../../screens/ChangePassword";
 import QRcodeScreen from "../../screens/QRcodeScreen";
-import Scanner from "../../screens/Scanner";
 import HistoryStack from "./HistoryStack";
 import HomeScreen from "../../screens/HomeScreen";
-import LiveStack from "./LiveStack";
 import FriendProfile from "../profile/FriendProfile";
 import Friends from "../../screens/profile/friendScreen/Friends";
 
@@ -20,9 +16,7 @@ export enum ProfileRootStackEnum {
     EditProfileScreen = 'EditProfileScreen',
     FollowingScreen = 'FollowingScreen',
     SettingScreen = 'SettingScreen',
-    HistoryActivityScreen = 'HistoryActivityScreen',
     HelpScreen = 'HelpScreen',
-    NaviStack = 'NaviStack',
     MenuScreen = 'MenuScreen',
     ChangePassword = 'ChangePassword',
     QRcodeScreen = 'QRcodeScreen',
@@ -30,7 +24,6 @@ export enum ProfileRootStackEnum {
     FriendScreen = 'FriendScreen',
     HistoryStack = 'HistoryStack',
     HomeScreen = 'HomeScreen',
-    LiveStack = 'LiveStack',
     FriendProfile = 'FriendProfile',
     Friends = 'Friends',
 }
@@ -39,9 +32,7 @@ export type ProfileRootStackParams={
     ProfileScreen : undefined;
     EditProfileScreen: undefined;
     SettingScreen : undefined;
-    HistoryActivityScreen : undefined;
     HelpScreen : undefined;
-    NaviStack :undefined,
     MenuScreen:undefined;
     ChangePassword: undefined;
     QRcodeScreen: undefined;
@@ -49,7 +40,6 @@ export type ProfileRootStackParams={
     FriendScreen: undefined;
     HistoryStack:undefined;
     HomeScreen: undefined;
-    LiveStack: undefined;
     FriendProfile:undefined;
     FollowingScreen:undefined;
     Friends: undefined;
@@ -154,16 +144,6 @@ export const ProfileRootStackScreens=[
         component: HomeScreen,
         options: {
             headerShown: false
-        }
-    },
-    {
-        id: Math.random() + "" + Date,
-        name: ProfileRootStackEnum.LiveStack,
-        component: LiveStack,
-        options: {
-            headerShown: true,
-            tabBarShowLabel: false,
-        
         }
     },
     {

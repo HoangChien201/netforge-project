@@ -3,10 +3,11 @@ import { StyleSheet, Text, View, TextInput, Modal, TouchableOpacity, Keyboard, T
 import Icon from 'react-native-vector-icons/AntDesign';
 import User from '../create-post-screen/User';
 import { COLOR } from '../../constant/color';
-import { createNewPost, getPostById } from '../../http/QuyetHTTP';
 import { sharePost } from '../../http/PhuHTTP';
 import TextArea from '../create-post-screen/TextArea';
 import { useSendNotification } from '../../constant/notify';
+import Clipboard from '@react-native-clipboard/clipboard';
+import Share from 'react-native-share';
 
 
 interface ModalShareProps{
@@ -20,7 +21,6 @@ interface ModalShareProps{
 const ModalShare:React.FC<ModalShareProps> = ({creater, isVisible, onClose, idPost, share }) => {
     const [content, setContent] = useState<string | null>('');
     const [permission, setPermission] = useState(1);
-    // const type = 1;
     const [friends, setFriends] = useState([]);
     const { sendNSharePost} = useSendNotification();
     
@@ -37,13 +37,14 @@ const ModalShare:React.FC<ModalShareProps> = ({creater, isVisible, onClose, idPo
     }
 
     const handleShare = async () => {
+        Keyboard.dismiss(); // Ẩn bàn phím
         try {
-            if(share) {
+            if (share) {
                 const response = await sharePost(share, content, permission, 1);
                 handleClose()
                 ToastAndroid.show('Chia sẻ bài viết thành công', ToastAndroid.SHORT);
                 handleSendNotification(response)
-            } else{
+            } else {
                 const response = await sharePost(idPost, content, permission, 1);
                 handleClose()
                 ToastAndroid.show('Chia sẻ bài viết thành công', ToastAndroid.SHORT);
@@ -51,6 +52,25 @@ const ModalShare:React.FC<ModalShareProps> = ({creater, isVisible, onClose, idPo
         } catch (error) {
             console.log("lỗi share post: ", error)
         }
+    };
+
+    const createDeepLink = (postId: string) => {
+        const deepLink = `https://netforge/post/${postId}`;
+        Clipboard.setString(deepLink);
+        ToastAndroid.show('Link đã được sao chép vào clipboard', ToastAndroid.SHORT);
+    };
+
+    const shareApp = (postId: string) => {
+        const deepLink = `https://netforge/post/${postId}`;
+        const shareOptions = {
+            title: 'Chia sẻ bài viết',
+            // message: `${deepLink}`,
+            url: deepLink,
+        };
+
+        Share.open(shareOptions)
+            .then((res) => console.log(res))
+            .catch((err) => err && console.log(err));
     };
 
     const handleSendNotification = (post: any) => {
@@ -82,6 +102,12 @@ return (
                     <View style={styles.buttonContainer}>
                         <TouchableOpacity style={styles.button} onPress={handleShare} >
                             <Text style={styles.txtShare}>Chia sẻ ngay</Text>
+                        </TouchableOpacity>
+                        {/* <TouchableOpacity style={[styles.button, styles.copyButton]} onPress={() => createDeepLink(idPost)}>
+                            <Text style={styles.txtShare}>Copy Link</Text>
+                        </TouchableOpacity> */}
+                        <TouchableOpacity style={[styles.button, styles.button]} onPress={() => shareApp(idPost)}>
+                            <Text style={styles.txtShare}>Share App</Text>
                         </TouchableOpacity>
                     </View>
                 </View>
@@ -141,5 +167,7 @@ const styles = StyleSheet.create({
     iconClose: {
         alignItems:'center'
     },
-    
+    copyButton: {
+        backgroundColor: COLOR.PrimaryColor,
+    },
 });
