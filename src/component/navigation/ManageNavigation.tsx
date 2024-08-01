@@ -15,8 +15,9 @@ import { ZegoCallInvitationDialog,ZegoUIKitPrebuiltCallFloatingMinimizedView } f
 import { useDispatch, useSelector } from 'react-redux'
 import { RootState } from '../store/store'
 import { setUsers } from '../store/userSlice'
-
+import { getFriends } from '../../http/QuyetHTTP'
 import { navigationRef } from './NavigationRef'
+import { useSendNotification } from '../../constant/notify'
 
 export type navigationType = StackNavigationProp<RootStackParamList>
 type routeType = RouteProp<{ params: { value: string } }, 'params'>
@@ -32,6 +33,9 @@ const ManageNavigation = () => {
     const dispatch = useDispatch()
     const user = useSelector((state:RootState)=>state.user.value)
     const [notifications, setNotifications] = useState([]);
+    const [friend, setFriend] = useState([])           
+    const [todayFriends, setTodayFriends] = useState([]);
+    const { sendBirthDay } = useSendNotification()
     const handleAutoLogin = async () => {
         try {
             const keepLoggedIn = await AsyncStorage.getItem('keep');
@@ -70,7 +74,47 @@ const ManageNavigation = () => {
         }, 1500);
         return () => clearTimeout(timer);
     }, []);
+    //tuongne
+    useEffect(()=>{
+        autoSendBirth();
+    },[user])
+    const autoSendBirth = async () => {
+        if(user){
+            try {
+                const result = await getFriends(2)
+                setFriend(result)
+            } catch (error) {
+                console.log('Lỗi khi lấy danh sách bạn bè nef', error);
+            }
+        }
 
+    };
+    useEffect(()=>{
+        const today = new Date();
+        const friendsToday = friend.filter(friend => {
+            const friendBirthday = new Date(friend.user.dateOfBirth);
+            return today.getDate() === friendBirthday.getDate() && today.getMonth() === friendBirthday.getMonth();
+        });
+        setTodayFriends(friendsToday);
+        console.log('friendsTodayne', friendsToday);
+    },[friend])
+    useEffect(()=>{
+        if(todayFriends && user){
+            if (todayFriends.length > 0 && user) {
+                todayFriends.forEach(friend => {
+                    sendBirthDay({                       
+                        friendId: friend.user.id,
+                        avatar: friend.user.avatar,
+                        fullname: friend.user.fullname,
+                        receiver:user.id,
+                       
+                    })
+                });
+            } else {
+                console.log('No friends to tag');
+            }
+        }
+    },[todayFriends])
     useEffect(() => {
         if (user) {
             const id = user.id;

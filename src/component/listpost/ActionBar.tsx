@@ -20,7 +20,6 @@ const ActionBar = memo(({ creater,onPressProfile, like_count,type, postId, comme
     const [number, setNumber] = useState<number | null>(type);
     const animationRef = useRef(null);
     const [isModalVisible, setModalVisible] = useState(false);
-    console.log("ActionBar",user);
     
     const toggleModal = () => {
    

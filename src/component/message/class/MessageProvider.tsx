@@ -129,6 +129,8 @@ export class Message {
         try {
 
             const {group,sender,receiver}= data
+            console.log('gprovider',group);
+            
             if(!group){
 
                 const createGroup = {
@@ -148,14 +150,16 @@ export class Message {
 
             if (msgRes) {
                 const {msg,receivers}=msgRes
-                const title=msg.group.type ==='group' ? `nhóm ${msg.group.name} `: 'mới'
+                // const title=msg.group.type ==='group' ? `nhóm ${msg.group.name} `: 'mới'
+                console.log('msg',msgRes);
+                
                 receivers.forEach(receiver => {
                     sendNotification({
                         nameSender: msg.sender.fullname,
                         avatarSender: msg.sender.avatar,
                         sender: msg.sender.id,
                         messId: msg.id,
-                        title,
+                        title:'sadsa',
                         body: msg.message,
                         receiver: receiver
                     })

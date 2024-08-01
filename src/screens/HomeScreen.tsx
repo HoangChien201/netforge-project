@@ -205,6 +205,7 @@ const HomeScreen = () => {
                         onEndReachedThreshold={0.5}
                         refreshing={refreshing}
                         onRefresh={onRefresh}
+                        contentContainerStyle={{paddingBottom:100}}
                     />
                 </View>
             

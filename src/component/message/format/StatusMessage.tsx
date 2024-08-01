@@ -6,5 +6,7 @@ export function StateMessageFormat(state: number) {
             return 'Đã gửi'
         case 2:
             return 'Đã xem'
+        case 3:
+            return 'Gửi lỗi !'
     }
 }

@@ -225,7 +225,7 @@ export const useSendNotification = () => {
     console.log('Sent notification data:', data);
   };
   const sendBirthDay = ({ friendId, fullname, avatar }) => {
-    const notificationTemplate = createNotificationTemplate();
+    const notificationTemplate = createNotificationTemplate();    
     const data = {
       ...notificationTemplate,
       type: 7,
