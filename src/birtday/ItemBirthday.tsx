@@ -9,11 +9,14 @@ import { FriendType } from '../component/message/ModalNewMessage'
 import { MessageFactory, MessageProvider } from '../component/message/class/MessageProvider'
 import { useMyContext } from '../component/navigation/UserContext'
 import Loading from '../component/Modal/Loading'
+import { useSelector } from 'react-redux'
+import { RootState } from '../component/store/store'
 
 const ItemBirthday = ({ item }: { item: FriendType }) => {
   const [checkMessaBirthday, setCheckMessaBirthday] = useState(false)
   const navigation: NetworkStackNavigationProp = useNavigation()
-  const { user } = useMyContext()
+  const user = useSelector((state:RootState)=>state.user.value)
+
 
   // Hàm tính toán tuổi
 

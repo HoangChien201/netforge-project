@@ -2,11 +2,13 @@ import { StyleSheet, Text, View, TouchableOpacity, Image } from 'react-native'
 import React from 'react'
 import Icon from 'react-native-vector-icons/SimpleLineIcons'
 import { useMyContext } from '../../component/navigation/UserContext';
+import { useSelector } from 'react-redux';
+import { RootState } from '../store/store';
 
 const ItemSearch = ({ item, handleItemClick, users }) => {
   console.log('users', item.id);
-  const { user } = useMyContext();
-  console.log(user.id);
+  const user = useSelector((state : RootState)=>state.user.user)
+
 
 
   return (
@@ -16,7 +18,7 @@ const ItemSearch = ({ item, handleItemClick, users }) => {
       
       <View style={styles.textContainer}>
         <Text style={styles.fullName}>{item.fullname}</Text>
-        {item.id == user.id && (
+        {item.id == user?.data.id && (
           <Text style={styles.youTag}>(Bạn)</Text>
         )}
       </View>

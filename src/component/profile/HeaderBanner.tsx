@@ -6,11 +6,10 @@ import UploadBanner from './UploadBanner';
 
 interface HeaderBannerProps {
   value: any;
-  //avatarPath: string;
   userId:any;
 }
 
-const HeaderBanner: React.FC<HeaderBannerProps> = ({value, userId}) => {
+const HeaderBanner: React.FC<HeaderBannerProps> = ({ value, userId}) => {
     const [avatarPath, setAvatarPath] = useState<string>('');
     const [backgroundPath, setBackgroundPath] = useState<string>('');
     const handleImageSelect = (imagePath: string) => {

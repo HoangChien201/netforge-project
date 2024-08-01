@@ -4,8 +4,9 @@ import ZegoUIKitPrebuiltLiveStreaming, {
   AUDIENCE_DEFAULT_CONFIG,
 } from '@zegocloud/zego-uikit-prebuilt-live-streaming-rn';
 import KeyCenter from './KeyCenter';
-import {useNavigation, NavigationProp, RouteProp} from '@react-navigation/native';
-import { useMyContext } from '../../component/navigation/UserContext';
+import {useNavigation, RouteProp} from '@react-navigation/native';
+import { useSelector } from 'react-redux';
+import { RootState } from '../../component/store/store';
 
 type AudienceScreenRouteProp = RouteProp<{
   Audience: {
@@ -30,7 +31,7 @@ const AudienceScreen: React.FC<Props> = ({route}) => {
   useEffect(() => {
     navigation.getParent()?.setOptions({ tabBarStyle: {display:'none'}});
   }, []);
-  const {user} = useMyContext();
+  const user = useSelector((state : RootState)=>state.user.value)
 
   const handleLeaveLiveStreaming = () => {
     navigation.popToTop()
@@ -43,7 +44,7 @@ const AudienceScreen: React.FC<Props> = ({route}) => {
         appID={KeyCenter.appID}
         appSign={KeyCenter.appSign}
         userID={userID}
-        userName={user.fullname}
+        userName={user?.fullname}
         liveID={liveID}
         config={{
           ...AUDIENCE_DEFAULT_CONFIG,

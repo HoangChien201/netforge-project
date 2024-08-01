@@ -10,6 +10,8 @@ import { createGroupsHTTP, getMessageByGroupAPI } from '../../http/ChienHTTP'
 import { MessageScreenNavigationProp } from '../../screens/message/MessageScreen'
 import { useNavigation } from '@react-navigation/native'
 import { useMyContext } from '../navigation/UserContext'
+import { useSelector } from 'react-redux';
+import { RootState } from '../store/store'
 export type FriendType = {
     id: number,
     status: number,
@@ -29,7 +31,7 @@ const ModalNewMessage = ({ visible, setVisible }: { visible: boolean, setVisible
     const [nameGroup, setNameGroup] = useState('')
 
     const navigation: MessageScreenNavigationProp = useNavigation()
-    const {user} = useMyContext()
+    const user = useSelector((state : RootState)=>state.user.value)
 
     function CancleHandle() {
         if (type === 'message') {
@@ -42,7 +44,7 @@ const ModalNewMessage = ({ visible, setVisible }: { visible: boolean, setVisible
 
     async function CreateGroupHandle() {
         const createGroup = {
-            members:[...members,user.id],
+            members:[...members,user?.data.id],
             name:nameGroup,
             type: 'group'
         }

@@ -1,27 +1,25 @@
 import { Alert, Animated, Easing, Image, Keyboard, KeyboardAvoidingView, Platform, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import React, { memo, useCallback, useEffect, useRef, useState } from 'react'
+import { useSelector } from 'react-redux'
+import { useFocusEffect, useIsFocused } from '@react-navigation/native'
+import { replaceMentionValues } from 'react-native-controlled-mentions'
+import { useNavigation } from '@react-navigation/native'
+
 import { COLOR } from '../constant/color'
 import BODY from '../component/create-post-screen/Body'
-import BODYMODAL from '../component/edit-post-modal/Body'
 import { upLoadMedia, createNewPost } from '../http/QuyetHTTP'
 import ModalPoup from '../component/Modal/ModalPoup'
 import ModalFail from '../component/Modal/ModalFail'
-import { useMyContext } from '../component/navigation/UserContext';
 import { fileType } from '../component/create-post-screen/Options'
 import Loading from '../component/Modal/Loading'
-import NetworkBottomTab from '../component/bottom-stack/NetworkBottomTab'
-import { socket } from '../http/SocketHandle'
-import uuid from 'react-native-uuid';
 import { useSendNotification } from '../constant/notify'
 import GenerImageAI from '../component/create-post-screen/GenerImageAI'
-import { useFocusEffect, useIsFocused } from '@react-navigation/native'
-import { useNavigation } from '@react-navigation/native'
-import { replaceMentionValues } from 'react-native-controlled-mentions'
+import { RootState } from '../component/store/store'
 const CreatePostScreen = memo(() => {
   const [status, setStatus] = useState('');
   const [showPopup, setShowPopup] = useState(false);
   const [isError, setIsError] = useState(false);
-  const { user } = useMyContext();
+  const user = useSelector((state : RootState)=>state.user.value)
   const [friends, setFriends] = useState([]);
   const [content, setContent] = useState('');
   // const [tags, setTags] = useState([]);

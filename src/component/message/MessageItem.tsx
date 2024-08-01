@@ -9,47 +9,49 @@ import { MessageCordinatesType } from '../../screens/message/MessageScreen'
 import StateMessage from './StateMessage'
 import { socket } from '../../http/SocketHandle'
 import { useMyContext } from '../navigation/UserContext';
-import { Message} from './class/MessageProvider';
+import { Message } from './class/MessageProvider';
+import { useSelector } from 'react-redux';
+import { RootState } from '../store/store';
 export type messageType = {
-    id: number,
-    create_at: string,
-    update_at: string,
-    state: number,
-    message: string |
-    {
-      uri: string,
-      type: string,
-      fileName: string
-    },
+  id: number,
+  create_at: string,
+  update_at: string,
+  state: number,
+  message: string |
+  {
+    uri: string,
     type: string,
-    sender: {
-      id: number,
-      fullname: string,
-      avatar: string
-    },
-    reads: Array<{
+    fileName: string
+  },
+  type: string,
+  sender: {
+    id: number,
+    fullname: string,
+    avatar: string
+  },
+  reads: Array<{
+    "id": number,
+    "user": {
       "id": number,
-      "user": {
-        "id": number,
-        "fullname": string,
-        "avatar": string
-      },
-      "message": number,
-      "read_at": string
-    }>,
-    reactions: Array<reactionType>
-    group: number | {
-      id: number
+      "fullname": string,
+      "avatar": string
     },
-    parent: number  |{
-      sender: {
-        "id": number,
-        "fullname": string,
-        "avatar": string
-      },
-      id: number,
+    "message": number,
+    "read_at": string
+  }>,
+  reactions: Array<reactionType>
+  group: number | {
+    id: number
+  },
+  parent: number | {
+    sender: {
+      "id": number,
+      "fullname": string,
+      "avatar": string
     },
-  
+    id: number,
+  },
+
 }
 
 export type reactionType = {
@@ -85,7 +87,7 @@ const MessageItem: React.FC<MessageItemProp> = React.memo((
     setReply,
     lastMessage,
   }) => {
-  const { user } = useMyContext()
+  const user = useSelector((state: RootState) => state.user.value)
   const { height } = useWindowDimensions()
   const [heightLayout, setHeightLayout] = useState<number>(0)
   const [reactions, setReactions]
@@ -267,7 +269,7 @@ const MessageItem: React.FC<MessageItemProp> = React.memo((
           <MIcon name='reply' size={20} color={'#707777'} />
           {
             isMessageSennder ?
-              <Text>Trả lời { message.parent?.sender?.fullname }</Text>
+              <Text>Trả lời {message.parent?.sender?.fullname}</Text>
               :
               <Text>Chiến trả lời bạn</Text>
 

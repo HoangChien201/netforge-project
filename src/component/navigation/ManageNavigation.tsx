@@ -1,14 +1,9 @@
-import React, { useContext, useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { NavigationContainer, RouteProp, useNavigation } from '@react-navigation/native'
 import { StackNavigationProp } from '@react-navigation/stack'
-import { useMyContext } from './UserContext'
 import NetworkStack from '../stack/NetworkStack'
-import LoginScreen from '../../screens/LoginScreen'
-import SignupScreen from '../../screens/SignInScreen'
-import ModalPoup from '../Modal/ModalPoup'
 import UserStack from '../stack/UserStack'
 import SplashScreen from '../../screens/SplashScreen'
-import AxiosInstance from '../../http/AxiosInstance'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { login } from '../../http/userHttp/user'
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
@@ -16,10 +11,12 @@ import PushNotification, { Importance } from 'react-native-push-notification';
 import { Alert, PermissionsAndroid } from 'react-native';
 import { socket } from '../../http/SocketHandle'
 // @ts-ignore
+import { ZegoCallInvitationDialog,ZegoUIKitPrebuiltCallFloatingMinimizedView } from '@zegocloud/zego-uikit-prebuilt-call-rn';
+import { useDispatch, useSelector } from 'react-redux'
+import { RootState } from '../store/store'
+import { setUsers } from '../store/userSlice'
 
-import { ZegoCallInvitationDialog, ZegoUIKitPrebuiltCallFloatingMinimizedView } from '@zegocloud/zego-uikit-prebuilt-call-rn';
 import { navigationRef } from './NavigationRef'
-
 
 export type navigationType = StackNavigationProp<RootStackParamList>
 type routeType = RouteProp<{ params: { value: string } }, 'params'>
@@ -31,8 +28,10 @@ type Manager = {
 }
 const ManageNavigation = () => {
     const [showSplash, setShowSplash] = useState(true);
-    const { user, setUser } = useMyContext();
 
+    const dispatch = useDispatch()
+    const user = useSelector((state:RootState)=>state.user.value)
+    const [notifications, setNotifications] = useState([]);
     const handleAutoLogin = async () => {
         try {
             const keepLoggedIn = await AsyncStorage.getItem('keep');
@@ -45,7 +44,8 @@ const ManageNavigation = () => {
                     const password = String(stPassword);
                     try {
                         const result = await login(email, password);
-                        setUser(result.data)
+                        dispatch(setUsers(result?.data))
+                      
                     } catch (error) {
                         console.log(error);
 

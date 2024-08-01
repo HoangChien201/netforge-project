@@ -1,38 +1,38 @@
-import React, { memo, useEffect, useMemo, useRef, useState } from 'react';
-import { View, Animated, StyleSheet, ScrollView, Dimensions, Text, TouchableOpacity } from 'react-native';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
+import { View, Animated, StyleSheet, Dimensions, Text, TouchableOpacity } from 'react-native';
 import { useFocusEffect, useNavigation } from '@react-navigation/native';
+import { useSelector } from 'react-redux';
+import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
+
 import HeaderBanner from '../component/profile/HeaderBanner';
 import ProfileHeader from '../component/profile/ProfileHeader';
-import { useMyContext } from '../component/navigation/UserContext';
-import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import ListPortsByUser from '../component/listpost/ListPostByUser';
 import ProfileDetailData from '../component/profile/ProfileDetailData';
-import { getUSerByID } from '../http/PhuHTTP';
+import { getPostByUser, getUSerByID } from '../http/PhuHTTP';
 import MediaOfUser from '../component/profile/MediaOfUser';
-import FriendScreen from './profile/FriendScreen';
-import Friends from './profile/friendScreen/Friends';
-import { getFriends } from '../http/QuyetHTTP';
 import { COLOR } from '../constant/color';
-
+import { RootState } from '../component/store/store';
 
 const { height: SCREEN_HEIGHT } = Dimensions.get('window');
 
 const Tab = createMaterialTopTabNavigator();
 
 const TestProfile = () => {
-  const { user } = useMyContext();
+  const user = useSelector((state : RootState)=>state.user.value)
   const navigation = useNavigation();
   const scrollOffsetY = useRef(new Animated.Value(0)).current;
-  const headerHeight = 420; // Chiều cao của header
-  const tabBarHeight = 80; // Chiều cao của tab bar
+  const headerHeight = useRef(420).current; // Chiều cao của header
+  const tabBarHeight = useRef(80).current; // Chiều cao của tab bar
   const [currentTab, setCurrentTab] = useState('MyPost'); // Khởi tạo tab mặc định
   const [tabBarPosition, setTabBarPosition] = useState(headerHeight);
 
-  const userID = user.id;
-  const token = user.token;
+  const userID = user?.id;
+  const token = user?.token;
   const [userData, setUserData] = useState<any>();
   let dateOfBirth = useState(null);
-  const nameUser = user.fullname;
+  const [medias, setMedias] = useState<any[]>([]);
+  const [post, setPosts] = useState<any[]>([]);
+  const nameUser = user?.fullname;
   const [friends, setFriends] = useState<any[]>([]);
 
   useEffect(() => {
@@ -43,10 +43,11 @@ const TestProfile = () => {
       headerLargeTitleStyle:{
         fontSize:24,
       }
-
     });
   }, [navigation]);
+  
 
+  //api thông tin user theo id
   useFocusEffect(
     React.useCallback(() => {
       const fetchUserData = async () => {
@@ -54,7 +55,6 @@ const TestProfile = () => {
           const response = await getUSerByID(userID, token);
           setUserData(response);
           dateOfBirth = response.dateOfBirth;
-          //console.log("ProfileDetailData: ", response)
         } catch (error) {
           console.log(error);
         }
@@ -63,29 +63,31 @@ const TestProfile = () => {
     }, [setUserData])
   );
 
-  const getFriendList = async (status: number) => {
-    try {
-      const result = await getFriends(status);
-      if (result) {
-        setFriends(result);
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
+  // api bài viết theo id
   useEffect(() => {
-    getFriendList(2);
-  }, [])
+    const fetchPosts = async () => {
+      try {
+        const response: any = await getPostByUser(userID);
+        const getByTypeOne = response.filter((post: any) => post.type === 1);
+        setPosts([...getByTypeOne]);
+
+        if (response && Array.isArray(response)) {
+          const filteredPosts = response.filter((media: any) => media.media && media.media.length > 0 && media.type === 1);
+          const sortedPosts = filteredPosts.sort((a: any, b: any) => new Date(b.create_at).getTime() - new Date(a.create_at).getTime());
+          setMedias([...sortedPosts]);
+        }
+      } catch (error) {
+        console.error(error);
+      }
+    };
+    fetchPosts();
+  }, [userID]);
 
   
   useEffect(() => {
     navigation.getParent()?.setOptions({ tabBarStyle: { display: 'none' } });
-  }, [user]);
+  }, [user?.id]);
 
-  const handleToCreateStory = () => {
-    
-  };
 
   const handleScroll = Animated.event(
     [{ nativeEvent: { contentOffset: { y: scrollOffsetY } } }],
@@ -94,20 +96,20 @@ const TestProfile = () => {
 
   const headerComponent = useMemo(() => {
     if (!userData) return null;
-    
     return (
       <>
-        <HeaderBanner value={scrollOffsetY} userId={user.id} />
+        <HeaderBanner value={scrollOffsetY} userId={user?.id} />
         <View style={{marginTop:260}}></View>
           <ProfileHeader
-          avatar={userData.avatar} //chiến mới thêm -- nếu đã đọc được vui lòng xóa comment này <3
+          avatar={userData.avatar}
           fullname={userData.fullname}
-          userId={user.id}
-          loggedInUserId={user.id} 
+          userId={user?.id}
+          loggedInUserId={user?.id} 
           relationship={undefined}/>
       </>
     );
   }, [userData, scrollOffsetY, navigation]);
+
   const tabBarY = useMemo(() => {
     return scrollOffsetY.interpolate({
       inputRange: [0, headerHeight],
@@ -121,8 +123,6 @@ const TestProfile = () => {
   const handleTabChange = (tab: any) => {
     if (currentTab !== tab) {
       setCurrentTab(tab);
-      // console.log(tabBarPosition)
-      // console.log(scrollOffsetY._value);
       if (tabBarPosition === 0) {
         setTabBarPosition(0);
       } else {
@@ -135,52 +135,31 @@ const TestProfile = () => {
     return(
     <View style={{ flex: 1 }}>
       {userData && <ProfileDetailData userData={userData} />}
-      <ListPortsByUser onRefresh={false} userId = {userID} />
-    </View>
-    )
-});
-
-  const MyMediaScreen = React.memo( () => {
-    return (
-    <View style={{ paddingTop:20}}>
-      <MediaOfUser userId={userID} onRefresh={false}/>
+      {post && <ListPortsByUser data={post} onRefresh={false} />}
     </View>
     )
   });
 
-  const MyFriendScreen = () => (
-    <View style={{ paddingTop:10, paddingBottom:20}}>
-      <Friends friends={friends} setFriends={setFriends} />
+  const MyMediaScreen = React.memo( () => {
+    return (
+    <View style={{ paddingTop:20}}>
+      {medias && <MediaOfUser data={medias} onRefresh={false} />}
     </View>
-  );
+    )
+  });
 
 
   return (
     <View style={styles.container}>
-      {/* <ScrollView
-        showsVerticalScrollIndicator={false}
-        onScroll={handleScroll}
-        scrollEventThrottle={16}
-        //contentContainerStyle={{ paddingBottom: tabBarHeight }}
-      >
-        {renderHeader()}
-        <View style={{ flexDirection: 'column', justifyContent: 'space-between', paddingTop:tabBarHeight }}></View>
-        {currentTab === 'MyPost' && <MyPostScreen />}
-        {currentTab === 'Reviews' && <ReviewScreen />}
-        {currentTab === 'Events' && <EventScreen />}
-      </ScrollView> */}
       <Animated.FlatList
         data={['MyPost', 'Media']}
         renderItem={({ item }) => (
           <View style={{ flex: 1 }} key={item}>
-
             {currentTab === item && (
               <View style={{ minHeight: SCREEN_HEIGHT - headerHeight - tabBarHeight }}>
-
                 <View style={{ paddingTop:tabBarHeight }}></View>
                 {item === 'MyPost' && <MyPostScreen />}
                 {item === 'Media' && <MyMediaScreen />}
-                {/* {item === 'Events' && <MyFriendScreen />} */}
               </View>
             )}
           </View>
@@ -188,7 +167,7 @@ const TestProfile = () => {
         keyExtractor={(item) => item}
         showsVerticalScrollIndicator={false}
         onScroll={handleScroll}
-        scrollEventThrottle={16}
+        scrollEventThrottle={10}
         ListHeaderComponent={headerComponent}
       />
       
@@ -219,20 +198,18 @@ const TestProfile = () => {
         >
           <Tab.Screen name="MyPost" component={MyPostScreen} options={{ tabBarLabel: 'Bài viết' }} />
           <Tab.Screen name="Media" component={MyMediaScreen} options={{ tabBarLabel: 'Hình ảnh' }} />
-          {/* <Tab.Screen name="Events" component={MyFriendScreen} options={{ tabBarLabel: 'Bạn bè' }} /> */}
         </Tab.Navigator>
       </Animated.View>
     </View>
   );
 };
 
-const TabBar = ({ state, descriptors, navigation, currentTab, handleTabChange }: any) => {
+const TabBar =  React.memo(({ state, descriptors, navigation, currentTab, handleTabChange }: any) => {
   return (
     <View style={styles.tabBar}>
       {state.routes.map((route: any, index: number) => {
         const { options } = descriptors[route.key];
         const label = options.tabBarLabel !== undefined ? options.tabBarLabel : options.title !== undefined ? options.title : route.name;
-
         const isFocused = state.index === index;
 
         return (
@@ -258,7 +235,7 @@ const TabBar = ({ state, descriptors, navigation, currentTab, handleTabChange }:
       })}
     </View>
   );
-};
+});
 
 const styles = StyleSheet.create({
   container: {

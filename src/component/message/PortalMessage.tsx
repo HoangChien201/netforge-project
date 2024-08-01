@@ -7,6 +7,8 @@ import { useMyContext } from '../navigation/UserContext';
 import ReactionOptionComponent from './ReactionOptionComponent';
 import Animated, { Easing, useAnimatedStyle, useSharedValue, withDelay, withTiming } from 'react-native-reanimated';
 import OptionMessageComponent from './OptionMessageComponent';
+import { useSelector } from 'react-redux';
+import { RootState } from '../store/store';
 
 interface PortalMessageProp {
     selectedMessage: any,
@@ -20,7 +22,7 @@ interface PortalMessageProp {
 
 const PortalMessage: React.FC<PortalMessageProp> = (props) => {
     const { selectedMessage, messageCordinates, setSelectedMessage, optionReactionOnSubmit, heightLayout,deleteMessage,setReply } = props
-    const { user } = useMyContext()
+    const user = useSelector((state:RootState)=>state.user.value)
 
     const sender = (typeof (selectedMessage?.sender) === 'object' ? selectedMessage?.sender.id : selectedMessage?.sender) === user.id
 

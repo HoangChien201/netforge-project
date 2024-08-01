@@ -1,21 +1,19 @@
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
-import React, { useCallback, useEffect, useRef, useState } from 'react'
-import { useFocusEffect, useIsFocused, useNavigation } from '@react-navigation/native';
+import React, {useEffect, useRef, useState } from 'react'
+import {  useIsFocused, useNavigation } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/Entypo'
 import { COLOR } from '../../constant/color'
+import { useSelector } from 'react-redux';
+import Swiper from 'react-native-swiper';
 
-import MODALFRIEND from '../../component/friend-request-accept-modal/Body'
-import { getAllUser, getFriends, getRequest, getSuggest } from '../../http/QuyetHTTP';
+import { getFriends, getRequest, getSuggest } from '../../http/QuyetHTTP';
 import Friends from './friendScreen/Friends';
-import RequestFriends from './friendScreen/RequestFriends';
 import SuggestFriends from './friendScreen/SuggestFriends';
 import RequestList from '../../component/friend-request-accept-modal/RequestList';
 import WaitAcceptList from '../../component/friend-request-accept-modal/WaitAcceptList';
-import BODY from '../../component/friend-request-accept-modal/Body'
-import Swiper from 'react-native-swiper';
 import { socket } from '../../http/SocketHandle';
-import { useMyContext } from '../../component/navigation/UserContext';
 import { useSendNotification } from '../../constant/notify';
+import { RootState } from '../../component/store/store';
 // import { BounceIn, FadeIn, ReduceMotion, useReducedMotion } from 'react-native-reanimated';
 type Friends = {
 }
@@ -29,8 +27,8 @@ const FriendScreen: React.FC<Friends> = () => {
   const [friends, setFriends] = useState<any[]>([]);
   const status2 = 2;
   const status1 = 1;
-  const { user } = useMyContext();
-  const userId = user.id
+  const user = useSelector((state : RootState)=>state.user.value)
+  const userId = user?.id
   const [showModalFriend, setShowModalFriend] = useState(false);
   const [dot, setDot] = useState(Number);
   const [reload, setReload] = useState(false);

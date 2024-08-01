@@ -1,22 +1,26 @@
 import { FlatList, View, StyleSheet, ActivityIndicator, Text, Dimensions, Image } from 'react-native';
 import React, { memo, useCallback, useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { NavigationProp, ParamListBase, useFocusEffect, useIsFocused, useNavigation } from '@react-navigation/native';
+import FastImage from 'react-native-fast-image';
+
 import ItemPost from './ItemPost';
 import { getAll } from '../../http/userHttp/getpost';
-import { useMyContext } from '../navigation/UserContext';
-import { NavigationProp, ParamListBase, useFocusEffect, useIsFocused, useNavigation } from '@react-navigation/native';
 import { ProfileRootStackEnum } from '../stack/ProfileRootStackParams';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import Loading from '../Modal/Loading';
-import { date } from 'yup';
 import BODYMODAL from '../../component/edit-post-modal/Body'
 import DELETEPOST from './DeletePostModal'
-import FastImage from 'react-native-fast-image';
 import { RootState } from '../store/store';
-import { useDispatch, useSelector } from 'react-redux';
 import { updateIsLoading } from '../store/loadDataSlice';
+
 const ListPorts = memo(({ onrefresh }: { onrefresh: boolean }) => {
   const isLoading = useSelector((state: RootState) => state.loading.isLoadingg);
   const dispatch = useDispatch();
+  
+  const user = useSelector((state : RootState)=>state.user.value)
+  const loggedInUserId = user?.id;
+
   const [allData, setAllData] = useState<any>([]);
   const [displayData, setDisplayData] = useState<any>([]);
   const [loading, setLoading] = useState(false);
@@ -98,8 +102,7 @@ const ListPorts = memo(({ onrefresh }: { onrefresh: boolean }) => {
   };
 
 
-  const { user } = useMyContext();
-  const loggedInUserId = user.id;
+  
 
   const handleToProfile = (userId: React.SetStateAction<null>) => {
     //console.log("userID: ",userId);

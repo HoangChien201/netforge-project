@@ -3,12 +3,14 @@ import React, { useEffect, useState } from 'react'
 import { useIsFocused, useNavigation } from '@react-navigation/native';
 import { COLOR } from '../constant/color';
 import ModalFail from '../component/Modal/ModalFail';
-import ModalPoup from '../component/Modal/ModalPoup';
 import ButtonLogin from '../component/form/ButtonLogin';
 import InputLogin from '../component/formlogin/Input';
 import Loading from '../component/Modal/Loading';
-import { changePassword, resetPassword } from '../http/PhuHTTP';
+import { changePassword } from '../http/PhuHTTP';
 import { useMyContext } from '../component/navigation/UserContext';
+import { useDispatch, useSelector } from 'react-redux';
+import { RootState } from '../component/store/store';
+import { deleteUser, setUsers } from '../component/store/userSlice';
 
 interface resetPass {
     newPassword: string,
@@ -24,8 +26,9 @@ export type valid = {
 const ChangePassword = () => {
   const navigation = useNavigation()
   const isFocus = useIsFocused()
-  const {user, setUser} = useMyContext();
-  const token = user.token;
+  const user = useSelector((state:RootState)=>state.user.value)
+  const dispatch = useDispatch()
+  const token = user?.token;
 
   useEffect(() => {
     if (isFocus) {
@@ -62,7 +65,7 @@ const ChangePassword = () => {
 
     const LogoutHandle = () =>{
         setShowModalSuccess(false);
-        setUser(null);
+        dispatch(deleteUser());
     }
 
     const handleNoLogOut = () =>{

@@ -3,6 +3,7 @@ import React, { useEffect, useState, useRef, useCallback } from "react";
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { NetworkRootBottomTabParams, NetworkRootBottomTabScreens } from "./NetworkRootBottomTabParams";
 import { Keyboard, Animated, Easing } from 'react-native';
+// @ts-ignore
 import { ZegoUIKitPrebuiltCallWaitingScreen, ZegoUIKitPrebuiltCallInCallScreen } from '@zegocloud/zego-uikit-prebuilt-call-rn';
 import { useFocusEffect, useIsFocused } from '@react-navigation/native';
 

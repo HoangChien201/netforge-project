@@ -8,6 +8,8 @@ import { useMyContext } from '../navigation/UserContext'
 import { StateMessageFormat } from './format/StatusMessage'
 import { Message } from './class/MessageProvider'
 import { useSendNotification } from '../../constant/notify'
+import { useSelector } from 'react-redux'
+import { RootState } from '../store/store'
 export type StateMessageType = {
   message: Message,
   group_id: number | null,
@@ -22,7 +24,7 @@ const StateMessage: React.FC<StateMessageType> = ({ message, group_id, sender, l
   const [state, setState] = useState(message.state)
   const [seens, setSeens] = useState(message.reads)
 
-  const { user } = useMyContext()
+  const user = useSelector((state:RootState)=>state.user.value)
   //
   useEffect(() => {
     if (message.state === STATUS_SENDING) {

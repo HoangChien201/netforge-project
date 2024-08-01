@@ -16,7 +16,7 @@ const ListStory = ({ onrefresh }) => {
   
 
   useEffect(() => {
-    if (data.length > 0) {
+    if (data.length > 0 && index < data.length) {
       flatRef.current?.scrollToIndex({ index, animated: true, viewPosition: 0 });
     }
   }, [index, data]);

@@ -1,14 +1,8 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { SafeAreaView, StyleSheet, Text, View, Image, Dimensions, FlatList } from 'react-native';
 import Swiper from 'react-native-swiper';
 import Video from 'react-native-video';
 import Loading from '../Modal/Loading';
-import { UseFetchPostByUser } from '../listpost/UseFetchPostByUser';
-
-interface MediaOfUserProps {
-  userId: any;
-  onRefresh: boolean;
-}
 
 interface MediaItem {
   resource_type: string;
@@ -20,6 +14,12 @@ interface Post {
   create_at: string;
   media: MediaItem[];
 }
+
+interface MediaOfUserProps {
+  data: Post[];
+  onRefresh: boolean;
+}
+
 const { width, height } = Dimensions.get('window');
 
 const renderPagination = (index: any, total: any) => {
@@ -30,19 +30,12 @@ const renderPagination = (index: any, total: any) => {
   );
 }
 
-const MediaOfUser: React.FC<MediaOfUserProps> =  React.memo(({ userId, onRefresh }) => {
-  const { medias, fetchPosts, loading } = UseFetchPostByUser();
-  const [isFetching, setIsFetching] = useState(true); // Thêm biến trạng thái để kiểm soát hiển thị
+const MediaOfUser: React.FC<MediaOfUserProps> = React.memo(({ data, onRefresh }) => {
+  const [isFetching, setIsFetching] = useState(true);
 
   useEffect(() => {
-    const fetchData = async () => {
-      setIsFetching(true);
-      await fetchPosts(userId);
-      setIsFetching(false);
-    };
-    fetchData();
-  }, [fetchPosts, userId, onRefresh]);
-
+    setIsFetching(false);
+  }, [data, onRefresh]);
 
   const renderMediaItem = (mediaItem: MediaItem) => {
     if (mediaItem.resource_type === 'image') {
@@ -58,7 +51,7 @@ const MediaOfUser: React.FC<MediaOfUserProps> =  React.memo(({ userId, onRefresh
     if (item.media && item.media.length > 0) {
       return (
         <View style={styles.imageContainer}>
-          <Swiper  renderPagination={renderPagination} loop={false}>
+          <Swiper renderPagination={renderPagination} loop={false}>
             {item.media.map((mediaItem, index) => (
               <View key={`${item.id}_${index}`} style={styles.imageContainer}>
                 {renderMediaItem(mediaItem)}
@@ -73,30 +66,32 @@ const MediaOfUser: React.FC<MediaOfUserProps> =  React.memo(({ userId, onRefresh
     }
   };
 
-
   return (
     <SafeAreaView style={styles.container}>
-    {isFetching ? (
+      {isFetching ? (
         <Loading isLoading={true} />
       ) : (
-      medias.length > 0 ? (
-        <FlatList
-          data={medias}
-          renderItem={renderItem}
-          keyExtractor={(item) => item.id.toString()}
-        />
-      ) : (
-        <View style={styles.noPhotosContainer}>
-          <Image source={require('../../media/icon/no_image.png')} style={styles.noImage} />
-          <Text style={styles.noPhotos}>Hãy lưu lại những khoảnh khắc đẹp nào!</Text>
-        </View>
-      )
-    )}
-  </SafeAreaView>
+        data.length > 0 ? (
+          <FlatList
+            data={data}
+            renderItem={renderItem}
+            keyExtractor={(item) => item.id.toString()}
+          />
+        ) : (
+          <View style={styles.noPhotosContainer}>
+            <Image source={require('../../media/icon/no_image.png')} style={styles.noImage} />
+            <Text style={styles.noPhotos}>
+              {'Không có hình ảnh nào để hiển thị'}
+            </Text>
+          </View>
+        )
+      )}
+    </SafeAreaView>
   );
 });
 
 export default MediaOfUser;
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -107,9 +102,8 @@ const styles = StyleSheet.create({
     height: height * 0.4,
     backgroundColor: '#fff',
     borderRadius: 12,
-    overflow: 'hidden', 
+    overflow: 'hidden',
     marginBottom: 20,
-    //marginTop:20,
     position: 'relative',
   },
   image: {
@@ -141,34 +135,19 @@ const styles = StyleSheet.create({
     paddingVertical: 4,
     fontSize: 14,
   },
-  noPhotosContainer:{
-    alignItems:'center',
-    justifyContent:'center'
+  noPhotosContainer: {
+    alignItems: 'center',
+    justifyContent: 'center'
   },
   noImage: {
-    width:80,
-    height:80
+    width: 80,
+    height: 80
   },
   noPhotos: {
     fontSize: 18,
     color: '#6c757d',
     textAlign: 'center',
     marginTop: 20,
-    fontWeight:'700'
+    fontWeight: '700'
   },
-  overlay: {
-    height: 70,
-    width: 119,
-    position: 'absolute',
-    backgroundColor: 'rgba(0, 0, 0, 0.4)',
-    top: 0,
-    right: 0,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  overlayText: {
-    color: 'white',
-    fontWeight: 'bold',
-    fontSize: 20,
-  }
 });

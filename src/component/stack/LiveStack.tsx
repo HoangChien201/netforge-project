@@ -1,7 +1,5 @@
 import 'react-native-gesture-handler';
 import React, { useEffect } from "react";
-
-import { StyleSheet, Text, View } from 'react-native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { LiveRootStackParams, LiveRootStackScreens } from './LiveRootStackParams';
 import { useIsFocused, useNavigation } from '@react-navigation/native';
@@ -22,7 +20,7 @@ export default function LiveStack(): React.JSX.Element {
         <Stack.Navigator
             screenOptions={{
             }}
-            initialRouteName={"LiveWithZego"}
+            initialRouteName={"HostScreen"}
         >
             {
                 LiveRootStackScreens.map((item, index) => {

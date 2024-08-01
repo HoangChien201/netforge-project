@@ -8,11 +8,14 @@ import UseMedia from './UseMedia';
 import { useMyContext } from '../navigation/UserContext';
 import { messageType } from './MessageItem';
 import { MessageFactory } from './class/MessageProvider';
+import { useSelector } from 'react-redux';
+import { RootState } from '../store/store';
 
 
 const TextingComponent = ({ addMessage, reply, setReply }: { addMessage: any, reply: messageType | null, setReply: any }) => {
     const [valueInput, setValueInput] = useState<string>()
-    const { user } = useMyContext()
+    const user = useSelector((state:RootState)=>state.user.value)
+
     function onSubmit(messageMedia?: any | null) {
         if (messageMedia?.id) {
             addMessage(messageMedia)
@@ -20,7 +23,7 @@ const TextingComponent = ({ addMessage, reply, setReply }: { addMessage: any, re
         }
 
         const messageCreate = MessageFactory.newMessageText(
-            { id: user.id, },
+            { id: user?.id, },
             {
                 message: valueInput ? valueInput.trimEnd() : '😂',
                 parent: reply ? reply : null

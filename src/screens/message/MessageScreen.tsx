@@ -24,6 +24,8 @@ import { GroupChatType } from '../../component/message/ListMessageItem'
 import { MessageManage, Message } from '../../component/message/class/MessageProvider'
 import ToolBar from '../../component/message/ToolBar'
 import { useSendNotification } from '../../constant/notify'
+import { useSelector } from 'react-redux'
+import { RootState } from '../../component/store/store'
 
 export type MessageCordinatesType = {
   x: number,
@@ -39,7 +41,7 @@ export type MessageScreenNavigationProp = StackNavigationProp<
 export type MessageScreenRouteProp = RouteProp<MessageRootStackParams, 'MessageScreen'>;
 
 const MessageScreen = () => {
-  const { user } = useMyContext()
+  const user = useSelector((state:RootState)=>state.user.value)
   const [messages, setMessages] = useState<Array<Message>>([])
   const [partner, setPartner] = useState<{ fullname: string, avatar: string, partner_id: number | null }>({
     fullname: '',

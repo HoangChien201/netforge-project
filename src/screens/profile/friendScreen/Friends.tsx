@@ -1,8 +1,6 @@
 import { Image, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { NavigationProp, ParamListBase, useFocusEffect, useIsFocused, useNavigation } from '@react-navigation/native';
-
-
 import { deleteFriend, getFriends } from '../../../http/QuyetHTTP';
 import { useMyContext } from '../../../component/navigation/UserContext';
 import DeleteFriend from './DeleteFriend';
@@ -16,13 +14,15 @@ import { FriendType } from '../../../component/message/ModalNewMessage';
 import { NetworkStackNavigationProp } from '../../../component/stack/NetworkRootStackParams';
 import BottomDeleteFriend from './BottomDeleteFriend';
 import { login } from '../../../http/userHttp/user';
+import { useSelector } from 'react-redux';
+import { RootState } from '../../../component/store/store';
 type Friend = {
   friends: any,
   setFriends: () => void;
 }
 
 const Friends: React.FC<Friend> = () => {
-  const { user } = useMyContext();
+  const user = useSelector((state : RootState)=>state.user.user)
   const [show, setShow] = useState(false);
   const [user2, setUser2] = useState<number>(0);
   const navigation: NavigationProp<ParamListBase> = useNavigation();

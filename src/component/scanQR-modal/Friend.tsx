@@ -5,6 +5,8 @@ import { sendRequest } from '../../http/QuyetHTTP'
 import { socket } from '../../http/SocketHandle'
 import uuid from 'react-native-uuid';
 import { useSendNotification } from '../../constant/notify'
+import { useSelector } from 'react-redux'
+import { RootState } from '../store/store'
 type Fri = {
   id: number
 }
@@ -13,10 +15,10 @@ const Friend: React.FC<Fri> = ({ id }) => {
   const [disabledButtons, setDisabledButtons] = useState({});
   const [isYou, setIsYou] = useState(false);
   const status = 1;
-  const { user } = useMyContext();
+  const user = useSelector((state : RootState)=>state.user.user)
   const {sendNRequestFriend} = useSendNotification();
   useEffect(() => {
-    if (user.id == id) {
+    if (user?.data.id == id) {
       setIsYou(true);
     }
   })

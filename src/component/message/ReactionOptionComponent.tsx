@@ -4,12 +4,14 @@ import { EmojiReaction, reaction } from '../../constant/emoji'
 import { reactionType } from './MessageItem'
 import { useMyContext } from '../navigation/UserContext'
 import { MessageCordinatesType } from '../../screens/message/MessageScreen'
+import { useSelector } from 'react-redux'
+import { RootState } from '../store/store'
 
 const STATUS_ADD_REACTION = 1
 const STATUS_CHANGE_REACTION = 2
 const STATUS_REMOVE_REACTION = 3
 const ReactionOptionComponent = ({ ontionOnpress, reactionOfMsg }: { ontionOnpress?: any, reactionOfMsg: Array<reactionType>, messageCordinates: MessageCordinatesType,setSelectedMessage:any }) => {
-    const { user } = useMyContext()
+    const user = useSelector((state:RootState)=>state.user.value)
     const [reactionActive, setReactionActive] = useState(reactionOfMsg ? reactionOfMsg.find(reaction => reaction.user.toString() === user.id.toString()) : undefined)
     console.log('reactionActive',reactionOfMsg);
     
@@ -20,7 +22,7 @@ const ReactionOptionComponent = ({ ontionOnpress, reactionOfMsg }: { ontionOnpre
     
     function OptionOnPress(index: number) {
         const reactionCurrent = {
-            user: user.id,
+            user: user?.id,
             reaction: index
         }
         
