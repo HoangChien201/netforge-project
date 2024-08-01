@@ -10,7 +10,11 @@ import { useNavigation } from '@react-navigation/native';
 import { useMyContext } from '../component/navigation/UserContext';
 import { COLOR } from '../constant/color';
 import { socket } from '../http/SocketHandle';
+import { useSelector } from 'react-redux';
+import { RootState } from '../component/store/store';
 const Scanner = () => {
+  const user = useSelector((state:RootState)=>state.user.value)
+
   const [data, setData] = useState('');
   const [show, setShow] = useState(false);
   const [showLogin, setShowLogin] = useState(false);
@@ -22,7 +26,7 @@ const Scanner = () => {
   const isFocused = useIsFocused();
   const [isCameraActive, setIsCameraActive] = useState(true);
   const navigation = useNavigation();
-  const { user } = useMyContext();
+
   const [device, setDevice] = useState('')
   useEffect(() => {
     // Kiểm tra nếu data là một số hợp lệ

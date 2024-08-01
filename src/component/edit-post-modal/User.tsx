@@ -4,6 +4,8 @@ import { COLOR } from '../../constant/color'
 import { Image } from 'react-native';
 import { useMyContext } from '../navigation/UserContext';
 import ICON from 'react-native-vector-icons/AntDesign'
+import { useSelector } from 'react-redux';
+import { RootState } from '../store/store';
 interface UserProps {
     setPermission: (permission: number) => void;
     permission: number;
@@ -12,7 +14,7 @@ const User: React.FC<UserProps> = ({ setPermission, permission }) => {
     const [dropdownVisible, setDropdownVisible] = useState(false);
     const [selectedOption, setSelectedOption] = useState('Public');
     const [selectIcon, setSelectIcon] = useState('team');
-    const { user, setUser } = useMyContext();
+    const user = useSelector((state:RootState)=>state.user.user)
     const options = [
         { label: 'Bạn bè', value: 1, Icon: 'team' },
         { label: 'Cá nhân', value: 2, Icon: 'user' }

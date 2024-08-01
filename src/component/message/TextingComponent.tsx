@@ -7,25 +7,28 @@ import { COLOR } from '../../constant/color';
 import UseMedia from './UseMedia';
 import { useMyContext } from '../navigation/UserContext';
 import { messageType } from './MessageItem';
-import { MessageProvider } from './class/MessageProvider';
+import { MessageFactory } from './class/MessageProvider';
+import { useSelector } from 'react-redux';
+import { RootState } from '../store/store';
 
 
 const TextingComponent = ({ addMessage, reply, setReply }: { addMessage: any, reply: messageType | null, setReply: any }) => {
     const [valueInput, setValueInput] = useState<string>()
-    const { user } = useMyContext()
+    const user = useSelector((state:RootState)=>state.user.value)
+
     function onSubmit(messageMedia?: any | null) {
         if (messageMedia?.id) {
             addMessage(messageMedia)
             return
         }
 
-        const messageCreate = new MessageProvider({
-            message:valueInput ? valueInput.trimEnd() : '😂',
-            type:'text',
-            sender:user.id,
-            parent:reply ? reply : null
-        })
-        
+        const messageCreate = MessageFactory.newMessageText(
+            { id: user?.id, },
+            {
+                message: valueInput ? valueInput.trimEnd() : '😂',
+                parent: reply ? reply : null
+            })
+
         addMessage(messageCreate)
 
         setValueInput('')

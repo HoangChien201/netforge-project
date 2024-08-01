@@ -9,8 +9,9 @@ import { MessageCordinatesType } from '../../screens/message/MessageScreen'
 import StateMessage from './StateMessage'
 import { socket } from '../../http/SocketHandle'
 import { useMyContext } from '../navigation/UserContext';
-import { MessageProvider } from './class/MessageProvider';
-import test from './test';
+import { Message } from './class/MessageProvider';
+import { useSelector } from 'react-redux';
+import { RootState } from '../store/store';
 export type messageType = {
   id: number,
   create_at: string,
@@ -42,14 +43,15 @@ export type messageType = {
   group: number | {
     id: number
   },
-  parent: number  |{
+  parent: number | {
     sender: {
       "id": number,
       "fullname": string,
       "avatar": string
     },
     id: number,
-  } 
+  },
+
 }
 
 export type reactionType = {
@@ -62,13 +64,13 @@ export type reactionType = {
 }
 
 interface MessageItemProp {
-  message: MessageProvider,
+  message: Message,
   sender: boolean,
   group_id: number | null,
   setMessageReactionsSelected: any,
   deleteMessage: any,
   setReply: any,
-  lastMessage: boolean
+  lastMessage: boolean,
 }
 
 type DataResponeReactionMessageSocket = {
@@ -83,8 +85,9 @@ const MessageItem: React.FC<MessageItemProp> = React.memo((
     setMessageReactionsSelected,
     deleteMessage,
     setReply,
-    lastMessage }) => {
-  const { user } = useMyContext()
+    lastMessage,
+  }) => {
+  const user = useSelector((state: RootState) => state.user.value)
   const { height } = useWindowDimensions()
   const [heightLayout, setHeightLayout] = useState<number>(0)
   const [reactions, setReactions]
@@ -96,7 +99,7 @@ const MessageItem: React.FC<MessageItemProp> = React.memo((
   const [messageCordinates, setMessageCordinates] = useState<MessageCordinatesType>({ x: 0, y: 0 })
 
   useEffect(() => {
-    socket.on(`reaction-message-${message.id}`, (data: DataResponeReactionMessageSocket) => {
+    socket.on(`reaction-message-${message.getId}`, (data: DataResponeReactionMessageSocket) => {
       switch (data.status) {
         case 1:
           createReaction(data.reaction)
@@ -113,7 +116,7 @@ const MessageItem: React.FC<MessageItemProp> = React.memo((
 
     })
     return () => {
-      socket.off(`reaction-message-${message.id}`)
+      socket.off(`reaction-message-${message.getId}`)
     }
   }, [])
 
@@ -196,13 +199,13 @@ const MessageItem: React.FC<MessageItemProp> = React.memo((
       case 1:
         console.log({
           ...reactionCurrent,
-          message: message.id
+          message: message.getId
         });
 
         socket.emit('reaction-message',
           {
             ...reactionCurrent,
-            message: message.id
+            message: message.getId
           }
           , status)
 
@@ -215,7 +218,7 @@ const MessageItem: React.FC<MessageItemProp> = React.memo((
         socket.emit('reaction-message',
           {
             ...reactionCurrent,
-            message: message.id
+            message: message.getId
           }
           , status)
         updateReaction(reactionCurrent)
@@ -227,7 +230,7 @@ const MessageItem: React.FC<MessageItemProp> = React.memo((
         socket.emit('reaction-message',
           {
             ...reactionCurrent,
-            message: message.id
+            message: message.getId
           }
           , status)
         deleteReaction(reactionCurrent)
@@ -241,7 +244,7 @@ const MessageItem: React.FC<MessageItemProp> = React.memo((
 
   //set id tin nhắn để show danh sách chi tiết reaction
   function OnReactionComponent() {
-    setMessageReactionsSelected(message.id)
+    setMessageReactionsSelected(message.getId)
   }
 
   function AvatarOnPress() {
@@ -266,7 +269,7 @@ const MessageItem: React.FC<MessageItemProp> = React.memo((
           <MIcon name='reply' size={20} color={'#707777'} />
           {
             isMessageSennder ?
-              <Text>Trả lời { message.parent?.sender?.fullname }</Text>
+              <Text>Trả lời {message.parent?.sender?.fullname}</Text>
               :
               <Text>Chiến trả lời bạn</Text>
 

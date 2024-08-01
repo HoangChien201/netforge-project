@@ -12,7 +12,7 @@ interface AddressModalProps {
   selectedAddress: string|null;
   onSelectAddress: (address: string|null) => void;
   onCloseModal: () => void;
-  resetToInitial: () => void; // Add this prop to reset the address to the initial value
+  resetToInitial: () => void;
 }
 
 const AddressModal: React.FC<AddressModalProps> = ({ isVisible, selectedAddress, onSelectAddress, onCloseModal, resetToInitial }) => {

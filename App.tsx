@@ -70,11 +70,9 @@ function App(): React.JSX.Element {
     <GestureHandlerRootView>
       <Provider store={store}>
         <StatusBar barStyle="dark-content" backgroundColor="transparent" />
-        <UserProvider>
           <Host>
             <ManageNavigation />
           </Host>
-        </UserProvider>
       </Provider>
     </GestureHandlerRootView>
   )

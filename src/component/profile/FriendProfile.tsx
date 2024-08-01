@@ -7,13 +7,12 @@ import { useMyContext } from '../navigation/UserContext';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import ListPortsByUser from '../listpost/ListPostByUser';
 import ProfileDetailData from './ProfileDetailData';
-import { getUSerByID } from '../../http/PhuHTTP';
+import { getPostByUser, getUSerByID } from '../../http/PhuHTTP';
 import MediaOfUser from './MediaOfUser';
-import Icon from 'react-native-vector-icons/Ionicons';
-import FriendScreen from '../../screens/profile/FriendScreen';
-import Friends from '../../screens/profile/friendScreen/Friends';
 import { getFriends } from '../../http/QuyetHTTP';
 import { COLOR } from '../../constant/color';
+import { useSelector } from 'react-redux';
+import { RootState } from '../store/store';
 
 interface ModalFriendProfileProps {
     userId:any;
@@ -28,7 +27,8 @@ const { height: SCREEN_HEIGHT } = Dimensions.get('window');
 const Tab = createMaterialTopTabNavigator();
 
 const FriendProfile:React.FC<ModalFriendProfileProps> = () => {
-  const { user } = useMyContext() as ContextType;
+  const user = useSelector((state:RootState)=>state.user.value)
+
   const navigation = useNavigation();
   const scrollOffsetY = useRef(new Animated.Value(0)).current;
   const headerHeight = 420; // Chiều cao của header
@@ -37,9 +37,14 @@ const FriendProfile:React.FC<ModalFriendProfileProps> = () => {
   const [tabBarPosition, setTabBarPosition] = useState(headerHeight);
   const route = useRoute();
   const userId = route.params?.userId;
-  const [friends, setFriends] = useState<any[]>([]);
   const token = user.token;
   const [userData, setUserData] = useState<any>();
+  const [medias, setMedias] = useState<any[]>([]);
+  const [post, setPosts] = useState<any[]>([]);
+
+  useEffect(() => {
+    navigation.getParent()?.setOptions({ tabBarStyle: { display: 'none' } });
+  }, [user]);
 
   useEffect(() => {
     navigation.setOptions({
@@ -50,23 +55,7 @@ const FriendProfile:React.FC<ModalFriendProfileProps> = () => {
   }, [navigation]);
   
 
-  //api bạn bè
-  const getFriendList = async (status: number) => {
-    try {
-      const result = await getFriends(status);
-      if (result) {
-        setFriends(result);
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
-  useEffect(() => {
-    getFriendList(2);
-  }, [])
-
-
+  //api thông tin theo user id
   useFocusEffect(
     React.useCallback(() => {
       const fetchUserData = async () => {
@@ -81,11 +70,25 @@ const FriendProfile:React.FC<ModalFriendProfileProps> = () => {
     }, [])
   );
 
+  // api bài viết theo id
   useEffect(() => {
-    navigation.getParent()?.setOptions({ tabBarStyle: { display: 'none' } });
-  }, [user]);
+    const fetchPosts = async () => {
+      try {
+        const response: any = await getPostByUser(userId);
+        const getByTypeOne = response.filter((post: any) => post.type === 1);
+        setPosts([...getByTypeOne]);
 
-  const handleToCreateStory = () => {};
+        if (response && Array.isArray(response)) {
+          const filteredPosts = response.filter((media: any) => media.media && media.media.length > 0 && media.type === 1);
+          const sortedPosts = filteredPosts.sort((a: any, b: any) => new Date(b.create_at).getTime() - new Date(a.create_at).getTime());
+          setMedias([...sortedPosts]);
+        }
+      } catch (error) {
+        console.error(error);
+      }
+    };
+    fetchPosts();
+  }, [userId]);
 
   const handleScroll = Animated.event(
     [{ nativeEvent: { contentOffset: { y: scrollOffsetY } } }],
@@ -99,7 +102,7 @@ const FriendProfile:React.FC<ModalFriendProfileProps> = () => {
         <HeaderBanner value={scrollOffsetY} userId={userId} />
         <View style={{ marginTop: 260 }}></View>
         <ProfileHeader
-                avatar={userData.avatar} //chiến mới thêm //--nếu đã thấy vui lòng xóa comment này
+                avatar={userData.avatar}
                 fullname={userData.fullname}
                 userId={userId} 
                 loggedInUserId={user.id}
@@ -128,24 +131,24 @@ const FriendProfile:React.FC<ModalFriendProfileProps> = () => {
     }
   };
 
-  const MyPostScreen = () => (
+  const MyPostScreen = React.memo(() => {
+    return(
     <View style={{ flex: 1 }}>
       {userData && <ProfileDetailData userData={userData} />}
-      <ListPortsByUser onRefresh={false} userId = {userId} />
+      {post && <ListPortsByUser data={post} onRefresh={false} />}
     </View>
-  );
+    )
+  });
 
-  const MyMediaScreen = () => (
-    <View style={{ paddingTop:30}}>
-      <MediaOfUser userId={userId} onRefresh={false}/>
+  const MyMediaScreen = React.memo( () => {
+    return (
+    <View style={{ paddingTop:20}}>
+      {medias && <MediaOfUser data={medias} onRefresh={false} />}
     </View>
-  );
+    )
+  });
 
-  // const MyFriendScreen = () => (
-  //   <View style={{ paddingTop:10, paddingBottom:20}}>
-  //     <Friends friends={friends} setFriends={setFriends} />
-  //   </View>
-  // );
+
 
   return (
       <View style={styles.container}>

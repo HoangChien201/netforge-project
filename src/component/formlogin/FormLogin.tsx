@@ -14,6 +14,9 @@ import { login } from '../../http/userHttp/user'
 import { NavigationProp, ParamListBase, useNavigation } from '@react-navigation/native'
 import { UserRootStackEnum } from '../stack/UserRootStackParams'
 import { onUserLogin, onUserLogout } from '../../screens/call-video/Utils'
+import { useDispatch } from 'react-redux'
+import { setUsers } from '../store/userSlice'
+import { date } from 'yup'
 
 
 interface user {
@@ -33,8 +36,8 @@ const FormLogin = ({ setModal, setStatus, setIsLoading }: { setModal: (value: bo
   const [valueF, setValueF] = useState<user>({ email: 'tuong123@gmail.com', password: '1234' })
 
   const [valid, setValid] = useState<valid>({ email: true, password: true })
+  const dispatch = useDispatch();
 
-  const { setUser } = useMyContext();
 
   function onChangText(key: string, values: string) {
     setValueF({
@@ -73,15 +76,15 @@ const FormLogin = ({ setModal, setStatus, setIsLoading }: { setModal: (value: bo
           const { id, avatar, fullname } = data
 
           //login zego
-          onUserLogin(id, fullname, avatar,navigation).then(() => {
-            setIsLoading(false);
-            setUser(data);
+          onUserLogin(id, fullname, avatar, navigation).then(() => {
+            AsyncStorage.setItem('AccessToken', data.token);
+
+            dispatch(setUsers(data))
+
           })
 
 
         }
-        await AsyncStorage.setItem('userToken', result?.data.token);
-        handleLoginResult(result);
         setIsLoading(false);
 
       } catch (error) {
@@ -92,18 +95,16 @@ const FormLogin = ({ setModal, setStatus, setIsLoading }: { setModal: (value: bo
     }
   };
 
-  const handleLoginResult = async (result) => {
-    if (result) {
-      setTimeout(() => {
-        setUser(result.data);
-      }, 2000);
-      await AsyncStorage.setItem('token', result.data.token);
- 
+  const handleLoginResult = (data) => {
+    if (data) {
+      AsyncStorage.setItem('token', data.token);
+
       setModal(true);
       setStatus(true);
       setTimeout(() => {
         setModal(false);
       }, 1000);
+      dispatch(setUsers(data))
     } else {
       setModal(true);
       setStatus(false);
@@ -112,6 +113,7 @@ const FormLogin = ({ setModal, setStatus, setIsLoading }: { setModal: (value: bo
       }, 1000);
     }
   };
+
   const handleAuthSuccess = async (isAuth: any) => {
     const stEmail = await AsyncStorage.getItem('email');
     const stPassword = await AsyncStorage.getItem('password');

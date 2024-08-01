@@ -1,38 +1,16 @@
-import { View, Text, TouchableOpacity, StyleSheet, PermissionsAndroid } from 'react-native'
+import { View,TouchableOpacity, StyleSheet, PermissionsAndroid } from 'react-native'
 import React, { useCallback } from 'react'
 import { CameraOptions, ImageLibraryOptions, launchCamera, launchImageLibrary } from 'react-native-image-picker';
 
-import { fileType } from '../create-post-screen/Options';
 import MCIcon from 'react-native-vector-icons/MaterialCommunityIcons'
 import { PermissionCamera } from './Permission';
-import { useMyContext } from '../navigation/UserContext';
 import { messageType } from './MessageItem';
-import { MessageProvider } from './class/MessageProvider';
+import { MessageFactory } from './class/MessageProvider';
+import { useSelector } from 'react-redux';
+import { RootState } from '../store/store';
 
 const UseMedia = ({ onSubmit,reply }: { onSubmit: any,reply:messageType | null }) => {
-    const { user } = useMyContext()
-    function NewMessage(messsage: {
-        type:string,
-        fileName:string,
-        uri:string
-    }) {
-        let id=Date.now()
-        let message = {
-            "id": id,
-            "create_at": new Date().toISOString(),
-            "update_at": new Date().toISOString(),
-            "state": 0,
-            "type": "image",
-            "message": messsage,
-            "sender": user.id,
-            "reaction": [],
-            "reads": [],
-            "parent":reply ? reply.id : null
-
-        }
-
-        return message;
-    }
+    const user = useSelector((state:RootState)=>state.user.value)
 
     // camera
     const openCamera = useCallback(async () => {
@@ -64,14 +42,15 @@ const UseMedia = ({ onSubmit,reply }: { onSubmit: any,reply:messageType | null }
             await response.assets.map((asset: any) => {
                 const { type, fileName, uri } = asset
                 // onSubmit(NewMessage({type,fileName,uri}))
-                console.log('typeimage',type);
                 
                 onSubmit(
-                    new MessageProvider(
+                    MessageFactory.newMessageText(
+                        {
+                            id:user?.id,
+                        }
+                        ,
                         {
                             message:{ type, fileName, uri },
-                            type:'image',
-                            sender:user.id,
                             parent:reply ? reply : null
                         }
                         

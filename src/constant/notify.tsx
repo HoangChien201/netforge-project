@@ -1,10 +1,7 @@
 import uuid from 'react-native-uuid';
 import { socket } from '../http/SocketHandle';
-import { useMyContext } from '../component/navigation/UserContext';
-import React, { useCallback, useEffect } from 'react';
-import { number } from 'yup';
-import Friend from '../component/scanQR-modal/Friend';
-import { useFocusEffect } from '@react-navigation/native';
+import { useSelector } from 'react-redux';
+import { RootState } from '../component/store/store';
 
 const createNotificationTemplate = () => ({
   id: uuid.v4(),
@@ -33,7 +30,8 @@ const createNotificationTemplate = () => ({
   timestamp: new Date().toISOString()
 });
 
-const { user } = useMyContext();
+const user = useSelector((state:RootState)=>state.user?.value)
+
 export const useSendNotification = () => {
 
   const sendNCommentPost = ({ postId, body, receiver }) => {
@@ -42,13 +40,13 @@ export const useSendNotification = () => {
       ...notificationTemplate,
       type: 2,
       postId:postId,
-      title: `${user.fullname} đã bình luận bài viết`,
+      title: `${user?.fullname} đã bình luận bài viết`,
       body,
       userInfo: {
         receiver,
-        sender: user.id,
-        fullname: user.fullname,
-        avatar: user.avatar,
+        sender: user?.id,
+        fullname: user?.fullname,
+        avatar: user?.avatar,
       },
       navigate: {
         screen: 'CommentsScreen',
@@ -65,13 +63,13 @@ export const useSendNotification = () => {
       type: 2,
       postId1:postId1,
       commentId,
-      title: `${user.fullname} đã trả lời bình luận `,
+      title: `${user?.fullname} đã trả lời bình luận `,
       body,
       userInfo: {
         receiver,
-        sender: user.id,
-        fullname: user.fullname,
-        avatar: user.avatar,
+        sender: user?.id,
+        fullname: user?.fullname,
+        avatar: user?.avatar,
       },
       navigate: {
         screen: 'CommentsScreen',
@@ -87,13 +85,13 @@ export const useSendNotification = () => {
       ...notificationTemplate,
       type: 1,
       postId:postId,
-      title: `${user.fullname} bày tỏ cảm xúc với bài viết `,
+      title: `${user?.fullname} bày tỏ cảm xúc với bài viết `,
       body,
       userInfo: {
         receiver,
-        sender: user.id,
-        fullname: user.fullname,
-        avatar: user.avatar,
+        sender: user?.id,
+        fullname: user?.fullname,
+        avatar: user?.avatar,
       },
       reaction: {
         type: reactionType
@@ -113,13 +111,13 @@ export const useSendNotification = () => {
       type: 10,
       postId1:postId1,
       commentId,
-      title: `${user.fullname} đã bày tỏ cảm xúc với bình luận `,
+      title: `${user?.fullname} đã bày tỏ cảm xúc với bình luận `,
       body,
       userInfo: {
         receiver,
-        sender: user.id,
-        fullname: user.fullname,
-        avatar: user.avatar,
+        sender: user?.id,
+        fullname: user?.fullname,
+        avatar: user?.avatar,
       },
       reaction: {
         type: reactionType
@@ -138,12 +136,12 @@ export const useSendNotification = () => {
       ...notificationTemplate,
       type: 4,
       postId:postId,
-      title: `${user.fullname} đã tạo bài viết mới `,
+      title: `${user?.fullname} đã tạo bài viết mới `,
       body,
       userInfo: {
-        sender: user.id,
-        fullname: user.fullname,
-        avatar: user.avatar,
+        sender: user?.id,
+        fullname: user?.fullname,
+        avatar: user?.avatar,
         multiple: true
       },
       navigate: {
@@ -160,14 +158,14 @@ export const useSendNotification = () => {
     const data = {
       ...notificationTemplate,
       type: 3,
-      friendId: user.id,
-      title: `${user.fullname} đã gửi lời mời kết bạn `,
+      friendId: user?.id,
+      title: `${user?.fullname} đã gửi lời mời kết bạn `,
       body: 'Kết bạn với nhau nào!',
       userInfo: {
         receiver,
-        sender: user.id,
-        fullname: user.fullname,
-        avatar: user.avatar,
+        sender: user?.id,
+        fullname: user?.fullname,
+        avatar: user?.avatar,
       },
       navigate: {
         screen: 'NotificationScreen',
@@ -185,13 +183,13 @@ export const useSendNotification = () => {
       ...notificationTemplate,
       type: 6,
       messId,
-      title: `${user.fullname} đã gửi tin nhắn mới  `,
+      title: `${user?.fullname} đã gửi tin nhắn mới  `,
       body,
       userInfo: {
         receiver,
-        sender: user.id,
-        fullname: user.fullname,
-        avatar: user.avatar,
+        sender: user?.id,
+        fullname: user?.fullname,
+        avatar: user?.avatar,
 
       },
       navigate: {
@@ -208,13 +206,13 @@ export const useSendNotification = () => {
       ...notificationTemplate,
       type: 5,
       postId:postId,
-      title: `${user.fullname} đã chia sẻ bài viết `,
+      title: `${user?.fullname} đã chia sẻ bài viết `,
       body,
       userInfo: {
         receiver,
-        sender: user.id,
-        fullname: user.fullname,
-        avatar: user.avatar,
+        sender: user?.id,
+        fullname: user?.fullname,
+        avatar: user?.avatar,
 
       },
       navigate: {
@@ -234,7 +232,7 @@ export const useSendNotification = () => {
       friendId,
       title: `Hôm nay là sinh nhật của ${fullname}`,
       userInfo: {
-        receiver: user.id,
+        receiver: user?.id,
         avatar,
       },
       navigate: {
@@ -250,18 +248,18 @@ export const useSendNotification = () => {
     const data = {
       ...notificationTemplate,
       type: 8,
-      friendId:user.id,
-      title: `${user.fullname} đã chấp nhận lời mời kết bạn!`,
+      friendId:user?.id,
+      title: `${user?.fullname} đã chấp nhận lời mời kết bạn!`,
       body: "",
       userInfo: {
         receiver: friendId,
-        sender: user.id,
-        fullname: user.fullname,
-        avatar: user.avatar,
+        sender: user?.id,
+        fullname: user?.fullname,
+        avatar: user?.avatar,
       },
       navigate: {
         screen: 'FriendScreen',
-        params: user.id
+        params: user?.id
       },
     };
     socket.emit('notification', data);
@@ -273,13 +271,13 @@ export const useSendNotification = () => {
       ...notificationTemplate,
       type: 9,
       postId,
-      title: `${user.fullname} đã gắn thẻ bạn trong một bài viết`,
+      title: `${user?.fullname} đã gắn thẻ bạn trong một bài viết`,
       body,
       userInfo: {
         receiver,
-        sender: user.id,
-        fullname: user.fullname,
-        avatar: user.avatar,
+        sender: user?.id,
+        fullname: user?.fullname,
+        avatar: user?.avatar,
       },
       navigate: {
         screen: 'CommentsScreen',
@@ -314,14 +312,14 @@ type data = {
   friendId: number, // sử dụng cho kết bạn
   messId: number,// sử dụng cho nhắn tin
   title: string,
-  // ${user.fullname} đã gửi tin nhắn mới 
-  // ${user.fullname} đã gửi lời mời kết bạn 
-  // ${user.fullname} đã trả lời bình luận 
-  // ${user.fullname} đã chia sẻ bài viết
-  // ${user.fullname} đã tạo bài viết mới 
-  // ${user.fullname} đã bình luận bài viết
-  // ${user.fullname} đã bày tỏ cảm xúc với bài viết 
-  // ${user.fullname} đã bày tỏ cảm xúc với bình luận
+  // ${user?.fullname} đã gửi tin nhắn mới 
+  // ${user?.fullname} đã gửi lời mời kết bạn 
+  // ${user?.fullname} đã trả lời bình luận 
+  // ${user?.fullname} đã chia sẻ bài viết
+  // ${user?.fullname} đã tạo bài viết mới 
+  // ${user?.fullname} đã bình luận bài viết
+  // ${user?.fullname} đã bày tỏ cảm xúc với bài viết 
+  // ${user?.fullname} đã bày tỏ cảm xúc với bình luận
   body: string, // nội dung hiển thị trên thông báo 
   // content || message || comment 
   userInfo: {

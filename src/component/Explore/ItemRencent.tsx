@@ -5,14 +5,17 @@ import { ProfileRootStackEnum } from '../stack/ProfileRootStackParams';
 import { useMyContext } from '../navigation/UserContext';
 import Icon from 'react-native-vector-icons/Feather'
 import { COLOR } from '../../constant/color';
+import { useSelector } from 'react-redux';
+import { RootState } from '../store/store';
 
 const ItemRencent = ({ item, onPressDelete, users }) => {
   const navigation = useNavigation()
-  const { user } = useMyContext();
+  const user = useSelector((state : RootState)=>state.user.user)
+  
   const handleToProfile = () => {
     //setSelectedUserId(userId);
     const userId = item.id
-    if (userId === user.id) {
+    if (userId === user?.data.id) {
       //setIsModalVisible(false);
       navigation.navigate(ProfileRootStackEnum.ProfileScreen);
     } else {
@@ -31,7 +34,7 @@ const ItemRencent = ({ item, onPressDelete, users }) => {
          
          <View style={styles.textContainer}>
            <Text style={styles.fullName}>{item.fullname}</Text>
-           {item.id == user.id && (
+           {item.id == user?.data.id && (
              <Text style={styles.youTag}>(Bạn)</Text>
            )}
          </View>

@@ -1,23 +1,22 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, Image, TouchableOpacity, StyleSheet, Modal, Pressable } from 'react-native';
+import { View, Text, Image, TouchableOpacity, StyleSheet, Pressable } from 'react-native';
 import Video from 'react-native-video';
-import { getReplyComments, deleteComments, deleteLikeComments } from "../../http/TuongHttp"
+import { useSelector } from 'react-redux';
+import { useNavigation } from '@react-navigation/native';
+
+import { getReplyComments, deleteComments } from "../../http/TuongHttp"
 import { DateOfTimePost } from '../../format/DateOfTimePost';
 import ModalImage from './ModalImage';
 import ModalDeleteComments from './ModalDeleteComments';
 import ModalOtherDelete from './ModalOtherDelete';
-import ReactionButton from './ReactionButton';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import { useMyContext } from '../navigation/UserContext';
 import { ProfileRootStackEnum } from '../stack/ProfileRootStackParams';
-import { useNavigation } from '@react-navigation/native';
 import { navigationType } from '../stack/UserStack';
-import { reaction } from '../../constant/emoji';
 import Reaction from './Reaction';
+import { RootState } from '../store/store';
 
 
 const CommentItem = ({ comment, onReply, depth = 0, render, parent, setText, setUserId, postId,  userPostId}) => {
-    const { user } = useMyContext();
+    const user = useSelector((state : RootState)=>state.user.user)
     const navigation = useNavigation<navigationType>()
     const [modalReactionVisible, setModaReactionlVisible] = useState(false);
     const [likeIcon, setLikeIcon] = useState(null);
@@ -54,7 +53,7 @@ const CommentItem = ({ comment, onReply, depth = 0, render, parent, setText, set
         }
     };
     const handleCommentPress = () => {
-        if (user.id === comment.user.id) {
+        if (user?.id === comment.user.id) {
             setIsDleteVisible(true);
         } else {
             setIsOtherDleteVisible(true)
@@ -144,7 +143,7 @@ const CommentItem = ({ comment, onReply, depth = 0, render, parent, setText, set
         //setSelectedUserId(userId);
         console.log("userID: ", comment.user.id);
         const userId = comment.user.id
-        if (userId === user.id) {
+        if (userId === user?.id) {
             //setIsModalVisible(false);
             navigation.navigate(ProfileRootStackEnum.ProfileScreen);
         } else {

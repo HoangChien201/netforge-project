@@ -1,21 +1,21 @@
 import HomeScreen from "../../screens/HomeScreen";
 import LiveStack from "./LiveStack";
 import CreatePostScreen from "../../screens/CreatePostScreen";
-import LiveWithZego from "../../screens/live/LiveWithZego";
+import HostScreen from "../../screens/live/HostScreen";
 
 
 export enum CreatePostStackEnum {
     HomeScreen = 'HomeScreen',
     LiveStack = 'LiveStack',
     CreatePostScreen= 'CreatePostScreen',
-    LiveWithZego = 'LiveWithZego',
+    HostScreen = 'HostScreen',
 }
 
 export type CreatePostStackParams={
     HomeScreen: undefined;
     LiveStack: undefined;
     CreatePostScreen: undefined;
-    LiveWithZego: undefined;
+    HostScreen: undefined;
 }
 
 export const CreatePostRootStackScreens=[
@@ -51,13 +51,11 @@ export const CreatePostRootStackScreens=[
     },
     {
         id: Math.random() + "" + Date,
-        name: CreatePostStackEnum.LiveWithZego,
-        component: LiveWithZego,
+        name: CreatePostStackEnum.HostScreen,
+        component: HostScreen,
         options: {
-            headerShown: true,
+            headerShown: false,
             tabBarShowLabel: false,
-            title:"Phát trực tiếp",
-            headerTitleAlign:'center'
         }
     },
     

@@ -1,15 +1,15 @@
-import React, { useEffect, useRef } from 'react';
-import { StyleSheet, Text, View, Image } from 'react-native';
+import React, { useEffect, useRef, useState } from 'react';
+import { StyleSheet, Text, View, Image, Dimensions } from 'react-native';
 import ZegoUIKitPrebuiltLiveStreaming, {
   HOST_DEFAULT_CONFIG, ZegoMenuBarButtonName
 } from '@zegocloud/zego-uikit-prebuilt-live-streaming-rn';
-import KeyCenter from './KeyCenter';
-import { useNavigation, NavigationProp, RouteProp } from '@react-navigation/native';
-import { useMyContext } from '../../component/navigation/UserContext';
-import { createNewPost } from '../../http/QuyetHTTP';
+import { useNavigation, RouteProp } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { deletePost } from '../../http/userHttp/getpost';
 import { useSelector } from 'react-redux';
+
+import KeyCenter from './KeyCenter';
+import { createNewPost } from '../../http/QuyetHTTP';
+import { deletePost } from '../../http/userHttp/getpost';
 import { RootState } from '../../component/store/store';
 
 //import { ZegoToastType } from '@zegocloud/zego-uikit-prebuilt-live-streaming-rn/lib/typescript/services/defines';
@@ -27,22 +27,23 @@ type Props = {
   route: HostScreenRouteProp;
 };
 
+const { height } = Dimensions.get('window');
+
 const HostScreen: React.FC<Props> = ({ route }) => {
-  const postID = useSelector((state: RootState) => state.postID.postID);
+  const user = useSelector((state : RootState)=>state.user.value)
+
+  const [idPost,setIdPost] = useState();
   const prebuiltRef = useRef<any>();
   const { userID, userName, liveID } = route.params;
-  //const navigation = useNavigation<NavigationProp<RootStackParamList>>();
   const navigation=useNavigation()
+
   useEffect(() => {
     navigation.getParent()?.setOptions({ tabBarStyle: {display:'none'}});
   }, []);
-  const { user } = useMyContext();
-console.log("dsfjksljdfljsfla",postID);
+
 
   const handleLeaveLiveStreaming =() => {
     handleDeletePost();
-   
-    
     // await AsyncStorage.removeItem("liveID")
   };
   const foregroundBuilder = ({ userInfo }: { userInfo: any }) => (
@@ -56,7 +57,7 @@ console.log("dsfjksljdfljsfla",postID);
   );
   const handleDeletePost = async () => {
     try {
-        await deletePost(postID);
+        await deletePost(idPost);
         navigation.navigate('LiveWithZego' as never);
     } catch (error) {
         console.error(error);
@@ -70,7 +71,9 @@ console.log("dsfjksljdfljsfla",postID);
      
         const newPost = await createNewPost({ type,  permission, content });
         await AsyncStorage.setItem("liveID",content);
-       
+        console.log("sdfdssdfdw32243",newPost);
+        
+       setIdPost(newPost.post)
         const value = await AsyncStorage.getItem("liveID");
         console.log("live post", value);
     } catch (error) {
@@ -93,7 +96,7 @@ useEffect(() => {
         appID={KeyCenter.appID}
         appSign={KeyCenter.appSign}
         userID={userID}
-        userName={user.fullname}
+        userName={user?.fullname}
         liveID={liveID}
         config={{
           ...HOST_DEFAULT_CONFIG,
@@ -164,7 +167,7 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     zIndex:1,
     position:'absolute',
-    top:0,
+    top: height/11 ,
     left:20
   },
   avView: {

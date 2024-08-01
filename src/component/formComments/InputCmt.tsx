@@ -1,18 +1,19 @@
-import { StyleSheet, Text, View, TouchableOpacity, Image, TextInput, ScrollView, KeyboardAvoidingView, Platform, TouchableWithoutFeedback, Keyboard, PermissionsAndroid } from 'react-native'
-import React, { useState, useEffect, useCallback, useRef } from 'react'
-import CommentsScreen from '../../screens/CommentsScreen'
-import { addComments, uploadImage } from '../../http/TuongHttp'
-import { launchCamera, launchImageLibrary } from 'react-native-image-picker'
+import { StyleSheet, Text, View, TouchableOpacity, Image, TextInput, Keyboard } from 'react-native'
+import React, { useState, useEffect, useCallback } from 'react'
+import { useSelector } from 'react-redux'
+import { RootState } from '../store/store'
+import { launchImageLibrary } from 'react-native-image-picker'
 import Video from 'react-native-video'
-import { useMyContext } from '../navigation/UserContext'
 import Icon from 'react-native-vector-icons/Feather'
 import IconPhoto from 'react-native-vector-icons/Foundation'
 import IconSend from 'react-native-vector-icons/FontAwesome'
+
+import { addComments, uploadImage } from '../../http/TuongHttp'
 import { COLOR } from '../../constant/color'
 import {useSendNotification} from '../../constant/notify'
 
 const InputCmt = ({ fetchComments, onMediaSelected, parent = null , postId, text,setParent, setText, comment, userPostId }) => {
-    const { user } = useMyContext();
+    const user = useSelector((state : RootState)=>state.user.value)
     const [comments, setComments] = useState('')
     const [media, setMedia] = useState(null);
     const [imagePath, setImagePath] = useState(null);
@@ -27,7 +28,7 @@ const InputCmt = ({ fetchComments, onMediaSelected, parent = null , postId, text
   
     useEffect(() => {
         if (text) {
-            if(user.id === comment){
+            if(user?.id === comment){
                 
                 setText('chính mình')
             }else{

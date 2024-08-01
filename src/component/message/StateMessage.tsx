@@ -6,13 +6,15 @@ import { uploadImage } from '../../http/TuongHttp'
 import { socket } from '../../http/SocketHandle'
 import { useMyContext } from '../navigation/UserContext'
 import { StateMessageFormat } from './format/StatusMessage'
-import { MessageProvider } from './class/MessageProvider'
+import { Message } from './class/MessageProvider'
 import { useSendNotification } from '../../constant/notify'
+import { useSelector } from 'react-redux'
+import { RootState } from '../store/store'
 export type StateMessageType = {
-  message: MessageProvider,
+  message: Message,
   group_id: number | null,
   sender: boolean,
-  lastMessage: boolean
+  lastMessage: boolean,
 }
 const STATUS_SENDING = 0;
 const STATUS_SEND = 1;
@@ -22,7 +24,7 @@ const StateMessage: React.FC<StateMessageType> = ({ message, group_id, sender, l
   const [state, setState] = useState(message.state)
   const [seens, setSeens] = useState(message.reads)
 
-  const { user } = useMyContext()
+  const user = useSelector((state:RootState)=>state.user.value)
   //
   useEffect(() => {
     if (message.state === STATUS_SENDING) {
@@ -46,13 +48,13 @@ const StateMessage: React.FC<StateMessageType> = ({ message, group_id, sender, l
       switch (message.type) {
 
         case 'text':
+          
+          const msgRespone = await message.PostMessage({sender:user.id,group:group_id})
+          console.log('msgRespone1',msgRespone);
 
-          const messageNew = await message.CreateMessageToAPIByGroup(group_id)
-        console.log('messageNew1',messageNew);
-
-          if (messageNew) {
-            socket.emit(`message`, messageNew)
-            setState(messageNew.state)
+          if (msgRespone) {
+            socket.emit(`message`, msgRespone)
+            setState(msgRespone.state)
           }
           break;
 
@@ -65,7 +67,7 @@ const StateMessage: React.FC<StateMessageType> = ({ message, group_id, sender, l
 
   }
 
-  async function messgeMedia(message: MessageProvider) {
+  async function messgeMedia(message: Message) {
     const files = new FormData();
 
     files.append('files', {
@@ -82,12 +84,12 @@ const StateMessage: React.FC<StateMessageType> = ({ message, group_id, sender, l
         if (!group_id) return
         
         message.message = resultImage[0].url
-        const messageNew = await message.CreateMessageToAPIByGroup(group_id)
-        console.log('messageNew',messageNew);
+        const msgRespone = await message.PostMessage({sender:user.id,group:group_id})
+        console.log('msgRespone',msgRespone);
         
-        if (messageNew) {
-          socket.emit(`message`, messageNew)
-          setState(messageNew.state)
+        if (msgRespone) {
+          socket.emit(`message`, msgRespone)
+          setState(msgRespone.state)
         }
 
       } else {

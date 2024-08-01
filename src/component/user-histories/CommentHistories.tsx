@@ -5,6 +5,8 @@ import { GetTimeComment } from '../../format/FormatDate'
 import { useMyContext } from '../navigation/UserContext'
 import { useNavigation } from '@react-navigation/native'
 import { COLOR } from '../../constant/color';
+import { useSelector } from 'react-redux';
+import { RootState } from '../store/store';
 type Comment = {
     dataComment: any,
     load:any
@@ -13,7 +15,7 @@ const CommentHistories: React.FC<Comment> = ({ dataComment,load }) => {
     // const [sortedData, setSortedData] = useState<any[]>([]);
     const [showModal, setShowModal] = useState(false);
     const navigation = useNavigation();
-    const { user } = useMyContext();
+    const user = useSelector((state : RootState)=>state.user.user)
     const [loading, setLoading] = useState(true);
     if (!dataComment || dataComment.length == 0 && load == true) {
         return (
@@ -43,8 +45,8 @@ const CommentHistories: React.FC<Comment> = ({ dataComment,load }) => {
                                 onPress={() => navigation.navigate('CommentsScreen', { postId })}
                             >
                                 <View style={styles.infor}>
-                                    {user.avatar ?
-                                        <Image source={{ uri: user.avatar }} style={styles.avatar} />
+                                    {user?.data.avatar ?
+                                        <Image source={{ uri: user?.data.avatar }} style={styles.avatar} />
                                         :
                                         <View style={[styles.avatar, { backgroundColor: 'gray' }]} ></View>
                                     }

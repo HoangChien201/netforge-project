@@ -19,7 +19,7 @@ const Reaction: React.FC<ReactionProps> = ({ postID, reactions }) => {
   const [indexPress, setIndexPress] = useState(reactionState);
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedEmoji, setSelectedEmoji] = useState<string | null>(null);
-  const { user } = useMyContext();
+  const user = useSelector((state : RootState)=>state.user.value)
 
   useEffect(() => {
     setIndexPress(reactionState);
@@ -33,7 +33,7 @@ const Reaction: React.FC<ReactionProps> = ({ postID, reactions }) => {
 
     try {
       if (reactions > 0) {
-        await updateLikePost(postID, user.id, index);
+        await updateLikePost(postID,user?.id, index);
       } else {
         await likePost(postID, type);
       }
@@ -43,7 +43,7 @@ const Reaction: React.FC<ReactionProps> = ({ postID, reactions }) => {
       console.error(error);
       setIndexPress(previousReaction);
     }
-  }, [indexPress, postID, reactions, user.id, dispatch]);
+  }, [indexPress, postID, reactions, user?.id]);
 
   const RenderItem = useMemo(() => ({ val, index }: { val: { Emoji: any; id: number; type: number }; index: number }) => {
     const { Emoji, id, type } = val;

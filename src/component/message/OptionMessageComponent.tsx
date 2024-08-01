@@ -6,9 +6,12 @@ import { messageType } from './MessageItem';
 import { deleteMessageAPI } from '../../http/ChienHTTP';
 import { socket } from '../../http/SocketHandle';
 import { useMyContext } from '../navigation/UserContext';
+import { useSelector } from 'react-redux';
+import { RootState } from '../store/store';
 
 const OptionMessageComponent = ({ deleteMessage, message, setReply,setSelectedMessage }: { setSelectedMessage:any,deleteMessage: any, message: messageType, setReply: any }) => {
-    const {user} = useMyContext()
+
+    const user = useSelector((state : RootState)=>state.user.value)
     function ReplyHandle() {
         setReply(message)
         setSelectedMessage(null)
