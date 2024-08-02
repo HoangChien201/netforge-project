@@ -44,7 +44,7 @@ const UseMedia = ({ onSubmit,reply }: { onSubmit: any,reply:messageType | null }
                 // onSubmit(NewMessage({type,fileName,uri}))
                 
                 onSubmit(
-                    MessageFactory.newMessageText(
+                    MessageFactory.newMessageImage(
                         {
                             id:user?.id,
                         }
