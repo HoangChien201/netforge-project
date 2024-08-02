@@ -10,7 +10,7 @@ const SkelotonMessage = () => {
             {
                 list.map((id) => {
                     return (
-                        <View style={styles.wrapper}>
+                        <View style={styles.wrapper} key={id}>
                             <SkeletonPlaceholder borderRadius={4} key={id}>
                                 <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                                     <View style={{ width: 60, height: 60, borderRadius: 50 }} />
