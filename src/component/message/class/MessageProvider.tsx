@@ -150,7 +150,7 @@ export class Message {
 
             if (msgRes) {
                 const {msg,receivers}=msgRes
-                // const title=msg.group.type ==='group' ? `nhóm ${msg.group.name} `: 'mới'
+                const title=msg.group.type ==='group' ? `nhóm ${msg.group.name} `: 'mới'
                 console.log('msg',msgRes);
                 
                 receivers.forEach(receiver => {
@@ -159,8 +159,8 @@ export class Message {
                         avatarSender: msg.sender.avatar,
                         sender: msg.sender.id,
                         messId: msg.id,
-                        title:'sadsa',
-                        body: msg.message,
+                        title:title,
+                        body: msg.type === 'text' ? msg.message  : 'file',
                         receiver: receiver
                     })
                 });

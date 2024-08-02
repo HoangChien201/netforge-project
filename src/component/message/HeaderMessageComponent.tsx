@@ -3,7 +3,6 @@ import { Image, StyleSheet, Text,  View } from 'react-native'
 import { useRoute } from '@react-navigation/native'
 // @ts-ignore
 import { ZegoSendCallInvitationButton } from '@zegocloud/zego-uikit-prebuilt-call-rn';
-import { useMyContext } from '../navigation/UserContext'
 import { MessageScreenRouteProp } from '../../screens/message/MessageScreen'
 import { useSelector } from 'react-redux';
 import { RootState } from '../store/store';
