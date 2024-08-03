@@ -12,7 +12,6 @@ export const getAll = async (token:any,id?:number) => {
             }
         };
         const res = await axioInstance.get(url, headers)
-        //console.log("ddfsd",res);
         
         return res
     } catch (error) {
@@ -30,7 +29,6 @@ export const SharePost = async (idShare:number) => {
                 Authorization: `Bearer ${token}`
             }
         });
-        //console.log('Server response:', result); // Logging toàn bộ phản hồi từ server
 
         return result;
     } catch (error) {
@@ -66,7 +64,6 @@ export const deleteLikePost = async (postId:number, userId:number) => {
         const axioInstance = AxiosInstance();
         const url = `/like-posts/delete?posts_id=${postId}&user_id=${userId}`;
         const response = await axioInstance.delete(url);
-        console.log('Response:', response);
     } catch (error) {
         console.log("Lỗi get",error);
     }
@@ -79,7 +76,6 @@ export const updateLikePost = async (postId:number, userId:number,reaction:numbe
             reaction
         };
         const response = await axioInstance.patch(url,body);
-        console.log('Response:', response);
     } catch (error) {
         console.log("Lỗi get",error);
     }

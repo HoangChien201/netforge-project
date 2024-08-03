@@ -3,7 +3,6 @@ import { ScrollView, StyleSheet, TouchableOpacity, View, Image } from 'react-nat
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../store/store';
 import { setReaction } from '../store/reactionSlice';
-import { useMyContext } from '../navigation/UserContext';
 import { likePost, updateLikePost } from '../../http/userHttp/getpost';
 import { reaction } from '../../constant/emoji';
 import ExplosionModal from './ExplosionModal ';

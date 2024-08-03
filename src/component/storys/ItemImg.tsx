@@ -17,7 +17,6 @@ interface ItemImgProps {
 
 const ItemImg: React.FC<ItemImgProps> = ({ item, index,navigation }) => {
     const [ticks, setTicks] = useState<boolean>(false);
-    console.log("ItemImg");
     
     const checkSelect = () => {
         const uri = item.node.image.uri;

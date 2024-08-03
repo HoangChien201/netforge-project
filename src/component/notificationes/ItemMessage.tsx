@@ -15,7 +15,6 @@ const ItemMessage:React.FC<Item> = ({ notification }) => {
     function onPress(){
         const userInfo=notification.data[0].userInfo
         const {fullname,avatar,sender:id}=userInfo
-        console.log('userInfo',userInfo);
         
         NavigateToMessage(
             {

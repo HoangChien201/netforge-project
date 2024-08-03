@@ -1,21 +1,15 @@
 import { Image, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import React, { useEffect, useState } from 'react'
-import { NavigationProp, ParamListBase, useFocusEffect, useIsFocused, useNavigation } from '@react-navigation/native';
-import { deleteFriend, getFriends } from '../../../http/QuyetHTTP';
-import { useMyContext } from '../../../component/navigation/UserContext';
-import DeleteFriend from './DeleteFriend';
-import Loading from '../../../component/Modal/Loading';
+import { NavigationProp, ParamListBase, useNavigation } from '@react-navigation/native';
 import { ProfileRootStackEnum } from '../../../component/stack/ProfileRootStackParams';
-import ICON from 'react-native-vector-icons/MaterialIcons';
 import AntDesignIcon from 'react-native-vector-icons/AntDesign'
 import { COLOR } from '../../../constant/color';
 import { NavigateToMessage } from '../../../component/message/NavigateToMessage';
 import { FriendType } from '../../../component/message/ModalNewMessage';
-import { NetworkStackNavigationProp } from '../../../component/stack/NetworkRootStackParams';
 import BottomDeleteFriend from './BottomDeleteFriend';
-import { login } from '../../../http/userHttp/user';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../../component/store/store';
+import { getFriends } from '../../../http/QuyetHTTP';
 type Friend = {
   friends: any,
   setFriends: () => void;
@@ -34,7 +28,6 @@ const Friends: React.FC<Friend> = () => {
       const result = await getFriends(2);
       if (result) {
         setFriends(result);
-        //console.log('bạn bè nè: ' + JSON.stringify(result));
       }
     } catch (error) {
       console.log(error);

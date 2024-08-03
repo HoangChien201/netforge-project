@@ -1,11 +1,9 @@
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native'
-import React, { PropsWithChildren, useEffect, useState } from 'react'
+import { View,StyleSheet, TouchableOpacity } from 'react-native'
+import React from 'react'
 import { Portal } from 'react-native-portalize';
 import { BlurView } from '@react-native-community/blur'
 import MessageItemContent from './MessageItemContent';
-import { useMyContext } from '../navigation/UserContext';
 import ReactionOptionComponent from './ReactionOptionComponent';
-import Animated, { Easing, useAnimatedStyle, useSharedValue, withDelay, withTiming } from 'react-native-reanimated';
 import OptionMessageComponent from './OptionMessageComponent';
 import { useSelector } from 'react-redux';
 import { RootState } from '../store/store';

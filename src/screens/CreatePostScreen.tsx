@@ -133,8 +133,6 @@ const CreatePostScreen = memo(() => {
             name: file.fileName || `image-${index}.jpg`,
           });
         });
-        // console.log('media: ' + media);
-        // console.log('formData: ' + JSON.stringify(formData))
         const uploadedMedias = await upLoadMedia(formData);
         let medias: { url: any; resource_type: any }[] = [];
         if (Array.isArray(uploadedMedias)) {
@@ -142,7 +140,6 @@ const CreatePostScreen = memo(() => {
             url: item.url,
             resource_type: item.resource_type,
           }));
-          console.log('Uploaded media paths:', medias);
         } else {
           console.error('uploadedMedias is not an array or is undefined');
         }
@@ -155,7 +152,6 @@ const CreatePostScreen = memo(() => {
         // }
         //Create new post with the uploaded media paths
         const newPost = await createNewPost({ content, type, tags, medias, permission, emotion });
-        console.log('Bài viết đã được tạo:', JSON.stringify(newPost));
         if (newPost.status == 1 && permission == 1) {
           handleSendReaction(newPost);
           handleSendTags(newPost);
@@ -195,11 +191,8 @@ const CreatePostScreen = memo(() => {
             url: imageUrl,
             resource_type: 'image'
           });
-          console.log('Added imageUrl to media paths:', medias);
         }
-        console.log('here: ' + JSON.stringify(media));
         const newPost = await createNewPost({ content, type, tags, medias, permission, emotion });
-        console.log('Bài viết đã được tạo không medias:', newPost);
         if (newPost.status == 1 && permission == 1) {
           handleSendReaction(newPost);
           handleSendTags(newPost);
@@ -276,7 +269,6 @@ const CreatePostScreen = memo(() => {
           receiver: Number(friend)
         };
         sendTagFriend(data2);
-        //console.log('hh', friend);
 
       });
     } else {
@@ -284,11 +276,6 @@ const CreatePostScreen = memo(() => {
     }
   };
 
-  const log = () => {
-
-    console.log(content, media, type, permission, tags, imageUrl, 'bạn' + friends, emotion,'text1: ' + textOnly, 'text: ' + format);
-
-  }
   useFocusEffect(
     React.useCallback(() => {
       // Khi màn hình được focus, hiển thị lại bottom-tab

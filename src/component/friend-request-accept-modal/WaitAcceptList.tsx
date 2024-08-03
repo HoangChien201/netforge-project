@@ -1,12 +1,10 @@
 import { Image, RefreshControl, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
-import React, { useCallback, useEffect, useState } from 'react'
+import React, { useCallback } from 'react'
 import Icon from 'react-native-vector-icons/AntDesign'
 import { useNavigation } from '@react-navigation/native';
 import { COLOR } from '../../constant/color'
 import { cancelWaitAccept, acceptRequest, getRequest } from '../../http/QuyetHTTP'
 import EmptyWA from './EmptyWA'
-import { socket } from '../../http/SocketHandle';
-import { useMyContext } from '../navigation/UserContext';
 import { useSendNotification } from '../../constant/notify'
 import { ProfileRootStackEnum } from '../stack/ProfileRootStackParams';
 type Wait = {
@@ -27,7 +25,6 @@ const WaitAcceptList: React.FC<Wait> = ({ dataWaitAccept, setDataWaitAccept, set
     const cancelReq = async (friendId: number) => {
         try {
             const result = await cancelWaitAccept(friendId);
-            console.log(result);
             if (result.status == 1) {
                 setDataWaitAccept(prevData => prevData.filter(friend => friend.user.id !== friendId));
             }

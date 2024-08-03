@@ -1,15 +1,12 @@
 import {
   StyleSheet,
 } from 'react-native';
-import React, { useState } from 'react';
-import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
+import React from 'react';
 import TestProfile from './TestProfile';
 import { SafeAreaProvider,  } from 'react-native-safe-area-context';
 
 
 const ProfileScreen: React.FC = () => {
-  const Tab = createMaterialTopTabNavigator();
-
   return (
     <SafeAreaProvider>
           <TestProfile/>

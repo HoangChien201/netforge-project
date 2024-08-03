@@ -7,7 +7,6 @@ import ModalDeleteRecent from '../component/Explore/ModalDeleteRecent';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import ItemRencent from '../component/Explore/ItemRencent';
 import ItemSearch from '../component/Explore/ItemSearch';
-import { useMyContext } from '../component/navigation/UserContext';
 import { ProfileRootStackEnum } from '../component/stack/ProfileRootStackParams';
 import FastImage from 'react-native-fast-image';
 import Icon from 'react-native-vector-icons/Entypo'
@@ -33,7 +32,6 @@ const ExploreScreen = () => {
   }, []);
   const onSearch = async text => {
     if (text.trim() === '') {
-      console.log('uk');
       clearTimeout(timerRef.current)
       setKeyword(text)
       setUser([]);
@@ -56,9 +54,6 @@ const ExploreScreen = () => {
         timerRef.current = setTimeout(() => {
           setIsLoading(false)
           setNoResult(true);
-          console.log('hehe2');
-          
-          
         }, 5000);
       }
     } catch (error) {
@@ -84,7 +79,6 @@ const ExploreScreen = () => {
     }
   };
   const handleItemClick = (item: any) => {
-    console.log(item.id);
     setKeyword('')
     setUser([])
     setIsSearching(true)

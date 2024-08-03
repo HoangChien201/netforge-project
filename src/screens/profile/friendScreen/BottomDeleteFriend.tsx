@@ -25,7 +25,6 @@ const BottomDeleteFriend: React.FC<Bottom> = ({ isVisible, setIsVisible, data, s
     } else {
       bottomSheetRef.current?.close();
     }
-    console.log('data: ', data);
     if (data) {
       setUser2(data.id)
       setName(data.fullname)

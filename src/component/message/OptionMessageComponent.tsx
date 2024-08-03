@@ -5,7 +5,6 @@ import IconFont from 'react-native-vector-icons/FontAwesome'
 import { messageType } from './MessageItem';
 import { deleteMessageAPI } from '../../http/ChienHTTP';
 import { socket } from '../../http/SocketHandle';
-import { useMyContext } from '../navigation/UserContext';
 import { useSelector } from 'react-redux';
 import { RootState } from '../store/store';
 
@@ -21,7 +20,6 @@ const OptionMessageComponent = ({ deleteMessage, message, setReply,setSelectedMe
         const resultDelete = await deleteMessageAPI(message.id)
 
         if (resultDelete['status'] <= 0) return
-        console.log('mesageDel',message);
         
         socket.emit('message', message)
 

@@ -27,9 +27,6 @@ const HomeScreen = () => {
     const user = useSelector((state : RootState)=>state.user.value)
     const [visible, setVisible] = useState(false);
 
-
-    console.log("userne",user);
-    
     const checkTouchIdLogin = () => {
         TouchID.isSupported()
             .then(async biometryType => {

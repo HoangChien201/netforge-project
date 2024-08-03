@@ -70,10 +70,8 @@ const Body: React.FC<Bob> = ({ reload, showModalFriend, setShowModalFriend, setD
     const getRequestList = async (num: number) => {
         try {
             const result = await getFriends(num);
-            //console.log('danh sách bạn bè 1: ' + JSON.stringify(result));
             setDataRequest(result);
             setNumReq(result.length)
-            //console.log('request: ' + JSON.stringify(result));
         } catch (error) {
             console.log(error);
         }
@@ -82,10 +80,8 @@ const Body: React.FC<Bob> = ({ reload, showModalFriend, setShowModalFriend, setD
     const getWaitAcceptList = async () => {
         try {
             const result = await getRequest();
-            //console.log('danh sách bạn bè chờ chấp nhận: ' + JSON.stringify(result));
             setDataWaitAccept(result);
             setNumWA(result.length);
-            //console.log('Accept: ' + result);
         } catch (error) {
             console.log(error);
         }

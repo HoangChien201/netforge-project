@@ -1,5 +1,5 @@
-import React, {useState, useEffect, useRef} from 'react';
-import {View, Text, StyleSheet, KeyboardAvoidingView, TouchableOpacity, Alert} from 'react-native';
+import React, { useState, useEffect, useRef } from 'react';
+import { View, Text, StyleSheet, KeyboardAvoidingView, TouchableOpacity, Alert } from 'react-native';
 import isEqual from 'lodash/isEqual';
 import ModalPoup from '../component/Modal/ModalPoup';
 import ModalFail from '../component/Modal/ModalFail';
@@ -27,8 +27,8 @@ interface user {
   fullname: string;
   dateOfBirth: any | null;
   phone: null | number;
-  address:string | null;
-  gender:string | null;
+  address: string | null;
+  gender: string | null;
 }
 
 const validationSchema = yup.object().shape({
@@ -45,13 +45,13 @@ const validationSchema = yup.object().shape({
   // gender: yup.string().oneOf(['--', 'Nam', 'Nữ', 'Khác'])
 });
 
-  const EditProfileScreen:React.FC = () => {
-  const navigation=useNavigation()
+const EditProfileScreen: React.FC = () => {
+  const navigation = useNavigation()
   useEffect(() => {
-    navigation.getParent()?.setOptions({ tabBarStyle: {display:'none'}});
+    navigation.getParent()?.setOptions({ tabBarStyle: { display: 'none' } });
   }, []);
 
-  const user = useSelector((state:RootState)=>state.user.value)
+  const user = useSelector((state: RootState) => state.user.value)
   const dispatch = useDispatch()
 
   const [userData, setUserData] = useState<any>(null);
@@ -65,7 +65,7 @@ const validationSchema = yup.object().shape({
   const [isLoading, setIsLoading] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [status, setStatus] = useState(true);
-  const formikRef = useRef<FormikProps<{ email: string; fullname: string; phone?: string; gender?:string; dateOfBirth?: any }>>(null);
+  const formikRef = useRef<FormikProps<{ email: string; fullname: string; phone?: string; gender?: string; dateOfBirth?: any }>>(null);
   const [initialAvatar, setInitialAvatar] = useState('');
 
   // address
@@ -77,20 +77,20 @@ const validationSchema = yup.object().shape({
     React.useCallback(() => {
       const fetchUserData = async () => {
         try {
-            const response = await getUSerByID(user.id, user.token);
-            setUserData(response);
-            setAvatarPath(response.avatar);
+          const response = await getUSerByID(user.id, user.token);
+          setUserData(response);
+          setAvatarPath(response.avatar);
         } catch (error) {
           console.log(error);
-      };
-      fetchUserData();
+        };
+        fetchUserData();
       }
-  }, [setUserData, user])
+    }, [setUserData, user])
   );
 
 
   useEffect(() => {
-    if (userData && userData.address ) {
+    if (userData && userData.address) {
       setInitialAddress(userData.address);
     }
   }, [userData]);
@@ -98,7 +98,7 @@ const validationSchema = yup.object().shape({
 
   // avatar
   useEffect(() => {
-    if (user && user.avatar ) {
+    if (user && user.avatar) {
       setInitialAvatar(user.avatar);
     }
   }, [user]);
@@ -109,17 +109,17 @@ const validationSchema = yup.object().shape({
 
   const [initialDate, setInitialDate] = useState(user.dateOfBirth);
 
-  const showModalFalse =() => {
+  const showModalFalse = () => {
     setShowModal(true);
     setStatus(false);
     setTimeout(() => {
-        setShowModal(false);
-        setIsLoading(false);
+      setShowModal(false);
+      setIsLoading(false);
     }, 2000);
-}
+  }
 
 
-const handleUpdateProfile = async (values: user) => {
+  const handleUpdateProfile = async (values: user) => {
     setIsLoading(true);
     const currentDate = new Date();
     if (startDate > currentDate) {
@@ -127,12 +127,12 @@ const handleUpdateProfile = async (values: user) => {
       setIsLoading(false);
       return;
     } else {
-        setDateError(null); 
+      setDateError(null);
     }
 
     try {
-      const { email, fullname, phone, gender,address} = values;
-      const updatedGender = gender || user.gender || ''; 
+      const { email, fullname, phone, gender, address } = values;
+      const updatedGender = gender || user.gender || '';
       const updatedAddress = selectedAddress !== null ? selectedAddress : '';
       const response = await updateProfile(
         user.id,
@@ -155,21 +155,21 @@ const handleUpdateProfile = async (values: user) => {
           address: updatedAddress,
           gender: updatedGender
         }))
-        
-          setShowModal(true);
-          setStatus(true);
-          setIsLoading(false);
-          setTimeout(() => {
-              setShowModal(false);
-              navigation.goBack();
-              console.log(address);
-          }, 2000);
+
+        setShowModal(true);
+        setStatus(true);
+        setIsLoading(false);
+        setTimeout(() => {
+          setShowModal(false);
+          navigation.goBack();
+          console.log(address);
+        }, 2000);
       }
     } catch (error: any) {
       if (error.response && error.response.status === 404) {
-          showModalFalse();
+        showModalFalse();
       } else {
-          showModalFalse();
+        showModalFalse();
       }
       console.log("Error update profile:", error);
     }
@@ -184,38 +184,38 @@ const handleUpdateProfile = async (values: user) => {
     gender: user.gender
   };
 
-const handleBackPress = () => {
-  if (!formikRef.current) return;
-  const formikProps = formikRef.current;
-  // Kiểm tra sự thay đổi giữa giá trị hiện tại và giá trị ban đầu
-  const formChanged = !isEqual(formikProps.values, initialValues);
-  const addressChanged = selectedAddress !== initialAddress;
+  const handleBackPress = () => {
+    if (!formikRef.current) return;
+    const formikProps = formikRef.current;
+    // Kiểm tra sự thay đổi giữa giá trị hiện tại và giá trị ban đầu
+    const formChanged = !isEqual(formikProps.values, initialValues);
+    const addressChanged = selectedAddress !== initialAddress;
 
-  if (formChanged || addressChanged) {
-    Alert.alert(
-      'Xác nhận',
-      'Bạn có muốn hủy bỏ thay đổi?',
-      [
-        {
-          text: 'Không',
-          style: 'cancel',
-        },
-        {
-          text: 'Có',
-          onPress: () => {
-            navigation.goBack();
-            setStartDate(initialDate);
-            setDateError(null);
-            formikProps.resetForm();
+    if (formChanged || addressChanged) {
+      Alert.alert(
+        'Xác nhận',
+        'Bạn có muốn hủy bỏ thay đổi?',
+        [
+          {
+            text: 'Không',
+            style: 'cancel',
           },
-        },
-      ],
-      { cancelable: true }
-    );
-  } else {
-    navigation.goBack();
-  }
-};
+          {
+            text: 'Có',
+            onPress: () => {
+              navigation.goBack();
+              setStartDate(initialDate);
+              setDateError(null);
+              formikProps.resetForm();
+            },
+          },
+        ],
+        { cancelable: true }
+      );
+    } else {
+      navigation.goBack();
+    }
+  };
 
   const resetAddressToInitial = () => {
     setSelectedAddress(initialAddress);
@@ -224,96 +224,96 @@ const handleBackPress = () => {
 
   return (
     <ScrollView style={styles.container}>
-      <CustomHeaderBar onBackPress={handleBackPress} 
-        onSavePress={() => formikRef.current?.handleSubmit()}  title='Chỉnh sửa thông tin'/>
+      <CustomHeaderBar onBackPress={handleBackPress}
+        onSavePress={() => formikRef.current?.handleSubmit()} title='Chỉnh sửa thông tin' />
 
       <UpLoadAvatar initialImage={avatarPath} onImageSelect={handleImageSelect} userId={user.id} />
 
-    <Formik
-      innerRef={formikRef}
-      initialValues={initialValues}
-      validationSchema={validationSchema}
-      onSubmit={handleUpdateProfile}>
+      <Formik
+        innerRef={formikRef}
+        initialValues={initialValues}
+        validationSchema={validationSchema}
+        onSubmit={handleUpdateProfile}>
 
-      {(formikProps) => {
-        if (!formikProps) return null; 
-        return (
-        <KeyboardAvoidingView style={styles.viewContent}>
-            <Loading isLoading={isLoading} />
-            <InputField
-              label="Họ tên"
-              value={formikProps.values.fullname}
-              onChangeText={formikProps.handleChange('fullname')}
-              onBlur={formikProps.handleBlur('fullname')}
-              invalid={formikProps.touched.fullname && !!formikProps.errors.fullname}
-              iconName='person-outline'
-              placeholder='Nhập họ tên'/>
+        {(formikProps) => {
+          if (!formikProps) return null;
+          return (
+            <KeyboardAvoidingView style={styles.viewContent}>
+              <Loading isLoading={isLoading} />
+              <InputField
+                label="Họ tên"
+                value={formikProps.values.fullname}
+                onChangeText={formikProps.handleChange('fullname')}
+                onBlur={formikProps.handleBlur('fullname')}
+                invalid={formikProps.touched.fullname && !!formikProps.errors.fullname}
+                iconName='person-outline'
+                placeholder='Nhập họ tên' />
 
-            <InputField
-              label="Email"
-              value={formikProps.values.email}
-              onChangeText={formikProps.handleChange('email')}
-              onBlur={formikProps.handleBlur('email')}
-              invalid={formikProps.touched.email && !!formikProps.errors.email}
-              editable={isEditable}
-              iconName='mail-outline'
-              placeholder='Nhập email'/>
+              <InputField
+                label="Email"
+                value={formikProps.values.email}
+                onChangeText={formikProps.handleChange('email')}
+                onBlur={formikProps.handleBlur('email')}
+                invalid={formikProps.touched.email && !!formikProps.errors.email}
+                editable={isEditable}
+                iconName='mail-outline'
+                placeholder='Nhập email' />
 
-            <InputField
-              label="Số điện thoại"
-              value={formikProps.values.phone}
-              onChangeText={formikProps.handleChange('phone')}
-              onBlur={formikProps.handleBlur('phone')}
-              keyboardType="phone-pad"
-              invalid={formikProps.touched.phone && !!formikProps.errors.phone}
-              iconName='phone-portrait-outline'
-              placeholder='Nhập số điện thoại'/>
-              
+              <InputField
+                label="Số điện thoại"
+                value={formikProps.values.phone}
+                onChangeText={formikProps.handleChange('phone')}
+                onBlur={formikProps.handleBlur('phone')}
+                keyboardType="phone-pad"
+                invalid={formikProps.touched.phone && !!formikProps.errors.phone}
+                iconName='phone-portrait-outline'
+                placeholder='Nhập số điện thoại' />
 
-            
-      <View style={styles.addressContainer}>
-        <TouchableOpacity onPress={() => setIsModalVisible(true)} style={{flexDirection:'row', alignItems:'center', maxWidth: '85%',  minHeight:60,}}>
-          <Icon name="location-outline" size={20} color="#000" style={styles.iconAddress} />
-          <Text style={[styles.input, !formikProps.values.address && styles.placeholderText]}>
-              {selectedAddress || 'Chọn địa chỉ'}
-          </Text>
-        </TouchableOpacity>
 
-        <AddressModal
-          isVisible={isModalVisible}
-          onSelectAddress={(address) => {
-            setSelectedAddress(address);
-          }}
-          onCloseModal={() => setIsModalVisible(false)}
-          selectedAddress={selectedAddress}
-          resetToInitial={resetAddressToInitial}
-        />
-      </View>
-            <GenderPicker
-              value={formikProps.values.gender}
-              onValueChange={formikProps.handleChange('gender')}
-              invalid={formikProps.touched.gender && !!formikProps.errors.gender}
-            />
-            
-            <CustomDatePicker
-              selectedDate={startDate}
-              onDateChange={(date) => {
-                setStartDate(date);
-                formikProps.setFieldValue('dateOfBirth', date);
-                setDateError(null);
-              }}
-              error={dateError}/>
+
+              <View style={styles.addressContainer}>
+                <TouchableOpacity onPress={() => setIsModalVisible(true)} style={{ flexDirection: 'row', alignItems: 'center', maxWidth: '85%', minHeight: 60, }}>
+                  <Icon name="location-outline" size={20} color="#000" style={styles.iconAddress} />
+                  <Text style={[styles.input, !formikProps.values.address && styles.placeholderText]}>
+                    {selectedAddress || 'Chọn địa chỉ'}
+                  </Text>
+                </TouchableOpacity>
+
+                <AddressModal
+                  isVisible={isModalVisible}
+                  onSelectAddress={(address) => {
+                    setSelectedAddress(address);
+                  }}
+                  onCloseModal={() => setIsModalVisible(false)}
+                  selectedAddress={selectedAddress}
+                  resetToInitial={resetAddressToInitial}
+                />
+              </View>
+              <GenderPicker
+                value={formikProps.values.gender}
+                onValueChange={formikProps.handleChange('gender')}
+                invalid={formikProps.touched.gender && !!formikProps.errors.gender}
+              />
+
+              <CustomDatePicker
+                selectedDate={startDate}
+                onDateChange={(date) => {
+                  setStartDate(date);
+                  formikProps.setFieldValue('dateOfBirth', date);
+                  setDateError(null);
+                }}
+                error={dateError} />
               {dateError && <Text style={styles.errorText}>{dateError}</Text>}
 
-          {status ? (
-            <ModalPoup text="Cập nhập thành công!" visible={showModal} />
-          ) : (
-            <ModalFail text="Cập nhập thất bại!" visible={showModal} />
-          )}
-        </KeyboardAvoidingView>
+              {status ? (
+                <ModalPoup text="Cập nhập thành công!" visible={showModal} />
+              ) : (
+                <ModalFail text="Cập nhập thất bại!" visible={showModal} />
+              )}
+            </KeyboardAvoidingView>
           );
         }}
-    </Formik>
+      </Formik>
     </ScrollView>
   );
 };
@@ -323,7 +323,7 @@ const styles = StyleSheet.create({
     flex: 1,
     width: '100%',
     height: '100%',
-    backgroundColor:'#fff'
+    backgroundColor: '#fff'
   },
   viewAll: {
     flex: 1,
@@ -358,8 +358,8 @@ const styles = StyleSheet.create({
     paddingTop: 20,
   },
   addressContainer: {
-    margin:9,
-    justifyContent:'center',
+    margin: 9,
+    justifyContent: 'center',
     borderBottomWidth: 1,
     borderColor: '#DDDDDD',
     height: 60,
@@ -376,29 +376,29 @@ const styles = StyleSheet.create({
     borderRadius: 45,
     borderWidth: 4,
     marginTop: 10,
-    borderColor:'#fff'
+    borderColor: '#fff'
   },
   iconCamera: {
-    width:28,
-    height:28,
+    width: 28,
+    height: 28,
     position: 'absolute',
     bottom: 5,
     left: 60,
-    backgroundColor:'#ddd',
+    backgroundColor: '#ddd',
     borderRadius: 14,
-    justifyContent:'center',
-    alignItems:'center',
-    
+    justifyContent: 'center',
+    alignItems: 'center',
+
   },
   input: {
     fontSize: 16,
     color: '#333',
     paddingVertical: 12,
-    fontWeight:'500',
-    
+    fontWeight: '500',
+
   },
   iconAddress: {
-    marginHorizontal:10
+    marginHorizontal: 10
   },
   placeholderText: {
     color: '#333',

@@ -9,7 +9,6 @@ import {
 } from '@gorhom/bottom-sheet';
 const LikeItem = ({ like }) => {
     const renderReactionImage = () => {
-        // console.log(user.id);
         if (like.reaction === 1) {
             return (
                 <Image
@@ -66,10 +65,7 @@ const LikeItem = ({ like }) => {
     );
 };
 const Modal_GetLikePosts = ({ isVisible, onClose, postId, like, setLike }) => {
-    // const [like, setLike] = useState([]);
-    // console.log('postmodal:', postId);
-    // console.log(like);
-    // ref
+
     const bottomSheetModalRef = useRef<BottomSheetModal>(null);
     // variables
     const snapPoints = useMemo(() => ['25%', '50%'], []);
@@ -77,7 +73,6 @@ const Modal_GetLikePosts = ({ isVisible, onClose, postId, like, setLike }) => {
         async () => {
             try {
                 const response: any = await getLikePostById(postId);
-                console.log('Danh sách Like Posts:', response);
                 setLike(response)
             } catch (error) {
                 console.log('Lỗi lấy danh sách like post:', error);
@@ -93,7 +88,6 @@ const Modal_GetLikePosts = ({ isVisible, onClose, postId, like, setLike }) => {
     }, [isVisible]);
 
     const handleSheetChanges = useCallback((index: number) => {
-        // console.log('handleSheetChanges', index);
         if (index === -1) {
             onClose();
         }

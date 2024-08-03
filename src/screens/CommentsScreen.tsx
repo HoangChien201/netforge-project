@@ -35,23 +35,15 @@ const CommentsScreen = () => {
     const { numberLike } = route.params;
     const { creater } = route.params;
 
-
-    console.log('postId', postId); 
-
-    // console.log('numberLikeNe', numberLike);
-    // console.log(text);
-
     // lấy bài viết chi tiết
     const fetchPosts = async () => {
         try {
             //goo
             const response: any = await getPostById(postId);
-            // console.log("posts", response);
             setPosts(response)
             fetchComments();
             setLoadData(false)
             setLoading(true)
-            // console.log("repon", response);
         } catch (error) {
             console.log(error);
         }
@@ -61,8 +53,6 @@ const CommentsScreen = () => {
         try {
             //goo
             const response: any = await getComments(postId);
-            // console.log(re);
-            
 
             setComments(response.reverse());
             setCommentCount(response.length);
@@ -73,7 +63,6 @@ const CommentsScreen = () => {
     // Hàm xử lý khi người dùng chọn trả lời một bình luận  
     const handleReply = (parent) => {
         setReplyTo(parent); // Thiết lập bình luận cha để trả lời
-        console.log("parent:", parent);
     };
     
     // // hàm render comments
@@ -109,7 +98,6 @@ const CommentsScreen = () => {
     const loggedInUserId =user?.id;
     const handleToProfile = (userId) => {
         // //setSelectedUserId(userId);
-        console.log("userID: ", userId);
         if (userId === loggedInUserId) {
             //setIsModalVisible(false);
             navigation.navigate(ProfileRootStackEnum.ProfileScreen);

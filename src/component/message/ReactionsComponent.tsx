@@ -8,7 +8,6 @@ const ReactionsComponent = ({ reactions,onPress }: { reactions: Array<reactionTy
   const reactionFiller= [...new Set(reactions.map(rct=>rct.reaction))]
 
   function OnPress() {
-    console.log('reaction');
     
     onPress()
 

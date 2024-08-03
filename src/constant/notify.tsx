@@ -54,7 +54,6 @@ export const useSendNotification = () => {
       },
     };
     socket.emit('notification', data);
-    console.log('Sent notification data:', data);
   };
   const sendNRepComment = ({ postId1, body, commentId, receiver }) => {
     const notificationTemplate = createNotificationTemplate();
@@ -77,7 +76,7 @@ export const useSendNotification = () => {
       },
     };
     socket.emit('notification', data);
-    console.log('Sent notification data:', data);
+    
   };
   const sendNReaction = ({ postId, body, receiver, reactionType }) => {
     const notificationTemplate = createNotificationTemplate();
@@ -102,7 +101,7 @@ export const useSendNotification = () => {
       },
     };
     socket.emit('notification', data);
-    console.log('Sent notification data:', data);
+    
   };
   const sendNReactionComment = ({ postId1, commentId, body, receiver, reactionType }) => {
     const notificationTemplate = createNotificationTemplate();
@@ -128,7 +127,7 @@ export const useSendNotification = () => {
       },
     };
     socket.emit('notification', data);
-    console.log('Sent notification data:', data);
+    
   };
   const sendNCreateNewPostHistory = ({ postId, body, }) => {
     const notificationTemplate = createNotificationTemplate();
@@ -150,7 +149,7 @@ export const useSendNotification = () => {
       },
     };
     socket.emit('notification', data);
-    console.log('Sent notification data:', data);
+    
   };
   // gửi kết bạn
   const sendNRequestFriend = ({ receiver }) => {
@@ -173,10 +172,9 @@ export const useSendNotification = () => {
       },
     };
     socket.emit('notification', data);
-    console.log('Sent notification data:', data);
+    
   };
   const sendNMessage = ({ messId, body, receiver }) => {
-    console.log('messId', messId);
 
     const notificationTemplate = createNotificationTemplate();
     const data = {
@@ -198,7 +196,7 @@ export const useSendNotification = () => {
 
     };
     socket.emit('notification', data);
-    console.log('Sent notification data:', data);
+    
   };
   const sendNSharePost = ({ postId, body, receiver }) => {
     const notificationTemplate = createNotificationTemplate();
@@ -222,7 +220,7 @@ export const useSendNotification = () => {
 
     };
     socket.emit('notification', data);
-    console.log('Sent notification data:', data);
+    
   };
   const sendBirthDay = ({ friendId, fullname, avatar }) => {
     const notificationTemplate = createNotificationTemplate();    
@@ -241,7 +239,7 @@ export const useSendNotification = () => {
       },
     };
     socket.emit('notification', data);
-    console.log('Sent notification data:', data);
+    
   };
   const sendAcceptFriend = ({ friendId }) => {
     const notificationTemplate = createNotificationTemplate();
@@ -263,7 +261,7 @@ export const useSendNotification = () => {
       },
     };
     socket.emit('notification', data);
-    console.log('Sent notification data:', data);
+    
   };
   const sendTagFriend = ({ postId, receiver, body }) => {
     const notificationTemplate = createNotificationTemplate();
@@ -285,7 +283,7 @@ export const useSendNotification = () => {
       },
     };
     socket.emit('notification', data);
-    console.log('Sent notification data:', data);
+    
   };
   return {
     sendNCommentPost,

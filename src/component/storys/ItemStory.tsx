@@ -7,7 +7,6 @@ import { setDate } from 'date-fns';
 const ItemStory = ({ data, setIndex, index, indexfind, list }) => {
   const navigation: NavigationProp<ParamListBase> = useNavigation();
   const [result,setResult] = useState(data);
-  //console.log("dâtta",data);
   useEffect(() => {
     setResult(data)
   }, [data]); 

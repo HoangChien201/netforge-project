@@ -1,14 +1,8 @@
-import { StyleSheet, Text, View, TouchableOpacity } from 'react-native'
-import React, { useEffect, useState, useMemo, useCallback } from 'react'
+import { StyleSheet, View,  } from 'react-native'
+import React, { useEffect, useState } from 'react'
 import { useIsFocused, useNavigation } from '@react-navigation/native';
 import ModalBirtday from '../../birtday/ModalBirtday';
-import { useMyContext } from '../../component/navigation/UserContext';
-import { getFriends } from '../../http/QuyetHTTP';
-import { socket } from '../../http/SocketHandle';
 import Sound from 'react-native-sound';
-import { FlatList } from 'react-native-gesture-handler';
-import { date } from 'yup';
-import ItemBirthday from '../../birtday/ItemBirthday';
 import { FriendType } from '../../component/message/ModalNewMessage';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../component/store/store';
@@ -22,7 +16,6 @@ const HelpScreen = () => {
 
   const navigation = useNavigation()
   const isFocus = useIsFocused()
-  // console.log('birt', birthdaySound);
 
 
   useEffect(() => {
@@ -48,11 +41,9 @@ const HelpScreen = () => {
     const userBirthday = new Date(user?.dateOfBirth)
     if (today.getDate() === userBirthday.getDate() &&
       today.getMonth() === userBirthday.getMonth()) {
-      console.log(today);
       setIsVisibleBirtday(true);
       if (birthdaySound) {
         birthdaySound.play()
-        // console.log('nhac',birthdaySound);
 
       }
     }

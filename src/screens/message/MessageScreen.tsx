@@ -166,8 +166,6 @@ const MessageScreen = () => {
   }
 
   const ListMessage = useCallback(() => {
-    console.log('render list');
-
     return (
       <FlatList
         inverted

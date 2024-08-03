@@ -20,19 +20,14 @@ const BirthDayScreen = ({ visible, setVisible }: { visible: boolean, setVisible:
 
     const navigation = useNavigation()
     const isFocus = useIsFocused()
-    // console.log('birt', birthdaySound);
 
     useEffect(() => {
         if (isFocus) {
-            
             navigation.getParent()?.setOptions({
                 tabBarStyle: {
                     display: 'none',
                 }
             });
-            
-            console.log('hhii');
-            
         }
     }, [isFocus]);
     useFocusEffect(
@@ -59,7 +54,6 @@ const BirthDayScreen = ({ visible, setVisible }: { visible: boolean, setVisible:
         //   handleSendNotification(id, fullname, avatar);
         // });
         setTodayFriends(friendsToday);
-        console.log('friendsToday', friendsToday);
 
     
 
@@ -90,7 +84,6 @@ const BirthDayScreen = ({ visible, setVisible }: { visible: boolean, setVisible:
         }
         // sendNCommentPost(data)
         socket.emit('notification', data);
-        // console.log('Sent notification data:', data);
     };
 
     return (

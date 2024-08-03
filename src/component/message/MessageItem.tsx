@@ -8,7 +8,6 @@ import PortalMessage from './PortalMessage'
 import { MessageCordinatesType } from '../../screens/message/MessageScreen'
 import StateMessage from './StateMessage'
 import { socket } from '../../http/SocketHandle'
-import { useMyContext } from '../navigation/UserContext';
 import { Message } from './class/MessageProvider';
 import { useSelector } from 'react-redux';
 import { RootState } from '../store/store';
@@ -194,7 +193,6 @@ const MessageItem: React.FC<MessageItemProp> = React.memo((
 
   //lắng nghe sự kiện submit reaction
   function OptionReactionOnSubmit({ status, reactionCurrent }: { status: number, reactionCurrent: reactionType }) {
-    console.log('reaction', reactionCurrent);
 
     switch (status) {
       //add reaction
@@ -261,7 +259,6 @@ const MessageItem: React.FC<MessageItemProp> = React.memo((
   }
   const isMessageSennder = typeof message.sender === 'object' ? message.sender.id === user.id : message.sender === user.id;
 
-  // console.log('mesageprarent',message);
 
   return (
     <View style={styles.container}>

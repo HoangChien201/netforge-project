@@ -38,7 +38,6 @@ const UploadBanner: React.FC<UploadBannerProps> = ({ initialImage, onImageSelect
           const response = await getUSerByID(userId, user?.token);
           setUserData(response);
           setImage(response.background);
-          console.log(image)
         } catch (error) {
           console.log(error);
         }

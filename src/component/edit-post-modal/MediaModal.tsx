@@ -36,10 +36,6 @@ const MediaModal: React.FC<MediaModal> = ({ showModal, setShowModal, media, setM
     const [mediaUpload, setMediaUpload] = useState([]);
     const [isloading, setIsLoading] = useState(false)
     useEffect(() => {
-        //setTotalMedia([...media, ...newMedia]);
-        // console.log('Media: ' + media);
-        // console.log('MediaUpload: ' + JSON.stringify(mediaUpload));
-        // console.log('Total: ' + JSON.stringify(totalMedia));
         setTotalMedia([...images]);
         
     }, [media]);
@@ -119,18 +115,15 @@ const MediaModal: React.FC<MediaModal> = ({ showModal, setShowModal, media, setM
                         url: item.url,
                         resource_type: item.resource_type,
                     }));
-                    console.log('Uploaded media paths:', medias);
                     setImages(preImages => [...preImages, ...medias]);
                     const mediaUrls = medias.map(item => item.url);
                     setMedia(prevMedia => [...prevMedia, ...mediaUrls]);
                 } else {
                     console.error('uploadedMedias is not an array or is undefined');
                 }
-                console.log('Uploaded media paths:', medias);
 
                 setMediaUpload([]);
                 setTimeout(() => {
-                    console.log('những file ảnh upload to post: ' + media);
                     setStatus('Đã thêm ảnh mới');
                     setShowPopup(true);
                     setIsError(false);
