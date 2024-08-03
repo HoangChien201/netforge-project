@@ -27,8 +27,6 @@ const Reaction = memo(({ like_count, type, commentId, render,Cmt,postId,userPost
         try {
           
             const result: any = await deleteLikeComments(commentId, user?.id);
-            console.log(result);
-            console.log('Xóa like thành công');
 
 
         } catch (error) {
@@ -54,11 +52,7 @@ const Reaction = memo(({ like_count, type, commentId, render,Cmt,postId,userPost
     const updateLike = async (commentId: number, type: number) => {
         try {
             const result: any = await updateLikeComment(commentId, user?.id, type);
-            // console.log(result);
-            // console.log(type);
-            // console.log(commentId);
-            // console.log(user.id);
-            console.log('update like thành công');
+
         } catch (error) {
             console.log("Lỗi update like", error);
             throw error;
@@ -78,20 +72,10 @@ const Reaction = memo(({ like_count, type, commentId, render,Cmt,postId,userPost
             animationRef.current?.fadeOutDown(500).then(() => {
                 setIsLike(false);
                setCheckReaction(false)
-               console.log('setcheck', setCheckReaction);
-               console.log(checkReaction);
-               
-               
-
-
             });
         } else {
             setIsLike(true);
            setCheckReaction(true)
-           console.log('setcheck2', setCheckReaction);
-           console.log(checkReaction);
-           
-
         }
     };
 

@@ -36,7 +36,6 @@ const TouchId = ({ visible, setVisible }: { visible: boolean, setVisible: (value
     const dontAskTouchIdLogin = async() => {
         setVisible(false);
         await AsyncStorage.setItem('cancelBiometric','false');
-        console.log('cancelBiometric == false');
         
     };
     const confirmTouchIdLogin = async () => {

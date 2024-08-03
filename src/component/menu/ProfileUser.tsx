@@ -1,6 +1,5 @@
 import { View, Text, StyleSheet, Image, TouchableOpacity } from 'react-native';
 import React, { useEffect, useState } from 'react';
-import { useMyContext } from '../navigation/UserContext';
 import { NavigationProp, ParamListBase, useFocusEffect, useNavigation } from '@react-navigation/native';
 import { getUSerByID } from '../../http/PhuHTTP';
 import { ProfileRootStackEnum } from '../stack/ProfileRootStackParams';
@@ -32,7 +31,6 @@ const ProfileUser = () => {
                 try {
                     const response = await getUSerByID(userID, token);
                     setUserData(response);
-                    console.log("response nè: ", response);
                 } catch (error) {
                     console.log(error);
                 }

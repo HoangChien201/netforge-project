@@ -46,7 +46,6 @@ const FriendScreen: React.FC<Friends> = () => {
       const result = await getFriends(status);
       if (result) {
         setFriends(result);
-        console.log('bạn bè: ' + JSON.stringify(result));
         setRefreshing(false)
       }
     } catch (error) {
@@ -57,12 +56,10 @@ const FriendScreen: React.FC<Friends> = () => {
     try {
       //const result = await getAllUser();
       const result = await getSuggest();
-      //console.log('danh sách gợi ý: ' + JSON.stringify(result));
       if (result) {
         setDataSuggest(result);
         setRefreshing(false)
       }
-      //console.log('suggest: ' + JSON.stringify(result));
     } catch (error) {
       console.log(error);
     }
@@ -70,13 +67,11 @@ const FriendScreen: React.FC<Friends> = () => {
   const getRequestList = async (num: number) => {
     try {
       const result = await getFriends(num);
-      //console.log('danh sách bạn bè 1: ' + JSON.stringify(result));
       if (result) {
         setDataRequest(result);
         setRefreshing(false);
         setNumReq(result.length)
       }
-      //console.log('request: ' + JSON.stringify(result));
     } catch (error) {
       console.log(error);
     }
@@ -84,13 +79,11 @@ const FriendScreen: React.FC<Friends> = () => {
   const getWaitAcceptList = async () => {
     try {
       const result = await getRequest();
-      //console.log('danh sách bạn bè chờ chấp nhận: ' + JSON.stringify(result));
       if (result) {
         setDataWaitAccept(result);
         setRefreshing(false);
         setNumWA(result.length);
       }
-      //console.log('Accept: ' + result);
     } catch (error) {
       console.log(error);
     }
@@ -106,7 +99,6 @@ const FriendScreen: React.FC<Friends> = () => {
         },
       });
       loadAllData();
-      console.log('load rồi');
 
     }
   }, [isFocus, reload]);
@@ -118,7 +110,6 @@ const FriendScreen: React.FC<Friends> = () => {
   };
   useEffect(() => {
     socket.on(`notification-${userId}`, (data) => {
-      console.log('Notification received:', data);
       if (data) {
         setReload(prevState => !prevState)
       }

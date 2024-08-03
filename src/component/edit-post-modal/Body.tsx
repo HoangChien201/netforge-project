@@ -1,18 +1,14 @@
 import { StyleSheet, Text, View, Modal, TouchableOpacity, Image, FlatList, ScrollView, Keyboard } from 'react-native'
 import React, { useState, useEffect, useCallback } from 'react'
-import SwiperFlatList from 'react-native-swiper-flatlist'
 import Icon from 'react-native-vector-icons/Feather';
-import Video from 'react-native-video'
 
 import { COLOR } from '../../constant/color'
 import USER from './User'
 import OPTIONS from './Options'
-import EMOJILIST from './EmojiList'
 import TEXTAREA from './TextArea'
-import { upLoadMedia, updatePost, getPostById, } from '../../http/QuyetHTTP'
+import { updatePost, getPostById, } from '../../http/QuyetHTTP'
 import renderMedia from './Media'
 import MediaModal from './MediaModal'
-import { useMyContext } from '../navigation/UserContext';
 import ModalFail from '../Modal/ModalFail'
 import ModalPoup from '../Modal/ModalPoup'
 import Loading from '../Modal/Loading';
@@ -59,11 +55,8 @@ const Body: React.FunctionComponent<BodyProps> = ({ showModalEdit, setShowModalE
                 const mediaUrls = result.media.map(item => item.url);
                 const mediaItem = result.media.map(item => item);
                 setImages(mediaItem)
-                //console.log('mediaUrl: ' + mediaUrls);
-                //console.log('images: ' + JSON.stringify(mediaItem));
                 setMedia(mediaUrls);
                 setPermission(result.permission);
-                //setFriends(result.tags)
                 setIsLoading(false)
             }
             if (result.share?.id) {
@@ -95,8 +88,6 @@ const Body: React.FunctionComponent<BodyProps> = ({ showModalEdit, setShowModalE
                 const mediaUrls = postId.media.map(item => item.url);
                 const mediaItem = postId.media.map(item => item);
                 setImages(mediaItem)
-                console.log('mediaUrl: ' + JSON.stringify(postId));
-                console.log('images: ' + JSON.stringify(mediaItem));
                 setMedia(mediaUrls);
             }
             setPermission(postId.permission);
@@ -151,11 +142,7 @@ const Body: React.FunctionComponent<BodyProps> = ({ showModalEdit, setShowModalE
         };
       }, [handleKeyboardShow, handleKeyboardHide]),
     );
-    useEffect(() => {
-        //console.log('media mới nè: ' + newMedia);
-        //console.log('media sau upload' + media);
 
-    }, [newMedia]);
     const tags = friends.map(id => ({ user: String(id) }));
     const log = () => {
         console.log(`
@@ -175,7 +162,6 @@ const Body: React.FunctionComponent<BodyProps> = ({ showModalEdit, setShowModalE
             if (images && images.length > 0) {
                 const newPost = await updatePost(postId.id, { permission, content, tags, medias,emotion });
                 if (newPost.status == 1) {
-                    console.log('Bài viết đã được cập nhật:', newPost);
                     setIsLoading(false);
                     setTimeout(() => {
                         setStatus('Cập nhật thành công');
@@ -189,7 +175,6 @@ const Body: React.FunctionComponent<BodyProps> = ({ showModalEdit, setShowModalE
                         }, 1100);
                     }, 1100);
                 } else {
-                    console.error('Lỗi khi cập nhật bài viết:', newPost.message);
                     setIsLoading(false);
                     setTimeout(() => {
                         setStatus('Cập nhật không thành công');
@@ -207,7 +192,6 @@ const Body: React.FunctionComponent<BodyProps> = ({ showModalEdit, setShowModalE
                 try {
                     const newPost = await updatePost(postId.id, { permission, tags, content, medias,emotion });
                     if (newPost.status == 1) {
-                        console.log('Bài viết đã được cập nhật:', newPost);
                         setIsLoading(false);
                         setTimeout(() => {
                             setStatus('Cập nhật thành công');
@@ -222,7 +206,6 @@ const Body: React.FunctionComponent<BodyProps> = ({ showModalEdit, setShowModalE
 
                         }, 1100);
                     } else {
-                        console.error('Lỗi khi cập nhật bài viết:', newPost.message);
                         setIsLoading(false);
                         setTimeout(() => {
                             setStatus('Cập nhật không thành công');
@@ -237,7 +220,6 @@ const Body: React.FunctionComponent<BodyProps> = ({ showModalEdit, setShowModalE
                     }
 
                 } catch (error) {
-                    console.error('Lỗi khi cập nhật bài viết:', error);
                     setIsLoading(false);
                     setTimeout(() => {
                         setStatus('Cập nhật không thành công');
@@ -250,7 +232,6 @@ const Body: React.FunctionComponent<BodyProps> = ({ showModalEdit, setShowModalE
                         }, 1100);
                     }, 1100);
                 }
-                console.log('No media to upload');
             }
         } catch (error) {
             console.error('Lỗi khi cập nhật bài viết:', error);

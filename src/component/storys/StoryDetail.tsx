@@ -115,7 +115,6 @@ const StoryDetail = ({ route }) => {
                     url: item.url,
                     resource_type: item.resource_type,
                 }));
-                console.log('Uploaded media paths:', medias);
             } else {
                 console.error('uploadedMedias is not an array or is undefined');
             }
@@ -123,7 +122,6 @@ const StoryDetail = ({ route }) => {
             const permission = 1;
             setIsLoading(true);
             const newPost = await createNewPost({ type, medias, permission, content,emotion:0 });
-            console.log("newPost", newPost);
             setTimeout(() => {
                 setIsLoading(false);
                 setStatus('Tạo bài viết thành công');

@@ -24,13 +24,11 @@ const CommentHistories: React.FC<Comment> = ({ dataComment,load }) => {
     }
     const showPostModal = () => {
         setShowModal(true);
-        console.log('click');
 
     };
     function navigationScreen(screen: string) {
         navigation.navigate(`${screen}`)
     };
-    console.log('dataComment',dataComment);
     
     return (
         <View style={styles.container}>

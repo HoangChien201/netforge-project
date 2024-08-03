@@ -1,4 +1,4 @@
-import { Image, KeyboardAvoidingView, StyleSheet, Text, TouchableOpacity, View, Alert, Modal } from 'react-native'
+import { Image, StyleSheet, Text, TouchableOpacity, View, Modal } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { useIsFocused, useNavigation } from '@react-navigation/native';
 import { COLOR } from '../constant/color';
@@ -7,10 +7,9 @@ import ButtonLogin from '../component/form/ButtonLogin';
 import InputLogin from '../component/formlogin/Input';
 import Loading from '../component/Modal/Loading';
 import { changePassword } from '../http/PhuHTTP';
-import { useMyContext } from '../component/navigation/UserContext';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../component/store/store';
-import { deleteUser, setUsers } from '../component/store/userSlice';
+import { deleteUser} from '../component/store/userSlice';
 
 interface resetPass {
     newPassword: string,

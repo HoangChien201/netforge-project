@@ -28,7 +28,6 @@ const AddressModal: React.FC<AddressModalProps> = ({ isVisible, selectedAddress,
       fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${query}&addressdetails=1&limit=5&countrycodes=vne`)
         .then(response => response.json())
         .then(data => {
-          console.log('địa chỉ nè:', data);
           setSuggestions(data);
         })
         .catch(error => console.error('API address error:', error))
@@ -60,7 +59,6 @@ const AddressModal: React.FC<AddressModalProps> = ({ isVisible, selectedAddress,
   const handleSave = () => {
     onSelectAddress(textInputValue);
     onCloseModal();
-    console.log('Lưu địa chỉ:', textInputValue);
   };
 
   const handleCloseModal = () => {

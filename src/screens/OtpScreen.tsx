@@ -14,10 +14,8 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import { formatTime } from '../format/FormatDate';
 
 const OtpScreen = () => {
-    const myRef = useRef(null);
     const [textOTP,setTextOTP] = useState<string>('')
     const [number,setNumber] = useState<number>(120)
-    // console.log("otp ne",textOTP);
     
     const route: RouteProp<{ params: { email: string } }, 'params'> = useRoute();
     const { email } = route.params;
@@ -64,11 +62,9 @@ const OtpScreen = () => {
             return
           }
         const token = await AsyncStorage.getItem('TokenForgot');
-        console.log("check token",token);
         // const otpValue = otp.join('');
             try {
                 const response = await checkOTP( parseInt(textOTP), token);
-                console.log("textOtp",textOTP);
                 setIsLoading(true);
                 if (response) {
                     setShowModal(true);

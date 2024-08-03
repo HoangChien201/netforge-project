@@ -36,20 +36,13 @@ const CommentItem = ({ comment, onReply, depth = 0, render, parent, setText, set
         if (comment.id) {
             fetchReplies(comment.id);
         }
-        // if(checkReaction){
-        //     setCheckReaction(false)
-        //     console.log('check', checkReaction);
-            
-        // } else{
-        //     setCheckReaction(true)
-        // }
+        
 
     }, [comment]);
     const handleImagePress = (media) => {
         if (typeof media === 'string') {
             setSelectedMedia(media);
             setIsModalVisible(true);
-            console.log(media);
         }
     };
     const handleCommentPress = () => {
@@ -59,7 +52,6 @@ const CommentItem = ({ comment, onReply, depth = 0, render, parent, setText, set
             setIsOtherDleteVisible(true)
 
         }
-        console.log(comment.id);
     };
     // handle delete comments
     const handleConfirmDelete = async () => {
@@ -68,7 +60,6 @@ const CommentItem = ({ comment, onReply, depth = 0, render, parent, setText, set
             await deleteComments(comment.id);
             render();
 
-            console.log('Bình luận đã được xóa.');
         } catch (error) {
             console.log('Không thể xóa bình luận');
         }
@@ -90,10 +81,8 @@ const CommentItem = ({ comment, onReply, depth = 0, render, parent, setText, set
         onReply(comment.id)
         // lấy name của bình luận cha và set vào innputComment
         setText(comment.user.fullname);
-        console.log("item", comment.user.fullname);
         //props lấy commnent.user.id
         setUserId(comment.user.id)
-        console.log('idbinhluan', comment.user.id);
     }
 
     const renderRepliesContainer = () => {
@@ -141,7 +130,6 @@ const CommentItem = ({ comment, onReply, depth = 0, render, parent, setText, set
     };
     const handleToProfile = () => {
         //setSelectedUserId(userId);
-        console.log("userID: ", comment.user.id);
         const userId = comment.user.id
         if (userId === user?.id) {
             //setIsModalVisible(false);

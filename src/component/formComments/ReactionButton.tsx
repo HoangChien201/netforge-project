@@ -24,9 +24,6 @@ const ReactionButton = ({ isVisible, onClose, onSelectReaction, comment, render 
            }
             const reponse = await addLikeComments(data.comment, data.reaction);
             render()
-            console.log(reponse);
-            console.log('idcomment',comment.id);
-            console.log('Đã', reaction.name);
             
      } catch (error) {
         console.log('like comment:',error);

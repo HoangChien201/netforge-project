@@ -40,7 +40,6 @@ const TouchId = ({ onAuthSuccess }) => {
                     }
                     TouchID.authenticate('', optionalConfigObject)
                         .then(success => {
-                            console.log('success', success);
                             setIsAuth(success);
                             onAuthSuccess(success);
                         })

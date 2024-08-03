@@ -1,9 +1,6 @@
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import React, { useEffect, useState } from 'react'
-import { useMyContext } from '../navigation/UserContext'
 import { sendRequest } from '../../http/QuyetHTTP'
-import { socket } from '../../http/SocketHandle'
-import uuid from 'react-native-uuid';
 import { useSendNotification } from '../../constant/notify'
 import { useSelector } from 'react-redux'
 import { RootState } from '../store/store'
@@ -29,8 +26,6 @@ const Friend: React.FC<Fri> = ({ id }) => {
     }));
     try {
       const result = await sendRequest(id, status);
-      // console.log('đã gửi lời mời');
-      // console.log('id: '+ id + 'status: ' + status);
       if (result) {
         handleSendReaction(id);
         setTextReqState((prevState) => ({

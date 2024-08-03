@@ -26,8 +26,6 @@ const SuggestList: React.FC<Suggest> = ({ data, setData, setReload }) => {
                     ...prevState,
                     [id]: 'Đã gửi'
                 }));
-                console.log('đã gửi lời mời');
-                console.log(result);
                 const data ={
                     receiver:id
                 }
@@ -48,14 +46,7 @@ const SuggestList: React.FC<Suggest> = ({ data, setData, setReload }) => {
         
 
     }
-    useEffect(() => {
-        console.log(data);
 
-    }, []);
-    const log = (id) => {
-        console.log("id friend: " + id);
-
-    }
     return (
         <View style={styles.container}>
             <Text style={styles.headerText}>Gợi ý cho bạn</Text>

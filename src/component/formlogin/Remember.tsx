@@ -10,7 +10,6 @@ const Remember: React.FC = () => {
     setToggleCheckBox(newValue);
     if (newValue) {
       await AsyncStorage.setItem('keep', 'true');
-      console.log('đã Giữ đăng nhập');
     } else {
       await AsyncStorage.removeItem('keep');
     }

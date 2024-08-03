@@ -1,9 +1,8 @@
-import { Alert, Button, Image, Platform, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import { Alert, Image, Platform, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import React, { useEffect, useRef } from 'react'
 import QRCode from 'react-native-qrcode-svg';
 import { useIsFocused, useNavigation } from '@react-navigation/native';
 import { ProfileRootStackEnum } from '../component/stack/ProfileRootStackParams';
-import { useMyContext } from '../component/navigation/UserContext';
 import ICON from 'react-native-vector-icons/AntDesign';
 import RNFS from 'react-native-fs';
 import ViewShot, { captureRef } from 'react-native-view-shot';
@@ -75,10 +74,7 @@ const QRcodeScreen = () => {
       const fileName = `QRCode_${Date.now()}.jpg`;
       const imagePath = `${albumPath}/${fileName}`;
       const base64Data = uri.split(',')[1];
-      console.log('uri: ' + uri);
-      console.log('imagePath: ' + imagePath);
-      console.log('fileName: ' + fileName);
-      console.log('albumPath: ' + albumPath);
+
       //await RNFS.writeFile(imagePath, base64Data, 'base64');
       // Lưu hình ảnh QR code vào album
       await RNFS.copyFile(uri, imagePath);

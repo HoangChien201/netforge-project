@@ -1,6 +1,5 @@
 import { Modal, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
-import React, { useEffect } from 'react';
-import { useMyContext } from '../../../component/navigation/UserContext';
+import React from 'react';
 import { deleteFriend } from '../../../http/QuyetHTTP';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../../component/store/store';
@@ -22,7 +21,6 @@ const DeleteFriend: React.FC<Mo> = ({ show, setShow, user2 ,setFriends,name,setD
       if(result){
         setShow(false);
         setFriends((prevFriends) => prevFriends.filter(friend => friend.user.id !== user2));
-        console.log('đã xóa idol :' + user2);
         setDeleted(pre =>!pre);
       }
       
@@ -31,9 +29,7 @@ const DeleteFriend: React.FC<Mo> = ({ show, setShow, user2 ,setFriends,name,setD
       console.log('Lỗi khi xóa bạn: ', error);
     }
   };
-  useEffect(() => {
-    console.log(user2);
-  },[])
+
   return (
     <Modal
       visible={show}

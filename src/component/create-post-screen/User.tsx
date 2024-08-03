@@ -26,14 +26,11 @@ const User = ({setPermission}) => {
         setDropdownVisible(false);
         setSelectIcon(option.Icon)
     };
-    useEffect(()=>{
-        //console.log(user);
-        
-    },[])
+
     return (
         <View style={styles.container}>
             <View style={styles.userInfor}>
-                {user?.avatar? <Image style={styles.userInforAvatar} source={{uri: user?.avatar}}/>  : <Image style={styles.userInforAvatar} source={require('../../media/quyet_icon/smile_p.png')}/>  }
+                {user?.avatar && <Image style={styles.userInforAvatar} source={{uri: user?.avatar}}/>  }
                 <Text style={styles.userInforName}>{user?.fullname}</Text>
             </View>
             <View style={styles.type}>
@@ -41,7 +38,6 @@ const User = ({setPermission}) => {
                     <View style={styles.buttonType}>
                         <ICON name={selectIcon} size={18} color={COLOR.primary300}/>
                         <Text style={styles.buttonText}>{selectedOption}</Text>
-                        {/* <Image style={styles.buttonTypeIcon} source={require('../../media/quyet_icon/down_w.png')} /> */}
                         <ICON name='down' size={16} color={COLOR.primary150} />
                     </View>
 

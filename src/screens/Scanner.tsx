@@ -7,7 +7,6 @@ import SCANMODAL from '../component/scanQR-modal/Body';
 import { getUserById } from '../http/QuyetHTTP';
 import { useFocusEffect, useIsFocused } from '@react-navigation/native';
 import { useNavigation } from '@react-navigation/native';
-import { useMyContext } from '../component/navigation/UserContext';
 import { COLOR } from '../constant/color';
 import { socket } from '../http/SocketHandle';
 import { useSelector } from 'react-redux';
@@ -35,11 +34,9 @@ const Scanner = () => {
     if (!isNaN(numericData) && data) {
       // Nếu data là một số, gọi hàm getUser với ID người dùng
       getUser(numericData);
-      console.log('Scan nè: ' + numericData);
       setShow(true);
     } else if (typeof data === 'string' && data.length > 0) {
       // Nếu data là một chuỗi, thực hiện hành động khác (tuỳ theo yêu cầu)
-      console.log('Data is a string ID: ' + data);
       setDevice(data)
       setShowLogin(true);
 
@@ -84,7 +81,6 @@ const Scanner = () => {
   useFocusEffect(
     useCallback(() => {
       setIsCameraActive(true);
-      console.log(user);
       return () => {
         setIsCameraActive(false);
       };
@@ -98,18 +94,14 @@ const Scanner = () => {
   };
   const sendLoginWeb = () => {
     const data = {
-      user: {
-        id: user.id,
-      },
+      user,
       QRDevice: device,
     };
 
     socket.emit('qr-login', data);
-    console.log('Sent qr-login data:', data);
   };
   useEffect(() => {
     socket.on('qr-login-c142c2e633faa7a6df18d273e6f77206', (data) => {
-      console.log('đã login thành công' + data);
       Alert.alert(
         'Đăng nhập',
         'Đăng nhập thành công!',

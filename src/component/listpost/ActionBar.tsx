@@ -1,13 +1,11 @@
 import { Image, Pressable, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import React, { useState, useRef, memo, useCallback, useMemo, useLayoutEffect } from 'react';
+import React, { useState, useRef, memo, useLayoutEffect } from 'react';
 import { useNavigation } from '@react-navigation/native';
 import AntDesignIcon from 'react-native-vector-icons/AntDesign';
 import { reaction } from '../../constant/emoji';
 import * as Animatable from 'react-native-animatable';
 import { deleteLikePost, likePost, updateLikePost } from '../../http/userHttp/getpost';
-import { useMyContext } from '../navigation/UserContext';
 import ModalShare from '../share-post/ModalShare';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useSelector } from 'react-redux';
 import { RootState } from '../store/store';
 
@@ -37,12 +35,8 @@ const ActionBar = memo(({ creater,onPressProfile, like_count,type, postId, comme
 
     const deleteLike = async (idPost: number) => {
         try {
-            console.log("user_idde",user.id);
-            console.log("ahihi", idPost);
             const result:any = await deleteLikePost(idPost, user.id);
-            if (result) {
-                console.log("ahihi", idPost);
-            }
+
         } catch (error) {
             console.log("lỗi like post", error);
             throw error;
@@ -51,9 +45,7 @@ const ActionBar = memo(({ creater,onPressProfile, like_count,type, postId, comme
     const likepost = async (idPost: number, type: number) => {
         try {
             const result = await likePost(idPost, type);
-            if (result) {
-                console.log("ahihi", idPost);
-            }
+
         } catch (error) {
             console.log("lỗi like post", error);
             throw error;
@@ -62,9 +54,7 @@ const ActionBar = memo(({ creater,onPressProfile, like_count,type, postId, comme
     const updatePost = async (idPost: number, type: number) => {
         try {
             const result:any = await updateLikePost(idPost,user.id, type);
-            if (result) {
-                console.log("ahihi", idPost);
-            }
+
         } catch (error) {
             console.log("lỗi like post", error);
             throw error;
@@ -128,7 +118,6 @@ const ActionBar = memo(({ creater,onPressProfile, like_count,type, postId, comme
                                 numberLike === null ? setNumberLike(1) : setNumberLike(()=>{
                                     
                                     const pre1 =parseInt(numberLike)+1
-                                    console.log("pre", pre1);
                                     return pre1
                                 })
                                 setIsLike(false)

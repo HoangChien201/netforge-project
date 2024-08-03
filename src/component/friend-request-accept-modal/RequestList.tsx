@@ -21,7 +21,6 @@ const RequestList: React.FC<Req> = ({ dataRequest, setDataRequest, setReload, se
             setDataRequest((prevData: any[]) => prevData.filter(friend => friend.user.id !== friendId));
         } catch (error) {
             console.log(error);
-            console.log(friendId);
 
         }
     }

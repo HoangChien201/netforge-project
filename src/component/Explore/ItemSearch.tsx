@@ -1,7 +1,6 @@
 import { StyleSheet, Text, View, TouchableOpacity, Image } from 'react-native'
 import React from 'react'
 import Icon from 'react-native-vector-icons/SimpleLineIcons'
-import { useMyContext } from '../../component/navigation/UserContext';
 import { useSelector } from 'react-redux';
 import { RootState } from '../store/store';
 

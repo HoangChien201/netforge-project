@@ -25,7 +25,6 @@ import BirthDayScreen from './BirthdayScreen';
 import ItemLikeComment from '../component/notificationes/ItemLikeComment';
 import { RootState } from '../component/store/store';
 const NotificationScreen = () => {
-
   const [showModalFriend, setShowModalFriend] = useState(false);
   const [showModalBirthday, setShowModalBirthday] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
@@ -42,14 +41,12 @@ const NotificationScreen = () => {
   useEffect(() => {
     fetchData();
     socket.on(`notification-${user?.id}`, (data) => {
-      console.log('Notification received:', data);
       const exists = notifications.some(notification => notification.id == data.id);
       if (!exists) {
         // showLocalNotification(data);
         addNotification(data);
       }
     });
-    console.log('render');
     return () => {
       socket.off(`notification-${user?.id}`);
     };
@@ -81,7 +78,6 @@ const NotificationScreen = () => {
 
       }, []);
       setGroupedNotifications(grouped);
-      //console.log('dulieumoi:' + JSON.stringify(grouped));
     }
   }, [notifications || push]);
 
@@ -95,7 +91,6 @@ const NotificationScreen = () => {
 
       setNotifications(updatedNotifications);
       await AsyncStorage.setItem(`notifications${user?.id}`, JSON.stringify(updatedNotifications));
-      console.log('Notification added and saved:', JSON.stringify(updatedNotifications));
     } catch (error) {
       console.error('Error adding notification:', error);
     }
@@ -106,7 +101,6 @@ const NotificationScreen = () => {
 
       const oldNotifications = await AsyncStorage.getItem(`notifications-${user?.id}`);
       if (oldNotifications) {
-        console.log('AsyncStorage:', oldNotifications);
         const parsedNotifications = JSON.parse(oldNotifications);
         if (parsedNotifications && Array.isArray(parsedNotifications)) {
           setNotifications(parsedNotifications);
@@ -118,7 +112,6 @@ const NotificationScreen = () => {
     }
   };
   const showLocalNotification = (notification) => {
-    console.log('show');
 
     PushNotification.localNotification({
       channelId: "channel-id-1",
@@ -205,7 +198,7 @@ const NotificationScreen = () => {
       <BirtdayButtonComponent setShowModalBirthday={setShowModalBirthday} />
       {/* **** button move birtday screen **** */}
       <View style={styles.line}></View>
-      <View style={{ flexDirection: 'column' , marginStart:4 }}>
+      <View style={{ flexDirection: 'column' , marginStart:4 , marginBottom: 240}}>
         <FlatList
           data={groupedNotifications}
           keyExtractor={(item) => item.idv4}

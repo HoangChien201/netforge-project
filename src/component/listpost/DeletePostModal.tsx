@@ -14,7 +14,6 @@ const DeletePost: React.FC<Mo> = ({ showDelete, setShowDelete,postId }) => {
     try {
       const result = await deletePost(postId);
       if (result) {
-        console.log('Xóa thành công!');
         setShowDelete(false);
         Alert.alert(
           'Bài viết đã xóa!',

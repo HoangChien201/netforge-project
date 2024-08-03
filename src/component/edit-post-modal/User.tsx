@@ -35,8 +35,8 @@ const User: React.FC<UserProps> = ({ setPermission, permission }) => {
     return (
         <View style={styles.container}>
             <View style={styles.userInfor}>
-                {user.avatar ? <Image style={styles.userInforAvatar} source={{ uri: user.avatar }} /> : <Image style={styles.userInforAvatar} source={require('../../media/quyet_icon/smile_p.png')} />}
-                <Text style={styles.userInforName}>{user.fullname}</Text>
+                {user?.avatar && <Image style={styles.userInforAvatar} source={{ uri: user?.avatar }} /> }
+                <Text style={styles.userInforName}>{user?.fullname}</Text>
             </View>
             <View style={styles.type}>
                 <TouchableOpacity style={styles.dropdownButton} onPress={toggleDropdown}>

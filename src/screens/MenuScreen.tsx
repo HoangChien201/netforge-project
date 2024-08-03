@@ -1,11 +1,8 @@
-import { View, Text, StyleSheet, Image, TouchableOpacity, ScrollView } from 'react-native'
-import React, { useEffect, useState } from 'react'
+import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from 'react-native'
+import React, { useEffect} from 'react'
 import { useIsFocused, useNavigation } from '@react-navigation/native';
 import ProfileUser from '../component/menu/ProfileUser';
 import OptionProfile from '../component/menu/OptionProfile';
-// import { ProfileRootStackEnum } from '../component/stack/ProfileRootStackParams';
-import EditProfileScreen from './EditProfileScreen';
-import { useMyContext } from '../component/navigation/UserContext';
 import { COLOR } from '../constant/color';
 
 const MenuScreen = () => {

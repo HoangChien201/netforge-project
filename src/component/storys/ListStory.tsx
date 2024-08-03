@@ -38,7 +38,6 @@ const ListStory = ({ onrefresh }) => {
               setTimeout(async () => {
                 try {
                   await deletePost(post.id);
-                  console.log(`Đã xóa bài đăng: ${post.id}`);
                 } catch (error) {
                   console.error(`Lỗi khi xóa bài đăng ${post.id}:`, error);
                 }
@@ -59,7 +58,6 @@ const ListStory = ({ onrefresh }) => {
 
         const groupedPosts = Array.from(createrMap.values());
         setData([...groupedPosts]);
-        console.log("sdfdsf");
         
       }
     } catch (error) {

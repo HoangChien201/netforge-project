@@ -1,10 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { Image, StyleSheet, Text, View, ActivityIndicator, TouchableOpacity } from 'react-native';
-import { useMyContext } from '../navigation/UserContext';
+import { Image, StyleSheet, Text, View,TouchableOpacity } from 'react-native';
 import { GetTimeComment } from '../../format/FormatDate';
 import { useNavigation } from '@react-navigation/native';
-import Loading from '../Modal/Loading'
-import { COLOR } from '../../constant/color';
 import { useSelector } from 'react-redux';
 import { RootState } from '../store/store';
 type Like = {

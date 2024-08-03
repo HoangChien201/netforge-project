@@ -1,15 +1,13 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
-import { View, Animated, StyleSheet, ScrollView, Dimensions, Text, TouchableOpacity} from 'react-native';
+import { View, Animated, StyleSheet,  Dimensions, Text, TouchableOpacity} from 'react-native';
 import { useFocusEffect, useNavigation, useRoute } from '@react-navigation/native';
 import HeaderBanner from './HeaderBanner';
 import ProfileHeader from './ProfileHeader';
-import { useMyContext } from '../navigation/UserContext';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import ListPortsByUser from '../listpost/ListPostByUser';
 import ProfileDetailData from './ProfileDetailData';
 import { getPostByUser, getUSerByID } from '../../http/PhuHTTP';
 import MediaOfUser from './MediaOfUser';
-import { getFriends } from '../../http/QuyetHTTP';
 import { COLOR } from '../../constant/color';
 import { useSelector } from 'react-redux';
 import { RootState } from '../store/store';

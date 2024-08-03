@@ -80,13 +80,10 @@ const GenerImageAI: React.FC<AI> = ({ showAI, setShowAI, imageUrl, setImageUrl }
         const generatedImageUrl = jsonResponse.data[0].url;
         setImage(generatedImageUrl);
         setTextInputValue('')
-        console.log('res nè: ', jsonResponse);
-        console.log('ảnh nè: ', generatedImageUrl);
 
         setIsLoad(false)
       } else {
         console.log(`Error: ${response.status} - ${response.statusText}`);
-        console.log(response);
         setIsLoad(false)
       }
     } catch (error) {

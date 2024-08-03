@@ -40,7 +40,6 @@ const SuggestFriends: React.FC<Suggest> = ({ data, setData }) => {
     }));
     try {
       const result = await sendRequest(user2, status);
-      console.log(result);
       
       if (result?.status==1) {
         handleSendReaction(id)
@@ -48,7 +47,6 @@ const SuggestFriends: React.FC<Suggest> = ({ data, setData }) => {
           ...prevState,
           [id]: 'Đã gửi'
         }));
-        console.log('đã gửi lời mời');
       }
     } catch (error) {
       setDisabledButtons((prevState) => ({

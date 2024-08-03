@@ -1,9 +1,8 @@
 import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import React from 'react'
 import { useNavigation } from '@react-navigation/native'
-import { useMyContext } from '../navigation/UserContext'
 import { messageType } from './MessageItem'
-import { MessageScreenNavigationProp, MessageScreenRouteProp } from '../../screens/message/MessageScreen'
+import { MessageScreenNavigationProp } from '../../screens/message/MessageScreen'
 import { useSelector } from 'react-redux'
 import { RootState } from '../store/store'
 

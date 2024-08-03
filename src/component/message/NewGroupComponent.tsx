@@ -41,7 +41,6 @@ const NewGroupComponent = ({ suggests,setMembers,setNameGroup,nameGroup,members 
 
     function SuggestItemOnPress(id: string) {
         const id_user = parseInt(id)
-        console.log('id', id_user);
 
     }
 

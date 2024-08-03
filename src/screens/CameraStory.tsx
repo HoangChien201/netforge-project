@@ -15,7 +15,6 @@ const CameraStory = () => {
         const options = { quality: 0.5, base64: true };
         const data = await cameraRef.current.takePictureAsync(options);
         const uri = data.uri;
-        console.log(data.uri);
         navigation.navigate(NetworkRootStackEnum.StoryDetail, { uri });
       } catch (error) {
         console.error('Error taking picture:', error);

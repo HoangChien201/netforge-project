@@ -14,15 +14,7 @@ type Item = {
 const ItemFriendAccept: React.FC<Item> = ({ notification }) => {
     const navigation:FriendProfileNavigationProp = useNavigation();
     const userId = Number(notification.data[0].friendId)
-    function navigationScreen(screen: string) {
-        navigation.navigate(`${screen}`)
-    }
-    const log = () => {
-        console.log(notification , userId);
-    }
-    const handleToFriendProfile = (userId: any) => {
-        navigation.navigate(ProfileRootStackEnum.FriendProfile, { userId });
-      };
+
     const displayDate = DateOfTimePost(notification.data[0].timestamp);
     return (
         <TouchableOpacity style={styles.container} key={notification.idv4.toString()}
