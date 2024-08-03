@@ -7,29 +7,31 @@ import USER from './User'
 import OPTIONS from './Options'
 import TEXTAREA from './TextArea'
 import { updatePost, getPostById, } from '../../http/QuyetHTTP'
-import renderMedia from './Media'
 import MediaModal from './MediaModal'
 import ModalFail from '../Modal/ModalFail'
 import ModalPoup from '../Modal/ModalPoup'
 import Loading from '../Modal/Loading';
 import ItemPost from '../listpost/ItemPost';
 import { useFocusEffect, useNavigation } from '@react-navigation/native';
+import MEDIA from './Media';
+import { emotions } from '../../constant/emoji';
 interface BodyProps {
     showModalEdit: boolean;
     setShowModalEdit: (value: boolean) => void;
-    selectedId: any
+    selectedId: any,
+    setLoadAfterUpdate: (value: boolean) => void;
+    setSelectedId: (value: boolean) => void;
 }
 export type imageType = {
     url: string,
     type: string
 }
-const Body: React.FunctionComponent<BodyProps> = ({ showModalEdit, setShowModalEdit, selectedId }) => {
+const Body: React.FunctionComponent<BodyProps> = ({ showModalEdit, setShowModalEdit, selectedId, setLoadAfterUpdate,setSelectedId }) => {
     const [content, setContent] = useState<string>('');
     const [newMedia, setNewMedia] = useState<any[]>([]);
     const [media, setMedia] = useState([]);
     const [permission, setPermission] = useState(1);
     const [showModal, setShowModal] = useState(false);
-    const postId = selectedId;
     const [status, setStatus] = useState('');
     const [showPopup, setShowPopup] = useState(false);
     const [isError, setIsError] = useState(false);
@@ -40,11 +42,21 @@ const Body: React.FunctionComponent<BodyProps> = ({ showModalEdit, setShowModalE
     const [dataShare, setDataShare] = useState();
     const [hiddenView, setHiddenView] = useState(false)
     const navigation = useNavigation();
-    const [emotions, setEmotions] = useState(null);
     const [emotion, setEmotion] = useState(0);
+    const [postId, setPostId] = useState()
+    const clearData = () => {
+        setImages([])
+        setShowModalEdit(false)
+        setSelectedId(null)
+
+    }
+
     const ShowModalMedia = () => {
         setShowModal(true);
     }
+    useEffect(() => {
+        setPostId(selectedId)
+    }, [selectedId])
     // lấy thông tin bài viết
     const getOnePost = async () => {
         setIsLoading(true);
@@ -71,26 +83,16 @@ const Body: React.FunctionComponent<BodyProps> = ({ showModalEdit, setShowModalE
         }
     };
     useEffect(() => {
-        if (emotions) {
-            setEmotion(Number(emotions.type))
-        } else {
-            setEmotion(0);
-        }
-
-    }, [emotions])
-    useEffect(() => {
-        // if (postId) {
-        //     getOnePost();
-        // }
         if (postId) {
             setContent(postId.content);
-            if (postId.media.length > 0) {
+            if (postId.media?.length > 0) {
                 const mediaUrls = postId.media.map(item => item.url);
                 const mediaItem = postId.media.map(item => item);
                 setImages(mediaItem)
                 setMedia(mediaUrls);
             }
             setPermission(postId.permission);
+            setEmotion(postId.emotion)
             //setFriends(result.tags)
             setIsLoading(false)
             if (postId.share?.id) {
@@ -133,17 +135,17 @@ const Body: React.FunctionComponent<BodyProps> = ({ showModalEdit, setShowModalE
     }, []);
     useFocusEffect(
         useCallback(() => {
-        // Lắng nghe sự kiện hiển thị và ẩn bàn phím
-        const keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', handleKeyboardShow);
-        const keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', handleKeyboardHide);
-        return () => {
-          keyboardDidShowListener.remove();
-          keyboardDidHideListener.remove();
-        };
-      }, [handleKeyboardShow, handleKeyboardHide]),
+            // Lắng nghe sự kiện hiển thị và ẩn bàn phím
+            const keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', handleKeyboardShow);
+            const keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', handleKeyboardHide);
+            return () => {
+                keyboardDidShowListener.remove();
+                keyboardDidHideListener.remove();
+            };
+        }, [handleKeyboardShow, handleKeyboardHide]),
     );
 
-    const tags = friends.map(id => ({ user: String(id) }));
+    const tags = friends?.map(id => ({ user: String(id) }));
     const log = () => {
         console.log(`
             tags: ${tags}
@@ -160,13 +162,15 @@ const Body: React.FunctionComponent<BodyProps> = ({ showModalEdit, setShowModalE
         try {
             setIsLoading(true);
             if (images && images.length > 0) {
-                const newPost = await updatePost(postId.id, { permission, content, tags, medias,emotion });
+                const newPost = await updatePost(postId.id, { permission, content, tags, medias, emotion });
                 if (newPost.status == 1) {
                     setIsLoading(false);
                     setTimeout(() => {
                         setStatus('Cập nhật thành công');
                         setShowPopup(true);
                         setIsError(false);
+                        setLoadAfterUpdate(pre =>!pre);
+                        
                         // Đặt lại giá trị sau một khoảng thời gian nhất định
                         setTimeout(() => {
                             setStatus('');
@@ -178,6 +182,7 @@ const Body: React.FunctionComponent<BodyProps> = ({ showModalEdit, setShowModalE
                     setIsLoading(false);
                     setTimeout(() => {
                         setStatus('Cập nhật không thành công');
+                        console.error('Lỗi khi cập nhật bài viết:', newPost);
                         setShowPopup(true);
                         setIsError(true);
                         // Đặt lại giá trị sau một khoảng thời gian nhất định
@@ -190,13 +195,14 @@ const Body: React.FunctionComponent<BodyProps> = ({ showModalEdit, setShowModalE
 
             } else {
                 try {
-                    const newPost = await updatePost(postId.id, { permission, tags, content, medias,emotion });
+                    const newPost = await updatePost(postId.id, { permission, tags, content, medias, emotion });
                     if (newPost.status == 1) {
                         setIsLoading(false);
                         setTimeout(() => {
                             setStatus('Cập nhật thành công');
                             setShowPopup(true);
                             setIsError(false);
+                            setLoadAfterUpdate(pre =>!pre);
                             // Đặt lại giá trị sau một khoảng thời gian nhất định
                             setTimeout(() => {
                                 setStatus('');
@@ -209,6 +215,7 @@ const Body: React.FunctionComponent<BodyProps> = ({ showModalEdit, setShowModalE
                         setIsLoading(false);
                         setTimeout(() => {
                             setStatus('Cập nhật không thành công');
+                            console.error('Lỗi khi cập nhật bài viết:', newPost);
                             setShowPopup(true);
                             setIsError(true);
                             // Đặt lại giá trị sau một khoảng thời gian nhất định
@@ -223,6 +230,7 @@ const Body: React.FunctionComponent<BodyProps> = ({ showModalEdit, setShowModalE
                     setIsLoading(false);
                     setTimeout(() => {
                         setStatus('Cập nhật không thành công');
+                        console.error('Lỗi khi cập nhật bài viết:', error);
                         setShowPopup(true);
                         setIsError(true);
                         // Đặt lại giá trị sau một khoảng thời gian nhất định
@@ -259,12 +267,30 @@ const Body: React.FunctionComponent<BodyProps> = ({ showModalEdit, setShowModalE
             return null;
         }
     };
+    const ViewReaction = () => {
+        const reactionMap = emotions.find(item => item.type === emotion);
+        if (reactionMap) {
+            return (
+                <>
+                    <View style={styles.emotions}>
+                    <Text style={{ color: '#000', marginLeft: 5, fontWeight: '400' }}>{reactionMap.Emoji}{" "}{reactionMap.title}</Text>
+                        <TouchableOpacity onPress={() => { setEmotion(0) }}
+                            style={{ marginStart: 5 }}
+                        >
+                            <Icon name='delete' size={20} color={COLOR.PrimaryColor} />
+                        </TouchableOpacity>
+                    </View>
+                </>
+            );
+        }
+        return null;
+    };
     return (
 
         <Modal visible={showModalEdit} animationType="slide" style={styles.container}>
 
             <View style={styles.header}>
-                <TouchableOpacity onPress={() => setShowModalEdit(false)} style={styles.closeButton}>
+                <TouchableOpacity onPress={clearData} style={styles.closeButton}>
                     <Image style={styles.closeImage} source={require('../../media/quyet_icon/x_w.png')} />
                 </TouchableOpacity>
                 <TouchableOpacity style={styles.saveButton} onPress={uploadMediaPost}>
@@ -276,34 +302,23 @@ const Body: React.FunctionComponent<BodyProps> = ({ showModalEdit, setShowModalE
 
             {/* Danh sách hình ảnh ------------------------------------------------------*/}
             {/* Đây là view sử dụng modal -----------------------------------*/}
-            {!emotions ?
-                null
-                :
-                <View style={styles.emotions}>
-                    <Text>{emotions.Emoji}</Text>
-                    <Text style={{ color: 'black' }}> {emotions.title}</Text>
-                    <TouchableOpacity onPress={() => { setEmotions(null) }}
-                        style={{ marginStart: 5 }}
-                    >
-                        <Icon name='delete' size={20} color={COLOR.PrimaryColor} />
-                    </TouchableOpacity>
-                </View>
-            }
+            <ViewReaction />
             <View >
-                {images.length > 0 && !hiddenView ?
+                {images?.length > 0 && !hiddenView ?
                     <TouchableOpacity onPress={() => { setShowModal(true) }}
                         style={{ zIndex: 99, height: 28, width: 80, backgroundColor: COLOR.PrimaryColor, position: 'absolute', start: 10, top: 10, flexDirection: 'row', padding: 3, borderRadius: 4, alignItems: 'center' }} >
                         <Icon name='edit' size={20} color={'white'} />
                         <Text style={{ fontSize: 12, color: 'white' }}>Chỉnh sửa</Text>
                     </TouchableOpacity> : null}
 
-                {renderMedia({ media, images, setMedia, setShowModal, hiddenView })}
+                {/* {renderMedia({ media, images, setMedia, setShowModal, hiddenView })} */}
+                <MEDIA media={media} images={images} setMedia={setMedia} setShowModal={setShowModal} hiddenView={hiddenView} />
             </View>
 
             <MediaModal showModal={showModal} setShowModal={setShowModal} media={media} setMedia={setMedia} setImages={setImages} images={images} />
             <TEXTAREA content={content} setContent={setContent} setFriends={setFriends} friends={friends} />
             {renderShare()}
-            <OPTIONS onSelectEmoji={handleEmojiSelect} onSelectNewMedia={newMediaSelected} setShowModal={setShowModal} dataShare={dataShare} emotions={emotions} setEmotions={setEmotions} />
+            <OPTIONS onSelectEmoji={handleEmojiSelect} onSelectNewMedia={newMediaSelected} setShowModal={setShowModal} dataShare={dataShare} emotion={emotion} setEmotion={setEmotion} />
             {showPopup ? (
                 isError ? (
                     <ModalFail text={status} visible={showPopup} />

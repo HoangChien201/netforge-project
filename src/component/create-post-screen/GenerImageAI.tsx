@@ -66,7 +66,7 @@ const GenerImageAI: React.FC<AI> = ({ showAI, setShowAI, imageUrl, setImageUrl }
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "Authorization": "Bearer",
+          "Authorization": "Bearer sk-None-0fQyWEl1d7LtVkopBPvoT3BlbkFJIG0etnVQcAFAU8Zh2eWW",
         },
         body: JSON.stringify({
           prompt: textInputValue,
@@ -104,40 +104,33 @@ const GenerImageAI: React.FC<AI> = ({ showAI, setShowAI, imageUrl, setImageUrl }
 
   }
   const deleteImage = () => {
-    if (imageUrl) {
+    console.log('click');
+    
+    if (image) {
       Alert.alert(
         'Bạn có muốn xóa ảnh?',
         '',
         [
           {
             text: 'Hủy',
-            style: 'cancel',
+            style: 'cancel', // Thêm style cancel cho nút Hủy
           },
           {
             text: 'Đồng ý',
             onPress: () => {
               setImage('');
               setImageUrl('');
-              setTextInputValue('')
+              setTextInputValue('');
               setTimeout(() => {
-                setShowAI(false);
+                //setShowAI(false);
               }, 500);
             },
           },
         ],
-        {
-          cancelable: true,
-          onDismiss: () => {
-            setImage('');
-            setImageUrl('');
-            setTextInputValue('')
-            setTimeout(() => {
-              setShowAI(false);
-            }, 500);
-          },
-        }
+        { cancelable: true }
       );
     }
+
   };
   useEffect(() => {
     Animated.timing(slideAnim, {
@@ -226,7 +219,7 @@ const GenerImageAI: React.FC<AI> = ({ showAI, setShowAI, imageUrl, setImageUrl }
         {image ?
           <View style={styles.buttonH}>
             <TouchableOpacity style={styles.buttonHC}
-              onPress={deleteImage}
+              onPress={()=>{deleteImage()}}
             >
               <Text style={styles.textH}>Hủy</Text>
             </TouchableOpacity >

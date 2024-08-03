@@ -8,6 +8,8 @@ import { COLOR } from '../../constant/color';
 import RequestList from './RequestList';
 import WaitAcceptList from './WaitAcceptList';
 import { useFocusEffect, useNavigation } from '@react-navigation/native';
+import SkelotonFriend from './SkelontonFriend';
+
 type Bob = {
     reload: any,
     showModalFriend: any,
@@ -159,7 +161,8 @@ const Body: React.FC<Bob> = ({ reload, showModalFriend, setShowModalFriend, setD
                         </View>
                     </TouchableOpacity>
                 </View>
-
+                {dataWaitAccept?
+                
                 <Swiper ref={swiperRef} loop={false} showsButtons={false}
                     onIndexChanged={handleIndexChanged}
                 >
@@ -170,6 +173,8 @@ const Body: React.FC<Bob> = ({ reload, showModalFriend, setShowModalFriend, setD
                         <RequestList dataRequest={dataRequest} setDataRequest={setDataRequest} setReload={setReload} setShowModalFriend={setShowModalFriend} />
                     </View>
                 </Swiper>
+                :
+                <SkelotonFriend/>}
             </Animated.View>
         </Modal>
     );

@@ -1,4 +1,4 @@
-import {  Image,StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import React, { useState } from 'react';
 import Icon from 'react-native-vector-icons/AntDesign';
 import { GetTimeComment } from '../../format/FormatDate'
@@ -6,19 +6,27 @@ import { useNavigation } from '@react-navigation/native'
 import { COLOR } from '../../constant/color';
 import { useSelector } from 'react-redux';
 import { RootState } from '../store/store';
+import SkelotonHistory from './SkelontonHistory';
 type Comment = {
     dataComment: any,
-    load:any
+    load: any
 }
-const CommentHistories: React.FC<Comment> = ({ dataComment,load }) => {
+const CommentHistories: React.FC<Comment> = ({ dataComment, load }) => {
     // const [sortedData, setSortedData] = useState<any[]>([]);
     const [showModal, setShowModal] = useState(false);
     const navigation = useNavigation();
-    const user = useSelector((state : RootState)=>state.user.value)
-    if (!dataComment || dataComment.length == 0 && load == true) {
+    const user = useSelector((state: RootState) => state.user.value)
+    if (!dataComment || dataComment.length == 0) {
         return (
             <View style={styles.containerEmpty}>
                 <Text style={styles.textEmpty}>Hãy tương tác với mọi người để lưu giữ kỉ niệm!</Text>
+            </View>
+        )
+    }
+    if (load == true) {
+        return (
+            <View style={styles.containerEmpty}>
+                <SkelotonHistory />
             </View>
         )
     }
@@ -29,12 +37,12 @@ const CommentHistories: React.FC<Comment> = ({ dataComment,load }) => {
     function navigationScreen(screen: string) {
         navigation.navigate(`${screen}`)
     };
-    
+
     return (
         <View style={styles.container}>
-                <View style={styles.listContainer}>
-                    {
-                        dataComment.length > 0 &&
+            <View style={styles.listContainer}>
+                {
+                    dataComment.length > 0 &&
                     dataComment.map((item: { content: any; create_at: any; posts: { id: number; creater: { fullname: string } } }, index: { toString: () => React.Key | null | undefined; }) => {
                         const postId = item.posts?.id;
                         return (
@@ -64,7 +72,7 @@ const CommentHistories: React.FC<Comment> = ({ dataComment,load }) => {
                             </TouchableOpacity>
                         );
                     })}
-                </View>
+            </View>
         </View>
     );
 };
@@ -110,7 +118,7 @@ const styles = StyleSheet.create({
         height: 40,
         flexDirection: 'row',
         flexWrap: 'wrap',
-        justifyContent:'space-around'
+        justifyContent: 'space-around'
 
     },
     listContainer: {
@@ -133,7 +141,7 @@ const styles = StyleSheet.create({
         overflow: 'hidden'
     },
     containerEmpty: {
-        height: 50,
+        height: '100%',
         width: '100%',
         alignItems: 'center',
         justifyContent: 'center',

@@ -9,7 +9,7 @@ import SwiperFlatList from 'react-native-swiper-flatlist';
 import Icon from 'react-native-vector-icons/Feather';
 import { imageType } from './Body';
 
-interface renderMedia {
+interface Media {
     images: any;
     media: any;
     setMedia: (Permission: any) => void;
@@ -17,10 +17,10 @@ interface renderMedia {
     hiddenView:any
 };
 
-const renderMedia: React.FC<renderMedia> = ({ images, media, setMedia, setShowModal,hiddenView }) => {
+const Media: React.FC<Media> = ({ images, media, setMedia, setShowModal,hiddenView }) => {
     const [playingVideo, setPlayingVideo] = useState(null);
     const [viewMore, setViewMore] = useState(false);
-    const mediaLength = images.length;
+    const mediaLength = images?.length;
     const togglePlayVideo = (uri) => {
         setPlayingVideo(playingVideo === uri ? null : uri);
     };
@@ -264,7 +264,7 @@ const renderMedia: React.FC<renderMedia> = ({ images, media, setMedia, setShowMo
         );
     }
 };
-export default renderMedia;
+export default Media;
 const styles = StyleSheet.create({
     container: {
         backgroundColor: 'gray',
