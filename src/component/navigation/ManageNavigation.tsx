@@ -74,11 +74,12 @@ const ManageNavigation = () => {
 
     //tuongne
     useEffect(() => {
-        autoSendBirth();
+        getFriendList();
     }, [user])
 
-    const autoSendBirth = async () => {
-        if (user) {
+    const getFriendList = async () => {
+        const checkUserN = await AsyncStorage.getItem(`CancelN-${user.id}`)
+        if (user && checkUserN != 'true') {
             try {
                 const result = await getFriends(2)
                 setFriend(result)
@@ -96,7 +97,7 @@ const ManageNavigation = () => {
             return today.getDate() === friendBirthday.getDate() && today.getMonth() === friendBirthday.getMonth();
         });
         setTodayFriends(friendsToday);
-    }, [friend])
+    },[friend])
 
     useEffect(() => {
         if (todayFriends && user) {
@@ -110,12 +111,15 @@ const ManageNavigation = () => {
 
                     })
                 });
+                cancelNtoUser(user.id)
             } else {
                 console.log('No friends to tag');
             }
         }
     }, [todayFriends])
-
+const cancelNtoUser = async (id)=>{
+    await AsyncStorage.setItem(`CancelN-${id}`,'true')
+}
     useEffect(() => {
         if (user) {
             const id = user.id;

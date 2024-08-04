@@ -66,7 +66,7 @@ const GenerImageAI: React.FC<AI> = ({ showAI, setShowAI, imageUrl, setImageUrl }
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "Authorization": "Bearer sk-None-0fQyWEl1d7LtVkopBPvoT3BlbkFJIG0etnVQcAFAU8Zh2eWW",
+          "Authorization": "Bearer ",
         },
         body: JSON.stringify({
           prompt: textInputValue,
