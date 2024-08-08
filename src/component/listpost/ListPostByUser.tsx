@@ -3,11 +3,9 @@ import { FlatList, View, StyleSheet, ActivityIndicator, Dimensions, Text, Image 
 import { useSelector } from 'react-redux';
 import FastImage from 'react-native-fast-image';
 import { NavigationProp, ParamListBase, useNavigation } from '@react-navigation/native';
-
 import ItemPost from './ItemPost';
 import Loading from '../Modal/Loading';
 import { ProfileRootStackEnum } from '../stack/ProfileRootStackParams';
-import { UseFetchPostByUser } from './UseFetchPostByUser';
 import { RootState } from '../store/store';
 
 interface ListPortsByUserProps {

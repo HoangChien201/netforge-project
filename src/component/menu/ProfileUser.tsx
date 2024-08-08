@@ -1,12 +1,12 @@
 import { View, Text, StyleSheet, Image, TouchableOpacity } from 'react-native';
 import React, { useEffect, useState } from 'react';
-import { NavigationProp, ParamListBase, useFocusEffect, useNavigation } from '@react-navigation/native';
+import { NavigationProp, ParamListBase, useNavigation } from '@react-navigation/native';
 import { getUSerByID } from '../../http/PhuHTTP';
 import { ProfileRootStackEnum } from '../stack/ProfileRootStackParams';
-// import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
-
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../store/store';
+import SkeletonUserMenu from '../skeleton-placeholder/SkeletonUserMenu';
+import { setUsers } from '../store/userSlice';
 
 interface User {
     email: string;
@@ -24,56 +24,66 @@ const ProfileUser = () => {
     const userID = user?.id;
     const token = user?.token;
     const [userData, setUserData] = useState<User | null>(null);
+    const [loading, setLoading] = useState(false);
 
-    useFocusEffect(
-        React.useCallback(() => {
-            const fetchUserData = async () => {
-                try {
-                    const response = await getUSerByID(userID, token);
-                    setUserData(response);
-                } catch (error) {
-                    console.log(error);
-                }
-            };
-            fetchUserData();
-        }, [user])
-    );
+    const dispatch = useDispatch();
+
+    const fetchUserData = async () => {
+        setLoading(true);
+        try {
+            const response = await getUSerByID(userID, token);
+            if (JSON.stringify(response) !== JSON.stringify(user)) { // So sánh dữ liệu
+                dispatch(setUsers(response));
+            }
+            setUserData(response)
+            setLoading(false);
+            console.log("ProfileUser ở menu: ", response);
+        } catch (error) {
+            console.log(error);
+        }
+    };
+
+    useEffect(() => {
+        fetchUserData();
+    }, [userID]);
 
     const handleToProfileScreen = () => {
         navigation.navigate(ProfileRootStackEnum.ProfileScreen);
     };
 
     return (
-        // <SkeletonPlaceholder borderRadius={4}>
         <TouchableOpacity onPress={handleToProfileScreen}>
-            <View style={styles.profileUser}>
-                <Image 
-                    source={userData && userData.avatar ? { uri: userData.avatar } : require('../../media/icon/avatar.png')} 
-                    style={styles.avatar} 
-                />
-                <View style={{ flex: 1 }}>
-                    {userData && (
-                        <Text style={styles.nameUser}>{userData.fullname}</Text>
-                    )}
-                    {userData && (
-                        <Text style={styles.detail}>{userData.email}</Text>
-                    )}
-                    {userData?.phone && (
-                        <>
-                            <View style={styles.line}></View>
-                            <Text style={styles.detail}>{userData.phone}</Text>
-                        </>
-                    )}
-                    {userData?.address && (
-                        <>
-                            <View style={styles.line}></View>
-                            <Text style={styles.detail} numberOfLines={2}>{userData.address}</Text>
-                        </>
-                    )}
+            {loading ? (
+                <SkeletonUserMenu />
+            ) : (
+                <View style={styles.profileUser}>
+                    <Image
+                        source={user && user.avatar ? { uri: user.avatar } : require('../../media/icon/avatar.png')}
+                        style={styles.avatar}
+                    />
+                    <View style={{ flex: 1 }}>
+                        {user && (
+                            <Text style={styles.nameUser}>{user.fullname}</Text>
+                        )}
+                        {user && (
+                            <Text style={styles.detail}>{user.email}</Text>
+                        )}
+                        {user?.phone && (
+                            <>
+                                <View style={styles.line}></View>
+                                <Text style={styles.detail}>{user.phone}</Text>
+                            </>
+                        )}
+                        {user?.address && (
+                            <>
+                                <View style={styles.line}></View>
+                                <Text style={styles.detail} numberOfLines={2}>{user.address}</Text>
+                            </>
+                        )}
+                    </View>
                 </View>
-            </View>
+            )}
         </TouchableOpacity>
-        // </SkeletonPlaceholder>
     );
 };
 

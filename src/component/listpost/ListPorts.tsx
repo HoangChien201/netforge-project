@@ -52,7 +52,6 @@ const ListPorts = memo(({ onrefresh }: { onrefresh: boolean }) => {
       const response: any = await getAll(token, user.id);
       if (response.length > 0) {
         const getByTypeOne = response.filter(post => post.type === 1)
- 
         setAllData([...getByTypeOne]);
         setDisplayData([...getByTypeOne.slice(0, PAGE_SIZE)]);
       }
