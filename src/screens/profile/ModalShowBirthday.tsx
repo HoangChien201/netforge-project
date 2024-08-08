@@ -6,17 +6,13 @@ import Sound from 'react-native-sound';
 import { FriendType } from '../../component/message/ModalNewMessage';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../component/store/store';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
-const HelpScreen = () => {
+const ModalShowBirthday = () => {
+  
   const user = useSelector((state : RootState)=>state.user.value)
-  const [friend, setFriend] = useState<Array<FriendType>>([])
-  const [todayFriends, setTodayFriends] = useState<Array<FriendType>>([]);
   const [birthdaySound, setBirthdaySound] = useState(null);
-  const [isVisibleBirtday, setIsVisibleBirtday] = useState(false);
-
-  const navigation = useNavigation()
-  const isFocus = useIsFocused()
-
+  const [isVisibleBirtday, setIsVisibleBirtday] = useState(true);
 
   useEffect(() => {
     const sound = new Sound('happy_birthday.mp3', Sound.MAIN_BUNDLE, (error) => {
@@ -48,29 +44,20 @@ const HelpScreen = () => {
       }
     }
   }, [birthdaySound]);
-  useEffect(() => {
-    if (isFocus) {
-      navigation.getParent()?.setOptions({
-        tabBarStyle: {
-          display: 'none',
-        }
-      });
-    }
-  }, [isFocus]);
+
 
   return (
     <View style={{ backgroundColor: '#fff', width: '100%', height: '100%' }}>
       <ModalBirtday IsVisible={isVisibleBirtday} onClose={() => {
-        setIsVisibleBirtday(false)
         if (birthdaySound) {
           birthdaySound.stop()
         }
+        AsyncStorage.setItem(`isShowBirthday-${user?.id}`, 'true');
+        setIsVisibleBirtday(false)
       }} />
      
     </View>
   )
 }
 
-export default HelpScreen
-
-const styles = StyleSheet.create({})
+export default ModalShowBirthday
