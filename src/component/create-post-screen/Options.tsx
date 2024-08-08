@@ -1,5 +1,5 @@
 import React, { useState, useCallback, useEffect, useRef } from 'react';
-import { StyleSheet, TouchableOpacity, View, Image, Modal, FlatList, Text } from 'react-native';
+import { StyleSheet, TouchableOpacity, View, Image, Modal, FlatList, Text, Alert } from 'react-native';
 import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
 import EmojiList from './EmojiList';
 import Emotions from './Emotions';
@@ -21,21 +21,41 @@ type Op = {
     setShowAI: (value: any) => void,
     imageUrl: any,
     setEmotions: (value: any) => void,
-    emotions: any
+    emotions: any,
+    content: any, media: any,
+    setContent: (value: any) => void, setMedia: (value: any) => void, setImageUrl: (value: any) => void
 }
 
-const Options: React.FC<Op> = ({ onSelectMedia, onSelectEmoji, setShowAI, imageUrl, emotions, setEmotions }) => {
+const Options: React.FC<Op> = ({ onSelectMedia, onSelectEmoji, setShowAI, imageUrl, emotions, setEmotions, content, media, setContent, setMedia, setImageUrl }) => {
     const navigation = useNavigation();
-    const user = useSelector((state:RootState)=>state.user.value)
+    const user = useSelector((state: RootState) => state.user.value)
 
     const [showEmojiModal, setShowEmojiModal] = useState(false);
     const [currentIndex, setCurrentIndex] = useState(0);
     const swiperRef = useRef(null);
+    const contentRef = useRef(content);
+    const mediaRef = useRef(media);
+    const emotionRef = useRef(emotions);
+    useEffect(() => {
+        contentRef.current = content;
+    }, [content]);
+    useEffect(() => {
+        mediaRef.current = media;
+    }, [media]);
+    useEffect(() => {
+        emotionRef.current = emotions;
+    }, [emotions]);
     useEffect(() => {
 
         //openLibrary();
 
     }, [])
+    const clear = () => {
+        setContent('');
+        setMedia([]);
+        setImageUrl('');
+        setEmotions(null);
+    };
     // camera
     const openCamera = useCallback(async () => {
         const options = {
@@ -96,14 +116,42 @@ const Options: React.FC<Op> = ({ onSelectMedia, onSelectEmoji, setShowAI, imageU
         setUserID(String(Math.floor(Math.random() * 100000)));
         setLiveID(String(Math.floor(Math.random() * 10000)));
     }, []);
-    
+
     const name = user.fullname;
     const handleToLiveStream = () => {
-        navigation.navigate('HostScreen', {
-            userID,
-            userName: name,
-            liveID
-        });
+        if (contentRef.current.trim().length > 0 || mediaRef.current.length > 0 || emotionRef.current) {
+            Alert.alert(
+                'Bài viết chưa được đăng!',
+                'Bạn có muốn giữ lại dữ liệu?',
+                [
+                    {
+                        text: 'Giữ lại',
+                        onPress: () => {
+                        },
+                    },
+                    {
+                        text: 'Xóa bỏ',
+                        onPress: () => {
+                            clear();
+                            navigation.navigate('HostScreen', {
+                                userID,
+                                userName: name,
+                                liveID
+                            });
+                        },
+                    },
+                ],
+                { cancelable: false }
+            );
+            return true;
+        } else {
+            navigation.navigate('HostScreen', {
+                userID,
+                userName: name,
+                liveID
+            });
+        }
+
     };
     //
 
@@ -163,7 +211,7 @@ const Options: React.FC<Op> = ({ onSelectMedia, onSelectEmoji, setShowAI, imageU
                         <TouchableOpacity onPress={() => setShowEmojiModal(false)}
                             style={{ position: 'absolute', end: 8, top: 5 }}
                         >
-                            <IconAnt name='close' size={24} color='#000'/>
+                            <IconAnt name='close' size={24} color='#000' />
                         </TouchableOpacity>
                         <Swiper
                             showsButtons={false}

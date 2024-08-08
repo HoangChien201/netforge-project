@@ -33,6 +33,7 @@ const ManageNavigation = () => {
     const [friend, setFriend] = useState([])
     const [todayFriends, setTodayFriends] = useState([]);
     const { sendBirthDay } = useSendNotification()
+    let oldNotifications;
     const handleAutoLogin = async () => {
         try {
             const keepLoggedIn = await AsyncStorage.getItem('keep');
@@ -125,13 +126,16 @@ const cancelNtoUser = async (id)=>{
         if (user) {
             const id = user.id;
             socket.on(`notification-${id}`, (data) => {
-                addNotification(data);
-                showLocal(data);
-                // const exists = notifications.some(notification => notification.id == data.id);
-                // if (!exists) {
-                //     addNotification(data);
-                //     showLocal(data);
-                // }
+                // addNotification(data);
+                // showLocal(data);
+                // console.log('Nhận thông báo');
+                
+                const exists = oldNotifications.some(notification => notification.id == data.id);
+                if (!exists) {
+                    addNotification(data);
+                    showLocal(data);
+                    console.log('Nhận thông báo');
+                }
             });
         }
 
@@ -139,11 +143,11 @@ const cancelNtoUser = async (id)=>{
 
     const addNotification = async (newNotification) => {
         try {
-            const oldNotifications = await AsyncStorage.getItem(`notifications-${user.id}`);
+            oldNotifications = await AsyncStorage.getItem(`notifications-${user.id}`);
             const parsedNotifications = oldNotifications ? JSON.parse(oldNotifications) : [];
             const updatedNotifications = [...parsedNotifications, newNotification];
             await AsyncStorage.setItem(`notifications-${user.id}`, JSON.stringify(updatedNotifications));
-            console.log('Notification added and saved');
+            console.log('Notification added');
         } catch (error) {
             console.error('Error adding notification:', error);
         }

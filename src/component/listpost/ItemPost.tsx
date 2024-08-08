@@ -29,6 +29,7 @@ const ItemPost = memo(({ data, setShowModalEdit, setSelectedId, setShowDelete })
 
     useEffect(() => {
         setData(data)
+        
     }, [data])
 
     const { creater, share_count, reaction, content, media, comment_count, create_at, id, like_count, share, emotion } = datas;
@@ -49,6 +50,8 @@ const ItemPost = memo(({ data, setShowModalEdit, setSelectedId, setShowDelete })
 
     const hiddenMenu = () => {
         setIsModalVisible(true);
+        console.log(data);
+        
     };
 
     const hiddenMenu1 = () => {
