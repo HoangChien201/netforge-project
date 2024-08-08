@@ -80,7 +80,6 @@ const CommentsScreen = () => {
             const timer = setTimeout(() => {
                 if (!loadDatda) {
                     setLoadData(true);
-                    setLoading(false)
                 }
             }, 3000);
 

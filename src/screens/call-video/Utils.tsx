@@ -4,7 +4,6 @@ import * as ZIM from 'zego-zim-react-native';
 import ZegoUIKitPrebuiltCallService from '@zegocloud/zego-uikit-prebuilt-call-rn';
 import KeyCenter from './KeyCenter';
 import { Image, View } from 'react-native';
-import React from 'react';
 import { MessageFactory } from '../../component/message/class/MessageProvider';
 
 
