@@ -46,6 +46,7 @@ const MessageItemContent = ({ message, sender }: { message: Message, sender: boo
                         muted={false}
                         resizeMode='cover'
                     />
+                    <Image style={styles.imagePlay} source={require('../../media/icon/video_play.png')}/>
                 </TouchableOpacity>
 
             )
@@ -90,5 +91,10 @@ const styles = StyleSheet.create({
     messageImage: {
         height: 300,
         width: 200,
+        justifyContent:'center',
+        alignItems:'center',
     },
+    imagePlay:{
+        position:'absolute',
+    }
 })
