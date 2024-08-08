@@ -78,6 +78,12 @@ const ModalNewMessage = ({ visible, setVisible }: { visible: boolean, setVisible
     useEffect(() => {
         getSuggest()
     }, [])
+
+    function EventPressOverModal(){
+        setVisible(false)
+        setType('message')
+    }
+
     return (
         <Modal
             animationType='slide'
@@ -85,7 +91,7 @@ const ModalNewMessage = ({ visible, setVisible }: { visible: boolean, setVisible
             transparent={true}
         >
             <Pressable
-                onPress={(event) => event.target == event.currentTarget && setVisible(false)}
+                onPress={(event) => event.target == event.currentTarget && EventPressOverModal()}
                 style={[styles.modal]}
             >
                 <View style={styles.container}>
@@ -114,7 +120,8 @@ const ModalNewMessage = ({ visible, setVisible }: { visible: boolean, setVisible
                         type === 'message' ?
                             <NewMessageComponent
                                 setType={setType}
-                                suggests={suggests} />
+                                suggests={suggests}
+                                setVisible={setVisible} />
                             :
                             <NewGroupComponent
                                 suggests={suggests}
@@ -168,7 +175,7 @@ const styles = StyleSheet.create({
     },
     header: {
         height: 60,
-        backgroundColor: "rgba(215,215,215,0.9)",
+        backgroundColor: "fff",
         justifyContent: 'center',
     },
     create: {

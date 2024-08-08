@@ -1,13 +1,16 @@
-import { Image, StyleSheet, Text, View } from 'react-native'
-import React, { useCallback, useMemo, useRef } from 'react'
-import { messageType } from './MessageItem';
+import { Image, StyleSheet, TouchableOpacity, View } from 'react-native'
+import React, { useRef, useState } from 'react'
 import MessageText from './MessageText';
 import Video, { VideoRef } from 'react-native-video';
-import { EmojiReaction } from '../../constant/emoji';
 import MessageCall from './MessageCall';
 import { Message } from './class/MessageProvider';
+import ModalImage from '../formComments/ModalImage';
 
 const MessageItemContent = ({ message, sender }: { message: Message, sender: boolean }) => {
+    const [isVideoFullScreen, setIsVideoFullScreen] = useState(false)
+    const [selectedMedia, setSelectedMedia] = useState(null); // Đường dẫn hình ảnh được chọn
+    const [isModalVisible, setIsModalVisible] = useState(false);
+
     const videoRef = useRef<VideoRef>(null);
     function onBuffer(event) {
         console.log(event);
@@ -18,33 +21,53 @@ const MessageItemContent = ({ message, sender }: { message: Message, sender: boo
         console.log(event);
 
     }
+    function onFullscreenPlayerWillDismiss() {
+        console.log('dismisss');
+
+        setIsVideoFullScreen(false)
+
+    }
 
     switch (message.type) {
         case "video":
             return (
-                <Video
-                    // Can be a URL or a local file.
-                    source={{ uri: typeof message.message === 'object' ? message.message.uri : message.message }}
-                    // Store reference  
-                    ref={videoRef}
-                    // Callback when remote video is buffering                                      
-                    onBuffer={onBuffer}
-                    // Callback when video cannot be loaded              
-                    onError={onVideoError}
-                    style={styles.messageImage}
-                    pointerEvents='none'
-                />
+                <TouchableOpacity style={[styles.messageImage, { backgroundColor: "" }]} onPress={() => setIsVideoFullScreen(true)}>
+
+                    <Video
+                        // Can be a URL or a local file.
+                        source={{ uri: typeof message.message === 'object' ? message.message.uri : message.message }}
+                        // Callback when video cannot be loaded              
+                        onError={onVideoError}
+                        style={styles.messageImage}
+                        paused={!isVideoFullScreen}
+                        fullscreen={isVideoFullScreen}
+                        onFullscreenPlayerWillDismiss={onFullscreenPlayerWillDismiss}
+                        repeat={false}
+                        muted={false}
+                        resizeMode='cover'
+                    />
+                </TouchableOpacity>
+
             )
 
         case "image": {
 
             return (
-                <View style={styles.messageImage}>
+                <TouchableOpacity style={styles.messageImage} onPress={
+                    () => {
+                        setSelectedMedia(message.message)
+                        setIsModalVisible(true)
+                    }
+                }>
                     {
                         message.message &&
                         <Image style={{ width: '100%', height: '100%', borderRadius: 20 }} source={{ uri: typeof message.message === 'object' ? message.message.uri : message.message }} />
                     }
-                </View>
+                    <ModalImage
+                        isVisible={isModalVisible}
+                        media={selectedMedia}
+                        onClose={() => setIsModalVisible(false)} />
+                </TouchableOpacity>
             )
         }
 

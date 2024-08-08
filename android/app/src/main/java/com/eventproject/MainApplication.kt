@@ -1,4 +1,4 @@
-package com.eventproject
+package com.netforge
 
 import android.app.Application
 import com.facebook.react.PackageList

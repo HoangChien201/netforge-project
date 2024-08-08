@@ -1,10 +1,10 @@
 import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import React from 'react'
 import { useNavigation } from '@react-navigation/native'
-import { messageType } from './MessageItem'
 import { MessageScreenNavigationProp } from '../../screens/message/MessageScreen'
 import { useSelector } from 'react-redux'
 import { RootState } from '../store/store'
+import { Message } from './class/MessageProvider'
 
 export type GroupChatType = {
     "id": number,
@@ -18,7 +18,7 @@ export type GroupChatType = {
             avatar: string
         }
     }>,
-    "messages": Array<messageType>
+    "messages": Array<Message>
 
 }
 const STATUS_SEEN = 2

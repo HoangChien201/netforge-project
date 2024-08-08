@@ -14,7 +14,7 @@ import { RootState } from '../component/store/store';
 
 
 const BirthDayScreen = ({ visible, setVisible }: { visible: boolean, setVisible: any }) => {
-    const user = useSelector((state:RootState)=>state.user.value)
+    const user = useSelector((state: RootState) => state.user.value)
     const [friend, setFriend] = useState<Array<FriendType>>([])
     const [todayFriends, setTodayFriends] = useState<Array<FriendType>>([]);
 
@@ -31,11 +31,11 @@ const BirthDayScreen = ({ visible, setVisible }: { visible: boolean, setVisible:
         }
     }, [isFocus]);
     useFocusEffect(
-        useCallback(()=>{
+        useCallback(() => {
             getFriendAll()
-        },[visible == true])
+        }, [visible == true])
     )
-    
+
 
     //happy birthday friend
     useEffect(() => {
@@ -43,7 +43,7 @@ const BirthDayScreen = ({ visible, setVisible }: { visible: boolean, setVisible:
         const friendsToday = friend.filter(friend => {
             const friendBirthday = new Date(friend.user.dateOfBirth);
             return today.getDate() === friendBirthday.getDate() && today.getMonth() === friendBirthday.getMonth();
-            
+
         });
 
         //sendnotifi
@@ -55,7 +55,7 @@ const BirthDayScreen = ({ visible, setVisible }: { visible: boolean, setVisible:
         // });
         setTodayFriends(friendsToday);
 
-    
+
 
     }, [friend]);
 
@@ -77,7 +77,7 @@ const BirthDayScreen = ({ visible, setVisible }: { visible: boolean, setVisible:
             type: 7,
             idF: id,
             userInfo: {
-                receiver: user.id,sender: user.id,
+                receiver: user.id, sender: user.id,
                 fullname: fullname,
                 avatar: avatar,
             }
@@ -95,29 +95,29 @@ const BirthDayScreen = ({ visible, setVisible }: { visible: boolean, setVisible:
             <View style={styles.container}>
 
                 <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center', position: 'relative', height: 50, backgroundColor: '#fff' }}>
-            <Pressable onPress={()=>setVisible(false)} style={{ position: 'absolute', left: 15 }}>
-            <Ionicon name='arrow-back' size={24} color={'#000'} />
-            </Pressable>
-            <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', }}>
-                <Text style={{ fontSize: 20, fontWeight: '700', color: '#000' }}>Sinh nhật</Text>
-            </View>
-        </View>
+                    <Pressable onPress={() => setVisible(false)} style={{ position: 'absolute', left: 15 }}>
+                        <Ionicon name='arrow-back' size={24} color={'#000'} />
+                    </Pressable>
+                    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', }}>
+                        <Text style={{ fontSize: 20, fontWeight: '700', color: '#000' }}>Sinh nhật</Text>
+                    </View>
+                </View>
                 <Text style={{ fontSize: 20, fontWeight: 'bold', color: '#000', marginLeft: 12, top: 10 }}>Hôm nay</Text>
                 {
                     todayFriends.length > 0 ? (
                         <FlatList
                             data={todayFriends}
                             keyExtractor={(item) => item.user.id.toString()}
-                            renderItem={({ item }) => <ItemBirthday item={item} />} // Sử dụng component ItemBirthday
+                            renderItem={({ item }) => <ItemBirthday item={item} setVisibleScreen={setVisible}/>} // Sử dụng component ItemBirthday
                         />
                     ) : (
-                        <View style = {{justifyContent: 'center', alignItems: 'center', top: 150}}>
+                        <View style={{ justifyContent: 'center', alignItems: 'center', top: 150 }}>
                             <FastImage style={{ width: 120, height: 120 }} source={require('../media/icon_tuong/cake-birthday.gif')} />
-                            <Text style = {{fontSize: 18, fontWeight: '700', marginTop: 5}}>Hôm nay không có sinh nhật</Text>
+                            <Text style={{ fontSize: 18, fontWeight: '700', marginTop: 5 }}>Hôm nay không có sinh nhật</Text>
                         </View>
                     )
                 }
-             
+
             </View>
         </Modal>
     )
@@ -126,7 +126,7 @@ const BirthDayScreen = ({ visible, setVisible }: { visible: boolean, setVisible:
 export default BirthDayScreen
 
 const styles = StyleSheet.create({
-    modal:{
+    modal: {
 
     },
     container: {
@@ -137,7 +137,7 @@ const styles = StyleSheet.create({
     toolbar: {
         width: '100%',
         height: 55,
-        justifyContent:"center",
-        padding:14
+        justifyContent: "center",
+        padding: 14
     }
 })

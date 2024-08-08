@@ -10,7 +10,7 @@ import { MessageFactory } from '../component/message/class/MessageProvider'
 import { useSelector } from 'react-redux'
 import { RootState } from '../component/store/store'
 
-const ItemBirthday = ({ item }: { item: FriendType }) => {
+const ItemBirthday = ({ item,setVisibleScreen }: { item: FriendType,setVisibleScreen:any }) => {
   const [checkMessaBirthday, setCheckMessaBirthday] = useState(false)
   const navigation: NetworkStackNavigationProp = useNavigation()
   const user = useSelector((state:RootState)=>state.user.value)
@@ -44,11 +44,12 @@ const ItemBirthday = ({ item }: { item: FriendType }) => {
       setCheckMessaBirthday(true)
     }
 
-
   }
 
   //navigate to message
   function IconMessageOnPressHandle() {
+    setVisibleScreen(false)
+
     const { fullname, avatar, id } = item.user
     NavigateToMessage({
       fullname,

@@ -55,9 +55,8 @@ const PortalMessage: React.FC<PortalMessageProp> = (props) => {
                     <View style={[styles.reactionStyle, { top: messageCordinates.y ? messageCordinates.y - 80 : 0 }]}>
                         <ReactionOptionComponent
                             reactionOfMsg={selectedMessage.reactions}
-                            messageCordinates={messageCordinates}
                             ontionOnpress={optionReactionOnSubmit}
-                            setSelectedMessage={setSelectedMessage} />
+                             />
                     </View>
 
                     <View style={[{

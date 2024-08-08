@@ -15,9 +15,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "13B07F861A680F5B00A75B9A"
-               BuildableName = "EventProject.app"
-               BlueprintName = "EventProject"
-               ReferencedContainer = "container:EventProject.xcodeproj">
+               BuildableName = "NetForge.app"
+               BlueprintName = "NetForge"
+               ReferencedContainer = "container:NetForge.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -33,9 +33,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "00E356ED1AD99517003FC87E"
-               BuildableName = "EventProjectTests.xctest"
-               BlueprintName = "EventProjectTests"
-               ReferencedContainer = "container:EventProject.xcodeproj">
+               BuildableName = "NetForgeTests.xctest"
+               BlueprintName = "NetForgeTests"
+               ReferencedContainer = "container:NetForge.xcodeproj">
             </BuildableReference>
          </TestableReference>
       </Testables>
@@ -55,9 +55,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "13B07F861A680F5B00A75B9A"
-            BuildableName = "EventProject.app"
-            BlueprintName = "EventProject"
-            ReferencedContainer = "container:EventProject.xcodeproj">
+            BuildableName = "NetForge.app"
+            BlueprintName = "NetForge"
+            ReferencedContainer = "container:NetForge.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </LaunchAction>
@@ -72,9 +72,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "13B07F861A680F5B00A75B9A"
-            BuildableName = "EventProject.app"
-            BlueprintName = "EventProject"
-            ReferencedContainer = "container:EventProject.xcodeproj">
+            BuildableName = "NetForge.app"
+            BlueprintName = "NetForge"
+            ReferencedContainer = "container:NetForge.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </ProfileAction>

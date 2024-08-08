@@ -8,7 +8,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage'
 import { login } from '../../http/userHttp/user'
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import PushNotification, { Importance } from 'react-native-push-notification';
-import { Alert, PermissionsAndroid } from 'react-native';
+import { Alert, Linking, PermissionsAndroid } from 'react-native';
 import { socket } from '../../http/SocketHandle'
 // @ts-ignore
 import { ZegoCallInvitationDialog, ZegoUIKitPrebuiltCallFloatingMinimizedView } from '@zegocloud/zego-uikit-prebuilt-call-rn';
@@ -222,7 +222,6 @@ const ManageNavigation = () => {
     if (showSplash) {
         return <SplashScreen />;
     }
-
     return (
         <GestureHandlerRootView>
             <NavigationContainer ref={navigationRef}>
