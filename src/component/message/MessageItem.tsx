@@ -341,7 +341,7 @@ const styles = StyleSheet.create({
   },
   content: {
     minWidth: 0,
-    maxWidth: 210
+    maxWidth: 210,
   },
   createTime: {
     color: '#D9D9D8',
