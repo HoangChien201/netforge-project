@@ -53,7 +53,6 @@ const ListPorts = memo(({ onrefresh }: { onrefresh: boolean }) => {
       console.log("đã lấy ds tại ListPort");
       if (response.length > 0) {
         const getByTypeOne = response.filter(post => post.type === 1)
- 
         setAllData([...getByTypeOne]);
         setDisplayData([...getByTypeOne.slice(0, PAGE_SIZE)]);
       }

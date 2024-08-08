@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { NavigationContainer, RouteProp, useNavigation } from '@react-navigation/native'
+import { NavigationContainer, RouteProp } from '@react-navigation/native'
 import { StackNavigationProp } from '@react-navigation/stack'
 import NetworkStack from '../stack/NetworkStack'
 import UserStack from '../stack/UserStack'
@@ -8,7 +8,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage'
 import { login } from '../../http/userHttp/user'
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import PushNotification, { Importance } from 'react-native-push-notification';
-import { Alert, PermissionsAndroid } from 'react-native';
+import { Alert, Linking, PermissionsAndroid } from 'react-native';
 import { socket } from '../../http/SocketHandle'
 // @ts-ignore
 import { ZegoCallInvitationDialog,ZegoUIKitPrebuiltCallFloatingMinimizedView } from '@zegocloud/zego-uikit-prebuilt-call-rn';
@@ -18,6 +18,7 @@ import { setUsers } from '../store/userSlice'
 import { getFriends } from '../../http/QuyetHTTP'
 import { navigationRef } from './NavigationRef'
 import { useSendNotification } from '../../constant/notify'
+import LoginScreen from '../../screens/LoginScreen'
 
 export type navigationType = StackNavigationProp<RootStackParamList>
 type routeType = RouteProp<{ params: { value: string } }, 'params'>
@@ -222,9 +223,43 @@ const ManageNavigation = () => {
         return <SplashScreen />;
     }
 
+    const linking = {
+        prefixes: ['https://netforge'],
+        config: {
+            screens: {
+                HomeScreen: 'home',
+                // Post: 'post/:id',
+                // CommentsScreen: 'comments/:id',
+            },
+        },
+    };
+
+    
+        const handleDeepLink = (event) => {
+            let data = Linking.openURL(event.url);
+            console.log('Deep link data:', data);
+        };
+
+        Linking.addEventListener('url', handleDeepLink);
+
+        // return () => {
+        //     Linking.removeEventListener('url', handleDeepLink);
+        // };
+        
+        const checkInitialLink = async () => {
+            const initialUrl = await Linking.getInitialURL();
+            if (initialUrl) {
+                let data = Linking.openURL(initialUrl);
+                console.log('Initial link data:', data);
+            }
+        };
+
+        checkInitialLink();
+
+
     return (
         <GestureHandlerRootView>
-            <NavigationContainer ref={navigationRef}>
+            <NavigationContainer linking={linking} ref={navigationRef}>
                 {/*ZegoCallInvitationDialog hiện dialog nhận cuộc gọi */}
                 <ZegoCallInvitationDialog />
                 {user ? <NetworkStack /> : <UserStack />}

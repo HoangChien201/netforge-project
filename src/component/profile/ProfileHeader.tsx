@@ -14,11 +14,11 @@ import { useSelector } from 'react-redux';
 import { RootState } from '../store/store';
 
 interface ProfileHeaderProps {
-  fullname: string;
-  userId: number;
-  loggedInUserId: number;
+  fullname: any;
+  userId: any;
+  loggedInUserId: any;
   relationship: any;
-  avatar:string;
+  avatar:any;
 }
 
 const ProfileHeader: React.FC<ProfileHeaderProps> = (
@@ -53,18 +53,18 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = (
       checkFiend;
     }, [change])
   );
-  const getWaitAcept = async () => {
-    try {
-      const result = await getRequest();
-      console.log(result);
-      const found = result.some(item => item.user.id === loggedInUserId);
-      if (found) {
-        setWait(true);
-      }
-    } catch (error) {
-      console.error(error);
-    }
-  };
+  // const getWaitAcept = async () => {
+  //   try {
+  //     const result = await getRequest();
+  //     console.log(result);
+  //     const found = result.some(item => item.user.id === loggedInUserId);
+  //     if (found) {
+  //       setWait(true);
+  //     }
+  //   } catch (error) {
+  //     console.error(error);
+  //   }
+  // };
 
   const handleToEditProfile = () => {
     navigation.navigate('EditProfileScreen' as never);
@@ -331,24 +331,6 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = (
                 <Text style={styles.buttonText}>Hủy yêu cầu</Text>
               </TouchableOpacity>
             )}
-            {/* <TouchableOpacity style={{flexDirection:'row', alignItems: 'center', marginTop:10}}>
-              <View style={styles.iconContainer}>
-                <FontAwesome5 name="user-minus" size={18} color="black" />
-              </View>
-              <Text style={styles.buttonText}>{cancelF}</Text> */}
-              {/* <TouchableOpacity style={styles.button} onPress={() => deleteF(userId)}>
-                <Text style={styles.buttonText}>{cancelF}</Text>
-              </TouchableOpacity> */}
-            {/* <Text style={styles.title}>Xác nhận</Text>
-            <Text style={styles.message}>Bạn có chắc chắn muốn xóa bạn bè?</Text>
-            <View style={styles.buttonContainer}>
-              <TouchableOpacity style={styles.button} onPress={() => setShow(false)}>
-                <Text style={styles.buttonText}>Hủy</Text>
-              </TouchableOpacity>
-              <TouchableOpacity style={styles.button} onPress={() => deleteF(userId)}>
-                <Text style={styles.buttonText}>Xác nhận</Text>
-              </TouchableOpacity> */}
-            {/* </TouchableOpacity> */}
           </View>
         </Pressable>
       </Modal>
@@ -435,13 +417,11 @@ const styles = StyleSheet.create({
   modalBackground: {
     flex: 1,
     justifyContent: 'flex-end',
-    // alignItems: 'center',
     backgroundColor: 'rgba(0, 0, 0, 0.5)',
   },
   modalContainer: {
     height: Dimensions.get('window').height/4.5,
     backgroundColor: 'white',
-    // alignItems: 'center',
     paddingHorizontal:20,
     paddingBottom:20,
     borderTopLeftRadius: 20,
@@ -465,7 +445,6 @@ const styles = StyleSheet.create({
   button: {
     padding: 10,
     marginHorizontal: 5,
-    // backgroundColor: '#007BFF',
     borderRadius: 5,
     alignItems: 'center',
   },
