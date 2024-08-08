@@ -7,15 +7,17 @@ type Mo = {
   postId: any;
   setLoadAfterUpdate: (value: any) => void;
   setSelectedId: (value: boolean) => void;
+  setMoveToHome: (value: boolean) => void;
 }
 
-const DeletePost: React.FC<Mo> = ({ showDelete, setShowDelete, postId, setLoadAfterUpdate, setSelectedId }) => {
+const DeletePost: React.FC<Mo> = ({ showDelete, setShowDelete, postId, setLoadAfterUpdate, setMoveToHome, setSelectedId }) => {
   const deleP = async (postId) => {
     try {
       const result = await deletePost(postId);
       if (result) {
         setShowDelete(false);
         setLoadAfterUpdate(pre => !pre);
+        setMoveToHome(true)
         setSelectedId(null);
         Alert.alert(
           'Bài viết đã xóa!',

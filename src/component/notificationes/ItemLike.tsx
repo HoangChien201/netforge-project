@@ -3,7 +3,6 @@ import React from 'react'
 import Icon from 'react-native-vector-icons/AntDesign'
 import { COLOR } from '../../constant/color'
 import { DateOfTimePost } from '../../format/DateOfTimePost'
-import PushNotification from 'react-native-push-notification';
 import { useNavigation } from '@react-navigation/native';
 import { navigationRef } from '../navigation/NavigationRef'
 import { CommentsScreenNavigationProp } from '../stack/NetworkRootStackParams'

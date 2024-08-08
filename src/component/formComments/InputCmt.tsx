@@ -10,32 +10,32 @@ import IconSend from 'react-native-vector-icons/FontAwesome'
 
 import { addComments, uploadImage } from '../../http/TuongHttp'
 import { COLOR } from '../../constant/color'
-import {useSendNotification} from '../../constant/notify'
+import { useSendNotification } from '../../constant/notify'
 
-const InputCmt = ({ fetchComments, onMediaSelected, parent = null , postId, text,setParent, setText, comment, userPostId }) => {
-    const user = useSelector((state : RootState)=>state.user.value)
+const InputCmt = ({ fetchComments, onMediaSelected, parent = null, postId, text, setParent, setText, comment, userPostId , creator}) => {
+    const user = useSelector((state: RootState) => state.user.value)
     const [comments, setComments] = useState('')
     const [media, setMedia] = useState(null);
     const [imagePath, setImagePath] = useState(null);
     const [mediaType, setMediaType] = useState(null);
     const [checkComments, setCheckComments] = useState(true)
-    const {sendNCommentPost,sendNRepComment} = useSendNotification()
-    
+    const { sendNCommentPost, sendNRepComment } = useSendNotification()
+
     useEffect(() => {
         if (text) {
-            if(user?.id === comment){
-                
+            if (user?.id === comment) {
+
                 setText('chính mình')
-            }else{
+            } else {
                 setComments(text)
             }
-            
+
         }
-    
+
 
     }, [text])
-   
-    const handleCancel =()=>{
+
+    const handleCancel = () => {
         setParent(null)
         setText(null)
         setComments('')
@@ -99,47 +99,47 @@ const InputCmt = ({ fetchComments, onMediaSelected, parent = null , postId, text
     }, [onMediaSelected]);
 
     const handleAddComment = async () => {
-       
+
         try {
             if (media === null && comments === '' && !imagePath) {
                 return
-            } else{
+            } else {
                 const data = {
                     posts: postId, // lấy id từ id của bài viết
                     content: comments,
                     image: imagePath,
                     parent: parent
                 }
-    
-                if(checkComments){
+
+                if (checkComments) {
                     setCheckComments(false)
                     const reponse = await addComments(data.posts, data.content, data.image, data.parent)
-                 // nếu thêm thành công thì set các biến về trạng thái bang đầu 
-                 if(data.parent){
-                    //postId1, body,commentId, receiver 
-                    sendNRepComment({postId1:postId, body:comments,commentId:reponse.id,receiver:comment})
-                 }else{
-                    //postId1, body, receiver
-                    if(userPostId.id != user.id){
-                        sendNCommentPost({postId:postId, body:comments,receiver:userPostId.id})
+                    // nếu thêm thành công thì set các biến về trạng thái bang đầu 
+                    if (data.parent) {
+                        //postId1, body,commentId, receiver 
+                        sendNRepComment({ postId1: postId, body: comments, commentId: reponse.id, receiver: comment })
+                    } else {
+                        //postId1, body, receiver
+                        if (creator != user?.id) {
+                            sendNCommentPost({ postId: postId, body: comments, receiver: creator })
+                        }
                     }
-                 }
-                 setText(null)
-                 setParent(null)
-                 fetchComments();
-                 setComments('');
-                 setMedia(null)
-                 setImagePath(null)
-                 setMediaType(null)
-                 Keyboard.dismiss()
-                 setCheckComments(true)
-                
+                    setText(null)
+                    setParent(null)
+                    fetchComments();
+                    setComments('');
+                    setMedia(null)
+                    setImagePath(null)
+                    setMediaType(null)
+                    Keyboard.dismiss()
+                    setCheckComments(true)
+
                 }
-               
+
             }
-            
+
         } catch (error) {
-            console.log(error);
+            console.log('lỗi tại handleAddComment:', error);
         }
     }
     return (
@@ -150,7 +150,7 @@ const InputCmt = ({ fetchComments, onMediaSelected, parent = null , postId, text
             left: 0,
             right: 0,
             backgroundColor: 'white',
-           
+
         }} >
 
             {imagePath && (
@@ -166,7 +166,7 @@ const InputCmt = ({ fetchComments, onMediaSelected, parent = null , postId, text
                             /></View>
                     )}
                     <TouchableOpacity onPress={handleDleteMedia} style={{ marginStart: -5, marginTop: 5 }}>
-                        <Icon name='x-circle' size={25} color={COLOR.PrimaryColor}/>
+                        <Icon name='x-circle' size={25} color={COLOR.PrimaryColor} />
                     </TouchableOpacity>
                 </View>
             )}
@@ -175,14 +175,14 @@ const InputCmt = ({ fetchComments, onMediaSelected, parent = null , postId, text
             <View >
                 {
                     text && (
-                        <View style={{  backgroundColor: '#F4F4F4', paddingTop: 2}}>
-                            <View style = {{flexDirection: 'row', left: 68}}>
-                            <Text style = {{fontWeight: '700'}}>Trả lời</Text>
-                            <Text style = {{fontWeight: '800', color: 'black'}}> {text}</Text>
-                            <Text style={{marginLeft: 5, marginRight: 5}}>᛫</Text>
-                            <TouchableOpacity onPress={handleCancel}>
-                            <Text style = {{fontWeight: '700'}}>Hủy</Text>
-                            </TouchableOpacity>
+                        <View style={{ backgroundColor: '#F4F4F4', paddingTop: 2 }}>
+                            <View style={{ flexDirection: 'row', left: 68 }}>
+                                <Text style={{ fontWeight: '700' }}>Trả lời</Text>
+                                <Text style={{ fontWeight: '800', color: 'black' }}> {text}</Text>
+                                <Text style={{ marginLeft: 5, marginRight: 5 }}>᛫</Text>
+                                <TouchableOpacity onPress={handleCancel}>
+                                    <Text style={{ fontWeight: '700' }}>Hủy</Text>
+                                </TouchableOpacity>
                             </View>
                         </View>
                     )
@@ -190,7 +190,7 @@ const InputCmt = ({ fetchComments, onMediaSelected, parent = null , postId, text
                 <View style={styles.ViewSendCmt}>
 
                     <TouchableOpacity onPress={openPhoto}>
-                        <IconPhoto style={styles.ImageCmt} name='camera' size={35} color={COLOR.PrimaryColor}/>
+                        <IconPhoto style={styles.ImageCmt} name='camera' size={35} color={COLOR.PrimaryColor} />
                     </TouchableOpacity>
 
                     <View style={styles.boderInput}>
@@ -198,20 +198,20 @@ const InputCmt = ({ fetchComments, onMediaSelected, parent = null , postId, text
                             value={comments}
                             onChangeText={text => { setComments(text) }}
                             multiline={true}
-                            >
+                        >
                         </TextInput>
                     </View>
-                   {
-                    imagePath || comments ? (
-                        <TouchableOpacity style={styles.btnSend} onPress={handleAddComment}>
-                        <IconSend name='send' size={28} color={COLOR.PrimaryColor}/>
-                    </TouchableOpacity>
-                    ):(
-                        <View style={styles.btnSend}>
-                        <IconSend name='send' size={28} color={COLOR.PrimaryColor}/>
-                    </View>
-                    )
-                   }
+                    {
+                        imagePath || comments ? (
+                            <TouchableOpacity style={styles.btnSend} onPress={handleAddComment}>
+                                <IconSend name='send' size={28} color={COLOR.PrimaryColor} />
+                            </TouchableOpacity>
+                        ) : (
+                            <View style={styles.btnSend}>
+                                <IconSend name='send' size={28} color={COLOR.PrimaryColor} />
+                            </View>
+                        )
+                    }
                 </View>
             </View>
         </View>

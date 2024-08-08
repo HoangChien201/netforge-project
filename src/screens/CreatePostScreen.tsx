@@ -349,6 +349,7 @@ const CreatePostScreen = memo(() => {
         imageUrl={imageUrl}
         emotions={emotions}
         setEmotions={setEmotions}
+        setImageUrl ={setImageUrl}
       />
       {showPopup ? (
         isError ? (

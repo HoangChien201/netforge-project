@@ -24,9 +24,11 @@ type Bpob = {
     imageUrl: any,
     hiddenView: any,
     setEmotions: (value: any) => void,
-    emotions: any
+    emotions: any,
+    setImageUrl:(value: any) => void,
 }
-const Body: React.FC<Bpob> = ({ hiddenView, content, setContent, media, setMedia, permission, setPermission, setStatus, setShowPopup, friends, setFriends, setShowAI, imageUrl, emotions, setEmotions }) => {
+const Body: React.FC<Bpob> = ({ hiddenView, content, setContent, media, setMedia, permission, setPermission, 
+    setStatus, setShowPopup, friends, setFriends, setShowAI, imageUrl, emotions, setEmotions, setImageUrl }) => {
     //const [media, setMedia] = useState([]);
 
     const [playingVideo, setPlayingVideo] = useState(null);
@@ -439,7 +441,9 @@ const Body: React.FC<Bpob> = ({ hiddenView, content, setContent, media, setMedia
                         {renderMedia(media)}
                     </View>
                 }
-                <OPTIONS onSelectEmoji={handleEmojiSelect} onSelectMedia={handleMediaSelect} setShowAI={setShowAI} imageUrl={imageUrl} emotions={emotions} setEmotions={setEmotions} />
+                <OPTIONS onSelectEmoji={handleEmojiSelect} onSelectMedia={handleMediaSelect} setShowAI={setShowAI} 
+                imageUrl={imageUrl} emotions={emotions} setEmotions={setEmotions}   content={content} media={media} 
+                setContent={setContent} setMedia={setMedia} setImageUrl={setImageUrl}/>
             </View>
         </View>
     );
