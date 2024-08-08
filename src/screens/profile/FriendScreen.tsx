@@ -5,7 +5,7 @@ import Icon from 'react-native-vector-icons/Entypo'
 import { COLOR } from '../../constant/color'
 import { useSelector } from 'react-redux';
 import Swiper from 'react-native-swiper';
-
+import SkelotonFriend from '../../component/friend-request-accept-modal/SkelontonFriend';
 import { getFriends, getRequest, getSuggest } from '../../http/QuyetHTTP';
 import Friends from './friendScreen/Friends';
 import SuggestFriends from './friendScreen/SuggestFriends';
@@ -173,6 +173,8 @@ const FriendScreen: React.FC<Friends> = () => {
         </TouchableOpacity>
       </View>
       <View style={[styles.container1]}>
+        {dataWaitAccept? 
+        
         <Swiper ref={swiperRef} loop={false} showsButtons={false}
           onIndexChanged={handleIndexChanged}
         >
@@ -192,6 +194,7 @@ const FriendScreen: React.FC<Friends> = () => {
             />
           </View>
         </Swiper>
+        : <SkelotonFriend/>}
       </View>
       <SuggestFriends data={dataSuggest} setData={setDataSuggest} />
 

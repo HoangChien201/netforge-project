@@ -17,8 +17,8 @@ import { updateIsLoading } from '../store/loadDataSlice';
 const ListPorts = memo(({ onrefresh }: { onrefresh: boolean }) => {
   const isLoading = useSelector((state: RootState) => state.loading.isLoadingg);
   const dispatch = useDispatch();
-  
-  const user = useSelector((state : RootState)=>state.user.value)
+
+  const user = useSelector((state: RootState) => state.user.value)
   const loggedInUserId = user?.id;
 
   const [allData, setAllData] = useState<any>([]);
@@ -28,30 +28,32 @@ const ListPorts = memo(({ onrefresh }: { onrefresh: boolean }) => {
   const [loadingMore, setLoadingMore] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
 
+  const [loadAfterUpdate, setLoadAfterUpdate] = useState(false);
   const [showModalEdit, setShowModalEdit] = useState(false);
-  const [showDelete,setShowDelete] = useState(false);
-  const [selectedId, setSelectedId] = useState(null); 
+  const [showDelete, setShowDelete] = useState(false);
+  const [selectedId, setSelectedId] = useState(null);
   const focus = useIsFocused();
 
-  useEffect(()=>{
-    if(focus){
+  useEffect(() => {
+    if (focus) {
       getAllPost();
     }
-  },[focus])
+  }, [focus])
 
   const navigation: NavigationProp<ParamListBase> = useNavigation();
   const PAGE_SIZE = 10;
   const getAllPost = useCallback(async () => {
     const token = await AsyncStorage.getItem('token');
 
-   if(allData.length < 0){
-    setLoading(true);
-   }
-   
+    if (allData.length < 0) {
+      setLoading(true);
+    }
+
     try {
       const response: any = await getAll(token, user.id);
       if (response.length > 0) {
         const getByTypeOne = response.filter(post => post.type === 1)
+
         setAllData([...getByTypeOne]);
         setDisplayData([...getByTypeOne.slice(0, PAGE_SIZE)]);
       }
@@ -60,18 +62,18 @@ const ListPorts = memo(({ onrefresh }: { onrefresh: boolean }) => {
     }
     setLoading(false);
     dispatch(updateIsLoading())
-  }, [setAllData, setDisplayData, onrefresh,showDelete,showModalEdit]);
+  }, [setAllData, setDisplayData, onrefresh,loadAfterUpdate]);
 
   useEffect(() => {
 
     getAllPost();
-  }, [getAllPost, onrefresh,showDelete,showModalEdit]);
-  
+  }, [getAllPost, onrefresh]);
+
   useFocusEffect(
     useCallback(() => {
       getAllPost();
-    }, [getAllPost,isLoading])
-    )
+    }, [getAllPost, isLoading])
+  )
 
 
   const loadMoreData = () => {
@@ -100,7 +102,7 @@ const ListPorts = memo(({ onrefresh }: { onrefresh: boolean }) => {
   };
 
 
-  
+
 
   const handleToProfile = (userId: React.SetStateAction<null>) => {
     if (userId === loggedInUserId) {
@@ -111,51 +113,54 @@ const ListPorts = memo(({ onrefresh }: { onrefresh: boolean }) => {
   };
   return (
     <>
-    <View style={{ flex:1,backgroundColor: 'rgba(155,155,155,0.2)',zIndex:999999 }}>
-      
-      <BODYMODAL
-        showModalEdit={showModalEdit}
-        setShowModalEdit={setShowModalEdit}
-        selectedId={selectedId} 
-      />
-      <DELETEPOST
-      showDelete={showDelete}
-      setShowDelete={setShowDelete}
-      postId={selectedId} 
+      <View style={{ flex: 1, backgroundColor: 'rgba(155,155,155,0.2)', zIndex: 999999 }}>
 
-      /> 
-      {
+        <BODYMODAL
+          showModalEdit={showModalEdit}
+          setShowModalEdit={setShowModalEdit}
+          selectedId={selectedId}
+          setLoadAfterUpdate={setLoadAfterUpdate}
+          setSelectedId={setSelectedId}
+        />
+        <DELETEPOST
+          showDelete={showDelete}
+          setShowDelete={setShowDelete}
+          postId={selectedId}
+          setLoadAfterUpdate={setLoadAfterUpdate}
+          setSelectedId={setSelectedId}
+        />
+        {
 
-        allData.length > 0 ?
-          (<><FlatList
-            data={displayData}
-            renderItem={({ item, index }) => {
-              return <ItemPost onrefresh={onrefresh} index={index} data={item} 
-              setShowModalEdit={setShowModalEdit} setSelectedId={setSelectedId} 
-              showDelete={showDelete} setShowDelete={setShowDelete} />;
-            }}
-            keyExtractor={(item) => item.id.toString()}
-            showsVerticalScrollIndicator={false}
-            onEndReached={loadMoreData}
-            onEndReachedThreshold={0.5}
-            ListFooterComponent={renderFooter} /></>) :
-          (
-            !loading && (
-              <View style={styles.messageContainer}>
-               <FastImage
-      source={require('../../media/Dicons/gitne.jpg')}
-      style={{width: '59%', height: '40%',backgroundColor:'#fff'}}
-    />
-                <Text style={styles.messageText}>Hiện chưa có bài viết nào</Text>
-              </View>
+          allData.length > 0 ?
+            (<><FlatList
+              data={displayData}
+              renderItem={({ item, index }) => {
+                return <ItemPost onrefresh={onrefresh} index={index} data={item}
+                  setShowModalEdit={setShowModalEdit} setSelectedId={setSelectedId}
+                  showDelete={showDelete} setShowDelete={setShowDelete} />;
+              }}
+              keyExtractor={(item) => item.id.toString()}
+              showsVerticalScrollIndicator={false}
+              onEndReached={loadMoreData}
+              onEndReachedThreshold={0.5}
+              ListFooterComponent={renderFooter} /></>) :
+            (
+              !loading && (
+                <View style={styles.messageContainer}>
+                  <FastImage
+                    source={require('../../media/Dicons/gitne.jpg')}
+                    style={{ width: '59%', height: '40%', backgroundColor: '#fff' }}
+                  />
+                  <Text style={styles.messageText}>Hiện chưa có bài viết nào</Text>
+                </View>
+              )
             )
-          )
 
-      }
+        }
 
 
-    </View>
-    <Loading isLoading={loading} /> 
+      </View>
+      <Loading isLoading={loading} />
     </>
   );
 });
