@@ -9,7 +9,7 @@ import { RootState } from '../store/store'
 const STATUS_ADD_REACTION = 1
 const STATUS_CHANGE_REACTION = 2
 const STATUS_REMOVE_REACTION = 3
-const ReactionOptionComponent = ({ ontionOnpress, reactionOfMsg }: { ontionOnpress?: any, reactionOfMsg: Array<reactionType>, messageCordinates: MessageCordinatesType,setSelectedMessage:any }) => {
+const ReactionOptionComponent = ({ ontionOnpress, reactionOfMsg }: { ontionOnpress?: any, reactionOfMsg: Array<reactionType> }) => {
     const user = useSelector((state:RootState)=>state.user.value)
     const [reactionActive, setReactionActive] = useState(reactionOfMsg ? reactionOfMsg.find(reaction => reaction.user.toString() === user.id.toString()) : undefined)
     

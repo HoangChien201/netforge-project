@@ -265,7 +265,6 @@ const cancelNtoUser = async (id)=>{
 
         checkInitialLink();
 
-
     return (
         <GestureHandlerRootView>
             <NavigationContainer linking={linking} ref={navigationRef}>

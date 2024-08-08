@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View } from 'react-native'
+import { FlatList, Image, StyleSheet, Text, View } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { uploadImage } from '../../http/TuongHttp'
 import { socket } from '../../http/SocketHandle'
@@ -20,7 +20,7 @@ const StateMessage: React.FC<StateMessageType> = ({ message, group_id, sender, l
   const [state, setState] = useState(message.state)
   const [seens, setSeens] = useState(message.reads)
 
-  const user = useSelector((state:RootState)=>state.user.value)
+  const user = useSelector((state: RootState) => state.user.value)
   //
   useEffect(() => {
     if (message.state === STATUS_SENDING) {
@@ -44,16 +44,16 @@ const StateMessage: React.FC<StateMessageType> = ({ message, group_id, sender, l
       switch (message.type) {
 
         case 'text':
-          
-          const msgRespone = await message.PostMessage({sender:user.id,group:group_id})
 
-          if (msgRespone !==  "Gửi tin nhắn lỗi") {
+          const msgRespone = await message.PostMessage({ sender: user.id, group: group_id })
+
+          if (msgRespone !== "Gửi tin nhắn lỗi") {
             socket.emit(`message`, msgRespone)
             setState(msgRespone.state)
           }
-          else{
+          else {
             setState(3);
-            
+
           }
           break;
 
@@ -74,24 +74,25 @@ const StateMessage: React.FC<StateMessageType> = ({ message, group_id, sender, l
       type: typeof message.message === 'object' && message.message.type,
       name: typeof message.message === 'object' && message.message.fileName,
     });
+    
     try {
       const resultImage = await uploadImage(files);
-
+      
       // Kiểm tra cấu trúc phản hồi từ API uploadImage
       // Kiểm tra xem phản hồi có phải là một mảng và có ít nhất một phần tử không
       if (Array.isArray(resultImage) && resultImage.length > 0) {
         if (!group_id) return
-        
+
         message.message = resultImage[0].url
-        const msgRespone = await message.PostMessage({sender:user.id,group:group_id})
-        
-        if (msgRespone !==  "Gửi tin nhắn lỗi") {
+        const msgRespone = await message.PostMessage({ sender: user.id, group: group_id })
+
+        if (msgRespone !== "Gửi tin nhắn lỗi") {
           socket.emit(`message`, msgRespone)
           setState(msgRespone.state)
         }
-        else{
+        else {
           setState(3);
-          
+
         }
 
       } else {
@@ -102,12 +103,34 @@ const StateMessage: React.FC<StateMessageType> = ({ message, group_id, sender, l
     }
   }
 
+  const isShowState = sender && lastMessage
+
+  function StyleState() {
+    if (seens?.length <1) {
+      return <Text style={styles.status}>{StateMessageFormat(seens.length > 0 ? STATUS_SEEN : state)}</Text>
+    }
+    console.log('seen',seens);
+    
+    return (
+    <View style={styles.listSeen}>
+        <FlatList
+          data={seens}
+          renderItem={({item})=>{
+            return (
+              <Image style={styles.avatar} source={{uri:item.user?.avatar}}/>
+            )
+          }}
+          horizontal={true}
+          scrollEnabled={false}
+          keyExtractor={(item)=>item?.id?.toString()}
+        />
+    </View>)
+  }
+
   return (
     <View style={styles.container}>
       {
-        sender && lastMessage && 
-        <Text style={styles.status}>{StateMessageFormat(seens.length > 0 ? STATUS_SEEN : state)}</Text>
-
+        isShowState && <StyleState/>
       }
     </View>
   )
@@ -116,11 +139,19 @@ const StateMessage: React.FC<StateMessageType> = ({ message, group_id, sender, l
 export default StateMessage
 
 const styles = StyleSheet.create({
-  status: {
-
+  listSeen:{
+    height:20,
+    minWidth:50,
+    alignItems:"flex-end"
+  },
+  avatar:{
+    width:15,
+    height:15,
+    borderRadius:15,
+    marginEnd:2
   },
   container: {
     alignSelf: 'flex-end',
-    marginTop: 10
+    marginTop:2
   }
 })

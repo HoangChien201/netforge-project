@@ -93,7 +93,7 @@ const Reaction = memo(({ like_count, type, commentId, render,Cmt,postId,userPost
                         setCheckReaction(false)                       
                     }
                     }>
-                        <Image source={reactionMap.Emoji} style={{ width: 18, height: 18 }} />
+                        <Image source={reactionMap.Emoji} style={{ width: 22, height: 22 }} />
                     </TouchableOpacity>
                 </View>
             );
@@ -113,7 +113,7 @@ const Reaction = memo(({ like_count, type, commentId, render,Cmt,postId,userPost
                                 numberLike === null ? setNumberLike(1) : setNumberLike(pre => (parseInt(pre.toString())) + 1)
                                 setIsLike(false)
                             }}>
-                                <AntDesignIcon name='like2' size={18} color='#000' />
+                                <AntDesignIcon name='like2' size={24} color='#000' />
                                 {/* <Text style = {{ fontWeight: 'bold', fontSize: 14}}>Thích</Text> */}
                             </Pressable>
                         </View> :
@@ -156,7 +156,7 @@ const Reaction = memo(({ like_count, type, commentId, render,Cmt,postId,userPost
                                     number === null ? addLikeComment(commentId, item.type) : updateLike(commentId, item.type)
                              
                             }}>
-                                <Image source={item.Emoji} style={{ width: 20, height: 20, marginVertical: 6 }} />
+                                <Image source={item.Emoji} style={{ width: 24, height: 24, marginVertical: 6 }} />
                             </TouchableOpacity>
                         )
                     })}

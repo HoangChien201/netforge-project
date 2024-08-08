@@ -16,7 +16,7 @@ import { ProfileRootStackEnum } from '../component/stack/ProfileRootStackParams'
 import BODYMODAL from '../component/edit-post-modal/Body'
 import DELETEPOST from '../component/listpost/DeletePostModal'
 import { RootState } from '../component/store/store';
-import { boolean } from 'yup';
+import SkelotonComment from '../component/formComments/SkelotonComment';
 const CommentsScreen = () => {
     const navigation = useNavigation<navigationType>()
     const user = useSelector((state: RootState) => state.user.value)
@@ -25,11 +25,9 @@ const CommentsScreen = () => {
     const [text, setText] = useState(null);
     const [post, setPosts] = useState(null);
     const [replyTo, setReplyTo] = useState(null);
-    const [comment, setComments] = useState([]);
-    const [imagePath, setImagePath] = useState(null);
+    const [comment, setComments] = useState(null);
     const [commentCount, setCommentCount] = useState(0);
     const [loadDatda, setLoadData] = useState(false);
-    const [loaDing, setLoading] = useState(false);
     const [like, setLike] = useState([])
     const scrollViewRef = useRef();
     const route = useRoute();
@@ -51,7 +49,6 @@ const CommentsScreen = () => {
             setCreator(response.creater.id)
             fetchComments();
             setLoadData(false)
-            setLoading(true)
         } catch (error) {
             console.log('lỗi ở fetchPosts:', error);
         }
@@ -76,15 +73,6 @@ const CommentsScreen = () => {
     // // hàm render comments
     useEffect(() => {
         fetchPosts();
-        const timer = setTimeout(() => {
-            if (!loadDatda) {
-                setLoadData(true);
-                setLoading(false)
-            }
-        }, 3000);
-
-        return () => clearTimeout(timer);
-
     }, []);
     useEffect(() => {
         if (moveToHome == false) {
@@ -92,7 +80,6 @@ const CommentsScreen = () => {
             const timer = setTimeout(() => {
                 if (!loadDatda) {
                     setLoadData(true);
-                    setLoading(false)
                 }
             }, 3000);
 
@@ -136,6 +123,7 @@ const CommentsScreen = () => {
     };
 
 
+    const isFinishFetchAPI = comment && post
 
 
     return (
@@ -167,52 +155,46 @@ const CommentsScreen = () => {
             </View>
 
             <View style={{ height: "87%", backgroundColor: 'white' }}>
+                {
+                    !isFinishFetchAPI ?
+                        <SkelotonComment />
+                        :
+                        <ScrollView ref={scrollViewRef} showsVerticalScrollIndicator={false}>
+                            {
+                                post && (
+                                    <View style={{ margin: 0 }}>
+                                        <ItemPost key={post.id} data={post} onPressProfile={handleToProfile} />
+                                    </View>
+                                )
+                            }
+                            {
+                                numberLike && (
+                                    <TouchableOpacity onPress={() => setModalGetLikePostVisible(true)}>
 
-                <ScrollView ref={scrollViewRef} showsVerticalScrollIndicator={false}>
-                    {
-                        post && (
-                            <View style={{ margin: 0 }}>
-                                <ItemPost key={post.id} data={post} onPressProfile={handleToProfile}
-                                    setShowModalEdit={setShowModalEdit} setSelectedId={setSelectedId}
-                                    showDelete={showDelete} setShowDelete={setShowDelete}
-                                />
-                            </View>
-                        )
-                    }
-                    {
-                        numberLike && (
-                            <TouchableOpacity onPress={() => setModalGetLikePostVisible(true)}>
+                                        <View style={styles.ViewPostLike}>
+                                            <Image style={{ width: 18, height: 18 }} source={require('../media/Dicons/thumb-up.png')} />
+                                            <Text style={{ marginStart: 4, fontSize: 16, fontWeight: '500', color: '#000' }}>{numberLike}</Text>
+                                        </View>
+                                    </TouchableOpacity>
+                                )
+                            }
+                            {comment.length < 1 ? (
+                                <View style={styles.ViewNoComment}>
+                                    <View style={{ justifyContent: 'center', alignItems: 'center' }}>
 
-                                <View style={styles.ViewPostLike}>
-                                    <Image style={{ width: 18, height: 18 }} source={require('../media/Dicons/thumb-up.png')} />
-                                    <Text style={{ marginStart: 4, fontSize: 16, fontWeight: '500', color: '#000' }}>{numberLike}</Text>
+                                        <Image style={{ width: 150, height: 150, marginBottom: 20 }} source={require('../media/icon_tuong/chat.png')} />
+                                        <Text style={styles.textNoComment1}>Chưa có bình luận nào</Text>
+                                        <Text style={styles.textNoComment2}>Hãy là người đầu tiên bình luận.</Text>
+                                    </View>
                                 </View>
-                            </TouchableOpacity>
-                        )
-                    }
-                    {
-                        loaDing && comment.length == 0 && (
-                            <View style={styles.spinnerContainer}>
-                                <UIActivityIndicator color={'#FF6347'} size={30} />
-                            </View>
-                        )
-                    }
-                    {loadDatda && comment.length === 0 ? (
-                        <View style={styles.ViewNoComment}>
-                            <View style={{ justifyContent: 'center', alignItems: 'center' }}>
-
-                                <Image style={{ width: 150, height: 150, marginBottom: 20 }} source={require('../media/icon_tuong/chat.png')} />
-                                <Text style={styles.textNoComment1}>Chưa có bình luận nào</Text>
-                                <Text style={styles.textNoComment2}>Hãy là người đầu tiên bình luận.</Text>
-                            </View>
-                        </View>
-                    ) : (
-                        comment.map(comment => (
-                            <CommentItem key={comment.id} comment={comment} onReply={handleReply} render={fetchComments} parent={replyTo} setText={setText} setUserId={setCommentUserId} postId={postId} userPostId={creater} />
-                        ))
-                    )
-                    }
-                </ScrollView>
+                            ) : (
+                                comment.map(comment => (
+                                    <CommentItem key={comment.id} comment={comment} onReply={handleReply} render={fetchComments} parent={replyTo} setText={setText} setUserId={setCommentUserId} postId={postId} userPostId={creater} />
+                                ))
+                            )
+                            }
+                        </ScrollView>
+                }
             </View>
             {
                 modalGetLikePostVisible ? (

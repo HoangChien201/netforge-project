@@ -2,7 +2,9 @@ export function FilterIconCall(sender:boolean,type:"audio" | 'video'){
     const icons=[
         require('../../../media/icon-message/call-in.png'),
         require('../../../media/icon-message/outgoing-call.png'),
-        require('../../../media/icon-message/video-camera.png'),
+        require('../../../media/icon-message/video-call-incoming.png'),
+        require('../../../media/icon-message/video-call-outgoing.png'),
+
 
     ]
 
@@ -14,6 +16,9 @@ export function FilterIconCall(sender:boolean,type:"audio" | 'video'){
     }
 
     if(type === 'video'){
+        if(sender){
+            return icons[3]
+        }
         return icons[2]
     }
 
