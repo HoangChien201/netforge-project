@@ -11,7 +11,7 @@ import PushNotification, { Importance } from 'react-native-push-notification';
 import { Alert, Linking, PermissionsAndroid } from 'react-native';
 import { socket } from '../../http/SocketHandle'
 // @ts-ignore
-import { ZegoCallInvitationDialog,ZegoUIKitPrebuiltCallFloatingMinimizedView } from '@zegocloud/zego-uikit-prebuilt-call-rn';
+import { ZegoCallInvitationDialog, ZegoUIKitPrebuiltCallFloatingMinimizedView } from '@zegocloud/zego-uikit-prebuilt-call-rn';
 import { useDispatch, useSelector } from 'react-redux'
 import { RootState } from '../store/store'
 import { setUsers } from '../store/userSlice'
@@ -21,20 +21,16 @@ import { useSendNotification } from '../../constant/notify'
 import LoginScreen from '../../screens/LoginScreen'
 
 export type navigationType = StackNavigationProp<RootStackParamList>
-type routeType = RouteProp<{ params: { value: string } }, 'params'>
 export type RootStackParamList = {
 
 };
-type Manager = {
-    notification: any
-}
+
 const ManageNavigation = () => {
     const [showSplash, setShowSplash] = useState(true);
 
     const dispatch = useDispatch()
-    const user = useSelector((state:RootState)=>state.user.value)
-    const [notifications, setNotifications] = useState([]);
-    const [friend, setFriend] = useState([])           
+    const user = useSelector((state: RootState) => state.user.value)
+    const [friend, setFriend] = useState([])
     const [todayFriends, setTodayFriends] = useState([]);
     const { sendBirthDay } = useSendNotification()
     const handleAutoLogin = async () => {
@@ -49,8 +45,9 @@ const ManageNavigation = () => {
                     const password = String(stPassword);
                     try {
                         const result = await login(email, password);
+                        await AsyncStorage.setItem('token', result?.data.token);
                         dispatch(setUsers(result?.data))
-                      
+
                     } catch (error) {
                         console.log(error);
 
@@ -75,12 +72,14 @@ const ManageNavigation = () => {
         }, 1500);
         return () => clearTimeout(timer);
     }, []);
+
     //tuongne
-    useEffect(()=>{
+    useEffect(() => {
         autoSendBirth();
-    },[user])
+    }, [user])
+
     const autoSendBirth = async () => {
-        if(user){
+        if (user) {
             try {
                 const result = await getFriends(2)
                 setFriend(result)
@@ -90,38 +89,38 @@ const ManageNavigation = () => {
         }
 
     };
-    useEffect(()=>{
+
+    useEffect(() => {
         const today = new Date();
         const friendsToday = friend.filter(friend => {
             const friendBirthday = new Date(friend.user.dateOfBirth);
             return today.getDate() === friendBirthday.getDate() && today.getMonth() === friendBirthday.getMonth();
         });
         setTodayFriends(friendsToday);
-        console.log('friendsTodayne', friendsToday);
-    },[friend])
-    useEffect(()=>{
-        if(todayFriends && user){
+    }, [friend])
+
+    useEffect(() => {
+        if (todayFriends && user) {
             if (todayFriends.length > 0 && user) {
                 todayFriends.forEach(friend => {
-                    sendBirthDay({                       
+                    sendBirthDay({
                         friendId: friend.user.id,
                         avatar: friend.user.avatar,
                         fullname: friend.user.fullname,
-                        receiver:user.id,
-                       
+                        receiver: user.id,
+
                     })
                 });
             } else {
                 console.log('No friends to tag');
             }
         }
-    },[todayFriends])
+    }, [todayFriends])
+
     useEffect(() => {
         if (user) {
             const id = user.id;
-            //console.log('Socket connected:', socket.connected);
             socket.on(`notification-${id}`, (data) => {
-                console.log('Notification received in Navigate:', data);
                 addNotification(data);
                 showLocal(data);
                 // const exists = notifications.some(notification => notification.id == data.id);
@@ -133,6 +132,7 @@ const ManageNavigation = () => {
         }
 
     }, [user]);
+
     const addNotification = async (newNotification) => {
         try {
             const oldNotifications = await AsyncStorage.getItem(`notifications-${user.id}`);
@@ -193,8 +193,8 @@ const ManageNavigation = () => {
             playSound: true,
             soundName: "default",
             userInfo: {
-                    screen: notification.navigate.screen || 'HomeScreen',
-                    params: notification.navigate.params || null,
+                screen: notification.navigate.screen || 'HomeScreen',
+                params: notification.navigate.params || null,
             }
         });
 
@@ -219,6 +219,7 @@ const ManageNavigation = () => {
             console.warn(err);
         }
     };
+    
     if (showSplash) {
         return <SplashScreen />;
     }

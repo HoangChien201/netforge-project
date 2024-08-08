@@ -129,7 +129,6 @@ export class Message {
         try {
 
             const {group,sender,receiver}= data
-            console.log('gprovider',group);
             
             if(!group){
 
@@ -138,7 +137,6 @@ export class Message {
                     members: [sender, receiver]
                 }
                 const group: GroupChatType = await createGroupsHTTP(createGroup)
-                console.log('go',group.id);
                 
                 this.group = group.id
             }
@@ -151,7 +149,6 @@ export class Message {
             if (msgRes) {
                 const {msg,receivers}=msgRes
                 const title=msg.group.type ==='group' ? `nhóm ${msg.group.name} `: 'mới'
-                console.log('msg',msgRes);
                 
                 receivers.forEach(receiver => {
                     sendNotification({
@@ -235,7 +232,6 @@ function sendNotification ({ nameSender, avatarSender, sender, messId, body, rec
 
     };
     socket.emit('notification', data);
-    console.log('Sent notification data:', data);
 };
 
 function createNotificationTemplate() {

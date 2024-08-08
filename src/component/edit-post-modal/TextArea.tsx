@@ -24,7 +24,6 @@ const TextArea: React.FC<Props> = ({ content, setContent, friends, setFriends })
             const status = 2;
             const result = await getFriends(status);
             setValue(result);
-            console.log('lũ bạn:' + JSON.stringify(result));
         } catch (error) {
             console.log('getFriends error:' + error);
             throw error;
@@ -47,8 +46,6 @@ const TextArea: React.FC<Props> = ({ content, setContent, friends, setFriends })
         if (mentions.length > 0) {
             const ids = mentions.map(mention => mention.id);
             setFriends(ids);
-            console.log('id lũ bạn: ' + ids);
-            console.log('mentions : ' + JSON.stringify(mentions));
             setValue(prevValue => prevValue.filter(item => !ids.includes(item.user.id)));
         } else {
             setFriends([]);
@@ -105,12 +102,7 @@ const TextArea: React.FC<Props> = ({ content, setContent, friends, setFriends })
                 isAlreadyMentioned = true;
                 break;
             }
-            console.log('1 = ' + mentions[i].id);
-            console.log('2 = ' + user.id);
-
-
         }
-        console.log('isAlreadyMentioned:', isAlreadyMentioned);
         if (isAlreadyMentioned) {
             ToastAndroid.show('Người dùng đã được nhắc đến!', ToastAndroid.SHORT);
         } else {

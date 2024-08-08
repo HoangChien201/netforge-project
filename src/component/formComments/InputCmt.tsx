@@ -20,12 +20,7 @@ const InputCmt = ({ fetchComments, onMediaSelected, parent = null , postId, text
     const [mediaType, setMediaType] = useState(null);
     const [checkComments, setCheckComments] = useState(true)
     const {sendNCommentPost,sendNRepComment} = useSendNotification()
-    // const inputRef = useRef(null);
-    // console.log(comment);
     
-    
-    console.log('inputcommentid', comment);
-  
     useEffect(() => {
         if (text) {
             if(user?.id === comment){
@@ -60,7 +55,6 @@ const InputCmt = ({ fetchComments, onMediaSelected, parent = null , postId, text
             saveToPhotos: true,
         };
         const response: any = await launchImageLibrary(options, takePhoto);
-        console.log("rp", response);
         takePhoto(response)
 
     }, []);
@@ -70,12 +64,10 @@ const InputCmt = ({ fetchComments, onMediaSelected, parent = null , postId, text
             const asset = response.assets[0];
             setMedia(asset.uri);
             setMediaType(asset.type.split('/')[0]);
-            console.log('asset', asset);
 
 
             // upload image
             const files = new FormData();
-            console.log(files);
 
             files.append('files', {
                 uri: asset.uri,
@@ -110,7 +102,6 @@ const InputCmt = ({ fetchComments, onMediaSelected, parent = null , postId, text
        
         try {
             if (media === null && comments === '' && !imagePath) {
-                console.log("Vui lòng comment");
                 return
             } else{
                 const data = {
@@ -119,12 +110,10 @@ const InputCmt = ({ fetchComments, onMediaSelected, parent = null , postId, text
                     image: imagePath,
                     parent: parent
                 }
-                console.log(data);
     
                 if(checkComments){
                     setCheckComments(false)
                     const reponse = await addComments(data.posts, data.content, data.image, data.parent)
-                console.log(reponse);
                  // nếu thêm thành công thì set các biến về trạng thái bang đầu 
                  if(data.parent){
                     //postId1, body,commentId, receiver 
@@ -143,7 +132,6 @@ const InputCmt = ({ fetchComments, onMediaSelected, parent = null , postId, text
                  setImagePath(null)
                  setMediaType(null)
                  Keyboard.dismiss()
-                 console.log("Thêm bình luận thành công !");
                  setCheckComments(true)
                 
                 }

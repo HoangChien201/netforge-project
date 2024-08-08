@@ -63,7 +63,6 @@ const ForgotPassword:React.FC = () => {
             setIsLoading(true);
             try {
                 const response= await sendMail(email);
-                console.log(response.token);
                 const token = response.token; 
                 await AsyncStorage.setItem('TokenForgot',token)
                 if (response) {

@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import { Button, View, StyleSheet, Text, TextInput, Image, TouchableOpacity } from 'react-native';
+import { Button, View, StyleSheet, Text, TextInput } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { useMyContext } from '../../component/navigation/UserContext';
 import { createNewPost } from '../../http/QuyetHTTP';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../component/store/store';

@@ -1,7 +1,6 @@
 import { Image, StyleSheet, Text, View } from 'react-native'
 import React from 'react'
 import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
-import { FlatList } from 'react-native';
 
 const SkelotonMessage = () => {
     const list = [1, 2, 3, 4, 5, 6, 7, 8, 9]

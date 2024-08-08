@@ -137,16 +137,11 @@ const UpLoadAvatar: React.FC<UpLoadAvatarProps> = ({ initialImage, onImageSelect
           setTimeout(() => {
               setShowModal(false);
           }, 2000);
-          console.log("update avatar thanh cong")
           onImageSelect(image);
           setImage(image); 
       }
     } catch (error: any) {
-      if (error.response && error.response.status === 404) {
-          //showModalFalse();
-      } else {
-          //showModalFalse();
-      }
+
       console.log("Error update profile:", error);
     }
   };

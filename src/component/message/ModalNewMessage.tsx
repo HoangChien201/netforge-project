@@ -5,11 +5,9 @@ import { COLOR } from '../../constant/color'
 import NewMessageComponent from './NewMessageComponent'
 import NewGroupComponent from './NewGroupComponent'
 import { getFriends } from '../../http/QuyetHTTP'
-import { KeyboardAvoidingView } from 'react-native'
 import { createGroupsHTTP, getMessageByGroupAPI } from '../../http/ChienHTTP'
 import { MessageScreenNavigationProp } from '../../screens/message/MessageScreen'
 import { useNavigation } from '@react-navigation/native'
-import { useMyContext } from '../navigation/UserContext'
 import { useSelector } from 'react-redux';
 import { RootState } from '../store/store'
 export type FriendType = {

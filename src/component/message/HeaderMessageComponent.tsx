@@ -25,8 +25,6 @@ const HeaderMessageComponent = ({ partner }: { partner: any }) => {
                             }
                         
                     }).filter(invitee=>invitee.userID !== user?.id?.toString())
-                    console.log('invitees',invitees);
-                    
 
     return (
         <View style={styles.container}>

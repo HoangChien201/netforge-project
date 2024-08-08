@@ -37,9 +37,7 @@ const ItemComment: React.FC<Item> = ({ notification }) => {
     const postId = notification.data[0].postId || notification.data[0].postId1
     const displayDate = DateOfTimePost(notification.data[0].timestamp);
     
-    const log = () => {
-        console.log(notification , postId);
-    }
+
     const navigateToCommentsScreen = () => {
         navigation.navigate('CommentsScreen', { postId });
     };

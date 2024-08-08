@@ -13,7 +13,6 @@ type IconItem = {
 }
 
 const ButtonIcon: React.FC<IconItem> = ({ style, onPress, like }) => {
-    console.log("like",like);
     return (
         <View>
             <TouchableOpacity style={style} onPress={onPress} >

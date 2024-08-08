@@ -7,7 +7,6 @@ import { COLOR } from '../../constant/color';
 import IconAnt from 'react-native-vector-icons/AntDesign'
 import { useNavigation } from '@react-navigation/native';
 import Swiper from 'react-native-swiper';
-import { useMyContext } from '../navigation/UserContext';
 import { useSelector } from 'react-redux';
 import { RootState } from '../store/store';
 
@@ -74,7 +73,6 @@ const Options: React.FC<Op> = ({ onSelectMedia, onSelectEmoji, setShowAI, imageU
             });
 
             onSelectMedia(newImages);
-            //console.log('newImages: ' + JSON.stringify(newImages));
 
         }
     }, []);

@@ -6,9 +6,7 @@ import { NetworkStackNavigationProp } from '../component/stack/NetworkRootStackP
 import { useNavigation } from '@react-navigation/native'
 import { getTextBirthday } from '../constant/birthday'
 import { FriendType } from '../component/message/ModalNewMessage'
-import { MessageFactory, MessageProvider } from '../component/message/class/MessageProvider'
-import { useMyContext } from '../component/navigation/UserContext'
-import Loading from '../component/Modal/Loading'
+import { MessageFactory } from '../component/message/class/MessageProvider'
 import { useSelector } from 'react-redux'
 import { RootState } from '../component/store/store'
 

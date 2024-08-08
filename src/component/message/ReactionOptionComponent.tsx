@@ -1,8 +1,7 @@
-import { Animated, Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
-import React, { useEffect, useRef, useState } from 'react'
-import { EmojiReaction, reaction } from '../../constant/emoji'
+import { Image, StyleSheet, TouchableOpacity, View } from 'react-native'
+import React, { useEffect, useState } from 'react'
+import { EmojiReaction } from '../../constant/emoji'
 import { reactionType } from './MessageItem'
-import { useMyContext } from '../navigation/UserContext'
 import { MessageCordinatesType } from '../../screens/message/MessageScreen'
 import { useSelector } from 'react-redux'
 import { RootState } from '../store/store'
@@ -13,7 +12,6 @@ const STATUS_REMOVE_REACTION = 3
 const ReactionOptionComponent = ({ ontionOnpress, reactionOfMsg }: { ontionOnpress?: any, reactionOfMsg: Array<reactionType>, messageCordinates: MessageCordinatesType,setSelectedMessage:any }) => {
     const user = useSelector((state:RootState)=>state.user.value)
     const [reactionActive, setReactionActive] = useState(reactionOfMsg ? reactionOfMsg.find(reaction => reaction.user.toString() === user.id.toString()) : undefined)
-    console.log('reactionActive',reactionOfMsg);
     
     //get react of user
     useEffect(() => {
@@ -67,7 +65,6 @@ const ReactionOptionComponent = ({ ontionOnpress, reactionOfMsg }: { ontionOnpre
         <View style={styles.container}>
             {
                 EmojiReaction.map((reaction, index) => {
-                    console.log('source',reaction.source);
                     
                     return (
                         <TouchableOpacity

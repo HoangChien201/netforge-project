@@ -37,7 +37,6 @@ const MessageItemContent = ({ message, sender }: { message: Message, sender: boo
             )
 
         case "image": {
-            // console.log('imageselected');
 
             return (
                 <View style={styles.messageImage}>

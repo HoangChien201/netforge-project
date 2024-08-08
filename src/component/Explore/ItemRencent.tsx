@@ -2,9 +2,7 @@ import { StyleSheet, Text, View, TouchableOpacity, Image } from 'react-native'
 import React from 'react'
 import { useNavigation } from '@react-navigation/native';
 import { ProfileRootStackEnum } from '../stack/ProfileRootStackParams';
-import { useMyContext } from '../navigation/UserContext';
 import Icon from 'react-native-vector-icons/Feather'
-import { COLOR } from '../../constant/color';
 import { useSelector } from 'react-redux';
 import { RootState } from '../store/store';
 

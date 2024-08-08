@@ -20,10 +20,7 @@ const ItemLikeComment: React.FC<Item> = ({ notification }) => {
     const reaction = notification.data[0].reaction.type
     const displayDate = DateOfTimePost(notification.data[0].timestamp);
     const postId = notification?.data[0].postId || notification?.data[0].postId1
-    const log = () => {
-        console.log(notification , postId);
 
-    }
     const getReactionDetails = (reaction: any) => {
         switch (reaction) {
             case 1:

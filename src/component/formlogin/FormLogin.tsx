@@ -1,5 +1,5 @@
-import {  StyleSheet, ToastAndroid, View } from 'react-native'
-import React, {  useState } from 'react'
+import { StyleSheet, ToastAndroid, View } from 'react-native'
+import React, { useState } from 'react'
 
 
 import { emailPattern } from '../../constant/valid'
@@ -71,18 +71,7 @@ const FormLogin = ({ setModal, setStatus, setIsLoading }: { setModal: (value: bo
 
         if (result) {
           const { data } = result
-          const { id, avatar, fullname } = data
-
-          //login zego
-          onUserLogin(id, fullname, avatar, navigation).then(() => {
-            AsyncStorage.setItem('token', data.token);
-
-            dispatch(setUsers(data))
-
-
-          })
-
-
+          handleLoginResult(data)
         }
         setIsLoading(false);
       } catch (error) {
@@ -96,13 +85,19 @@ const FormLogin = ({ setModal, setStatus, setIsLoading }: { setModal: (value: bo
   const handleLoginResult = (data) => {
     if (data) {
       AsyncStorage.setItem('token', data.token);
-
+      const { id, avatar, fullname } = data
       setModal(true);
       setStatus(true);
       setTimeout(() => {
         setModal(false);
       }, 1000);
-      dispatch(setUsers(data))
+
+      //login zego
+      onUserLogin(id, fullname, avatar, navigation).then(() => {
+        AsyncStorage.setItem('token', data.token);
+        dispatch(setUsers(data))
+      })
+
     } else {
       setModal(true);
       setStatus(false);
@@ -121,8 +116,8 @@ const FormLogin = ({ setModal, setStatus, setIsLoading }: { setModal: (value: bo
         const password = String(stPassword);
         try {
           const result = await login(email, password);
-          await AsyncStorage.setItem('userToken', result?.data.token);
-          handleLoginResult(result);
+          await AsyncStorage.setItem('token', result?.data.token);
+          handleLoginResult(result?.data);
 
         } catch (error) {
           console.log("Touch ID login error", error);

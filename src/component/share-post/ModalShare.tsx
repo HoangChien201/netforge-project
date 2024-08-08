@@ -129,7 +129,6 @@ const ModalShare:React.FC<ModalShareProps> = ({creater, isVisible, onClose, idPo
             receiver: creater.id
         };
         sendNSharePost(data);
-        console.log(data);
     };
 
 return (

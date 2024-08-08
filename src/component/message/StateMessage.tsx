@@ -1,13 +1,9 @@
 import { StyleSheet, Text, View } from 'react-native'
 import React, { useEffect, useState } from 'react'
-import { messageType } from './MessageItem'
-import { addMessageAPI, updateMessageAPI } from '../../http/ChienHTTP'
 import { uploadImage } from '../../http/TuongHttp'
 import { socket } from '../../http/SocketHandle'
-import { useMyContext } from '../navigation/UserContext'
 import { StateMessageFormat } from './format/StatusMessage'
 import { Message } from './class/MessageProvider'
-import { useSendNotification } from '../../constant/notify'
 import { useSelector } from 'react-redux'
 import { RootState } from '../store/store'
 export type StateMessageType = {
@@ -48,10 +44,8 @@ const StateMessage: React.FC<StateMessageType> = ({ message, group_id, sender, l
       switch (message.type) {
 
         case 'text':
-          console.log('g',group_id);
           
           const msgRespone = await message.PostMessage({sender:user.id,group:group_id})
-          console.log('msgRespone1',msgRespone);
 
           if (msgRespone !==  "Gửi tin nhắn lỗi") {
             socket.emit(`message`, msgRespone)
@@ -90,7 +84,6 @@ const StateMessage: React.FC<StateMessageType> = ({ message, group_id, sender, l
         
         message.message = resultImage[0].url
         const msgRespone = await message.PostMessage({sender:user.id,group:group_id})
-        console.log('msgRespone',msgRespone);
         
         if (msgRespone !==  "Gửi tin nhắn lỗi") {
           socket.emit(`message`, msgRespone)

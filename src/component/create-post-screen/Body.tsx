@@ -44,12 +44,10 @@ const Body: React.FC<Bpob> = ({ hiddenView, content, setContent, media, setMedia
             pushAImage()
             return () => {
                 // Cleanup nếu cần khi màn hình mất focus
-                console.log('Screen unfocused');
             };
         }, [])
     );
     useEffect(() => {
-        console.log('emo', emotions);
     }, [emotions])
     useEffect(()=>{
         if(viewMore){
@@ -58,17 +56,6 @@ const Body: React.FC<Bpob> = ({ hiddenView, content, setContent, media, setMedia
     },[viewMore])
 
     useEffect(() => {
-        //console.log('media:', JSON.stringify(media, null, 2));
-        // const uris = media.map((file: fileType) => file.uri)
-        // setUries(uris);
-        // if (image) {
-        //     media.push({
-        //         uri: image,
-        //         resource_type: 'image/jpg'
-        //     });
-        //     console.log('Added imageUrl to media paths:', media);
-        // }
-        console.log('total:', media);
         pushAImage();
         setMediaLength(media.length);
     }, [imageUrl || media]);
@@ -78,19 +65,15 @@ const Body: React.FC<Bpob> = ({ hiddenView, content, setContent, media, setMedia
                 uri: imageUrl,
                 resource_type: 'image/jpg'
             });
-            console.log('Added imageUrl to media paths:', media);
         }
         renderMedia;
     }
     const handleMediaSelect = (newImages) => {
         setMedia((prevMedia) => [...prevMedia, ...newImages]);
-        console.log('Updated media:', media);
     }
     const deleteImage = (uri: any) => {
         const updatedImages = media.filter((media: { uri: any; }) => media.uri !== uri);
         setMedia(updatedImages);
-        console.log(updatedImages);
-        console.log(media);
         setSwiperKey((prevKey) => prevKey + 1);
 
     };

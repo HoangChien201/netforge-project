@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useCallback } from 'react';
+import React, { useState, useRef, useCallback } from 'react';
 import { View, Image, TouchableOpacity, StyleSheet, Animated, Easing, Text, Modal, TouchableWithoutFeedback } from 'react-native';
 import ProgressBar from './ProgressBar';
 import Reaction from './Reaction';
@@ -8,9 +8,7 @@ import AntDesign from 'react-native-vector-icons/AntDesign';
 import { DateOfTimePost } from '../../format/DateOfTimePost';
 import { deletePost } from '../../http/userHttp/getpost';
 import { NavigationProp, ParamListBase, useNavigation } from '@react-navigation/native';
-import { useMyContext } from '../navigation/UserContext';
 import { HomeRootStackEnum } from '../stack/HomeRootStackParams';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useDispatch, useSelector } from 'react-redux';
 import { setPostid } from '../store/postIDSlice';
 import { RootState } from '../store/store';

@@ -1,5 +1,5 @@
-import React, { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { Image, Pressable, StyleSheet, Animated, Text, TouchableOpacity, View, Modal } from 'react-native';
+import React, { memo, useEffect, useMemo, useState } from 'react';
+import { Image, Pressable, StyleSheet, Text, TouchableOpacity, View, Modal } from 'react-native';
 import { NavigationProp, ParamListBase, useNavigation } from '@react-navigation/native';
 import AntDesignIcon from 'react-native-vector-icons/AntDesign';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -7,7 +7,6 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import ActionBar from './ActionBar';
 import { DateOfTimePost } from '../../format/DateOfTimePost';
 import ItemImg from './ItemImg';
-import { useMyContext } from '../navigation/UserContext';
 import { SharePost } from '../../http/userHttp/getpost';
 import { ProfileRootStackEnum } from '../stack/ProfileRootStackParams';
 import { emotions } from '../../constant/emoji';
@@ -33,7 +32,6 @@ const ItemPost = memo(({ data, setShowModalEdit, setSelectedId, setShowDelete })
     }, [data])
 
     const { creater, share_count, reaction, content, media, comment_count, create_at, id, like_count, share, emotion } = datas;
-    //console.log("emotion", datas);
 
     useEffect(() => {
         setRenderShare(false)
@@ -139,11 +137,9 @@ const ItemPost = memo(({ data, setShowModalEdit, setSelectedId, setShowDelete })
                     <View style={styles.home1}>
                         <View style={styles.containerAvt}>
                             <TouchableOpacity onPress={() => handleToProfile(creater.id)} style={styles.containerAvt}>
-                                {creater.avatar ? (
+                                {creater.avatar &&
                                     <Image source={{ uri: creater.avatar }} style={styles.avt} />
-                                ) : (
-                                    <Image source={require('../../media/icon/phuking.jpg')} style={styles.avt} />
-                                )}
+                                }
                                 <View>
                                     <View style={{ flexDirection: 'row' }}>
                                         <Text style={styles.nameUser}>{creater.fullname === null ? "Người dùng" : creater.fullname}</Text>
@@ -239,11 +235,9 @@ const ItemPost = memo(({ data, setShowModalEdit, setSelectedId, setShowDelete })
                     <View style={styles.home}>
                         <View style={styles.containerAvt}>
                             <TouchableOpacity style={styles.containerAvt} onPress={() => handleToProfile(creater.id)}>
-                                {creater?.avatar ? (
+                                {creater?.avatar && 
                                     <Image source={{ uri: creater.avatar }} style={styles.avt} />
-                                ) : (
-                                    <Image source={require('../../media/icon/phuking.jpg')} style={styles.avt} />
-                                )}
+                                }                                
                                 <View>
                                     <View style={{ flexDirection: 'row' }}>
                                         <Text style={styles.nameUser}>{creater?.fullname === null ? "Người dùng" : creater?.fullname}</Text>

@@ -42,7 +42,7 @@ const ListPorts = memo(({ onrefresh }: { onrefresh: boolean }) => {
   const navigation: NavigationProp<ParamListBase> = useNavigation();
   const PAGE_SIZE = 10;
   const getAllPost = useCallback(async () => {
-    const token = await AsyncStorage.getItem('userToken');
+    const token = await AsyncStorage.getItem('token');
 
    if(allData.length < 0){
     setLoading(true);
@@ -50,7 +50,6 @@ const ListPorts = memo(({ onrefresh }: { onrefresh: boolean }) => {
    
     try {
       const response: any = await getAll(token, user.id);
-      console.log("đã lấy ds tại ListPort");
       if (response.length > 0) {
         const getByTypeOne = response.filter(post => post.type === 1)
         setAllData([...getByTypeOne]);
@@ -104,7 +103,6 @@ const ListPorts = memo(({ onrefresh }: { onrefresh: boolean }) => {
   
 
   const handleToProfile = (userId: React.SetStateAction<null>) => {
-    //console.log("userID: ",userId);
     if (userId === loggedInUserId) {
       navigation.navigate(ProfileRootStackEnum.ProfileScreen);
     } else {

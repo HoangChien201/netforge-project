@@ -11,7 +11,6 @@ import {
   StatusBar,
 } from 'react-native';
 import ManageNavigation from './src/component/navigation/ManageNavigation';
-import { UserProvider } from './src/component/navigation/UserContext';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { ZegoUIKitPrebuiltLiveStreamingFloatingMinimizedView } from '@zegocloud/zego-uikit-prebuilt-live-streaming-rn';
 import { Host } from 'react-native-portalize';
@@ -26,7 +25,6 @@ function App(): React.JSX.Element {
   useEffect(() => {
     PushNotification.configure({
       onNotification: function (notification) {
-        console.log('Notification received:', notification);
         const { userInteraction, data } = notification;
         if (userInteraction) {
           switch (data.screen) {

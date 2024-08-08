@@ -5,7 +5,6 @@ import AntDesign from 'react-native-vector-icons/AntDesign';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import { COLOR } from '../../constant/color';
-import { useMyContext } from '../navigation/UserContext';
 import { cancelRequest, deleteFriend, sendRequest, getRequest } from '../../http/QuyetHTTP';
 import { useSendNotification } from '../../constant/notify';
 import { NetworkRootStackEnum, NetworkStackNavigationProp } from '../stack/NetworkRootStackParams';
@@ -53,6 +52,7 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = (
       checkFiend;
     }, [change])
   );
+
   // const getWaitAcept = async () => {
   //   try {
   //     const result = await getRequest();
@@ -91,9 +91,6 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = (
           setChange(1);
           checkFiend();
           setShow(false)
-          console.log('sended');
-          
-          
         }
       } catch (error) {
         setDisabledButtons(false);
@@ -138,13 +135,11 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = (
       const result = await cancelRequest(friendId);
       if (result) {
         setChange(3);
-        console.log('deleted');
         setShow(false)
         setTextReqState(false)
       }
     } catch (error) {
       console.log(error);
-      console.log(friendId);
 
     }
   }
