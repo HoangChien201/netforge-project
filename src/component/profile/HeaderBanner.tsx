@@ -50,7 +50,6 @@ const styles = StyleSheet.create({
     position: 'absolute',
     left: 0,
     right: 0,
-    // paddingTop: 25,
     zIndex: 1,
   },
   avatar: {

@@ -8,6 +8,7 @@ import { getUserHistories } from '../../http/QuyetHTTP';
 import { useNavigation } from '@react-navigation/native'
 import Swiper from 'react-native-swiper';
 import Loading from '../Modal/Loading'
+import SkelotonHistory from './SkelontonHistory'
 const { width } = Dimensions.get('window');
 
 type BodyH = {}
@@ -19,6 +20,7 @@ const Body: React.FC<BodyH> = ({ }) => {
     const [dataComment, setDataComment] = useState<any[]>([]);
     const navigation = useNavigation();
     const [load, setLoad] = useState(false);
+    const [loadWheel, setLoadWheel] = useState(false);
     const [currentIndex, setCurrentIndex] = useState(0);
     const [refreshing, setRefreshing] = useState(false);
 
@@ -36,14 +38,17 @@ const Body: React.FC<BodyH> = ({ }) => {
             setDataComment(result.comments);
             setLoad(false);
             setRefreshing(false)
+            setLoadWheel(false)
         } catch (error) {
             console.log('Lỗi lấy useHistories: ' + error);
             setLoad(false);
             setRefreshing(false)
+            setLoadWheel(false)
         }
     };
 
     useEffect(() => {
+        setLoadWheel(true)
         getData();
     }, []);
     const loadData = useCallback(() => {
@@ -70,7 +75,7 @@ const Body: React.FC<BodyH> = ({ }) => {
 
     return (
         <View style={styles.container}>
-            <Loading isLoading={load} />
+            <Loading isLoading={loadWheel}/>
             <View style={styles.header}>
                 <View style={styles.typeHis}>
                     <TouchableOpacity style={[styles.likeButton, currentIndex === 0 && styles.activeButton]} onPress={() => { handleButtonPress(0) }}>
@@ -84,6 +89,7 @@ const Body: React.FC<BodyH> = ({ }) => {
                 </View>
             </View>
             <View style={[styles.container]}>
+                {dataLike? 
                 <Swiper ref={swiperRef} loop={false} showsButtons={false} style={{ marginBottom: 50 }}
                     onIndexChanged={handleIndexChanged}
                 >
@@ -113,6 +119,7 @@ const Body: React.FC<BodyH> = ({ }) => {
                         </ScrollView>
                     </View>
                 </Swiper>
+                : <SkelotonHistory/>}
             </View>
         </View>
     )

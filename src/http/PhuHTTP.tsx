@@ -79,7 +79,7 @@ export const updateProfile = async (id:number, email: string, fullname: string,
 
 
 //get user by ID
-export const getUSerByID = async (id:number, token:string) => {
+export const getUSerByID = async (id:any, token:any) => {
     try {
         const url = `/user/get-one/${id}`;
         return await AxiosInstance().get(url, 
@@ -96,7 +96,7 @@ export const getUSerByID = async (id:number, token:string) => {
 
 
 //update avatar
-export const updateAvatar = async (id:number, avatar: string) => {
+export const updateAvatar = async (id:any, avatar: string) => {
     try {
         const url = `/user/update/${id}`;
         const body = { avatar};
@@ -120,7 +120,7 @@ export const updateBackground = async (id:number, background: string) => {
 }
 
 // get post by user
-export const getPostByUser = async (id:number) => {
+export const getPostByUser = async (id:any) => {
     try {
         const url = `posts/get-by-user/${id}`;
         const token = await AsyncStorage.getItem('token');

@@ -7,19 +7,21 @@ import { DateOfTimePost } from '../../format/DateOfTimePost'
 import { useNavigation } from '@react-navigation/native'
 import { navigationRef } from '../navigation/NavigationRef'
 type Item = {
-    notification: any
+    notification: any;
+    setShowModalBirthday:(value:any)=>void
 }
-const ItemBirth: React.FC<Item> = ({ notification }) => {
+const ItemBirth: React.FC<Item> = ({ notification , setShowModalBirthday }) => {
     const navigation = useNavigation();
-    function navigationScreen(screen: string) {
-        navigation.navigate(`${screen}`)
+    const navigationScreen = ()=> {
+        navigation.navigate('NotificationScreen')
+        setShowModalBirthday(true);
     }
     const postId = notification.id
     const displayDate = DateOfTimePost(notification.data[0].timestamp);
-    
+
     return (
         <TouchableOpacity style={styles.container} key={notification.idv4.toString()}
-            onPress={() => navigationRef.navigate('NotificationScreen')}
+            onPress={navigationScreen}
         >
             <View style={styles.iconFriend} >
                 <Image style={styles.avatar} source={{ uri: notification.data[0].userInfo.avatar }} />
@@ -41,15 +43,16 @@ const ItemBirth: React.FC<Item> = ({ notification }) => {
                 <Icon style={styles.iconHeart} name='birthday-cake' size={18} color={COLOR.PrimaryColor} />
             </View>
             <View style={styles.text}>
-                <Text >
-                    <Text style={styles.textUser_Post} numberOfLines={2} >{notification.data[0].title}</Text>
+                <Text  numberOfLines={2} >
+                    <Text style={styles.textUser_Post} >Hôm nay là sinh nhật của </Text>
+                    <Text style={styles.text1} >{notification.data[0].userInfo.fullname}</Text>
                     {notification.data[1] ?
-                        <Text style={styles.textUser_Post}>, {notification.data[1].title}</Text>
+                        <Text style={styles.text1}>, {notification.data[1].userInfo.fullname}</Text>
                         :
                         null
                     }
                     {notification.data[2] ?
-                        <Text style={styles.textUser_Post}>, ... </Text>
+                        <Text style={styles.text1}>, ... </Text>
                         :
                         null
                     }

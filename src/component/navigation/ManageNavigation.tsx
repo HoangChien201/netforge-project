@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { NavigationContainer } from '@react-navigation/native'
+import { NavigationContainer, RouteProp } from '@react-navigation/native'
 import { StackNavigationProp } from '@react-navigation/stack'
 import NetworkStack from '../stack/NetworkStack'
 import UserStack from '../stack/UserStack'
@@ -18,6 +18,7 @@ import { setUsers } from '../store/userSlice'
 import { getFriends } from '../../http/QuyetHTTP'
 import { navigationRef } from './NavigationRef'
 import { useSendNotification } from '../../constant/notify'
+import LoginScreen from '../../screens/LoginScreen'
 
 export type navigationType = StackNavigationProp<RootStackParamList>
 export type RootStackParamList = {
@@ -32,6 +33,7 @@ const ManageNavigation = () => {
     const [friend, setFriend] = useState([])
     const [todayFriends, setTodayFriends] = useState([]);
     const { sendBirthDay } = useSendNotification()
+    let oldNotifications;
     const handleAutoLogin = async () => {
         try {
             const keepLoggedIn = await AsyncStorage.getItem('keep');
@@ -74,11 +76,12 @@ const ManageNavigation = () => {
 
     //tuongne
     useEffect(() => {
-        autoSendBirth();
+        getFriendList();
     }, [user])
 
-    const autoSendBirth = async () => {
-        if (user) {
+    const getFriendList = async () => {
+        const checkUserN = await AsyncStorage.getItem(`CancelN-${user.id}`)
+        if (user && checkUserN != 'true') {
             try {
                 const result = await getFriends(2)
                 setFriend(result)
@@ -96,7 +99,7 @@ const ManageNavigation = () => {
             return today.getDate() === friendBirthday.getDate() && today.getMonth() === friendBirthday.getMonth();
         });
         setTodayFriends(friendsToday);
-    }, [friend])
+    },[friend])
 
     useEffect(() => {
         if (todayFriends && user) {
@@ -110,23 +113,29 @@ const ManageNavigation = () => {
 
                     })
                 });
+                cancelNtoUser(user.id)
             } else {
                 console.log('No friends to tag');
             }
         }
     }, [todayFriends])
-
+const cancelNtoUser = async (id)=>{
+    await AsyncStorage.setItem(`CancelN-${id}`,'true')
+}
     useEffect(() => {
         if (user) {
             const id = user.id;
             socket.on(`notification-${id}`, (data) => {
-                addNotification(data);
-                showLocal(data);
-                // const exists = notifications.some(notification => notification.id == data.id);
-                // if (!exists) {
-                //     addNotification(data);
-                //     showLocal(data);
-                // }
+                // addNotification(data);
+                // showLocal(data);
+                // console.log('Nhận thông báo');
+                
+                const exists = oldNotifications.some(notification => notification.id == data.id);
+                if (!exists) {
+                    addNotification(data);
+                    showLocal(data);
+                    console.log('Nhận thông báo');
+                }
             });
         }
 
@@ -134,11 +143,11 @@ const ManageNavigation = () => {
 
     const addNotification = async (newNotification) => {
         try {
-            const oldNotifications = await AsyncStorage.getItem(`notifications-${user.id}`);
+            oldNotifications = await AsyncStorage.getItem(`notifications-${user.id}`);
             const parsedNotifications = oldNotifications ? JSON.parse(oldNotifications) : [];
             const updatedNotifications = [...parsedNotifications, newNotification];
             await AsyncStorage.setItem(`notifications-${user.id}`, JSON.stringify(updatedNotifications));
-            console.log('Notification added and saved');
+            console.log('Notification added');
         } catch (error) {
             console.error('Error adding notification:', error);
         }
@@ -222,9 +231,43 @@ const ManageNavigation = () => {
     if (showSplash) {
         return <SplashScreen />;
     }
+
+    const linking = {
+        prefixes: ['https://netforge'],
+        config: {
+            screens: {
+                HomeScreen: 'home',
+                // Post: 'post/:id',
+                // CommentsScreen: 'comments/:id',
+            },
+        },
+    };
+
+    
+        const handleDeepLink = (event) => {
+            let data = Linking.openURL(event.url);
+            console.log('Deep link data:', data);
+        };
+
+        Linking.addEventListener('url', handleDeepLink);
+
+        // return () => {
+        //     Linking.removeEventListener('url', handleDeepLink);
+        // };
+        
+        const checkInitialLink = async () => {
+            const initialUrl = await Linking.getInitialURL();
+            if (initialUrl) {
+                let data = Linking.openURL(initialUrl);
+                console.log('Initial link data:', data);
+            }
+        };
+
+        checkInitialLink();
+
     return (
         <GestureHandlerRootView>
-            <NavigationContainer ref={navigationRef}>
+            <NavigationContainer linking={linking} ref={navigationRef}>
                 {/*ZegoCallInvitationDialog hiện dialog nhận cuộc gọi */}
                 <ZegoCallInvitationDialog />
                 {user ? <NetworkStack /> : <UserStack />}

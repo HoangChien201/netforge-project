@@ -232,13 +232,14 @@ export const useSendNotification = () => {
       userInfo: {
         receiver: user?.id,
         avatar,
+        fullname
       },
       navigate: {
         screen: 'NotificationScreen',
         params: null
       },
     };
-    socket.emit('notification', data);
+    socket.emit('notification', data);                            
     
   };
   const sendAcceptFriend = ({ friendId }) => {

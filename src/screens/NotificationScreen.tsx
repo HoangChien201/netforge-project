@@ -163,7 +163,7 @@ const NotificationScreen = () => {
       case 6:
         return <ItemMessage notification={item} />;
       case 7:
-        return <ItemBirth notification={item} />;
+        return <ItemBirth notification={item} setShowModalBirthday={setShowModalBirthday} />;
       case 8:
         return <ItemFriendAccept notification={item} />;
       case 9:

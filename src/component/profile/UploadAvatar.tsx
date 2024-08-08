@@ -1,19 +1,19 @@
 import React, { useState, useCallback} from 'react';
 import { StyleSheet, View, TouchableOpacity, Image, Modal, Text, Pressable } from 'react-native';
 import { launchCamera, launchImageLibrary, CameraOptions, ImageLibraryOptions } from 'react-native-image-picker';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import Icon from 'react-native-vector-icons/AntDesign';
 import FontistoIcon from 'react-native-vector-icons/Fontisto';
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons';
 import ImagePicker from 'react-native-image-crop-picker';
 import { useFocusEffect } from '@react-navigation/native';
-
 import { uploadImage } from '../../http/TuongHttp';
 import { getUSerByID, updateAvatar } from '../../http/PhuHTTP';
 import ModalPoup from '../Modal/ModalPoup';
 import ModalFail from '../Modal/ModalFail';
 import ImageViewModal from './ImageViewModal';
 import { RootState } from '../store/store';
+import { setUsers } from '../store/userSlice';
 
 interface UpLoadAvatarProps {
   initialImage: string; 
@@ -23,27 +23,31 @@ interface UpLoadAvatarProps {
 
 const UpLoadAvatar: React.FC<UpLoadAvatarProps> = ({ initialImage, onImageSelect, userId }) => {
   const user = useSelector((state : RootState)=>state.user.value)
+  const token = user?.token;
+  const dispatch = useDispatch();
   const [show, setShow] = useState<boolean>(false);
   const [showModal, setShowModal] = useState(false);
   const [status, setStatus] = useState(true);
   const [isImageViewerVisible, setIsImageViewerVisible] = useState(false);
 
     const [userData, setUserData] = useState<any>(null);
-    const [image, setImage] = useState<string>('');
+    const [image, setImage] = useState<string>(user?.avatar || '');
+    const [imageFriend, setImageFriend] = useState<string>('');
 
     useFocusEffect(
         React.useCallback(() => {
             const fetchUserData = async () => {
             try {
-                const response = await getUSerByID(userId, user?.token);
+                const response = await getUSerByID(userId, token);
                 setUserData(response);
                 setImage(response.avatar);
+                setImageFriend(response.avatar);
             } catch (error) {
                 console.log(error);
             }
             };
             fetchUserData();
-        }, [userId])
+        }, [userId, image, imageFriend])
         );
 
   const takePhoto = useCallback(async (response: any) => {
@@ -127,6 +131,7 @@ const UpLoadAvatar: React.FC<UpLoadAvatarProps> = ({ initialImage, onImageSelect
     try {
     const response = await updateAvatar(user?.id, image)
       if (response) {
+          dispatch(setUsers({ ...user, avatar: image }));
           setShowModal(true);
           setStatus(true);
           setTimeout(() => {
@@ -170,7 +175,7 @@ const UpLoadAvatar: React.FC<UpLoadAvatarProps> = ({ initialImage, onImageSelect
       ) : (
         <TouchableOpacity onPress={handleShowAvatar}>
           <Image
-          source={image ? { uri: image } : require('../../media/icon/avatar.png')}
+          source={imageFriend ? { uri: imageFriend } : require('../../media/icon/avatar.png')}
           style={styles.editAvatar}/>
         </TouchableOpacity>
       )}

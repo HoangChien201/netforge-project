@@ -13,7 +13,8 @@ import { navigationType } from '../component/stack/UserStack'
 import ItemPost from '../component/listpost/ItemPost';
 import Modal_GetLikePosts from '../component/formComments/Modal_GetLikePosts';
 import { ProfileRootStackEnum } from '../component/stack/ProfileRootStackParams';
-
+import BODYMODAL from '../component/edit-post-modal/Body'
+import DELETEPOST from '../component/listpost/DeletePostModal'
 import { RootState } from '../component/store/store';
 import SkelotonComment from '../component/formComments/SkelotonComment';
 const CommentsScreen = () => {
@@ -33,17 +34,23 @@ const CommentsScreen = () => {
     const { postId } = route.params;
     const { numberLike } = route.params;
     const { creater } = route.params;
-
+    const [selectedId, setSelectedId] = useState(null);
+    const [showModalEdit, setShowModalEdit] = useState(false);
+    const [showDelete, setShowDelete] = useState(false);
+    const [loadAfterUpdate, setLoadAfterUpdate] = useState(false);
+    const [creator, setCreator] = useState();
+    const [moveToHome, setMoveToHome] = useState(false)
     // lấy bài viết chi tiết
     const fetchPosts = async () => {
         try {
             //goo
             const response: any = await getPostById(postId);
             setPosts(response)
+            setCreator(response.creater.id)
             fetchComments();
             setLoadData(false)
         } catch (error) {
-            console.log(error);
+            console.log('lỗi ở fetchPosts:', error);
         }
     };
     // hàm lấy danh sách comments
@@ -55,7 +62,7 @@ const CommentsScreen = () => {
             setComments(response.reverse());
             setCommentCount(response.length);
         } catch (error) {
-            console.log(error);
+            console.log('lỗi ở fetchComments:', error);
         }
     };
     // Hàm xử lý khi người dùng chọn trả lời một bình luận  
@@ -67,7 +74,27 @@ const CommentsScreen = () => {
     useEffect(() => {
         fetchPosts();
     }, []);
+    useEffect(() => {
+        if (moveToHome == false) {
+            fetchPosts();
+            const timer = setTimeout(() => {
+                if (!loadDatda) {
+                    setLoadData(true);
+                    setLoading(false)
+                }
+            }, 3000);
 
+            return () => clearTimeout(timer);
+        }
+
+
+    }, [loadAfterUpdate]);
+    useEffect(() => {
+        if (moveToHome === true) {
+            navigation.navigate('HomeScreen');
+            setMoveToHome(false);
+        }
+    }, [moveToHome])
     //tat bottomtab
     useEffect(() => {
         navigation.getParent()?.setOptions({ tabBarStyle: { display: 'none' } });
@@ -99,9 +126,26 @@ const CommentsScreen = () => {
 
     const isFinishFetchAPI = comment && post
 
+
     return (
 
         <Pressable style={[styles.container]}>
+            <BODYMODAL
+                showModalEdit={showModalEdit}
+                setShowModalEdit={setShowModalEdit}
+                selectedId={selectedId}
+                setSelectedId={setSelectedId}
+                setLoadAfterUpdate={setLoadAfterUpdate}
+
+            />
+            <DELETEPOST
+                showDelete={showDelete}
+                setShowDelete={setShowDelete}
+                postId={selectedId}
+                setSelectedId={setSelectedId}
+                setMoveToHome={setMoveToHome}
+                setLoadAfterUpdate={setLoadAfterUpdate}
+            />
             <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center', position: 'relative', height: 50, backgroundColor: '#fff' }}>
                 <Pressable onPress={() => { navigation.goBack() }} style={{ position: 'absolute', left: 15 }}>
                     <Icon name='arrow-back' size={28} color={'#000'} />
@@ -172,6 +216,7 @@ const CommentsScreen = () => {
                         onMediaSelected={handleMediaSelected} // Xử lý khi người dùng chọn hình ảnh hoặc video
                         postId={postId}
                         setParent={setReplyTo}
+                        creator={creator}
                     />
                 )
             }

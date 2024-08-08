@@ -4,6 +4,7 @@ import { GetTimeComment } from '../../format/FormatDate';
 import { useNavigation } from '@react-navigation/native';
 import { useSelector } from 'react-redux';
 import { RootState } from '../store/store';
+import SkelotonHistory from './SkelontonHistory';
 type Like = {
     dataLike: any,
     load:any
@@ -20,6 +21,7 @@ const LikeHistories: React.FC<Like> = ({ dataLike, load }) => {
 
         renderItem;
     }, [dataLike]);
+    
     const noData =()=>{
     if (!load) {
         return (
@@ -28,7 +30,7 @@ const LikeHistories: React.FC<Like> = ({ dataLike, load }) => {
     } else {
         return (
             <View style={styles.containerEmpty}>
-                <Text style={styles.textEmpty}>Hãy tương tác với mọi người để lưu giữ kỉ niệm!</Text>
+                <SkelotonHistory/>
             </View>
         )
     }
@@ -159,7 +161,7 @@ const styles = StyleSheet.create({
         fontWeight: '400',
     },
     containerEmpty: {
-        height: 50,
+        height: '100%',
         width: '100%',
         alignItems: 'center',
         justifyContent: 'center',

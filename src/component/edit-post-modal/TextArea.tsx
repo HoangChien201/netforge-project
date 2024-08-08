@@ -33,16 +33,19 @@ const TextArea: React.FC<Props> = ({ content, setContent, friends, setFriends })
         getFriendList();
     }, []);
     useEffect(() => {
-        replaceMentionValues(
-            content,
-            mention => {
-                const { name, id } = mention;
-                if (!mentions.some(m => m.id === id)) {
-                    mentions.push({ name, id });
+        if(content){
+            replaceMentionValues(
+                content,
+                mention => {
+                    const { name, id } = mention;
+                    if (!mentions.some(m => m.id === id)) {
+                        mentions.push({ name, id });
+                    }
+                    return `@[${name}](${id})`;
                 }
-                return `@[${name}](${id})`;
-            }
-        );
+            );
+        }
+
         if (mentions.length > 0) {
             const ids = mentions.map(mention => mention.id);
             setFriends(ids);

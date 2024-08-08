@@ -1,3 +1,4 @@
+import React from 'react';
 import * as ZIM from 'zego-zim-react-native';
 // @ts-ignore
 import ZegoUIKitPrebuiltCallService from '@zegocloud/zego-uikit-prebuilt-call-rn';

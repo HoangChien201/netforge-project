@@ -22,7 +22,7 @@ interface optionsProps {
     emotions: any
 }
 
-const Options: React.FC<optionsProps> = ({ onSelectNewMedia, onSelectEmoji, setShowModal, dataShare,emotions, setEmotions }) => {
+const Options: React.FC<optionsProps> = ({ onSelectNewMedia, onSelectEmoji, setShowModal, dataShare,emotion, setEmotion }) => {
     const [showEmojiModal, setShowEmojiModal] = useState(false);
     const [currentIndex, setCurrentIndex] = useState(0);
     const swiperRef = useRef(null);
@@ -49,7 +49,7 @@ const Options: React.FC<optionsProps> = ({ onSelectNewMedia, onSelectEmoji, setS
         //setShowEmojiModal(false);
     };
     const handleEmotionSelect = (item: any) => {
-        setEmotions(item);
+        setEmotion(item.type);
         setShowEmojiModal(false);
 
     };

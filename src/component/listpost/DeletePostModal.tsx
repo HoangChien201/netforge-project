@@ -4,17 +4,21 @@ import { deletePost } from '../../http/QuyetHTTP';
 type Mo = {
   showDelete: boolean;
   setShowDelete: (value: any) => void;
-  postId:any
-
+  postId: any;
+  setLoadAfterUpdate: (value: any) => void;
+  setSelectedId: (value: boolean) => void;
+  setMoveToHome: (value: boolean) => void;
 }
 
-const DeletePost: React.FC<Mo> = ({ showDelete, setShowDelete,postId }) => {
-
+const DeletePost: React.FC<Mo> = ({ showDelete, setShowDelete, postId, setLoadAfterUpdate, setMoveToHome, setSelectedId }) => {
   const deleP = async (postId) => {
     try {
       const result = await deletePost(postId);
       if (result) {
         setShowDelete(false);
+        setLoadAfterUpdate(pre => !pre);
+        setMoveToHome(true)
+        setSelectedId(null);
         Alert.alert(
           'Bài viết đã xóa!',
         )
@@ -24,19 +28,23 @@ const DeletePost: React.FC<Mo> = ({ showDelete, setShowDelete,postId }) => {
       throw error;
     }
   }
+  const closeDelete = () => {
+    setSelectedId(null)
+    setShowDelete(false)
+  }
   return (
     <Modal
       visible={showDelete}
       transparent={true}
       animationType="slide"
-      onRequestClose={() => setShowDelete(false)}
+      onRequestClose={() => closeDelete()}
     >
       <View style={styles.modalBackground}>
         <View style={styles.modalContainer}>
           <Text style={styles.title}>Xác nhận</Text>
           <Text style={styles.message}>Bạn có chắc chắn muốn xóa bài viết?</Text>
           <View style={styles.buttonContainer}>
-            <TouchableOpacity style={styles.button} onPress={() => setShowDelete(false)}>
+            <TouchableOpacity style={styles.button} onPress={() => closeDelete()}>
               <Text style={styles.buttonText}>Hủy</Text>
             </TouchableOpacity>
             <TouchableOpacity style={styles.button} onPress={() => deleP(postId)}>
