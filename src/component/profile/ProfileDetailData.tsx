@@ -40,7 +40,6 @@ const ProfileDetailData = ({ userData }: { userData: any }) => {
       {allDataNull && (
         <>
           <Text style={styles.noDataText}>Hãy cập nhật thông tin để mọi người có thể hiểu thêm về bạn!</Text>
-          {/* <View style={{ borderWidth: 0.7, borderColor: '#ddd'}}></View> */}
         </>
       )}
     </View>
