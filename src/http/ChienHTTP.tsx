@@ -71,7 +71,7 @@ export const addMessageAPI = async (message: Message) => {
     const url = '/message';
     const respone: MessageCreateRes = await AxiosInstance().post(url, message);
     return respone
-  } catch (error) {
+  } catch (error) { 
     console.log(error);
     throw error;
   }
