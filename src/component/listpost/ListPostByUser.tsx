@@ -7,6 +7,8 @@ import ItemPost from './ItemPost';
 import Loading from '../Modal/Loading';
 import { ProfileRootStackEnum } from '../stack/ProfileRootStackParams';
 import { RootState } from '../store/store';
+import BODYMODAL from '../../component/edit-post-modal/Body'
+import DELETEPOST from './DeletePostModal'
 
 interface ListPortsByUserProps {
   data: any[];
@@ -23,6 +25,10 @@ const ListPortsByUser: React.FC<ListPortsByUserProps> = ({ data, onRefresh }) =>
   const [currentPage, setCurrentPage] = useState(1);
   const navigation: NavigationProp<ParamListBase> = useNavigation();
   const [isFetching, setIsFetching] = useState(true);
+  const [loadAfterUpdate, setLoadAfterUpdate] = useState(false);
+  const [showModalEdit, setShowModalEdit] = useState(false);
+  const [showDelete, setShowDelete] = useState(false);
+  const [selectedId, setSelectedId] = useState(null);
 
   const PAGE_SIZE = 10;
 
@@ -64,6 +70,20 @@ const ListPortsByUser: React.FC<ListPortsByUserProps> = ({ data, onRefresh }) =>
 
   return (
     <View style={{ backgroundColor: 'rgba(155,155,155,0.2)' }}>
+      <BODYMODAL
+          showModalEdit={showModalEdit}
+          setShowModalEdit={setShowModalEdit}
+          selectedId={selectedId}
+          setLoadAfterUpdate={setLoadAfterUpdate}
+          setSelectedId={setSelectedId}
+        />
+        <DELETEPOST
+          showDelete={showDelete}
+          setShowDelete={setShowDelete}
+          postId={selectedId}
+          setLoadAfterUpdate={setLoadAfterUpdate}
+          setSelectedId={setSelectedId}
+        />
       {isFetching ? (
         <Loading isLoading={true} />
       ) : (
@@ -71,7 +91,9 @@ const ListPortsByUser: React.FC<ListPortsByUserProps> = ({ data, onRefresh }) =>
           <FlatList
             data={displayData}
             renderItem={({ item, index }) => {
-              return <ItemPost onrefresh={onRefresh} index={index} data={item} />;
+              return <ItemPost onrefresh={onRefresh} index={index} data={item} 
+                  setShowModalEdit={setShowModalEdit} setSelectedId={setSelectedId}
+                  showDelete={showDelete} setShowDelete={setShowDelete}/>;
             }}
             keyExtractor={(item) => item.id.toString()}
             showsVerticalScrollIndicator={false}

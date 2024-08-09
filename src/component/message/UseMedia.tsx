@@ -1,4 +1,4 @@
-import { View,TouchableOpacity, StyleSheet, PermissionsAndroid } from 'react-native'
+import { View, TouchableOpacity, StyleSheet, PermissionsAndroid } from 'react-native'
 import React, { useCallback } from 'react'
 import { CameraOptions, ImageLibraryOptions, launchCamera, launchImageLibrary } from 'react-native-image-picker';
 
@@ -9,8 +9,8 @@ import { MessageFactory } from './class/MessageProvider';
 import { useSelector } from 'react-redux';
 import { RootState } from '../store/store';
 
-const UseMedia = ({ onSubmit,reply }: { onSubmit: any,reply:messageType | null }) => {
-    const user = useSelector((state:RootState)=>state.user.value)
+const UseMedia = ({ onSubmit, reply }: { onSubmit: any, reply: messageType | null }) => {
+    const user = useSelector((state: RootState) => state.user.value)
 
     // camera
     const openCamera = useCallback(async () => {
@@ -25,7 +25,7 @@ const UseMedia = ({ onSubmit,reply }: { onSubmit: any,reply:messageType | null }
     // kho ảnh
     const openLibrary = useCallback(async () => {
         const options: ImageLibraryOptions = {
-            mediaType: 'photo',
+            mediaType: 'video',
             quality: 1,
             selectionLimit: 0, // Cho phép chọn nhiều ảnh
         };
@@ -41,21 +41,43 @@ const UseMedia = ({ onSubmit,reply }: { onSubmit: any,reply:messageType | null }
         if (response.assets && response.assets.length > 0) {
             await response.assets.map((asset: any) => {
                 const { type, fileName, uri } = asset
-                // onSubmit(NewMessage({type,fileName,uri}))
-                
-                onSubmit(
-                    MessageFactory.newMessageImage(
+                const indexSlice = type.toString().indexOf('/')
+                const typeMedia=type.toString().slice(0, indexSlice)
+
+                let messageNew=MessageFactory.newMessageImage(
+                    {
+                        id: user?.id,
+                    }
+                    ,
+                    {
+                        message: {
+                            type,
+                            fileName, uri
+                        },
+                        parent: reply ? reply : null
+                    }
+
+                )
+                if(typeMedia === 'video'){
+                    messageNew=MessageFactory.newMessageVideo(
                         {
-                            id:user?.id,
+                            id: user?.id,
                         }
                         ,
                         {
-                            message:{ type, fileName, uri },
-                            parent:reply ? reply : null
+                            message: {
+                                type,
+                                fileName, uri
+                            },
+                            parent: reply ? reply : null
                         }
-                        
+    
                     )
-                )
+                    
+                }
+                console.log(messageNew);
+
+                onSubmit(messageNew)
 
                 return {
                     type,

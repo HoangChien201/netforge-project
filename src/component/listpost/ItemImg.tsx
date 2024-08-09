@@ -39,6 +39,7 @@ const ItemImg = ({ image }: { image: Medias[] }) => {
             {
               img[0]?.url.endsWith('.mp4') ? // Kiểm tra nếu phần tử đầu tiên là video
                 <Video
+                  paused={true}
                   source={{ uri: img[0]?.url }} // Sử dụng uri của video
                   style={{ flex: 1 }}
                   resizeMode="cover"
@@ -56,6 +57,7 @@ const ItemImg = ({ image }: { image: Medias[] }) => {
                   {
                     img[0]?.url.endsWith('.mp4') ? // Kiểm tra nếu phần tử đầu tiên là video
                       <Video
+                        paused={true}
                         source={{ uri: img[0]?.url }} // Sử dụng uri của video
                         style={{ flex: 1 }}
                         resizeMode="contain"
@@ -70,6 +72,7 @@ const ItemImg = ({ image }: { image: Medias[] }) => {
                   {
                     img[0]?.url.endsWith('.mp4') ? // Kiểm tra nếu phần tử đầu tiên là video
                       <Video
+                        paused={true}
                         source={{ uri: img[0]?.url }} // Sử dụng uri của video
                         style={{ flex: 1 }}
                         resizeMode="cover"
@@ -88,6 +91,7 @@ const ItemImg = ({ image }: { image: Medias[] }) => {
                     {
                       img[1]?.url.endsWith('.mp4') ?
                         <Video
+                          paused={true}
                           source={{ uri: img[1]?.url }} 
                           style={{ flex: 1 }}
                           resizeMode="cover"
@@ -103,6 +107,7 @@ const ItemImg = ({ image }: { image: Medias[] }) => {
                         {
                           img[2]?.url.endsWith('.mp4') ?
                             <Video
+                              paused={true}
                               source={{ uri: img[2]?.url }} 
                               style={{ flex: 1 }}
                               resizeMode="cover"
@@ -127,6 +132,7 @@ const ItemImg = ({ image }: { image: Medias[] }) => {
                         {
                           item.url.endsWith('.mp4') ? // Kiểm tra nếu là video
                             <Video
+                              paused={true}
                               source={{ uri: item.url }} // Sử dụng uri của video
                               style={{ width: '100%', height: '100%' }}
                               resizeMode="cover"

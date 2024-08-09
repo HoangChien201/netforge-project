@@ -123,8 +123,8 @@ const MessageItem: React.FC<MessageItemProp> = React.memo((
 
 
   function ContentOnPress() {
-
-
+    console.log('contentonpress');
+    
   }
 
   //sự kiện show option reaction
@@ -163,12 +163,15 @@ const MessageItem: React.FC<MessageItemProp> = React.memo((
       if (reactionExist) return prevValue
 
       //
-      return prevValue.map(rct => {
+      const reactions= prevValue.map(rct => {
         if (parseInt(rct.user.toString()) === parseInt(reactionCurrent.user.toString())) {
           return { ...rct, ...reactionCurrent }
         }
         return rct;
       })
+      message.UpdateReaction(reactions)
+
+      return reactions;
     })
   }
 
@@ -181,13 +184,21 @@ const MessageItem: React.FC<MessageItemProp> = React.memo((
 
       if (reactionExist) return prevValue
 
-      return [...prevValue, reactionCurrent]
+      const reactionNew=[...prevValue, reactionCurrent]
+      message.UpdateReaction(reactionNew)
+
+      return reactionNew;
     })
+
+
   }
 
   function deleteReaction(reactionCurrent: any) {
     setReactions(prevValue => {
-      return prevValue.filter(rct => parseInt(rct.user.toString()) !== parseInt(reactionCurrent.user.toString()))
+      const reactions=prevValue.filter(rct => parseInt(rct.user.toString()) !== parseInt(reactionCurrent.user.toString()))
+      message.UpdateReaction(reactions)
+      
+      return reactions
     })
   }
 
@@ -257,7 +268,7 @@ const MessageItem: React.FC<MessageItemProp> = React.memo((
     const { height } = e.nativeEvent.layout
     setHeightLayout(height)
   }
-  const isMessageSennder = typeof message.sender === 'object' ? message.sender.id === user.id : message.sender === user.id;
+  const isMessageSennder = typeof message.sender === 'object' ? message.sender.id === user?.id : message.sender === user?.id;
 
 
   return (
@@ -330,7 +341,7 @@ const styles = StyleSheet.create({
   },
   content: {
     minWidth: 0,
-    maxWidth: 210
+    maxWidth: 210,
   },
   createTime: {
     color: '#D9D9D8',

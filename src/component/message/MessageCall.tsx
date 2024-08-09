@@ -7,9 +7,9 @@ const MessageCall = ({type,sender}:{type:'audio'|'video',sender:boolean}) => {
   return (
     <View pointerEvents='none' style={styles.container}>
         <View style={styles.iconWrapper}>
-            <Image source={icon} />
+            <Image style={{width:24,height:24}} source={icon} />
         </View>
-      <Text style={styles.text}>{type} Call</Text>
+      <Text style={styles.text}>Gọi {type}</Text>
     </View>
   )
 }

@@ -19,8 +19,8 @@ export type MessageCreateRes = {
     },
     group: {
       id: number,
-      type:string,
-      name:string
+      type: string,
+      name: string
     }
   },
   receivers: Array<number>
@@ -71,7 +71,7 @@ export const addMessageAPI = async (message: Message) => {
     const url = '/message';
     const respone: MessageCreateRes = await AxiosInstance().post(url, message);
     return respone
-  } catch (error) {
+  } catch (error) { 
     console.log(error);
     throw error;
   }
@@ -105,6 +105,31 @@ export const getReactionByMessageHTTP = async (message: any) => {
   try {
     const url = '/like-message/get-by-message/' + message;
     const respone: Array<reactionType> = await AxiosInstance().get(url);
+    return respone
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+}
+
+export const updateStatusOnline = async (user_id: number, status: number) => {
+  try {
+    const url = '/user/update/' + user_id;
+    const respone = await AxiosInstance().patch(url,
+      {
+        online: status
+      });
+    return respone
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+}
+
+export const checkStatusOnline = async (user_id: number) => {
+  try {
+    const url = '/user/check-online/' + user_id;
+    const respone = await AxiosInstance().get(url)
     return respone
   } catch (error) {
     console.log(error);

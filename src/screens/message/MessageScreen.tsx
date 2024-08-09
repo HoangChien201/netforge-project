@@ -18,7 +18,7 @@ import ShowReactionComponent from '../../component/message/ShowReactionComponent
 import { GroupChatType } from '../../component/message/ListMessageItem'
 import { MessageManage, Message } from '../../component/message/class/MessageProvider'
 import ToolBar from '../../component/message/ToolBar'
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { RootState } from '../../component/store/store'
 
 export type MessageCordinatesType = {
@@ -44,7 +44,9 @@ const MessageScreen = () => {
   })
   const [groupId, setGroupId] = useState<number | null>(null)
   const [reply, setReply] = useState<messageType | null>(null)
+
   const isFocus = useIsFocused()
+  const dispatch=useDispatch()
 
   const navigation = useNavigation()
   const route: MessageScreenRouteProp = useRoute()
@@ -126,11 +128,12 @@ const MessageScreen = () => {
 
   }, [isFocus]);
 
+  //add
   function addMessage(message: Message) {
     setReply(null)
     setMessages(
-      (prevValue) => {
-        return [message, ...prevValue]
+      (prevValue) => {     
+        return [message,...prevValue]
       }
     )
   }
@@ -186,7 +189,6 @@ const MessageScreen = () => {
         }}
         keyExtractor={(item) => item.getId.toString()}
         showsVerticalScrollIndicator={false}
-        extraData={messages}
       />
     )
   }, [messages])

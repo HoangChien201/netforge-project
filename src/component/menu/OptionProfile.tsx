@@ -6,6 +6,7 @@ import { NetworkStackNavigationProp } from '../stack/NetworkRootStackParams'
 import { NavigateToMessage } from '../message/NavigateToMessage'
 import { useDispatch } from 'react-redux'
 import { deleteUser } from '../store/userSlice'
+import { socket } from '../../http/SocketHandle'
 
 const OptionProfile = () => {
     const dispatch = useDispatch()
@@ -29,14 +30,6 @@ const OptionProfile = () => {
         )
     }
 
-    function OptionTextItem({ text, onPress }: { text: string, onPress?: any }) {
-        return (
-            <TouchableOpacity style={styles.optionTextItem} onPress={onPress}>
-                <Text style={{ color: "#000", fontSize: 17, fontWeight: '400' }}>{text}</Text>
-            </TouchableOpacity>
-        )
-    }
-
     function navigationScreen(screen: string) {
         navigation.navigate(`${screen}`)
     }
@@ -53,12 +46,12 @@ const OptionProfile = () => {
         ];
         try {
             await AsyncStorage.multiRemove(keysToRemove);
-
+            socket.disconnect()
+            dispatch(deleteUser());
             console.log('Selected items removed from AsyncStorage');
         } catch (error) {
             console.error('Error clearing selected items from AsyncStorage:', error);
         }
-        dispatch(deleteUser());
     }
 
 //message

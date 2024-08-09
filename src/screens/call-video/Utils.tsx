@@ -4,6 +4,7 @@ import * as ZIM from 'zego-zim-react-native';
 import ZegoUIKitPrebuiltCallService from '@zegocloud/zego-uikit-prebuilt-call-rn';
 import KeyCenter from './KeyCenter';
 import { Image, View } from 'react-native';
+import { MessageFactory } from '../../component/message/class/MessageProvider';
 
 
 export const onUserLogin = async (userID: any, userName: string, avatar: string, navigation: any) => {
@@ -65,13 +66,38 @@ export const onUserLogin = async (userID: any, userName: string, avatar: string,
                                 //     ZegoUIKitPrebuiltCallService.hangUp();
                                 // }
                             },
-                            onCallEnd: (callID, reason, duration) => {
-                                console.log('########CallWithInvitation onCallEnd duration', callID, reason, duration);
-                                console.log('########CallWithInvitation onCallEnd inviter', userID);
-                                console.log('########CallWithInvitation onCallEnd invitee', data);
-                                ZegoUIKitPrebuiltCallService.hangUp();
-                                navigation.goBack();
-                            },
+
+                        },
+                        onCallEnd: (callID, reason, duration) => {
+                            console.log('########CallWithInvitation onCallEnd duration', callID, reason, duration);
+                            console.log('########CallWithInvitation onCallEnd inviter', userID);
+                            console.log('########CallWithInvitation onCallEnd invitee', data);
+                            const { invitees,type } = data
+
+                            if (invitees) {
+
+                                const userInfo = {
+                                    id: userID,
+                                    fullname: userName,
+                                    avatar: avatar
+                                }
+                                const createMessage = {
+                                    message: 'call'
+                                }
+
+                                invitees.forEach(item => {
+                                    const invitee =typeof item === 'object' ?  item.user_id : item  
+                                    if(type === 0){
+                                        MessageFactory.newMessageAudioCall(userInfo, createMessage).PostMessage({ sender: userID, receiver: invitee })
+                                    }else{
+                                        MessageFactory.newMessageVideoCall(userInfo, createMessage).PostMessage({ sender: userID, receiver: invitee })
+
+                                    }
+                                });
+                            }
+
+                            ZegoUIKitPrebuiltCallService.hangUp();
+                            navigation.goBack();
                         },
                     };
                 },
@@ -88,7 +114,7 @@ export const onUserLogin = async (userID: any, userName: string, avatar: string,
                 deny: 'Từ chối',
             });
         });
-        
+
     } catch (error) {
         console.error("Error logging in user Utils:", error);
     }

@@ -48,6 +48,8 @@ type msgInfoType = {
 const TYPE_MESSAGE_IMAGE = 'image'
 const TYPE_MESSAGE_TEXT = 'text'
 const TYPE_MESSAGE_VIDEO = 'video'
+const TYPE_MESSAGE_VIDEO_CALL = 'videocall'
+const TYPE_MESSAGE_AUDIO_CALL = 'audiocall'
 
 export class Message {
 
@@ -169,8 +171,10 @@ export class Message {
 
             return "Gửi tin nhắn lỗi"
         }
+    }
 
-
+    public UpdateReaction(reaction){
+        this.reactions=reaction
     }
 }
 
@@ -182,6 +186,21 @@ export class MessageFactory {
 
     static newMessageImage(userInfo: userInfoType, msgInfo: msgInfoType) {
         msgInfo.type = TYPE_MESSAGE_IMAGE
+        return new Message(userInfo, msgInfo)
+    }
+
+    static newMessageVideo(userInfo: userInfoType, msgInfo: msgInfoType) {
+        msgInfo.type = TYPE_MESSAGE_VIDEO
+        return new Message(userInfo, msgInfo)
+    }
+
+    static newMessageVideoCall(userInfo: userInfoType, msgInfo: msgInfoType) {
+        msgInfo.type = TYPE_MESSAGE_VIDEO_CALL
+        return new Message(userInfo, msgInfo)
+    }
+
+    static newMessageAudioCall(userInfo: userInfoType, msgInfo: msgInfoType) {
+        msgInfo.type = TYPE_MESSAGE_AUDIO_CALL
         return new Message(userInfo, msgInfo)
     }
 }

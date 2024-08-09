@@ -14,6 +14,7 @@ import TouchId from '../component/Modal/TouchId';
 import { NetworkRootStackEnum } from '../component/stack/NetworkRootStackParams';
 import CaptionSlide from '../component/listpost/CaptionSlide';
 import { RootState } from '../component/store/store';
+import ModalShowBirthday from './profile/ModalShowBirthday';
 
 const HomeScreen = () => {
     const initialData = [{ key: 'stories' }, { key: 'posts' }];
@@ -24,8 +25,9 @@ const HomeScreen = () => {
     const [hidden, setHidden] = useState(false);
     const [prevScrollY, setPrevScrollY] = useState(0);
     const navigation = useNavigation();
-    const user = useSelector((state : RootState)=>state.user.value)
+    const user = useSelector((state: RootState) => state.user.value)
     const [visible, setVisible] = useState(false);
+    const [isShowBirthday, setIsShowBirthday] = useState(false)
 
     const checkTouchIdLogin = () => {
         TouchID.isSupported()
@@ -52,6 +54,16 @@ const HomeScreen = () => {
 
     useEffect(() => {
         checkTouchIdLogin();
+
+        AsyncStorage.getItem(`isShowBirthday-${user?.id}`).then(asyncStorageRes => {
+            console.log(!asyncStorageRes);
+            
+            setIsShowBirthday(!asyncStorageRes)
+
+        });
+        
+
+        
     }, []);
 
     useEffect(() => {
@@ -104,9 +116,9 @@ const HomeScreen = () => {
         }, 2000);
     };
     useFocusEffect(
-        useCallback(()=>{
+        useCallback(() => {
             setHidden(false)
-        },[])
+        }, [])
     )
     const renderItem = useCallback(
         ({ item }) => {
@@ -150,6 +162,8 @@ const HomeScreen = () => {
         }
     };
 
+
+
     return (
         <TouchableWithoutFeedback onPress={handleOutsidePress}>
             <View style={styles.container}>
@@ -185,9 +199,9 @@ const HomeScreen = () => {
                     )}
 
                 </View>
-                <View style={{ marginHorizontal: 12,  flexDirection: 'row', alignItems: 'center' }}>
+                <View style={{ marginHorizontal: 12, flexDirection: 'row', alignItems: 'center' }}>
 
-                    <CaptionSlide userimge = {user?.avatar} />
+                    <CaptionSlide userimge={user?.avatar} />
                 </View>
                 <View style={styles.contentContainer}>
                     <Animated.FlatList
@@ -202,10 +216,13 @@ const HomeScreen = () => {
                         onEndReachedThreshold={0.5}
                         refreshing={refreshing}
                         onRefresh={onRefresh}
-                        contentContainerStyle={{paddingBottom:100}}
+                        contentContainerStyle={{ paddingBottom: 100 }}
                     />
                 </View>
-            
+                {
+                    isShowBirthday &&
+                    <ModalShowBirthday/>
+                }
             </View>
         </TouchableWithoutFeedback>
     );

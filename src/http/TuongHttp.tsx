@@ -75,8 +75,7 @@ export const uploadImage = async (files) => {
   try {
     const axiosInstance = AxiosInstance("multipart/form-data");
     const url = '/image/uploads';
-    const result = await axiosInstance.post(url, files,
-    );
+    const result = await axiosInstance.post(url, files);
     return result;
   } catch (error) {
     console.log('>>>>>upload Image: ', error);

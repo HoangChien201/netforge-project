@@ -2,7 +2,6 @@ import { Alert, Image, Platform, StyleSheet, Text, TouchableOpacity, View } from
 import React, { useEffect, useRef } from 'react'
 import QRCode from 'react-native-qrcode-svg';
 import { useIsFocused, useNavigation } from '@react-navigation/native';
-import { ProfileRootStackEnum } from '../component/stack/ProfileRootStackParams';
 import ICON from 'react-native-vector-icons/AntDesign';
 import RNFS from 'react-native-fs';
 import ViewShot, { captureRef } from 'react-native-view-shot';
@@ -12,12 +11,9 @@ import { RootState } from '../component/store/store';
 const isFocused = useIsFocused();
 const QRcodeScreen = () => {
   const navigation = useNavigation()
-  // let logoFromFile = require('../media/quyet_icon/netforge.png');
   const user = useSelector((state : RootState)=>state.user?.value)
   const ref = useRef();
-  const handleToScanner = () => {
-    navigation.navigate(ProfileRootStackEnum.Scanner);
-  }
+
   useEffect(() => {
     if (isFocused) {
       navigation.getParent()?.setOptions({
@@ -32,17 +28,7 @@ const QRcodeScreen = () => {
   }, []);
   const requestStoragePermission = async () => {
     try {
-      // const granted = await PermissionsAndroid.request(
-      //   PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
-      //   {
-      //     title: 'Quyền truy cập lưu trữ',
-      //     message: 'Ứng dụng cần quyền truy cập lưu trữ để lưu hình ảnh.',
-      //     buttonNeutral: 'Hỏi lại sau',
-      //     buttonNegative: 'Hủy',
-      //     buttonPositive: 'Đồng ý',
-      //   }
-      // );
-      // return granted === PermissionsAndroid.RESULTS.GRANTED;
+      
       if (Number(Platform.Version) >= 33) {
         return true;
       }
@@ -73,12 +59,9 @@ const QRcodeScreen = () => {
       const albumPath = RNFS.PicturesDirectoryPath; // Chọn thư mục để lưu trữ hình ảnh
       const fileName = `QRCode_${Date.now()}.jpg`;
       const imagePath = `${albumPath}/${fileName}`;
-      const base64Data = uri.split(',')[1];
 
-      //await RNFS.writeFile(imagePath, base64Data, 'base64');
       // Lưu hình ảnh QR code vào album
       await RNFS.copyFile(uri, imagePath);
-      //await RNFS.writeFile(imagePath, uri, 'base64');
 
       // Hiển thị thông báo thành công
       Alert.alert('Đã lưu QR code vào album thành công.');
@@ -126,11 +109,7 @@ const QRcodeScreen = () => {
           <Text>Quét mã QR để kết bạn với tôi!</Text>
         </View>
       </ViewShot >
-      <View></View>
-      {/* <TouchableOpacity onPress={handleToScanner}>
-        <Text style={{ color: "#000", fontSize: 17, fontWeight: '400' }}>Scan</Text>
-      </TouchableOpacity> */}
-      <View></View>
+
     </View>
   )
 }

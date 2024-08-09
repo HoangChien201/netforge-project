@@ -54,29 +54,21 @@ const FriendProfile:React.FC<ModalFriendProfileProps> = () => {
   }, [navigation]);
   
 
-  //api thông tin theo user id
-  // useFocusEffect(
-  //   React.useCallback(() => {
+  //api thông tin theo user id ==> merge thì lấy này nhé
       const fetchUserData = async () => {
         setLoading(true);
         try {
           const response = await getUSerByID(userId, token);
           setUserData(response);
-          if (JSON.stringify(response) !== JSON.stringify(user)) { // So sánh dữ liệu
-            dispatch(setUsers(response));
-          }
           setLoading(false);
         } catch (error) {
           console.log(error);
         }
       };
-  //     fetchUserData();
-  //   }, [])
-  // );
 
   useEffect(() => {
     fetchUserData();
-}, [userId]);
+  }, [userId]);
 
   // api bài viết theo id
   useEffect(() => {
@@ -150,7 +142,7 @@ const FriendProfile:React.FC<ModalFriendProfileProps> = () => {
   const MyPostScreen = React.memo(() => {
     return(
     <View style={{ flex: 1 }}>
-      {user && <ProfileDetailData userData={user} />}
+      {userData && <ProfileDetailData userData={userData} />}
       {post && <ListPortsByUser data={post} onRefresh={false} />}
     </View>
     )

@@ -13,7 +13,6 @@ import { RootState } from '../../component/store/store'
 
 const ListMessageScreen = () => {
   const user = useSelector((state:RootState)=>state.user.value)
-
   const [groups,setGroups]=useState<Array<GroupChatType>|null>(null)
   const [visibleModalNewMessage,SetVisibleModalNewMessage]=useState(false)
   const isFocus=useIsFocused()
