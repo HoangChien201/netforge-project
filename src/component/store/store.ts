@@ -3,6 +3,7 @@ import reactionReducer from './reactionSlice';
 import postidReducer from './postIDSlice';
 import loadDataSlice from './loadDataSlice';
 import userSlice from './userSlice';
+import displayReducer from './displayReactionSlice';
 
 const store = configureStore({
   reducer: {
@@ -10,6 +11,7 @@ const store = configureStore({
     postID:postidReducer,
     loading:loadDataSlice,
     user:userSlice,
+    displayReaction:displayReducer
   },
 });
 

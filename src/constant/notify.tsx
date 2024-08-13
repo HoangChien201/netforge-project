@@ -78,14 +78,13 @@ export const useSendNotification = () => {
     socket.emit('notification', data);
     
   };
-  const sendNReaction = ({ postId, body, receiver, reactionType }) => {
+  const sendNReaction = ({ postId, receiver, reactionType }) => {
     const notificationTemplate = createNotificationTemplate();
     const data = {
       ...notificationTemplate,
       type: 1,
       postId:postId,
       title: `${user?.fullname} bày tỏ cảm xúc với bài viết `,
-      body,
       userInfo: {
         receiver,
         sender: user?.id,

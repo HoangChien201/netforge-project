@@ -12,6 +12,7 @@ import { HomeRootStackEnum } from '../stack/HomeRootStackParams';
 import { useDispatch, useSelector } from 'react-redux';
 import { setPostid } from '../store/postIDSlice';
 import { RootState } from '../store/store';
+import { reaction } from '../../constant/emoji';
 
 const ProgressBarScreen = ({ listpostStory, setCurrentIndex, currentIndex, dataLength }) => {
     const dispatch = useDispatch();
@@ -25,6 +26,7 @@ const ProgressBarScreen = ({ listpostStory, setCurrentIndex, currentIndex, dataL
     const spinValue = useRef(new Animated.Value(0)).current;
     const navigation: NavigationProp<ParamListBase> = useNavigation();
     const user = useSelector((state : RootState)=>state.user.value)
+    const reactionState = useSelector((state: RootState) => state.reaction.reactions[listpostStory[activeIndex].id]);
 
     const handleImagePressR = useCallback(() => {
         if (!check) {
@@ -124,6 +126,12 @@ const ProgressBarScreen = ({ listpostStory, setCurrentIndex, currentIndex, dataL
             liveID: getLivePostContent()
         })
     }
+    function ViewReaction(){
+        const view =   reaction.find(rct=>rct.type === reactionState)
+        if(view){
+            return <Image source={view.Emoji} style={{width:30,height:30}}/>
+        }
+    }
     return (
         <View style={styles.container}>
             {listpostStory[activeIndex]?.creater.id === user?.id && (
@@ -142,7 +150,7 @@ const ProgressBarScreen = ({ listpostStory, setCurrentIndex, currentIndex, dataL
                     <View style={styles.fullscreenImage1}>
                         <Text style={styles.dateText}>{DateOfTimePost(listpostStory[activeIndex].create_at)}</Text>
                     </View>
-                    <TouchableOpacity style={styles.textContent} disabled={listpostStory[activeIndex].type === 3 ? false : true } onPress={hanleLiveStream}><Text style={styles.imageContent}>{listpostStory[activeIndex].type === 3 ? "Nhấn vào để xem Live" : listpostStory[activeIndex]?.content }</Text></TouchableOpacity>
+                    <TouchableOpacity style={styles.textContent} disabled={listpostStory[activeIndex].type === 3 ? false : true } onPress={hanleLiveStream}><Text style={[styles.imageContent,{backgroundColor:listpostStory[activeIndex]?.content&& 'rgba(0,0,0,0.2)'}]}>{listpostStory[activeIndex].type === 3 ? "Nhấn vào để xem Live" : listpostStory[activeIndex]?.content }</Text></TouchableOpacity>
                 </>
             )}
             <View style={styles.progressBarContainer}>
@@ -178,8 +186,11 @@ const ProgressBarScreen = ({ listpostStory, setCurrentIndex, currentIndex, dataL
                     toggleReactions();
                     setPaused(pre => !pre);
                 }}>
-                    <Animated.View style={{ transform: [{ rotate: spinAnimation }] }}>
-                        <FontAwesome6 name='face-smile' size={30} color="black" style={styles.smileIcon} />
+                    <Animated.View style={{ transform: [{ rotate: spinAnimation }],padding:12,backgroundColor:'rgba(0, 0, 0, 0.2)',borderRadius:20 }}>
+                        {
+                            reactionState ? ViewReaction(): <FontAwesome6 name='face-smile' size={30} color="#fff" style={styles.smileIcon} />
+                        }
+                       
                     </Animated.View>
                 </TouchableOpacity>
             </View>
@@ -267,8 +278,9 @@ const styles = StyleSheet.create({
         color: '#fff',
         position: 'absolute',
         top: '50%',
-        left: '10%',
+        left: '1%',
         flexWrap: 'wrap',
+     
     },
     textContent: {
         width: '90%',
@@ -280,6 +292,7 @@ const styles = StyleSheet.create({
         flexWrap: 'wrap',
         zIndex: 99999999,
         backgroundColor: 'red',
+        
     },
     dateText: {
         color: 'white',
