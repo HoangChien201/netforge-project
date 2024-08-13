@@ -233,7 +233,7 @@ const cancelNtoUser = async (id)=>{
     }
 
     const linking = {
-        prefixes: ['https://netforge'],
+        prefixes: ['netforge://',''],
         config: {
             screens: {
                 HomeScreen: 'home',

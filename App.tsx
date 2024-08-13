@@ -7,7 +7,9 @@
 import 'react-native-gesture-handler';
 import React, { useEffect, useState } from 'react';
 import {
+  AppState,
   LogBox,
+  SafeAreaView,
   StatusBar,
 } from 'react-native';
 import ManageNavigation from './src/component/navigation/ManageNavigation';
@@ -43,7 +45,7 @@ function App(): React.JSX.Element {
             case 'HomeScreen':
               navigate('HomeScreen');
               break;
-              case 'NotificationScreen':
+            case 'NotificationScreen':
               navigate('NotificationScreen');
               break;
             default:
@@ -57,6 +59,10 @@ function App(): React.JSX.Element {
   useEffect(() => {
     RequestNotificationPermission()
   }, []);
+
+
+  
+
   LogBox.ignoreLogs([
     '[Reanimated] Tried to modify key `reduceMotion` of an object which has been already passed to a worklet.',
   ]);
@@ -65,14 +71,15 @@ function App(): React.JSX.Element {
   LogBox.ignoreLogs(['new NativeEventEmitter']);
 
   return (
+
     <GestureHandlerRootView style={{flex:1}}>
       <Provider store={store}>
         <StatusBar barStyle="dark-content" backgroundColor="transparent" />
           <Host>
             <ManageNavigation />
           </Host>
-      </Provider>
-    </GestureHandlerRootView>
+        </Provider>
+      </GestureHandlerRootView>
   )
 }
 
