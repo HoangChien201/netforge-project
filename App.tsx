@@ -71,16 +71,15 @@ function App(): React.JSX.Element {
   LogBox.ignoreLogs(['new NativeEventEmitter']);
 
   return (
-    <SafeAreaView style={{flex:1}}>
-      <GestureHandlerRootView>
-        <Provider store={store}>
-          <StatusBar barStyle="dark-content" backgroundColor="transparent" />
+
+    <GestureHandlerRootView style={{flex:1}}>
+      <Provider store={store}>
+        <StatusBar barStyle="dark-content" backgroundColor="transparent" />
           <Host>
             <ManageNavigation />
           </Host>
         </Provider>
       </GestureHandlerRootView>
-    </SafeAreaView>
   )
 }
 

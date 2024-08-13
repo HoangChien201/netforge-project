@@ -266,14 +266,14 @@ const cancelNtoUser = async (id)=>{
         checkInitialLink();
 
     return (
-        <GestureHandlerRootView>
+        // <GestureHandlerRootView style={{ flex: 1 }}>
             <NavigationContainer linking={linking} ref={navigationRef}>
                 {/*ZegoCallInvitationDialog hiện dialog nhận cuộc gọi */}
                 <ZegoCallInvitationDialog />
                 {user ? <NetworkStack /> : <UserStack />}
                 <ZegoUIKitPrebuiltCallFloatingMinimizedView />
             </NavigationContainer>
-        </GestureHandlerRootView>
+        // </GestureHandlerRootView>
     )
 }
 

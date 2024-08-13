@@ -72,6 +72,9 @@ const FormLogin = ({ setModal, setStatus, setIsLoading }: { setModal: (value: bo
         if (result) {
           const { data } = result
           handleLoginResult(data)
+        }else{
+          setIsLoading(false);
+          setValid({ email: false, password: false });
         }
         setIsLoading(false);
       } catch (error) {

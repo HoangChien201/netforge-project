@@ -9,7 +9,7 @@ type SCAN = {
   user: any,
   setData: any,
 }
-const Body: React.FC<SCAN> = ({ show, setShow, user,setData }) => {
+const Body: React.FC<SCAN> = ({ show, setShow, user, setData }) => {
   const [load, setLoad] = useState(false);
   const handleModalClose = () => {
     setShow(false);
@@ -18,6 +18,21 @@ const Body: React.FC<SCAN> = ({ show, setShow, user,setData }) => {
   setTimeout(() => {
     setLoad(true)
   }, 1000);
+  // if (!user) {
+  //   return (
+  //     <>
+  //       <View style={styles.container}>
+  //         <TouchableOpacity onPress={handleModalClose} style={styles.closeButton}>
+  //           <ICON name='close' size={24} color={'black'} />
+  //         </TouchableOpacity>
+  //         <View style={{height:'100%',width:'100%', alignItems:'center', justifyContent:'center'}}>
+  //         <Text style={{fontSize:18, color:'black', fontWeight:'500'}}>Không tìm thấy?</Text>
+  //         </View>
+
+  //       </View>
+  //     </>
+  //   )
+  // }
   return (
     <Modal visible={show}
       animationType="slide"
@@ -32,10 +47,20 @@ const Body: React.FC<SCAN> = ({ show, setShow, user,setData }) => {
           <TouchableOpacity onPress={handleModalClose} style={styles.closeButton}>
             <ICON name='close' size={24} color={'black'} />
           </TouchableOpacity>
-          {user.avatar?
+          {user.avatar ?
             <USER user={user}></USER>
             :
-            <Loading isLoading={load} />
+            <>
+              <View style={styles.container}>
+                <TouchableOpacity onPress={handleModalClose} style={styles.closeButton}>
+                  <ICON name='close' size={24} color={'black'} />
+                </TouchableOpacity>
+                <View style={{ height: '100%', width: '100%', alignItems: 'center', justifyContent: 'center' }}>
+                  <Text style={{ fontSize: 18, color: 'black', fontWeight: '500' }}>Không tìm thấy?</Text>
+                </View>
+
+              </View>
+            </>
           }
 
 
