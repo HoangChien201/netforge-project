@@ -100,6 +100,7 @@ const StoryDetail = ({ route }) => {
 
     const uploadImage = async () => {
         try {
+            setIsLoading(true);
             setIsSubmitDisabled(true);
             const formData = new FormData();
             formData.append('files', {
@@ -120,7 +121,7 @@ const StoryDetail = ({ route }) => {
             }
             const type = 2;
             const permission = 1;
-            setIsLoading(true);
+        
             const newPost = await createNewPost({ type, medias, permission, content,emotion:0 });
             setTimeout(() => {
                 setIsLoading(false);

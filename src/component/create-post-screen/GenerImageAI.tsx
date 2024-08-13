@@ -66,7 +66,7 @@ const GenerImageAI: React.FC<AI> = ({ showAI, setShowAI, imageUrl, setImageUrl }
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "Authorization": "Bearer ",
+          "Authorization": "Bearer",
         },
         body: JSON.stringify({
           prompt: textInputValue,
@@ -279,11 +279,11 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   example: {
-    height: 40,
+    height: 44,
     flexDirection: 'row',
     flexWrap: 'wrap',
     justifyContent: 'space-around',
-    marginHorizontal: 16
+    marginHorizontal: 5,
   },
   button: {
     padding: 4,

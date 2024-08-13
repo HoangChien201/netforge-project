@@ -17,7 +17,7 @@ import { setUsers } from '../store/userSlice';
 import Loading from '../Modal/Loading';
 
 interface UpLoadAvatarProps {
-  initialImage: string; 
+  initialImage: string;
   onImageSelect: (imagePath: string) => void;
   userId: any;
   setLoadingPosst:(val:boolean)=>void
@@ -33,9 +33,9 @@ const UpLoadAvatar: React.FC<UpLoadAvatarProps> = ({ initialImage, onImageSelect
   const [isImageViewerVisible, setIsImageViewerVisible] = useState(false);
   const [loading, setLoading] = useState(false);
 
-    const [userData, setUserData] = useState<any>(null);
-    const [image, setImage] = useState<string>(user?.avatar || '');
-    const [imageFriend, setImageFriend] = useState<string>('');
+  const [userData, setUserData] = useState<any>(null);
+  const [image, setImage] = useState<string>(user?.avatar || '');
+  const [imageFriend, setImageFriend] = useState<string>('');
 
     const requestCameraPermission = async () => {
       try {
@@ -81,12 +81,15 @@ const UpLoadAvatar: React.FC<UpLoadAvatarProps> = ({ initialImage, onImageSelect
         }, [userId, image, imageFriend])
         );
 
+
   const takePhoto = useCallback(async (response: any) => {
     if (response.didCancel) return;
     if (response.errorCode) return;
     if (response.errorMessage) return;
-    
+
     const asset = response.assets[0];
+    console.log(asset.uri);
+
     try {
       const croppedImage = await ImagePicker.openCropper({
         path: asset.uri,
@@ -94,23 +97,23 @@ const UpLoadAvatar: React.FC<UpLoadAvatarProps> = ({ initialImage, onImageSelect
         height: 300,
         cropping: true,
         cropperCircleOverlay: true,
-        mediaType: 'photo'
+        mediaType: asset.type
       });
-  
+
       if (!croppedImage.didCancel) {
         setLoading(true);
         setImage(croppedImage.path);
         setShow(false);
         onImageSelect(croppedImage.path);
-  
+
         // Upload ảnh
         const files = new FormData();
         files.append('files', {
-            uri: asset.uri,
-            type: asset.type,
-            name: asset.fileName,
+          uri: asset.uri,
+          type: asset.type,
+          name: asset.fileName,
         });
-  
+
         const result = await uploadImage(files);
         if (Array.isArray(result) && result.length > 0) {
           const firstImage = result[0];
@@ -136,7 +139,7 @@ const UpLoadAvatar: React.FC<UpLoadAvatarProps> = ({ initialImage, onImageSelect
       setLoading(false);
     }
   }, [onImageSelect, setImage, setShow, uploadImage]);
-  
+
 
 
   const openCamera = useCallback(async () => {
@@ -165,7 +168,7 @@ const UpLoadAvatar: React.FC<UpLoadAvatarProps> = ({ initialImage, onImageSelect
   const handleUpdateAvatar = async (image:string) => {
     setLoading(true);
     try {
-    const response = await updateAvatar(user?.id, image)
+      const response = await updateAvatar(user?.id, image)
       if (response) {
           dispatch(setUsers({ ...user, avatar: image }));
           setShowModal(true);
@@ -196,7 +199,7 @@ const UpLoadAvatar: React.FC<UpLoadAvatarProps> = ({ initialImage, onImageSelect
     setShow(false);
     setIsImageViewerVisible(false);
   }
-  
+
 
   return (
     <View style={styles.container}>
@@ -214,8 +217,8 @@ const UpLoadAvatar: React.FC<UpLoadAvatarProps> = ({ initialImage, onImageSelect
       ) : (
         <TouchableOpacity onPress={handleShowAvatar}>
           <Image
-          source={imageFriend ? { uri: imageFriend } : require('../../media/icon/avatar.png')}
-          style={styles.editAvatar}/>
+            source={imageFriend ? { uri: imageFriend } : require('../../media/icon/avatar.png')}
+            style={styles.editAvatar} />
         </TouchableOpacity>
       )}
       <Modal animationType="slide" transparent={true} visible={show} onRequestClose={() => setShow(false)}>
@@ -227,17 +230,17 @@ const UpLoadAvatar: React.FC<UpLoadAvatarProps> = ({ initialImage, onImageSelect
 
             <TouchableOpacity style={styles.optionItem} onPress={() => setIsImageViewerVisible(true)}>
               <FontistoIcon name="person" size={24} color="#000" />
-              <Text style={{color:"#000",fontSize:18,fontWeight:'700',marginLeft:20}}>Xem ảnh đại diện</Text>
+              <Text style={{ color: "#000", fontSize: 18, fontWeight: '700', marginLeft: 20 }}>Xem ảnh đại diện</Text>
             </TouchableOpacity>
 
             <TouchableOpacity style={styles.optionItem} onPress={openCamera}>
               <Icon name="camera" size={24} color="#000" />
-              <Text style={{color:"#000",fontSize:18,fontWeight:'700',marginLeft:20}}>Chụp ảnh</Text>
+              <Text style={{ color: "#000", fontSize: 18, fontWeight: '700', marginLeft: 20 }}>Chụp ảnh</Text>
             </TouchableOpacity>
 
             <TouchableOpacity style={styles.optionItem} onPress={openLibrary}>
               <MaterialIcon name="photo-library" size={24} color="#000" />
-              <Text style={{color:"#000",fontSize:18,fontWeight:'700', marginLeft:20}}>Chọn ảnh</Text>
+              <Text style={{ color: "#000", fontSize: 18, fontWeight: '700', marginLeft: 20 }}>Chọn ảnh</Text>
             </TouchableOpacity>
           </View>
         </Pressable>
@@ -246,14 +249,14 @@ const UpLoadAvatar: React.FC<UpLoadAvatarProps> = ({ initialImage, onImageSelect
       <ImageViewModal
         visible={isImageViewerVisible}
         onClose={handleCloseShowAvatar}
-        imageUri= {image}
+        imageUri={image}
       />
 
       {status ? (
-            <ModalPoup text="Đã cập nhập ảnh đại diện!" visible={showModal} />
-          ) : (
-            <ModalFail text="Cập nhập thất bại!" visible={showModal} />
-          )}
+        <ModalPoup text="Đã cập nhập ảnh đại diện!" visible={showModal} />
+      ) : (
+        <ModalFail text="Cập nhập thất bại!" visible={showModal} />
+      )}
     </View>
   );
 };
@@ -265,11 +268,11 @@ const styles = StyleSheet.create({
     backgroundColor: '#F2F2F2',
     borderRadius: 20,
     // padding: 20,
-    paddingBottom:50,
-    paddingHorizontal:20,
+    paddingBottom: 50,
+    paddingHorizontal: 20,
     transform: [{ translateY: 210 }],
-    justifyContent:'space-between'
-    
+    justifyContent: 'space-between'
+
   },
   modalContainer: {
     padding: 30,
@@ -280,8 +283,8 @@ const styles = StyleSheet.create({
   },
   container: {
     // backgroundColor: '#fff',
-    alignItems:'center',
-    marginTop:20
+    alignItems: 'center',
+    marginTop: 20
   },
   editAvatar: {
     width: 100,
@@ -303,18 +306,18 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   optionItem: {
-    paddingHorizontal:50,
-    width:'100%',
-    height:60,
-    backgroundColor:'#fff',
-    borderRadius:20,
-    flexDirection:'row',
-    alignItems:'center',
-    justifyContent:'flex-start',
-},
-iconClose: {
-  alignItems:'center'
-}
+    paddingHorizontal: 50,
+    width: '100%',
+    height: 60,
+    backgroundColor: '#fff',
+    borderRadius: 20,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'flex-start',
+  },
+  iconClose: {
+    alignItems: 'center'
+  }
 });
 
 export default UpLoadAvatar;

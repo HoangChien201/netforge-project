@@ -11,6 +11,7 @@ import { socket } from '../../http/SocketHandle'
 import { Message } from './class/MessageProvider';
 import { useSelector } from 'react-redux';
 import { RootState } from '../store/store';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 export type messageType = {
   id: number,
   create_at: string,
@@ -304,7 +305,10 @@ const MessageItem: React.FC<MessageItemProp> = React.memo((
             onLongPress={ContentOnLongPress}
             onLayout={onLayout}
           >
+            <GestureHandlerRootView style={{flex:1}}>
             <MessageItemContent message={message} sender={sender} />
+            </GestureHandlerRootView>
+
             {
               reactions && reactions.length > 0 &&
               <ReactionsComponent reactions={reactions} onPress={OnReactionComponent} />

@@ -30,7 +30,7 @@ export type valid = {
 const FormLogin = ({ setModal, setStatus, setIsLoading }: { setModal: (value: boolean) => void, setStatus: (value: boolean) => void, setIsLoading: (value: boolean) => void }) => {
   const navigation: NavigationProp<ParamListBase> = useNavigation();
 
-  const [valueF, setValueF] = useState<user>({ email: '', password: '' })
+  const [valueF, setValueF] = useState<user>({ email: 'hoangchien@gmail.com', password: '135790' })
 
   const [valid, setValid] = useState<valid>({ email: true, password: true })
 
@@ -80,6 +80,9 @@ const FormLogin = ({ setModal, setStatus, setIsLoading }: { setModal: (value: bo
         if (result) {
           const { data } = result
           handleLoginResult(data)
+        }else{
+          setIsLoading(false);
+          setValid({ email: false, password: false });
         }
         setIsLoading(false);
       } catch (error) {

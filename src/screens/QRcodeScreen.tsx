@@ -109,7 +109,7 @@ const QRcodeScreen = () => {
           <Text>Quét mã QR để kết bạn với tôi!</Text>
         </View>
       </ViewShot >
-
+    <View></View>
     </View>
   )
 }

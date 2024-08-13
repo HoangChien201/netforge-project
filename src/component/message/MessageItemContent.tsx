@@ -45,6 +45,7 @@ const MessageItemContent = ({ message, sender }: { message: Message, sender: boo
                         repeat={false}
                         muted={false}
                         resizeMode='cover'
+                        controls={true}
                     />
                     <Image style={styles.imagePlay} source={require('../../media/icon/video_play.png')}/>
                 </TouchableOpacity>

@@ -27,7 +27,6 @@
     android:name=".MainApplication"
     android:label="@string/app_name"
     android:icon="@mipmap/ic_launcher"
-    android:roundIcon="@mipmap/ic_launcher_round"
     android:allowBackup="false"
     android:usesCleartextTraffic="true"
     android:theme="@style/AppTheme">
@@ -44,14 +43,22 @@
           <category android:name="android.intent.category.LAUNCHER" />
       </intent-filter>
 
-      <intent-filter android:autoVerify="true">
+    <intent-filter>
+        <action android:name="android.intent.action.VIEW" />
+        <category android:name="android.intent.category.DEFAULT" />
+        <category android:name="android.intent.category.BROWSABLE" />
+        <data 
+            android:scheme="netforge"
+            android:host="home" />
+    </intent-filter>
+
+    <intent-filter>
         <action android:name="android.intent.action.VIEW" />
         <category android:name="android.intent.category.DEFAULT" />
         <category android:name="android.intent.category.BROWSABLE" />
         <data android:scheme="http" />
         <data android:scheme="https" />
-        <data android:host="netforge" android:pathPrefix="/post" />
-
+        <data android:host="www.netforge.click" />
     </intent-filter>
     </activity>
 
