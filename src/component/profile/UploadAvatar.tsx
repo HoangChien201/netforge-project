@@ -1,5 +1,5 @@
-import React, { useState, useCallback} from 'react';
-import { StyleSheet, View, TouchableOpacity, Image, Modal, Text, Pressable } from 'react-native';
+import React, { useState, useCallback, useEffect} from 'react';
+import { StyleSheet, View, TouchableOpacity, Image, Modal, Text, Pressable, PermissionsAndroid, Alert } from 'react-native';
 import { launchCamera, launchImageLibrary, CameraOptions, ImageLibraryOptions } from 'react-native-image-picker';
 import { useDispatch, useSelector } from 'react-redux';
 import Icon from 'react-native-vector-icons/AntDesign';
@@ -14,14 +14,16 @@ import ModalFail from '../Modal/ModalFail';
 import ImageViewModal from './ImageViewModal';
 import { RootState } from '../store/store';
 import { setUsers } from '../store/userSlice';
+import Loading from '../Modal/Loading';
 
 interface UpLoadAvatarProps {
   initialImage: string; 
   onImageSelect: (imagePath: string) => void;
   userId: any;
+  setLoadingPosst:(val:boolean)=>void
 }
 
-const UpLoadAvatar: React.FC<UpLoadAvatarProps> = ({ initialImage, onImageSelect, userId }) => {
+const UpLoadAvatar: React.FC<UpLoadAvatarProps> = ({ initialImage, onImageSelect, userId,setLoadingPosst }) => {
   const user = useSelector((state : RootState)=>state.user.value)
   const token = user?.token;
   const dispatch = useDispatch();
@@ -29,10 +31,36 @@ const UpLoadAvatar: React.FC<UpLoadAvatarProps> = ({ initialImage, onImageSelect
   const [showModal, setShowModal] = useState(false);
   const [status, setStatus] = useState(true);
   const [isImageViewerVisible, setIsImageViewerVisible] = useState(false);
+  const [loading, setLoading] = useState(false);
 
     const [userData, setUserData] = useState<any>(null);
     const [image, setImage] = useState<string>(user?.avatar || '');
     const [imageFriend, setImageFriend] = useState<string>('');
+
+    const requestCameraPermission = async () => {
+      try {
+          const granted = await PermissionsAndroid.request(
+              PermissionsAndroid.PERMISSIONS.CAMERA,
+              {
+                  title: "Quyền truy cập Camera",
+                  message: "Chúng tôi cần cấp quyền truy cập Camera",
+                  buttonNeutral: "Hỏi tôi sau",
+                  buttonNegative: "Hủy bỏ",
+                  buttonPositive: "Chấp nhận"
+              }
+          );
+          if (granted !== PermissionsAndroid.RESULTS.GRANTED) {
+              Alert.alert('Quyền sử dụng máy ảnh bị từ chối');
+          }
+      } catch (err) {
+          console.warn(err);
+      }
+  };
+
+  useEffect(() => {
+    requestCameraPermission();
+  }, []);
+
 
     useFocusEffect(
         React.useCallback(() => {
@@ -42,6 +70,9 @@ const UpLoadAvatar: React.FC<UpLoadAvatarProps> = ({ initialImage, onImageSelect
                 setUserData(response);
                 setImage(response.avatar);
                 setImageFriend(response.avatar);
+                if (JSON.stringify(response) !== JSON.stringify(user)) { // So sánh dữ liệu
+                  dispatch(setUsers(response));
+                }
             } catch (error) {
                 console.log(error);
             }
@@ -67,6 +98,7 @@ const UpLoadAvatar: React.FC<UpLoadAvatarProps> = ({ initialImage, onImageSelect
       });
   
       if (!croppedImage.didCancel) {
+        setLoading(true);
         setImage(croppedImage.path);
         setShow(false);
         onImageSelect(croppedImage.path);
@@ -92,6 +124,8 @@ const UpLoadAvatar: React.FC<UpLoadAvatarProps> = ({ initialImage, onImageSelect
         } else {
           console.log('URL không đúng cấu trúc', result);
         }
+        setLoading(false);  
+        setLoadingPosst(true)
       } else {
         console.log('Người dùng đã hủy cắt ảnh.');
         setShow(false)
@@ -99,6 +133,7 @@ const UpLoadAvatar: React.FC<UpLoadAvatarProps> = ({ initialImage, onImageSelect
     } catch (error) {
       console.log('Lỗi khi cắt ảnh:', error);
       setShow(false)
+      setLoading(false);
     }
   }, [onImageSelect, setImage, setShow, uploadImage]);
   
@@ -128,20 +163,23 @@ const UpLoadAvatar: React.FC<UpLoadAvatarProps> = ({ initialImage, onImageSelect
   };
 
   const handleUpdateAvatar = async (image:string) => {
+    setLoading(true);
     try {
     const response = await updateAvatar(user?.id, image)
       if (response) {
           dispatch(setUsers({ ...user, avatar: image }));
           setShowModal(true);
           setStatus(true);
+          setLoading(false);
           setTimeout(() => {
               setShowModal(false);
           }, 2000);
           onImageSelect(image);
           setImage(image); 
       }
+      setLoading(false);
     } catch (error: any) {
-
+      setLoading(false);
       console.log("Error update profile:", error);
     }
   };
@@ -162,6 +200,7 @@ const UpLoadAvatar: React.FC<UpLoadAvatarProps> = ({ initialImage, onImageSelect
 
   return (
     <View style={styles.container}>
+      <Loading isLoading={loading}></Loading>
       {userId === user?.id ? ( 
       <TouchableOpacity onPress={handleUpLoadAvatar} style={{ position: 'relative' }}>
         <Image

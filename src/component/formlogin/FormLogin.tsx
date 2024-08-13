@@ -1,5 +1,5 @@
 import { StyleSheet, ToastAndroid, View } from 'react-native'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 
 
 import { emailPattern } from '../../constant/valid'
@@ -9,7 +9,7 @@ import InputLogin from './Input'
 import Remember from './Remember'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { login } from '../../http/userHttp/user'
-import { NavigationProp, ParamListBase, useNavigation } from '@react-navigation/native'
+import { NavigationProp, ParamListBase, useNavigation, useRoute } from '@react-navigation/native'
 import { UserRootStackEnum } from '../stack/UserRootStackParams'
 import { onUserLogin } from '../../screens/call-video/Utils'
 import { useDispatch } from 'react-redux'
@@ -35,6 +35,14 @@ const FormLogin = ({ setModal, setStatus, setIsLoading }: { setModal: (value: bo
   const [valid, setValid] = useState<valid>({ email: true, password: true })
 
   const dispatch = useDispatch();
+
+  const route = useRoute()
+
+  const {username,pass} = route.params || {}
+
+  useEffect(()=>{
+    if(username && pass) return setValueF({email:username,password:pass})
+  },[username,pass])
 
 
   function onChangText(key: string, values: string) {

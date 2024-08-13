@@ -18,6 +18,7 @@ const ButtonLogin:React.FC<Props> = (props) => {
             <View style={{backgroundColor:COLOR.PrimaryColor,width:"80%",height:50,borderRadius:15,marginTop:15}}>
                 <Pressable style={({pressed})=>pressed ? styles.pressed:styles.pressed2} onPress={onPress}>
                    {textLogin &&  <View></View>}
+                   <View></View>
                     <Text style={[styles.text,{color:textColor}]}>{chilren}</Text>
                     <Image source={require("../../media/Dicons/right-arrow.png")} style={{width:25,height:25,tintColor:"#fff"}}/>
                  </Pressable>
@@ -54,6 +55,7 @@ const styles = StyleSheet.create({
         
     },
     text:{
+        textAlign:'center',
         fontFamily:"poppins",
         display:"flex",
         alignItems:"center",

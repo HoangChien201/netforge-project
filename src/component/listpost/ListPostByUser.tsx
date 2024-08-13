@@ -35,7 +35,7 @@ const ListPortsByUser: React.FC<ListPortsByUserProps> = ({ data, onRefresh }) =>
   useEffect(() => {
     setDisplayData(data.slice(0, PAGE_SIZE));
     setIsFetching(false);
-  }, [data, onRefresh]);
+  }, [data, onRefresh, loadAfterUpdate]);
 
   const loadMoreData = useCallback(() => {
     if (loadingMore || displayData.length >= data.length) return;

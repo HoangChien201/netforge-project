@@ -14,7 +14,7 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import { formatTime } from '../format/FormatDate';
 
 const OtpScreen = () => {
-    const [textOTP,setTextOTP] = useState<string>('')
+    const [textOTP,setTextOTP] = useState<number>(0)
     const [number,setNumber] = useState<number>(120)
     
     const route: RouteProp<{ params: { email: string } }, 'params'> = useRoute();
@@ -30,17 +30,6 @@ const OtpScreen = () => {
         }
         return () => clearTimeout(time); 
     },[number])
-
-    // useEffect(() => {
-    //     if (number > 0) {
-    //       const timer = setTimeout(() => {
-    //         setNumber(prev => prev - 1);
-    //       }, 1000);
-    //       return () => clearTimeout(timer);
-    //     } else {
-    //      showModalFalse();
-    //     }
-    //   }, [number]);
 
     const [isLoading,setIsLoading] = useState(false);
     const [showModal,setShowModal] = useState(false);
@@ -60,26 +49,30 @@ const OtpScreen = () => {
         if (number <= 0) {
             showModalFalse();
             return
-          }
+        }
         const token = await AsyncStorage.getItem('TokenForgot');
-        // const otpValue = otp.join('');
+        console.log('token otp: ', token)
+        console.log("otp: ",textOTP)
             try {
-                const response = await checkOTP( parseInt(textOTP), token);
-                setIsLoading(true);
-                if (response) {
-                    setShowModal(true);
-                    setStatus(true);
-                    setIsLoading(false);
-                    setTimeout(() => {
-                        setShowModal(false);
-                        navigation.navigate(UserRootStackEnum.ResetPassword, { email });
-                    }, 2000);
-                } else {
-                    showModalFalse();
-                }
+                const response = await checkOTP(textOTP);
+                console.log('ddd', response);
+                
+                // setIsLoading(true);
+                // if (response) {
+                //     setShowModal(true);
+                //     setStatus(true);
+                //     setIsLoading(false);
+                //     setTimeout(() => {
+                //         setShowModal(false);
+                //         navigation.navigate(UserRootStackEnum.ResetPassword, { email });
+                //     }, 2000);
+                // } else {
+                //     showModalFalse();
+                // }
             } catch (error) {
                 showModalFalse();
                 console.log(error);
+                console.log("lỗi check otp: ", error)
             }
             
     };

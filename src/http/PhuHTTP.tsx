@@ -16,11 +16,19 @@ export const sendMail = async (email: string) =>{
 }
 
 // Kiểm tra OTP
-export const checkOTP = async (code: number, token:string|null ) => {
+export const checkOTP = async (code: number) => {
     try {
+        const token = await AsyncStorage.getItem('TokenForgot');
+        console.log("token api check:", token)
+        if (!token) {
+            throw new Error("No access token found");
+        }
         const url = '/password/verify-code';
-        const body = { code };
-        return await AxiosInstance().post(url, body,{
+        const body = { code:code };
+        return await AxiosInstance().post(url, 
+            {
+                code: code
+            },{
             headers: {
                 Authorization: `Bearer ${token}`,
             },
@@ -28,6 +36,7 @@ export const checkOTP = async (code: number, token:string|null ) => {
         
     } catch (error) {
         console.log(error);
+        console.error('Error during OTP verification:', error); 
         throw error;
     }
 }
@@ -64,7 +73,7 @@ export const changePassword = async (passwordOld: string, passwordNew:string, to
 }
 
 //update profile
-export const updateProfile = async (id:number, email: string, fullname: string, 
+export const updateProfile = async (id:any, email: string, fullname: string, 
     dateOfBirth: Date, phone: number|null,
         address: string|null , gender: string|null) => {
     try {

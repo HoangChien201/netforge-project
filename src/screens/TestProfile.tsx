@@ -1,6 +1,6 @@
-import React, { useEffect, useMemo, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { View, Animated, StyleSheet, Dimensions, Text, TouchableOpacity} from 'react-native';
-import { useFocusEffect, useNavigation } from '@react-navigation/native';
+import { useFocusEffect, useIsFocused, useNavigation } from '@react-navigation/native';
 import { useDispatch, useSelector } from 'react-redux';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import HeaderBanner from '../component/profile/HeaderBanner';
@@ -29,6 +29,7 @@ const TestProfile = () => {
   const [tabBarPosition, setTabBarPosition] = useState(headerHeight);
   const [refreshing, setRefreshing] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [loadingPost, setLoadingPosst] = useState(false);
 
   const userID = user?.id;
   const token = user?.token;
@@ -37,6 +38,7 @@ const TestProfile = () => {
   const [medias, setMedias] = useState<any[]>([]);
   const [post, setPosts] = useState<any[]>([]);
   const nameUser = user?.fullname;
+  const focus = useIsFocused();
 
   useEffect(() => {
     navigation.setOptions({
@@ -54,7 +56,7 @@ const TestProfile = () => {
     setRefreshing(true);
     setTimeout(() => {
         setRefreshing(false);
-    }, 3000);
+    }, 2000);
   };
 
   //api thông tin user theo id
@@ -82,7 +84,7 @@ const TestProfile = () => {
 }, [userID]);
 
   // api bài viết theo id
-  useEffect(() => {
+  // useEffect(() => {
     const fetchPosts = async () => {
       //setRefreshing(true);
       try {
@@ -101,10 +103,20 @@ const TestProfile = () => {
         console.error(error);
       }
     };
-    fetchPosts();
-  }, [userID, refreshing]);
+  //   fetchPosts();
+  // }, [userID, refreshing]);
 
+  useEffect(() => {
+    fetchPosts();
+  }, [userID, refreshing,loadingPost]);
+
+  useEffect(() => {
+    if (focus) {
+      fetchPosts()
+    }
+  }, [focus])
   
+    
   useEffect(() => {
     navigation.getParent()?.setOptions({ tabBarStyle: { display: 'none' } });
   }, [user?.id]);
@@ -119,11 +131,11 @@ const TestProfile = () => {
     if (!userData) return null;
     return (
       <>
-        <HeaderBanner value={scrollOffsetY} userId={user?.id} />
+        <HeaderBanner  setLoadingPost={setLoadingPosst} value={scrollOffsetY} userId={user?.id} />
         <View style={{marginTop:260}}></View>
           <ProfileHeader
           avatar={userData.avatar}
-          fullname={userData.fullname}
+          fullname={nameUser}
           userId={user?.id}
           loggedInUserId={user?.id} 
           relationship={undefined}/>
