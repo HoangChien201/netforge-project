@@ -1,3 +1,4 @@
+import { useNavigation } from '@react-navigation/native';
 import React, { useEffect, useRef, useState, memo } from 'react';
 import { View, StyleSheet, Animated, Easing } from 'react-native';
 
@@ -5,7 +6,7 @@ const ProgressBar = ({ paused, active, index, setActi, length, setcurrentIndex, 
     const [progressValue, setProgressValue] = useState(0);
     const progress = useRef(new Animated.Value(0)).current;
     const duration = 5000;
-
+    const navigation = useNavigation();
    
     useEffect(() => {
         if (index === active) {
@@ -28,6 +29,7 @@ const ProgressBar = ({ paused, active, index, setActi, length, setcurrentIndex, 
                     if (finished) {
                         if (active === length) {
                             if (currentIndex === dataLength) {
+                                navigation.goBack()
                                 return;
                             } else {
                                 setcurrentIndex(currentIndex + 1);

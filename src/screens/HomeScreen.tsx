@@ -5,7 +5,7 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 import AntDesignIcon from 'react-native-vector-icons/AntDesign';
 import TouchID from 'react-native-touch-id';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
 import ListStory from '../component/storys/ListStory';
 import ListPorts from '../component/listpost/ListPorts';
@@ -15,6 +15,7 @@ import { NetworkRootStackEnum } from '../component/stack/NetworkRootStackParams'
 import CaptionSlide from '../component/listpost/CaptionSlide';
 import { RootState } from '../component/store/store';
 import ModalShowBirthday from './profile/ModalShowBirthday';
+import { updateIsDisplay } from '../component/store/displayReactionSlice';
 
 const HomeScreen = () => {
     const initialData = [{ key: 'stories' }, { key: 'posts' }];
@@ -28,6 +29,7 @@ const HomeScreen = () => {
     const user = useSelector((state: RootState) => state.user.value)
     const [visible, setVisible] = useState(false);
     const [isShowBirthday, setIsShowBirthday] = useState(false)
+    const dispatch = useDispatch();
 
     const checkTouchIdLogin = () => {
         TouchID.isSupported()
@@ -93,14 +95,14 @@ const HomeScreen = () => {
         if (offsetY - prevScrollY > 10) {
             Animated.timing(tabBarTranslateY, {
                 toValue: 100,
-                duration: 100,
+                duration: 80,
                 useNativeDriver: true,
             }).start();
             handleOutsidePress(); // Ẩn menu khi cuộn xuống
         } else if (prevScrollY - offsetY > 10) {
             Animated.timing(tabBarTranslateY, {
                 toValue: 0,
-                duration: 150,
+                duration: 70,
                 useNativeDriver: true,
             }).start();
             handleOutsidePress(); // Ẩn menu khi cuộn lên
@@ -159,6 +161,7 @@ const HomeScreen = () => {
     const handleOutsidePress = () => {
         if (hidden) {
             setHidden(false);
+           
         }
     };
 
