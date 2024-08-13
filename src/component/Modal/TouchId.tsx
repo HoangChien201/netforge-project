@@ -30,8 +30,9 @@ const TouchId = ({ visible, setVisible }: { visible: boolean, setVisible: (value
         }
     };
 
-    const cancelTouchIdLogin = () => {
+    const cancelTouchIdLogin = async () => {
         setVisible(false);
+        await AsyncStorage.setItem('cancelBiometric','false');
     };
     const dontAskTouchIdLogin = async() => {
         setVisible(false);

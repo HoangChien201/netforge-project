@@ -32,7 +32,7 @@ const Scanner = () => {
     // Kiểm tra nếu data là một số hợp lệ
     const numericData = Number(data);
 
-    if (!isNaN(numericData) && data) {
+    if (!isNaN(numericData) && data.length>0) {
       // Nếu data là một số, gọi hàm getUser với ID người dùng
       getUser(numericData);
     } else if (typeof data === 'string' && data.length == 32) {
@@ -41,7 +41,7 @@ const Scanner = () => {
       setShowLogin(true);
       setShowErr(false)
 
-    } else if (data.length < 32 || data.length > 32) {
+    } else if (data.length < 32 && data.length>0 || data.length > 32) {
       console.log('Data is not a valid number or string ID: ' + JSON.stringify(data));
       setShowErr(true)
     }

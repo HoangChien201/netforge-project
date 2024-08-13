@@ -42,7 +42,10 @@ const OptionProfile = () => {
             'touch',
             'cancelBiometric',
             'TokenForgot',
-            'liveID'
+            'liveID',
+            'userToken',
+            'token',
+            'TokenForgot'
         ];
         try {
             await AsyncStorage.multiRemove(keysToRemove);

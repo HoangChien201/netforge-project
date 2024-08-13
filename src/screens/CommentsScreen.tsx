@@ -1,7 +1,7 @@
-import { StyleSheet, Text, View, TouchableOpacity, Image, ScrollView, Pressable } from 'react-native'
-import React, { useMemo, useState, useRef, useEffect } from 'react'
+import { StyleSheet, Text, View, TouchableOpacity, Image, ScrollView, Pressable, Keyboard } from 'react-native'
+import React, { useMemo, useState, useRef, useEffect, useCallback } from 'react'
 import { UIActivityIndicator } from 'react-native-indicators';
-import { useNavigation } from '@react-navigation/native'
+import { useFocusEffect, useNavigation } from '@react-navigation/native'
 import { useRoute } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/Ionicons'
 import { useSelector } from 'react-redux';
@@ -40,6 +40,31 @@ const CommentsScreen = () => {
     const [loadAfterUpdate, setLoadAfterUpdate] = useState(false);
     const [creator, setCreator] = useState();
     const [moveToHome, setMoveToHome] = useState(false)
+    const handleKeyboardShow = useCallback(() => {
+        navigation.getParent()?.setOptions({
+            tabBarStyle: {
+                display: 'none',
+            }
+        });
+    }, []);
+    const handleKeyboardHide = useCallback(() => {
+        navigation.getParent()?.setOptions({
+            tabBarStyle: {
+                display: 'none',
+            }
+        });
+    }, []);
+    useFocusEffect(
+        useCallback(() => {
+            // Lắng nghe sự kiện hiển thị và ẩn bàn phím
+            const keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', handleKeyboardHide);
+            const keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', handleKeyboardHide);
+            return () => {
+                keyboardDidShowListener.remove();
+                keyboardDidHideListener.remove();
+            };
+        }, [handleKeyboardShow, handleKeyboardHide]),
+    );
     // lấy bài viết chi tiết
     const fetchPosts = async () => {
         try {
@@ -249,7 +274,8 @@ const styles = StyleSheet.create({
     ViewNoComment: {
         justifyContent: 'center',
         alignItems: 'center',
-        height: 400
+        height: 300,
+        marginBottom:10
     },
     itemRecentContai: {
         backgroundColor: '#f2f2f2'
