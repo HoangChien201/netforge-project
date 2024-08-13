@@ -137,7 +137,7 @@ const ChangePassword = () => {
         <View style={styles.btnResetPass}>
           <ButtonLogin
             textLogin
-            chilren="Cập nhập"
+            chilren="Cập nhật"
             textColor="#fff"
             onPress={handleChangePassword}
           />

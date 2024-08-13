@@ -1,9 +1,7 @@
 import { StyleSheet, View,  } from 'react-native'
 import React, { useEffect, useState } from 'react'
-import { useIsFocused, useNavigation } from '@react-navigation/native';
 import ModalBirtday from '../../birtday/ModalBirtday';
 import Sound from 'react-native-sound';
-import { FriendType } from '../../component/message/ModalNewMessage';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../component/store/store';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -12,7 +10,7 @@ const ModalShowBirthday = () => {
   
   const user = useSelector((state : RootState)=>state.user.value)
   const [birthdaySound, setBirthdaySound] = useState(null);
-  const [isVisibleBirtday, setIsVisibleBirtday] = useState(true);
+  const [isVisibleBirtday, setIsVisibleBirtday] = useState(false);
 
   useEffect(() => {
     const sound = new Sound('happy_birthday.mp3', Sound.MAIN_BUNDLE, (error) => {
