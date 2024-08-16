@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { StyleSheet, Text, View, Modal, TouchableOpacity, Keyboard, ToastAndroid, Pressable, Linking } from 'react-native';
 import Icon from 'react-native-vector-icons/AntDesign';
-
+import IconEntypo from 'react-native-vector-icons/Entypo';
 import User from '../create-post-screen/User';
 import { COLOR } from '../../constant/color';
 import { sharePost } from '../../http/PhuHTTP';
@@ -83,6 +83,8 @@ const ModalShare:React.FC<ModalShareProps> = ({creater, isVisible, onClose, idPo
           message: 'Xem bài viết này trên ứng dụng của tôi!',
           url: url,
           failOnCancel: false,
+          social: Share.Social.FACEBOOK,
+          Social: Share.Social.MESSENGER
         };
       
         try {
@@ -152,8 +154,9 @@ return (
                         <TouchableOpacity style={styles.button} onPress={handleShare} >
                             <Text style={styles.txtShare}>Chia sẻ ngay</Text>
                         </TouchableOpacity>
-                        <TouchableOpacity style={[styles.button, styles.button]} onPress={() => shareApp()}>
-                            <Text style={styles.txtShare}>Share App</Text>
+                        <TouchableOpacity style={[styles.button, {marginHorizontal:10}]} onPress={() => shareApp()}>
+                            <IconEntypo name="dots-three-horizontal" size={18} color="white" style={styles.icon} />
+                            {/* <Text style={styles.txtShare}>Share App</Text> */}
                         </TouchableOpacity>
                     </View>
                 </View>
@@ -212,7 +215,7 @@ const styles = StyleSheet.create({
     },
     txtShare:{
         color: COLOR.primary100,
-        fontSize:16,
+        fontSize:14,
         fontWeight:'600',
     },
     iconClose: {
@@ -220,5 +223,8 @@ const styles = StyleSheet.create({
     },
     copyButton: {
         backgroundColor: COLOR.PrimaryColor,
+    },
+    icon: {
+        marginHorizontal: 10
     },
 });

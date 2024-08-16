@@ -277,7 +277,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
         flexDirection: 'row',
-        width: 280,
+        width: '70%',
         backgroundColor: 'white',
         borderRadius: 50,
         height: 40
