@@ -169,7 +169,7 @@ const ChangePassword = () => {
                 </View>
             </Modal>
         {showModalError && (
-            <ModalFail text="Mật khẩu mới không thể giống mật khẩu cũ!" visible={showModalError} />
+            <ModalFail text="Mật khẩu mới không thể giống mật khẩu cũ!" visible={true} />
         )}
         {showModalFailChange && (
             <ModalFail text="Đổi mật khẩu thất bại!" visible={showModalFailChange}/>

@@ -1,5 +1,7 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import AxiosInstance from "./AxiosInstance";
+import { url } from "../constant/url";
+import axios from "axios";
 
 //gửi email quên mật khẩu
 export const sendMail = async (email: string) =>{
@@ -18,21 +20,18 @@ export const sendMail = async (email: string) =>{
 // Kiểm tra OTP
 export const checkOTP = async (code: number) => {
     try {
-        const token = await AsyncStorage.getItem('TokenForgot');
-        console.log("token api check:", token)
-        if (!token) {
+        const tokenOTP = await AsyncStorage.getItem('TokenForgot');
+        if (!tokenOTP) {
             throw new Error("No access token found");
         }
-        const url = '/password/verify-code';
-        const body = { code:code };
-        return await AxiosInstance().post(url, 
-            {
-                code: code
-            },{
+        const urlVerifyCode = `${url}password/verify-code`;
+        const body = { code: code };
+        const response = await axios.post(urlVerifyCode, body, {
             headers: {
-                Authorization: `Bearer ${token}`,
+                Authorization: `Bearer ${tokenOTP}`,
             },
         });
+        return response;
         
     } catch (error) {
         console.log(error);
@@ -56,7 +55,7 @@ export const resetPassword = async (password: string, email:string ) => {
 }
 
 // change password
-export const changePassword = async (passwordOld: string, passwordNew:string, token:string ) => {
+export const changePassword = async (passwordOld: string, passwordNew:string, token:any ) => {
     try {
         
         const url = `/password/change-password`;

@@ -92,11 +92,12 @@ export default ProfileUser;
 const styles = StyleSheet.create({
     profileUser: {
         borderRadius: 20,
-        height: 155,
+        height: 180,
         backgroundColor: '#fff',
         flexDirection: "row",
         alignItems: 'center',
         paddingHorizontal: 18,
+        marginTop:10
     },
     avatar: {
         height: 93,

@@ -20,7 +20,7 @@ interface UpLoadAvatarProps {
   initialImage: string;
   onImageSelect: (imagePath: string) => void;
   userId: any;
-  setLoadingPosst:(val:boolean)=>void
+  setLoadingPosst?:(val?:boolean |undefined)=>void
 }
 
 const UpLoadAvatar: React.FC<UpLoadAvatarProps> = ({ initialImage, onImageSelect, userId,setLoadingPosst }) => {
@@ -36,6 +36,7 @@ const UpLoadAvatar: React.FC<UpLoadAvatarProps> = ({ initialImage, onImageSelect
   const [userData, setUserData] = useState<any>(null);
   const [image, setImage] = useState<string>(user?.avatar || '');
   const [imageFriend, setImageFriend] = useState<string>('');
+
 
     const requestCameraPermission = async () => {
       try {
@@ -70,9 +71,6 @@ const UpLoadAvatar: React.FC<UpLoadAvatarProps> = ({ initialImage, onImageSelect
                 setUserData(response);
                 setImage(response.avatar);
                 setImageFriend(response.avatar);
-                if (JSON.stringify(response) !== JSON.stringify(user)) { // So sánh dữ liệu
-                  dispatch(setUsers(response));
-                }
             } catch (error) {
                 console.log(error);
             }
@@ -128,7 +126,6 @@ const UpLoadAvatar: React.FC<UpLoadAvatarProps> = ({ initialImage, onImageSelect
           console.log('URL không đúng cấu trúc', result);
         }
         setLoading(false);  
-        setLoadingPosst(true)
       } else {
         console.log('Người dùng đã hủy cắt ảnh.');
         setShow(false)
@@ -174,6 +171,7 @@ const UpLoadAvatar: React.FC<UpLoadAvatarProps> = ({ initialImage, onImageSelect
           setShowModal(true);
           setStatus(true);
           setLoading(false);
+          setLoadingPosst(true);
           setTimeout(() => {
               setShowModal(false);
           }, 2000);
@@ -221,6 +219,8 @@ const UpLoadAvatar: React.FC<UpLoadAvatarProps> = ({ initialImage, onImageSelect
             style={styles.editAvatar} />
         </TouchableOpacity>
       )}
+
+      {userId === user?.id && (
       <Modal animationType="slide" transparent={true} visible={show} onRequestClose={() => setShow(false)}>
         <Pressable style={styles.modalContainer} onPress={handleClose}>
           <View style={styles.modalContent}>
@@ -245,6 +245,7 @@ const UpLoadAvatar: React.FC<UpLoadAvatarProps> = ({ initialImage, onImageSelect
           </View>
         </Pressable>
       </Modal>
+       )}
 
       <ImageViewModal
         visible={isImageViewerVisible}

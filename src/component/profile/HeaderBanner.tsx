@@ -7,7 +7,7 @@ import UploadBanner from './UploadBanner';
 interface HeaderBannerProps {
   value: any;
   userId:any;
-  setLoadingPost:(val:boolean)=>void
+  setLoadingPost?:(val:boolean | undefined)=>void
 }
 
 const HeaderBanner: React.FC<HeaderBannerProps> = ({ value, userId,setLoadingPost}) => {
