@@ -6,7 +6,7 @@ import { reaction } from '../../constant/emoji';
 import * as Animatable from 'react-native-animatable';
 import { deleteLikePost, likePost, updateLikePost } from '../../http/userHttp/getpost';
 import ModalShare from '../share-post/ModalShare';
-import { useDispatch, useSelector } from 'react-redux';
+import {  useSelector } from 'react-redux';
 import { RootState } from '../store/store';
 import { useSendNotification } from '../../constant/notify';
 

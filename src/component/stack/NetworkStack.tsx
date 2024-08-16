@@ -13,12 +13,11 @@ import { socket, SocketConnect } from '../../http/SocketHandle';
 import { useSelector } from 'react-redux';
 import { RootState } from '../store/store';
 import { updateStatusOnline } from '../../http/ChienHTTP';
-import { useIsFocused, useNavigation } from '@react-navigation/native';
+import { Link, useIsFocused, useNavigation } from '@react-navigation/native';
 const Stack = createNativeStackNavigator<NetworkRootStackParams>();
 
 export default function NetworkStack(): React.JSX.Element {
     const user = useSelector((state: RootState) => state.user.value)
-    const isFocus=useIsFocused()
     useEffect(() => {
 
         if (socket.disconnected) {
@@ -48,46 +47,71 @@ export default function NetworkStack(): React.JSX.Element {
         }
     }, [])
 
-    const navigation=useNavigation()
+    const navigation = useNavigation()
     useEffect(() => {
-        const linkingSubscription =Linking.addEventListener('url', handleOpenURL);
+
+        const linkingSubscription = Linking.addEventListener('url', handleOpenURL);
+        getUrlAsync()
         return () => {
             // Clean up the event listeners
             linkingSubscription.remove();
+
         };
-      }, [navigation]);
-      const handleOpenURL = ({ url }) => {
-        const index=parseInt(url.indexOf('/app'))+5
-        
-        const path=url.slice(index)
-        navigation.navigate('CommentsScreen')
-        
-        //   // Điều hướng dựa trên deeplink
-        //   if (parsedURL.path === 'profile') {
-        //     navigation.navigate('Profile', { id: parsedURL.queryParams.id });
-        //   } else if (parsedURL.path === 'home') {
-        //     navigation.navigate('Home');
-        //   }
+    }, [navigation]);
 
+    const getUrlAsync = async () => {
+        // Get the deep link used to open the app
+        const url = await Linking.getInitialURL();
+        handleOpenURL({url})
+        console.log(url);
       };
-    //sự kiện tắt app
-  useEffect(() => {
-    const handleAppStateChange =async (nextAppState) => {
-      if (nextAppState === 'background') {
-        console.log('App is in background mode');
-        if(user?.id){
-            await updateStatusOnline(user.id,0)
+
+    const handleOpenURL = ({ url }) => {
+        const index = parseInt(url.indexOf('/app')) + 5
+
+        const path = url.slice(index)
+
+        const parts = path.split('/');
+
+        const namePage = parts[0];
+
+        switch (namePage) {
+            case 'post':
+                const postId = parts[1];
+                navigation.navigate('CommentsScreen', { postId })
+                break;
+            case 'user':
+                const userId = parts[1]
+                if (userId === user?.id) {
+                    navigation.navigate('ProfileScreen');
+                } else {
+                    navigation.navigate('FriendProfile', { userId });
+                }
+                break;
+            default:
+                break;
         }
-        // Code để xử lý khi app bị tắt hoặc chuyển sang chế độ background
-      }
-    };
 
-    const subscription = AppState.addEventListener('change', handleAppStateChange);
 
-    return () => {
-      subscription.remove();
     };
-  }, []);
+    //sự kiện tắt app
+    useEffect(() => {
+        const handleAppStateChange = async (nextAppState) => {
+            if (nextAppState === 'background') {
+                console.log('App is in background mode');
+                if (user?.id) {
+                    await updateStatusOnline(user.id, 0)
+                }
+                // Code để xử lý khi app bị tắt hoặc chuyển sang chế độ background
+            }
+        };
+
+        const subscription = AppState.addEventListener('change', handleAppStateChange);
+
+        return () => {
+            subscription.remove();
+        };
+    }, []);
 
     return (
         <Stack.Navigator

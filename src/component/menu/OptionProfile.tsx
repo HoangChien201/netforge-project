@@ -1,4 +1,4 @@
-import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import { Image, Linking, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import React from 'react'
 import { useNavigation } from '@react-navigation/native'
 import AsyncStorage from '@react-native-async-storage/async-storage'
@@ -51,6 +51,10 @@ const OptionProfile = () => {
             await AsyncStorage.multiRemove(keysToRemove);
             socket.disconnect()
             dispatch(deleteUser());
+
+            //xóa linking
+            Linking.removeAllListeners('url')
+
             console.log('Selected items removed from AsyncStorage');
         } catch (error) {
             console.error('Error clearing selected items from AsyncStorage:', error);
