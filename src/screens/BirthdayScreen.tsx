@@ -41,7 +41,7 @@ const BirthDayScreen = ({ visible, setVisible }: { visible: boolean, setVisible:
     useEffect(() => {
         const today = new Date();
         const friendsToday = friend.filter(friend => {
-            const friendBirthday = new Date(friend.user.dateOfBirth);
+            const friendBirthday = new Date(friend.user?.dateOfBirth);
             return today.getDate() === friendBirthday.getDate() && today.getMonth() === friendBirthday.getMonth();
 
         });
@@ -77,7 +77,7 @@ const BirthDayScreen = ({ visible, setVisible }: { visible: boolean, setVisible:
             type: 7,
             idF: id,
             userInfo: {
-                receiver: user.id, sender: user.id,
+                receiver: user?.id, sender: user?.id,
                 fullname: fullname,
                 avatar: avatar,
             }

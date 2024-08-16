@@ -25,7 +25,7 @@ import { setUsers } from '../component/store/userSlice';
 interface user {
   email: string;
   fullname: string;
-  dateOfBirth: any | null;
+  dateOfBirth: string | null;
   phone: null | number;
   address: string | null;
   gender: string | null;
@@ -55,7 +55,8 @@ const EditProfileScreen: React.FC = () => {
   const dispatch = useDispatch()
 
   const [userData, setUserData] = useState<any>(null);
-  const dateOfBirth = user?.dateOfBirth;
+  // const dateOfBirth = user?.dateOfBirth;
+  const dateOfBirth = user?.dateOfBirth ? new Date(user.dateOfBirth) : null;
   const [isEditable, setIsEditable] = useState(false); // Trạng thái chỉnh sửa của InputField
 
 
@@ -67,6 +68,7 @@ const EditProfileScreen: React.FC = () => {
   const [status, setStatus] = useState(true);
   const formikRef = useRef<FormikProps<{ email: string; fullname: string; phone?: string; gender?: string; dateOfBirth?: any }>>(null);
   const [initialAvatar, setInitialAvatar] = useState('');
+  
 
   // address
   const [selectedAddress, setSelectedAddress] = useState<string | null>(user?.address || '');
@@ -150,7 +152,7 @@ const EditProfileScreen: React.FC = () => {
           ...user,
           email,
           fullname,
-          dateOfBirth: startDate,
+          dateOfBirth: startDate.toISOString(),
           phone,
           address: updatedAddress,
           gender: updatedGender

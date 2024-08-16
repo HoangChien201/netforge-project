@@ -15,7 +15,7 @@ const Remember: React.FC = () => {
     }
   };
   return (
-    <View style={{ alignItems: "center", flexDirection: "row" }}>
+    <View style={{ alignItems: "center", flexDirection: "row" , marginTop:10}}>
       <CheckBox
         disabled={false}
         value={toggleCheckBox}

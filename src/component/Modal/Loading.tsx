@@ -10,10 +10,11 @@ const Loading = ({isLoading}:{isLoading:boolean}) => {
             transparent={true}
             visible={isLoading}
         >
-            <View style={styles.loading}>
-                {/* <ActivityIndicator size="large" color={COLOR.PrimaryColor} /> */}
-                <UIActivityIndicator color={'#FF6347'} size={50} />
-            </View>
+                <View style={styles.loading}>
+                    {/* <ActivityIndicator size="large" color={COLOR.PrimaryColor} /> */}
+                    <UIActivityIndicator color={'#FA2600'} size={45} />
+                </View>
+
         </Modal>
     )
 }
@@ -25,6 +26,6 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
-        opacity: 0.7
-    }
+        backgroundColor: 'rgba(0, 0, 0, 0.1)',
+    },
 })

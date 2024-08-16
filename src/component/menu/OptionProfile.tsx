@@ -77,7 +77,7 @@ function messageOnPress() {
 return (
     <View style={styles.container}>
         <View style={styles.optionHorizontal}>
-            <OptionHorizontalItem
+            {/* <OptionHorizontalItem
                 text='Thông báo'
                 image={require('../../media/icon/bell.png')}
                 onPress={messageOnPress}
@@ -86,12 +86,12 @@ return (
                 text='Cài đặt'
                 image={require('../../media/icon/setting.png')}
                 onPress={navigationScreen.bind(this, 'SettingScreen')}
-            />
+            /> */}
         </View>
         <View style={styles.optionVertical}>
             <OptionVerticalItem text='Bạn bè' onPress={navigationScreen.bind(this, 'FriendScreen')} />
             <OptionVerticalItem text='Lịch sử hoạt động' onPress={navigationScreen.bind(this, 'HistoryStack')} />
-            <OptionVerticalItem text='Giúp đỡ' onPress={navigationScreen.bind(this, 'HelpScreen')} />
+            <OptionVerticalItem text='Cài đặt' onPress={navigationScreen.bind(this, 'SettingScreen')} />
             <OptionVerticalItem text='Đăng xuất' onPress={LogoutHandle} />
 
         </View>
@@ -108,7 +108,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'space-evenly',
         alignItems: 'center',
-        marginVertical: 36
+        marginVertical: 5
     },
     optionHorizontalItem: {
         height: '100%',

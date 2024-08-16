@@ -14,7 +14,7 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import { formatTime } from '../format/FormatDate';
 
 const OtpScreen = () => {
-    const [textOTP,setTextOTP] = useState<number>(0)
+    const [textOTP,setTextOTP] = useState<string>('')
     const [number,setNumber] = useState<number>(120)
     
     const route: RouteProp<{ params: { email: string } }, 'params'> = useRoute();
@@ -51,24 +51,21 @@ const OtpScreen = () => {
             return
         }
         const token = await AsyncStorage.getItem('TokenForgot');
-        console.log('token otp: ', token)
-        console.log("otp: ",textOTP)
             try {
-                const response = await checkOTP(textOTP);
-                console.log('ddd', response);
-                
-                // setIsLoading(true);
-                // if (response) {
-                //     setShowModal(true);
-                //     setStatus(true);
-                //     setIsLoading(false);
-                //     setTimeout(() => {
-                //         setShowModal(false);
-                //         navigation.navigate(UserRootStackEnum.ResetPassword, { email });
-                //     }, 2000);
-                // } else {
-                //     showModalFalse();
-                // }
+                const response = await checkOTP(parseInt(textOTP)); 
+                console.log('Check otp: ', response);
+                setIsLoading(true);
+                if (response) {
+                    setShowModal(true);
+                    setStatus(true);
+                    setIsLoading(false);
+                    setTimeout(() => {
+                        setShowModal(false);
+                        navigation.navigate(UserRootStackEnum.ResetPassword, { email });
+                    }, 2000);
+                } else {
+                    showModalFalse();
+                }
             } catch (error) {
                 showModalFalse();
                 console.log(error);
@@ -121,9 +118,8 @@ const OtpScreen = () => {
                     <ButtonLogin textLogin chilren='Xác nhận OTP' textColor='#fff' onPress={handleVerifyOtp}/>
                 </View>
                 <TouchableOpacity onPress={()=>navigation.goBack()} style={{alignItems:"center"}}>
-                   <Text style={styles.txtResend}>Gửi lại</Text>
+                    <Text style={styles.txtResend}>Gửi lại</Text>
                 </TouchableOpacity>
-               
             </KeyboardAvoidingView>
             
             {status ? (
