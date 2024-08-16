@@ -6,12 +6,11 @@ import { reaction } from '../../constant/emoji';
 import * as Animatable from 'react-native-animatable';
 import { deleteLikePost, likePost, updateLikePost } from '../../http/userHttp/getpost';
 import ModalShare from '../share-post/ModalShare';
-import { useDispatch, useSelector } from 'react-redux';
+import {  useSelector } from 'react-redux';
 import { RootState } from '../store/store';
 import { useSendNotification } from '../../constant/notify';
-import { updateIsDisplay } from '../store/displayReactionSlice';
 
-const ActionBar = memo(({ creater,onPressProfile, like_count,type, postId, comment_count, share_count,checkLike,setCheckLike, share }: {setCheckLike:(Value:boolean)=>void,checkLike?:boolean,type: number, postId?: number, comment_count?: number, share_count?: number,like_count?:number,share?: number,creater?:any }) => {
+const ActionBar = memo(({ creater, like_count,type, postId, comment_count, share_count,checkLike,setCheckLike, share }: {setCheckLike:(Value:boolean)=>void,checkLike?:boolean,type: number, postId?: number, comment_count?: number, share_count?: number,like_count?:number,share?: number,creater?:any }) => {
     
     const [shares, setShare] = useState(share);
     const navigation = useNavigation();
@@ -134,7 +133,7 @@ const ActionBar = memo(({ creater,onPressProfile, like_count,type, postId, comme
                     }
                     <Text style={styles.text}>{numberLike === null ? 0 : numberLike}</Text>
                 </View>
-                <TouchableOpacity onPress={()=> navigation.navigate('CommentsScreen',{postId, numberLike, onPressProfile, creater})} style={{ flexDirection: 'row',padding:6, alignItems: 'center', marginHorizontal: 20,flex:1,justifyContent:'center' }}>
+                <TouchableOpacity onPress={()=> navigation.navigate('CommentsScreen',{postId})} style={{ flexDirection: 'row',padding:6, alignItems: 'center', marginHorizontal: 20,flex:1,justifyContent:'center' }}>
                     <AntDesignIcon name='message1' size={24} color='#000' style={styles.comment} />
                     <Text style={styles.text}>{comment_count ? comment_count : 0}</Text>
                 </TouchableOpacity>

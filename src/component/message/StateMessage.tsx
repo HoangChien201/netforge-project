@@ -41,8 +41,8 @@ const StateMessage: React.FC<StateMessageType> = ({ message, group_id, sender, l
 
   async function addMessage() {
     if (group_id) {
+      
       switch (message.type) {
-
         case 'text':
 
           const msgRespone = await message.PostMessage({ sender: user.id, group: group_id })

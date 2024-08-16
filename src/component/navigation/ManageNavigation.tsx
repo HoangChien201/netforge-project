@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from 'react'
-import { NavigationContainer, RouteProp } from '@react-navigation/native'
-import { StackNavigationProp } from '@react-navigation/stack'
+import React, { useCallback, useEffect, useState } from 'react'
+import { NavigationContainer, RouteProp, useNavigation } from '@react-navigation/native'
+import { createStackNavigator, StackNavigationProp } from '@react-navigation/stack'
 import NetworkStack from '../stack/NetworkStack'
 import UserStack from '../stack/UserStack'
 import SplashScreen from '../../screens/SplashScreen'
@@ -16,9 +16,8 @@ import { useDispatch, useSelector } from 'react-redux'
 import { RootState } from '../store/store'
 import { setUsers } from '../store/userSlice'
 import { getFriends } from '../../http/QuyetHTTP'
-import { navigationRef } from './NavigationRef'
 import { useSendNotification } from '../../constant/notify'
-import LoginScreen from '../../screens/LoginScreen'
+
 
 export type navigationType = StackNavigationProp<RootStackParamList>
 export type RootStackParamList = {
@@ -32,6 +31,7 @@ const ManageNavigation = () => {
     const user = useSelector((state: RootState) => state.user.value)
     const [friend, setFriend] = useState([])
     const [todayFriends, setTodayFriends] = useState([]);
+
     const { sendBirthDay } = useSendNotification()
     let oldNotifications;
     const handleAutoLogin = async () => {
@@ -64,6 +64,7 @@ const ManageNavigation = () => {
         }
     };
     useEffect(() => {
+
         handleAutoLogin();
         createChannelNotify();
         requestNotificationPermission();
@@ -99,7 +100,7 @@ const ManageNavigation = () => {
             return today.getDate() === friendBirthday.getDate() && today.getMonth() === friendBirthday.getMonth();
         });
         setTodayFriends(friendsToday);
-    },[friend])
+    }, [friend])
 
     useEffect(() => {
         if (todayFriends && user) {
@@ -119,9 +120,9 @@ const ManageNavigation = () => {
             }
         }
     }, [todayFriends])
-const cancelNtoUser = async (id)=>{
-    await AsyncStorage.setItem(`CancelN-${id}`,'true')
-}
+    const cancelNtoUser = async (id) => {
+        await AsyncStorage.setItem(`CancelN-${id}`, 'true')
+    }
     useEffect(() => {
         if (user) {
             const id = user.id;
@@ -129,7 +130,7 @@ const cancelNtoUser = async (id)=>{
                 // addNotification(data);
                 // showLocal(data);
                 // console.log('Nhận thông báo');
-                
+
                 const exists = oldNotifications.some(notification => notification.id == data.id);
                 if (!exists) {
                     addNotification(data);
@@ -227,53 +228,47 @@ const cancelNtoUser = async (id)=>{
             console.warn(err);
         }
     };
-    
+
     if (showSplash) {
         return <SplashScreen />;
     }
 
     const linking = {
-        prefixes: ['netforge://',''],
+        prefixes: ['http://www.netfore.click/app/', 'https://network-sever-1.onrender.com/app/'],
+
         config: {
             screens: {
-                HomeScreen: 'home',
+                Profile: 'home',
                 // Post: 'post/:id',
                 // CommentsScreen: 'comments/:id',
             },
         },
+        subscribe(listener: any) {
+
+
+            // Listen to incoming links from deep linking
+            const linkingSubscription = Linking.addEventListener('url', async ({ url }) => {
+                // console.log('url', url);
+                listener(url);
+            });
+
+            return () => {
+                // Clean up the event listeners
+                linkingSubscription.remove();
+            };
+        },
     };
 
-    
-        const handleDeepLink = (event) => {
-            let data = Linking.openURL(event.url);
-            console.log('Deep link data:', data);
-        };
-
-        Linking.addEventListener('url', handleDeepLink);
-
-        // return () => {
-        //     Linking.removeEventListener('url', handleDeepLink);
-        // };
-        
-        const checkInitialLink = async () => {
-            const initialUrl = await Linking.getInitialURL();
-            if (initialUrl) {
-                let data = Linking.openURL(initialUrl);
-                console.log('Initial link data:', data);
-            }
-        };
-
-        checkInitialLink();
-
     return (
-        // <GestureHandlerRootView style={{ flex: 1 }}>
-            <NavigationContainer linking={linking} ref={navigationRef}>
+
+        <GestureHandlerRootView style={{ flex: 1 }}>
+            <NavigationContainer linking={linking}>
                 {/*ZegoCallInvitationDialog hiện dialog nhận cuộc gọi */}
                 <ZegoCallInvitationDialog />
                 {user ? <NetworkStack /> : <UserStack />}
                 <ZegoUIKitPrebuiltCallFloatingMinimizedView />
             </NavigationContainer>
-        // </GestureHandlerRootView>
+        </GestureHandlerRootView>
     )
 }
 

@@ -76,10 +76,8 @@ const ModalShare:React.FC<ModalShareProps> = ({creater, isVisible, onClose, idPo
     //   };
 
       const shareApp = async () => {
-        await Linking.openSettings();
-        // console.log('deeplink',initialUrl);
         
-        const url = `https://netforge/home`;
+        const url = `http://www.netforge.click/app/post/${idPost}`;
         const shareOptions = {
           title: 'Chia sẻ bài viết',
           message: 'Xem bài viết này trên ứng dụng của tôi!',
