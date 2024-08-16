@@ -129,7 +129,7 @@ export class Message {
     // }
     public async PostMessage(data:{group?:number,sender:number,receiver?:number}) {
         try {
-
+            
             const {group,sender,receiver}= data
             
             if(!group){
@@ -143,10 +143,11 @@ export class Message {
                 this.group = group.id
             }
             else {
+
                 this.group=group
             }
-            
-            const msgRes:MessageCreateRes = await addMessageAPI(this)
+            const parentId=typeof this.parent === 'object' ? this.parent?.id : this.parent 
+            const msgRes:MessageCreateRes = await addMessageAPI({...this,parent:parentId})
 
             if (msgRes) {
                 const {msg,receivers}=msgRes
@@ -167,7 +168,7 @@ export class Message {
             }
             return msgRes.msg
         } catch (error) {
-            console.log(error);
+            console.log('error',error);
 
             return "Gửi tin nhắn lỗi"
         }

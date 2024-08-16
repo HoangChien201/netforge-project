@@ -131,6 +131,7 @@ const MessageScreen = () => {
   //add
   function addMessage(message: Message) {
     setReply(null)
+    
     setMessages(
       (prevValue) => {     
         return [message,...prevValue]
