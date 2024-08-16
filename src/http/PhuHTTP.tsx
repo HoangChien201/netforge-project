@@ -1,5 +1,7 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import AxiosInstance from "./AxiosInstance";
+import { url } from "../constant/url";
+import axios from "axios";
 
 //gửi email quên mật khẩu
 export const sendMail = async (email: string) =>{
@@ -16,18 +18,24 @@ export const sendMail = async (email: string) =>{
 }
 
 // Kiểm tra OTP
-export const checkOTP = async (code: number, token:string|null ) => {
+export const checkOTP = async (code: number) => {
     try {
-        const url = '/password/verify-code';
-        const body = { code };
-        return await AxiosInstance().post(url, body,{
+        const tokenOTP = await AsyncStorage.getItem('TokenForgot');
+        if (!tokenOTP) {
+            throw new Error("No access token found");
+        }
+        const urlVerifyCode = `${url}password/verify-code`;
+        const body = { code: code };
+        const response = await axios.post(urlVerifyCode, body, {
             headers: {
-                Authorization: `Bearer ${token}`,
+                Authorization: `Bearer ${tokenOTP}`,
             },
         });
+        return response;
         
     } catch (error) {
         console.log(error);
+        console.error('Error during OTP verification:', error); 
         throw error;
     }
 }
@@ -47,7 +55,7 @@ export const resetPassword = async (password: string, email:string ) => {
 }
 
 // change password
-export const changePassword = async (passwordOld: string, passwordNew:string, token:string ) => {
+export const changePassword = async (passwordOld: string, passwordNew:string, token:any ) => {
     try {
         
         const url = `/password/change-password`;
@@ -64,7 +72,7 @@ export const changePassword = async (passwordOld: string, passwordNew:string, to
 }
 
 //update profile
-export const updateProfile = async (id:number, email: string, fullname: string, 
+export const updateProfile = async (id:any, email: string, fullname: string, 
     dateOfBirth: Date, phone: number|null,
         address: string|null , gender: string|null) => {
     try {

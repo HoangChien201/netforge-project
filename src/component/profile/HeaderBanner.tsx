@@ -7,9 +7,10 @@ import UploadBanner from './UploadBanner';
 interface HeaderBannerProps {
   value: any;
   userId:any;
+  setLoadingPost?:(val:boolean | undefined)=>void
 }
 
-const HeaderBanner: React.FC<HeaderBannerProps> = ({ value, userId}) => {
+const HeaderBanner: React.FC<HeaderBannerProps> = ({ value, userId,setLoadingPost}) => {
     const [avatarPath, setAvatarPath] = useState<string>('');
     const [backgroundPath, setBackgroundPath] = useState<string>('');
     const handleImageSelect = (imagePath: string) => {
@@ -37,7 +38,7 @@ const HeaderBanner: React.FC<HeaderBannerProps> = ({ value, userId}) => {
         <UploadBanner initialImage={avatarPath} onImageSelect={handleImageSelectBck} userId={userId} />
       </Animated.View>
       <Animated.View style={[styles.avatar]}>
-        <UpLoadAvatar initialImage={avatarPath} onImageSelect={handleImageSelect} userId={userId}/>
+        <UpLoadAvatar setLoadingPosst={setLoadingPost} initialImage={avatarPath} onImageSelect={handleImageSelect} userId={userId}/>
       </Animated.View>
     </Animated.View>
   );

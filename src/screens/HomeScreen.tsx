@@ -5,7 +5,7 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 import AntDesignIcon from 'react-native-vector-icons/AntDesign';
 import TouchID from 'react-native-touch-id';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
 import ListStory from '../component/storys/ListStory';
 import ListPorts from '../component/listpost/ListPorts';
@@ -14,6 +14,8 @@ import TouchId from '../component/Modal/TouchId';
 import { NetworkRootStackEnum } from '../component/stack/NetworkRootStackParams';
 import CaptionSlide from '../component/listpost/CaptionSlide';
 import { RootState } from '../component/store/store';
+import ModalShowBirthday from './profile/ModalShowBirthday';
+import { updateIsDisplay } from '../component/store/displayReactionSlice';
 
 const HomeScreen = () => {
     const initialData = [{ key: 'stories' }, { key: 'posts' }];
@@ -24,8 +26,10 @@ const HomeScreen = () => {
     const [hidden, setHidden] = useState(false);
     const [prevScrollY, setPrevScrollY] = useState(0);
     const navigation = useNavigation();
-    const user = useSelector((state : RootState)=>state.user.value)
+    const user = useSelector((state: RootState) => state.user.value)
     const [visible, setVisible] = useState(false);
+    const [isShowBirthday, setIsShowBirthday] = useState(false)
+    const dispatch = useDispatch();
 
     const checkTouchIdLogin = () => {
         TouchID.isSupported()
@@ -52,6 +56,16 @@ const HomeScreen = () => {
 
     useEffect(() => {
         checkTouchIdLogin();
+
+        AsyncStorage.getItem(`isShowBirthday-${user?.id}`).then(asyncStorageRes => {
+            console.log(!asyncStorageRes);
+            
+            setIsShowBirthday(!asyncStorageRes)
+
+        });
+        
+
+        
     }, []);
 
     useEffect(() => {
@@ -81,14 +95,14 @@ const HomeScreen = () => {
         if (offsetY - prevScrollY > 10) {
             Animated.timing(tabBarTranslateY, {
                 toValue: 100,
-                duration: 100,
+                duration: 80,
                 useNativeDriver: true,
             }).start();
             handleOutsidePress(); // Ẩn menu khi cuộn xuống
         } else if (prevScrollY - offsetY > 10) {
             Animated.timing(tabBarTranslateY, {
                 toValue: 0,
-                duration: 150,
+                duration: 70,
                 useNativeDriver: true,
             }).start();
             handleOutsidePress(); // Ẩn menu khi cuộn lên
@@ -104,9 +118,9 @@ const HomeScreen = () => {
         }, 2000);
     };
     useFocusEffect(
-        useCallback(()=>{
+        useCallback(() => {
             setHidden(false)
-        },[])
+        }, [])
     )
     const renderItem = useCallback(
         ({ item }) => {
@@ -147,8 +161,11 @@ const HomeScreen = () => {
     const handleOutsidePress = () => {
         if (hidden) {
             setHidden(false);
+           
         }
     };
+
+
 
     return (
         <TouchableWithoutFeedback onPress={handleOutsidePress}>
@@ -185,9 +202,9 @@ const HomeScreen = () => {
                     )}
 
                 </View>
-                <View style={{ marginHorizontal: 12,  flexDirection: 'row', alignItems: 'center' }}>
+                <View style={{ marginHorizontal: 12, flexDirection: 'row', alignItems: 'center' }}>
 
-                    <CaptionSlide userimge = {user?.avatar} />
+                    <CaptionSlide userimge={user?.avatar} />
                 </View>
                 <View style={styles.contentContainer}>
                     <Animated.FlatList
@@ -202,10 +219,13 @@ const HomeScreen = () => {
                         onEndReachedThreshold={0.5}
                         refreshing={refreshing}
                         onRefresh={onRefresh}
-                        contentContainerStyle={{paddingBottom:100}}
+                        contentContainerStyle={{ paddingBottom: 100 }}
                     />
                 </View>
-            
+                {
+                    isShowBirthday &&
+                    <ModalShowBirthday/>
+                }
             </View>
         </TouchableWithoutFeedback>
     );

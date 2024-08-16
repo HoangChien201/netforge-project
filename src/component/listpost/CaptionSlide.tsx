@@ -100,7 +100,7 @@ const CaptionSlide = memo(({ userimge }) => {
         <Animated.View style={[styles.progressBar, animatedStyle]} />
       </View>
       {
-        !isLoading && <ModalPoup visible={isLoadings} text='Create success'/>
+        !isLoading && <ModalPoup visible={isLoadings} text='Đăng bài viết thành công!'/>
       }
     </Pressable>
   );

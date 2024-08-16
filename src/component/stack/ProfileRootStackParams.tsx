@@ -1,7 +1,6 @@
 import ProfileScreen from "../../screens/ProfileScreen";
 import EditProfileScreen from "../../screens/EditProfileScreen";
 import SettingScreen from "../../screens/profile/SettingScreen";
-import HelpScreen from "../../screens/profile/HelpScreen";
 import FriendScreen from "../../screens/profile/FriendScreen";
 import MenuScreen from "../../screens/MenuScreen";
 import ChangePassword from "../../screens/ChangePassword";
@@ -16,7 +15,6 @@ export enum ProfileRootStackEnum {
     EditProfileScreen = 'EditProfileScreen',
     FollowingScreen = 'FollowingScreen',
     SettingScreen = 'SettingScreen',
-    HelpScreen = 'HelpScreen',
     MenuScreen = 'MenuScreen',
     ChangePassword = 'ChangePassword',
     QRcodeScreen = 'QRcodeScreen',
@@ -32,7 +30,6 @@ export type ProfileRootStackParams={
     ProfileScreen : undefined;
     EditProfileScreen: undefined;
     SettingScreen : undefined;
-    HelpScreen : undefined;
     MenuScreen:undefined;
     ChangePassword: undefined;
     QRcodeScreen: undefined;
@@ -97,15 +94,7 @@ export const ProfileRootStackScreens=[
             headerTitleAlign:'center'
         }
     },
-    {
-        id: Math.random() + "" + Date,
-        name: ProfileRootStackEnum.HelpScreen,
-        component: HelpScreen,
-        options: {
-            title:"Giúp đỡ",
-            headerTitleAlign:'center'
-        }
-    },
+
     {
         id: Math.random() + "" + Date,
         name: ProfileRootStackEnum.FriendScreen,

@@ -18,6 +18,7 @@ interface ProfileHeaderProps {
   loggedInUserId: any;
   relationship: any;
   avatar:any;
+
 }
 
 const ProfileHeader: React.FC<ProfileHeaderProps> = (

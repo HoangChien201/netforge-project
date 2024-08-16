@@ -31,17 +31,6 @@ const OtpScreen = () => {
         return () => clearTimeout(time); 
     },[number])
 
-    // useEffect(() => {
-    //     if (number > 0) {
-    //       const timer = setTimeout(() => {
-    //         setNumber(prev => prev - 1);
-    //       }, 1000);
-    //       return () => clearTimeout(timer);
-    //     } else {
-    //      showModalFalse();
-    //     }
-    //   }, [number]);
-
     const [isLoading,setIsLoading] = useState(false);
     const [showModal,setShowModal] = useState(false);
     const [status,setStatus] = useState(true);
@@ -60,11 +49,11 @@ const OtpScreen = () => {
         if (number <= 0) {
             showModalFalse();
             return
-          }
+        }
         const token = await AsyncStorage.getItem('TokenForgot');
-        // const otpValue = otp.join('');
             try {
-                const response = await checkOTP( parseInt(textOTP), token);
+                const response = await checkOTP(parseInt(textOTP)); 
+                console.log('Check otp: ', response);
                 setIsLoading(true);
                 if (response) {
                     setShowModal(true);
@@ -80,6 +69,7 @@ const OtpScreen = () => {
             } catch (error) {
                 showModalFalse();
                 console.log(error);
+                console.log("lỗi check otp: ", error)
             }
             
     };
@@ -128,9 +118,8 @@ const OtpScreen = () => {
                     <ButtonLogin textLogin chilren='Xác nhận OTP' textColor='#fff' onPress={handleVerifyOtp}/>
                 </View>
                 <TouchableOpacity onPress={()=>navigation.goBack()} style={{alignItems:"center"}}>
-                   <Text style={styles.txtResend}>Gửi lại</Text>
+                    <Text style={styles.txtResend}>Gửi lại</Text>
                 </TouchableOpacity>
-               
             </KeyboardAvoidingView>
             
             {status ? (

@@ -1,4 +1,4 @@
-import { Image, KeyboardAvoidingView, Platform, StatusBar, StyleSheet, Text, View, ScrollView } from 'react-native';
+import { Image, KeyboardAvoidingView, Platform, StatusBar, StyleSheet, Text, View, ScrollView, Pressable } from 'react-native';
 import React, { useState } from 'react';
 import Ionicon from 'react-native-vector-icons/Ionicons'
 import { TouchableOpacity } from 'react-native-gesture-handler';
@@ -46,7 +46,10 @@ const SignupScreen: React.FC = () => {
                         <Form setModal={setModal} />
                         <View style={styles.text}>
                             <Text style={{ color: "black" }}>Bạn đã có tài khoản?</Text>
-                            <Text style={{ fontSize: 15, color: COLOR.PrimaryColor, fontWeight: "bold" }}> Đăng nhập</Text>
+
+                         <Pressable onPress={()=>navigation.goBack()}>
+                         <Text style={{ fontSize: 15, color: COLOR.PrimaryColor, fontWeight: "bold" }}> Đăng nhập</Text>
+                         </Pressable>
                         </View>
                         <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
                             <View style={{ position: "absolute", bottom: 30 }}>

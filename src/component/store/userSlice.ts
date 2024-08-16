@@ -9,7 +9,7 @@ interface User {
   fullname?: string;
   gender?: string;
   id?: number;
-  phone?: string;
+  phone?: any;
   role?: number;
   token?: string;
 }

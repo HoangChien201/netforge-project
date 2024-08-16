@@ -43,6 +43,7 @@ const ListPorts = memo(({ onrefresh }: { onrefresh: boolean }) => {
   const navigation: NavigationProp<ParamListBase> = useNavigation();
   const PAGE_SIZE = 10;
   const getAllPost = useCallback(async () => {
+    setCurrentPage(1); 
     const token = await AsyncStorage.getItem('token');
 
     if (allData.length < 0) {

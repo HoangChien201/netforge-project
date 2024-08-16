@@ -1,7 +1,6 @@
 import 'react-native-gesture-handler';
 import React, { useEffect, useState } from "react";
-
-import { Linking, StyleSheet } from 'react-native';
+import { AppState, Linking, StyleSheet } from 'react-native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { NetworkRootStackParams, NetworkRootStackScreens } from './NetworkRootStackParams';
 import MessageScreen from '../../screens/message/MessageScreen';
@@ -71,6 +70,25 @@ export default function NetworkStack(): React.JSX.Element {
         //   }
 
       };
+    //sự kiện tắt app
+  useEffect(() => {
+    const handleAppStateChange =async (nextAppState) => {
+      if (nextAppState === 'background') {
+        console.log('App is in background mode');
+        if(user?.id){
+            await updateStatusOnline(user.id,0)
+        }
+        // Code để xử lý khi app bị tắt hoặc chuyển sang chế độ background
+      }
+    };
+
+    const subscription = AppState.addEventListener('change', handleAppStateChange);
+
+    return () => {
+      subscription.remove();
+    };
+  }, []);
+
     return (
         <Stack.Navigator
             screenOptions={{

@@ -1,23 +1,26 @@
 import { Image, Pressable, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import React, { useState, useRef, memo, useLayoutEffect } from 'react';
+import React, { useState, useRef, memo, useLayoutEffect, useEffect } from 'react';
 import { useNavigation } from '@react-navigation/native';
 import AntDesignIcon from 'react-native-vector-icons/AntDesign';
 import { reaction } from '../../constant/emoji';
 import * as Animatable from 'react-native-animatable';
 import { deleteLikePost, likePost, updateLikePost } from '../../http/userHttp/getpost';
 import ModalShare from '../share-post/ModalShare';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../store/store';
+import { useSendNotification } from '../../constant/notify';
 
-const ActionBar = memo(({ creater,onPressProfile, like_count,type, postId, comment_count, share_count,checkLike,setCheckLike, share }: {setCheckLike:(Value:boolean)=>void,checkLike?:boolean,type: number, postId?: number, comment_count?: number, share_count?: number,like_count?:number,share?: number,creater?:any }) => {
-    const [islike, setIsLike] = useState(false);
+const ActionBar = memo(({ creater, like_count,type, postId, comment_count, share_count,checkLike,setCheckLike, share }: {setCheckLike:(Value:boolean)=>void,checkLike?:boolean,type: number, postId?: number, comment_count?: number, share_count?: number,like_count?:number,share?: number,creater?:any }) => {
+    
     const [shares, setShare] = useState(share);
     const navigation = useNavigation();
     const user = useSelector((state:RootState)=>state.user.value)
+    const [islike, setIsLike] = useState(false);
     const [numberLike, setNumberLike] = useState<number>(like_count);
     const [number, setNumber] = useState<number | null>(type);
     const animationRef = useRef(null);
     const [isModalVisible, setModalVisible] = useState(false);
+    const {sendNReaction} = useSendNotification()
     
     const toggleModal = () => {
    
@@ -72,13 +75,11 @@ const ActionBar = memo(({ creater,onPressProfile, like_count,type, postId, comme
     const OnPressIcon = () => {
         if (islike && checkLike) {
             animationRef.current?.fadeOutDown(500).then(() => {
-                setIsLike(false);
-                setCheckLike(false)
-                
-                
+                setIsLike(false)
+                setCheckLike(false)  
             });
         } else {
-                setIsLike(true);
+                setIsLike(true)
                 setCheckLike(true)
   
         }
@@ -90,7 +91,7 @@ const ActionBar = memo(({ creater,onPressProfile, like_count,type, postId, comme
         if (reactionMap) {
             return (
                 <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', marginRight: 10 }}>
-                    <TouchableOpacity onLongPress={OnPressIcon} onPress={() => {
+                    <TouchableOpacity style={{padding:9}} onLongPress={OnPressIcon} onPress={() => {
                           deleteLike(postId)
                           setNumber(null)
                           numberLike === null ? setNumberLike(0) : setNumberLike((pre)=>pre-1)
@@ -108,11 +109,11 @@ const ActionBar = memo(({ creater,onPressProfile, like_count,type, postId, comme
 
     return (
         <View style={styles.container}>
-            <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-around' }}>
-                <View style={{ flexDirection: 'row', alignItems: 'center', width: 50, marginRight: 5 }}>
+            <View style={{ flexDirection: 'row', alignItems: 'center',flex:1 }}>
+                <View style={{ flexDirection: 'row', alignItems: 'center', width: 50, marginRight: 5,flex:1 }}>
                     {number === null ?
                         <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', marginRight: 10 }}>
-                            <Pressable onLongPress={OnPressIcon} onPress={() => {
+                            <Pressable style={{padding:9}} onLongPress={OnPressIcon} onPress={() => {
                                 setNumber(1);
                                 likepost(postId, 1);
                                 numberLike === null ? setNumberLike(1) : setNumberLike(()=>{
@@ -120,6 +121,7 @@ const ActionBar = memo(({ creater,onPressProfile, like_count,type, postId, comme
                                     const pre1 =parseInt(numberLike)+1
                                     return pre1
                                 })
+                                sendNReaction(postId,creater,1)
                                 setIsLike(false)
                             }}>
                                 <AntDesignIcon name='like2' size={22} color='#000' />
@@ -131,11 +133,11 @@ const ActionBar = memo(({ creater,onPressProfile, like_count,type, postId, comme
                     }
                     <Text style={styles.text}>{numberLike === null ? 0 : numberLike}</Text>
                 </View>
-                <TouchableOpacity onPress={()=> navigation.navigate('CommentsScreen',{postId})} style={{ flexDirection: 'row', alignItems: 'center', marginHorizontal: 20 }}>
+                <TouchableOpacity onPress={()=> navigation.navigate('CommentsScreen',{postId})} style={{ flexDirection: 'row',padding:6, alignItems: 'center', marginHorizontal: 20,flex:1,justifyContent:'center' }}>
                     <AntDesignIcon name='message1' size={24} color='#000' style={styles.comment} />
                     <Text style={styles.text}>{comment_count ? comment_count : 0}</Text>
                 </TouchableOpacity>
-                <TouchableOpacity onPress={toggleModal} style={{ flexDirection: 'row', alignItems: 'center', marginHorizontal: 5 }}>
+                <TouchableOpacity onPress={toggleModal} style={{ flexDirection: 'row', alignItems: 'center', marginHorizontal: 5,flex:1,padding:6,justifyContent:'center' }}>
                     <AntDesignIcon name='sharealt' size={22} color='#000' style={styles.comment} />
                     <Text style={styles.text}>{share_count ? share_count : 0}</Text>
                 </TouchableOpacity>
@@ -157,6 +159,7 @@ const ActionBar = memo(({ creater,onPressProfile, like_count,type, postId, comme
                                 setIsLike(false)
                                 numberLike === null ? setNumberLike(1) : (numberLike === 0 && setNumberLike(pre=>pre+1) ) 
                                number === null ? likepost(postId, item.type):updatePost(postId,item.type)
+                               sendNReaction(postId,creater,item.type)
                             }}>
                                 <Image source={item.Emoji} style={{ width: 23, height: 23, marginVertical: 6 }} />
     
@@ -185,7 +188,7 @@ const styles = StyleSheet.create({
         marginEnd: 5,
     },
     comment: {
-        marginEnd: 5,
+        marginEnd: 15,
         marginTop: 5,
         width: 24, height: 23,
     },

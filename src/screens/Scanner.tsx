@@ -12,7 +12,7 @@ import { socket } from '../http/SocketHandle';
 import { useSelector } from 'react-redux';
 import { RootState } from '../component/store/store';
 const Scanner = () => {
-  const user = useSelector((state:RootState)=>state.user.value)
+  const user = useSelector((state: RootState) => state.user.value)
 
   const [data, setData] = useState('');
   const [show, setShow] = useState(false);
@@ -25,23 +25,25 @@ const Scanner = () => {
   const isFocused = useIsFocused();
   const [isCameraActive, setIsCameraActive] = useState(true);
   const navigation = useNavigation();
-
+  const [showErr, setShowErr] = useState(false)
   const [device, setDevice] = useState('')
+  const [lastScanTime, setLastScanTime] = useState(0);
   useEffect(() => {
     // Kiểm tra nếu data là một số hợp lệ
     const numericData = Number(data);
 
-    if (!isNaN(numericData) && data) {
+    if (!isNaN(numericData) && data.length>0) {
       // Nếu data là một số, gọi hàm getUser với ID người dùng
       getUser(numericData);
-      setShow(true);
-    } else if (typeof data === 'string' && data.length > 0) {
+    } else if (typeof data === 'string' && data.length == 32) {
       // Nếu data là một chuỗi, thực hiện hành động khác (tuỳ theo yêu cầu)
       setDevice(data)
       setShowLogin(true);
+      setShowErr(false)
 
-    } else {
+    } else if (data.length < 32 && data.length>0 || data.length > 32) {
       console.log('Data is not a valid number or string ID: ' + JSON.stringify(data));
+      setShowErr(true)
     }
   }, [data]);
 
@@ -57,7 +59,14 @@ const Scanner = () => {
   const getUser = async (id) => {
     try {
       const result = await getUserById(id);
-      setUserS(result);
+      if (result) {
+        setUserS(result);
+        setShow(true);
+        setShowErr(false)
+      } else {
+        setShowErr(true)
+      }
+
     } catch (error) {
       console.error(error);
     }
@@ -72,8 +81,11 @@ const Scanner = () => {
   const codeScanner = useCodeScanner({
     codeTypes: ['qr', 'ean-13'], // Specify the code types you want to scan
     onCodeScanned: (codes) => {
-      if (codes.length > 0) {
-        setData(codes[0].value);  // Assuming you want the first scanned code
+      const currentTime = Date.now();
+      // Chỉ xử lý nếu đã qua ít nhất 1.5 giây từ lần quét cuối
+      if (currentTime - lastScanTime >= 1500 && codes.length > 0) {
+        setData(codes[0].value);
+        setLastScanTime(currentTime); // Cập nhật thời gian lần quét cuối
       }
     },
   });
@@ -90,6 +102,7 @@ const Scanner = () => {
   );
   const handleModalClose = () => {
     setShowLogin(false);
+    setShowErr(false)
     setData('');
   };
   const sendLoginWeb = () => {
@@ -101,7 +114,7 @@ const Scanner = () => {
     socket.emit('qr-login', data);
   };
   useEffect(() => {
-    socket.on('qr-login-c142c2e633faa7a6df18d273e6f77206', (data) => {
+    socket.on(`qr-login-${device}`, (data) => {
       Alert.alert(
         'Đăng nhập',
         'Đăng nhập thành công!',
@@ -180,6 +193,28 @@ const Scanner = () => {
                     <Text style={{ color: 'white', fontSize: 22, fontWeight: '500' }}>Đăng nhập</Text>
                   </TouchableOpacity>
                 </View>
+                <View></View>
+              </View>
+
+            </View>
+          </View>
+        </Modal>
+        <Modal visible={showErr}
+          animationType="slide"
+          onRequestClose={handleModalClose}
+          transparent={true}
+        >
+          <View style={{
+            flex: 1,
+            justifyContent: 'flex-end',
+          }}>
+            <View style={styles.containerLogin}>
+              <TouchableOpacity onPress={handleModalClose} style={styles.closeButton}>
+                <ICON name='close' size={24} color={'black'} />
+              </TouchableOpacity>
+              <View style={styles.containerUser}>
+                <View></View>
+                <Text style={{ color: 'black', fontSize: 20 }}>Dữ liệu không hợp lệ!</Text>
                 <View></View>
               </View>
 

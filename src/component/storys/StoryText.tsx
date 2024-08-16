@@ -45,33 +45,35 @@ const StoryText = () => {
         "Hãy theo đuổi đam mê của bạn, thành công sẽ theo đuổi bạn."
     ];
 
+
+    const handleKeyboardShow = useCallback(() => {
+        navigation.getParent()?.setOptions({
+            tabBarStyle: {
+                display: 'none',
+            }
+        });
+    }, []);
+    const handleKeyboardHide = useCallback(() => {
+        navigation.getParent()?.setOptions({
+            tabBarStyle: {
+                position: 'absolute',
+                backgroundColor: '#1F1F2F',
+                margin: 20,
+                borderRadius: 15
+            },
+        });
+    }, []);
     useFocusEffect(
         useCallback(() => {
-        const keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', () => {
-            setKeyboardVisible(true);
-            Animated.timing(tabBarAnimation, {
-                toValue: 0, // animate to opacity 0 (hidden)
-                duration: 300,
-                easing: Easing.linear,
-                useNativeDriver: true,
-            }).start();
-        });
-        const keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', () => {
-            setKeyboardVisible(false);
-            Animated.timing(tabBarAnimation, {
-                toValue: 1, // animate to opacity 1 (visible)
-                duration: 300,
-                easing: Easing.linear,
-                useNativeDriver: true,
-            }).start();
-        });
-
-        return () => {
-            keyboardDidHideListener.remove();
-            keyboardDidShowListener.remove();
-        };
-    },[])
-);
+            // Lắng nghe sự kiện hiển thị và ẩn bàn phím
+            const keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', handleKeyboardShow);
+            const keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', handleKeyboardHide);
+            return () => {
+                keyboardDidShowListener.remove();
+                keyboardDidHideListener.remove();
+            };
+        }, [handleKeyboardShow, handleKeyboardHide]),
+    );
 
     useEffect(() => {
         textInputRef?.current?.focus();
@@ -86,7 +88,7 @@ const StoryText = () => {
                     setIsMultiLine(false);
                 }
                 Animated.timing(animatedWidth, {
-                    toValue: Math.min(width + 50, 300), 
+                    toValue: Math.min(width + 50, 300),
                     duration: 100,
                     useNativeDriver: false,
                 }).start();
@@ -99,7 +101,7 @@ const StoryText = () => {
             const type = 2;
             const permission = 1;
             setIsLoading(true);
-            const newPost = await createNewPost({ type, permission, content,emotion:0 });
+            const newPost = await createNewPost({ type, permission, content, emotion: 0 });
             setTimeout(() => {
                 setIsLoading(false);
                 setStatus('Tạo bài viết thành công');
@@ -174,10 +176,12 @@ const StoryText = () => {
             </TouchableOpacity>
             {isTextInputVisible && (
                 <>
-                    <Animated.View style={[styles.animatedInputContainer, { left: '50%', marginLeft: animatedWidth.interpolate({
-                        inputRange: [0, 200],
-                        outputRange: [0, -100] // Adjust based on your layout
-                    }), width: animatedWidth }]}>
+                    <Animated.View style={[styles.animatedInputContainer, {
+                        left: '50%', marginLeft: animatedWidth.interpolate({
+                            inputRange: [0, 200],
+                            outputRange: [0, -100] // Adjust based on your layout
+                        }), width: animatedWidth
+                    }]}>
                         <TextInput
                             ref={textInputRef}
                             style={[styles.input, isMultiLine && { height: 200, textAlignVertical: 'top' }]}
@@ -213,7 +217,7 @@ const StoryText = () => {
                                     data={captions}
                                     keyExtractor={(item, index) => index.toString()}
                                     renderItem={({ item }) => (
-                                        <TouchableOpacity 
+                                        <TouchableOpacity
                                             onPress={() => handleCaptionPress(item)}
                                             style={[styles.captionItem, selectedCaption === item && styles.selectedCaption]}
                                         >
@@ -224,7 +228,7 @@ const StoryText = () => {
                                 <TouchableOpacity onPress={handleConfirmPress} style={styles.confirmButton}>
                                     <Text style={styles.confirmButtonText}>Xác nhận</Text>
                                 </TouchableOpacity>
-                                
+
                             </View>
                         </TouchableWithoutFeedback>
                     </View>
@@ -279,7 +283,7 @@ const styles = StyleSheet.create({
         borderRadius: 10,
         padding: 20,
         alignItems: 'center',
-        maxHeight:'50%'
+        maxHeight: '50%'
     },
     captionItem: {
         paddingVertical: 10,

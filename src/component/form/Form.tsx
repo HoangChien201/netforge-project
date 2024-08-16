@@ -5,6 +5,7 @@ import ButtonLogin from './ButtonLogin';
 import { emailPattern } from '../../constant/valid';
 import { regiter } from '../../http/userHttp/user';
 import { NavigationProp, ParamListBase, useNavigation } from '@react-navigation/native';
+import { UserRootStackEnum } from '../stack/UserRootStackParams';
 
 interface User {
   email: string;
@@ -24,10 +25,10 @@ interface Valid {
 const Form = ({ setModal }: { setModal: (values: boolean) => void }) => {
   const navigation: NavigationProp<ParamListBase> = useNavigation();
   const [valueF, setValueF] = useState<User>({
-    email: "hoangduy@gmail.com",
-    password: "123",
-    fullname: "Lê Hoàng Duy",
-    confirmpassword: "123"
+    email: "",
+    password: "",
+    fullname: "",
+    confirmpassword: ""
   });
   const [valid, setValid] = useState<Valid>({
     email: true,
@@ -82,12 +83,13 @@ const Form = ({ setModal }: { setModal: (values: boolean) => void }) => {
         }));
         return;
       }
+     
 
 
       setModal(true);
       setTimeout(() => {
         setModal(false);
-        navigation.goBack();
+        navigation.navigate(UserRootStackEnum.LoginScreen,{username:valueF.email,pass:valueF.password})
       }, 1000);
     } catch (error) {
       console.error(error);

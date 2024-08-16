@@ -29,11 +29,11 @@ const ModalFail = ({ visible, text }: { visible: boolean, text: string }) => {
         <Modal transparent visible={visible}>
             <View style={styles.modalBackGround}>
                 <Animated.View style={[styles.modalContainer, { transform: [{ scale: scaleValues }] }]}>
-                    <View>
+                    <View style={{paddingRight:10 }}>
 
-                        <View style={{ alignItems: "center",flexDirection:'row' }}>
-                            <Image source={require('../../media/Dicons/cross.png')} style={{ height: 50, width: 50,marginRight:10 }} />
-                            <Text style={{ marginVertical: 30, fontSize: 18, textAlign: "center", fontFamily: "popins" }}>{text}</Text>
+                        <View style={{ alignItems: "center",flexDirection:'row',marginRight:10,paddingHorizontal:10,justifyContent:'center' }}>
+                            <Image source={require('../../media/Dicons/cross.png')} style={{ height: 45, width: 45,marginRight:10 }} />
+                            <Text style={{ marginVertical: 30, fontSize: 15, textAlign: "center", fontFamily: "popins",marginRight:10 }}>{text}</Text>
                         </View>
 
                     </View>
@@ -52,14 +52,18 @@ const styles = StyleSheet.create({
         flex: 1,
         backgroundColor: 'rgba(0,0,0,0.1)',
         justifyContent: "center",
-        alignItems: "center"
+        alignItems: "center",
+        paddingHorizontal:10
     },
     modalContainer: {
-      
+        width:'100%',
         backgroundColor: '#fff',
         paddingHorizontal: 20,
         borderRadius: 20,
         elevation: 20,
+         justifyContent: "center",
+        alignItems: "center",
+        flexWrap:'wrap'
 
     },
     header: {

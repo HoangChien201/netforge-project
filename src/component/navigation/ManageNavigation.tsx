@@ -235,6 +235,7 @@ const ManageNavigation = () => {
 
     const linking = {
         prefixes: ['http://www.netfore.click/app/', 'https://network-sever-1.onrender.com/app/'],
+
         config: {
             screens: {
                 Profile: 'home',
@@ -259,9 +260,10 @@ const ManageNavigation = () => {
     };
 
     return (
-        <GestureHandlerRootView>
-            <NavigationContainer linking={linking} >
-                {/* ZegoCallInvitationDialog hiện dialog nhận cuộc gọi */}
+
+        <GestureHandlerRootView style={{ flex: 1 }}>
+            <NavigationContainer linking={linking}>
+                {/*ZegoCallInvitationDialog hiện dialog nhận cuộc gọi */}
                 <ZegoCallInvitationDialog />
                 {user ? <NetworkStack /> : <UserStack />}
                 <ZegoUIKitPrebuiltCallFloatingMinimizedView />

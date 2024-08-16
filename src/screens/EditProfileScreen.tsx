@@ -25,7 +25,7 @@ import { setUsers } from '../component/store/userSlice';
 interface user {
   email: string;
   fullname: string;
-  dateOfBirth: any | null;
+  dateOfBirth: string | null;
   phone: null | number;
   address: string | null;
   gender: string | null;
@@ -55,7 +55,8 @@ const EditProfileScreen: React.FC = () => {
   const dispatch = useDispatch()
 
   const [userData, setUserData] = useState<any>(null);
-  const dateOfBirth = user?.dateOfBirth;
+  // const dateOfBirth = user?.dateOfBirth;
+  const dateOfBirth = user?.dateOfBirth ? new Date(user.dateOfBirth) : null;
   const [isEditable, setIsEditable] = useState(false); // Trạng thái chỉnh sửa của InputField
 
 
@@ -67,17 +68,18 @@ const EditProfileScreen: React.FC = () => {
   const [status, setStatus] = useState(true);
   const formikRef = useRef<FormikProps<{ email: string; fullname: string; phone?: string; gender?: string; dateOfBirth?: any }>>(null);
   const [initialAvatar, setInitialAvatar] = useState('');
+  
 
   // address
-  const [selectedAddress, setSelectedAddress] = useState<string | null>(user.address || '');
+  const [selectedAddress, setSelectedAddress] = useState<string | null>(user?.address || '');
   const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
-  const [initialAddress, setInitialAddress] = useState(user.address || '');
+  const [initialAddress, setInitialAddress] = useState(user?.address || '');
 
   useFocusEffect(
     React.useCallback(() => {
       const fetchUserData = async () => {
         try {
-          const response = await getUSerByID(user.id, user.token);
+          const response = await getUSerByID(user?.id, user?.token);
           setUserData(response);
           setAvatarPath(response.avatar);
         } catch (error) {
@@ -98,7 +100,7 @@ const EditProfileScreen: React.FC = () => {
 
   // avatar
   useEffect(() => {
-    if (user && user.avatar) {
+    if (user && user?.avatar) {
       setInitialAvatar(user.avatar);
     }
   }, [user]);
@@ -107,7 +109,7 @@ const EditProfileScreen: React.FC = () => {
   };
 
 
-  const [initialDate, setInitialDate] = useState(user.dateOfBirth);
+  const [initialDate, setInitialDate] = useState(user?.dateOfBirth);
 
   const showModalFalse = () => {
     setShowModal(true);
@@ -132,10 +134,10 @@ const EditProfileScreen: React.FC = () => {
 
     try {
       const { email, fullname, phone, gender, address } = values;
-      const updatedGender = gender || user.gender || '';
+      const updatedGender = gender || user?.gender || '';
       const updatedAddress = selectedAddress !== null ? selectedAddress : '';
       const response = await updateProfile(
-        user.id,
+        user?.id,
         email,
         fullname,
         startDate,
@@ -150,7 +152,7 @@ const EditProfileScreen: React.FC = () => {
           ...user,
           email,
           fullname,
-          dateOfBirth: startDate,
+          dateOfBirth: startDate.toISOString(),
           phone,
           address: updatedAddress,
           gender: updatedGender
@@ -176,12 +178,12 @@ const EditProfileScreen: React.FC = () => {
   };
 
   const initialValues = {
-    email: user.email,
-    fullname: user.fullname,
-    dateOfBirth: user.dateOfBirth || null,
-    phone: user.phone || null,
-    address: user.address || null,
-    gender: user.gender
+    email: user?.email,
+    fullname: user?.fullname,
+    dateOfBirth: user?.dateOfBirth || null,
+    phone: user?.phone || null,
+    address: user?.address || null,
+    gender: user?.gender
   };
 
   const handleBackPress = () => {
@@ -227,7 +229,7 @@ const EditProfileScreen: React.FC = () => {
       <CustomHeaderBar onBackPress={handleBackPress}
         onSavePress={() => formikRef.current?.handleSubmit()} title='Chỉnh sửa thông tin' />
 
-      <UpLoadAvatar initialImage={avatarPath} onImageSelect={handleImageSelect} userId={user.id} />
+      <UpLoadAvatar initialImage={avatarPath} onImageSelect={handleImageSelect} userId={user?.id} />
 
       <Formik
         innerRef={formikRef}

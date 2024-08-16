@@ -97,8 +97,8 @@ position: 'absolute',
             {
                 
                 
-                showInvalid && <Text style={{fontSize:10,position:"absolute",bottom:-15,left:10,color:"red",fontWeight:"400", fontFamily: "poppins"
-                }}>Vui lòng nhập đúng  {label} !</Text>
+                showInvalid && <Text style={{fontSize:12,position:"absolute",bottom:-20,left:10,color:"red",fontWeight:"400", fontFamily: "poppins"
+                }}>Vui lòng nhập {label} !</Text>
             }
          
         </View>

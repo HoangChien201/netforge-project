@@ -36,7 +36,7 @@ const StoryScreen = () => {
   });
 
   return (
-    <GestureHandlerRootView style={{ flex: 1 }}>
+    <View style={{ flex: 1 }}>
       <PanGestureHandler onGestureEvent={handlePanGesture}>
         <Animated.View style={[{ flex: 1 }, animatedStyle]}>
           <ScrollView
@@ -65,7 +65,7 @@ const StoryScreen = () => {
           </ScrollView>
         </Animated.View>
       </PanGestureHandler>
-    </GestureHandlerRootView>
+    </View>
   );
 };
 
