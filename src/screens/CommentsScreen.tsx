@@ -193,7 +193,7 @@ const CommentsScreen = () => {
                                     )
                                 }
                                 {
-                                    post && (
+                                    post.like_count && (
                                         <TouchableOpacity onPress={() => setModalGetLikePostVisible(true)}>
 
                                             <View style={styles.ViewPostLike}>
