@@ -1,6 +1,6 @@
-import React, { useCallback, useEffect, useState } from 'react'
-import { NavigationContainer, RouteProp, useNavigation } from '@react-navigation/native'
-import { createStackNavigator, StackNavigationProp } from '@react-navigation/stack'
+import React, { useEffect, useState } from 'react'
+import { NavigationContainer, RouteProp } from '@react-navigation/native'
+import { StackNavigationProp } from '@react-navigation/stack'
 import NetworkStack from '../stack/NetworkStack'
 import UserStack from '../stack/UserStack'
 import SplashScreen from '../../screens/SplashScreen'
@@ -16,7 +16,9 @@ import { useDispatch, useSelector } from 'react-redux'
 import { RootState } from '../store/store'
 import { setUsers } from '../store/userSlice'
 import { getFriends } from '../../http/QuyetHTTP'
+import { navigationRef } from './NavigationRef'
 import { useSendNotification } from '../../constant/notify'
+import LoginScreen from '../../screens/LoginScreen'
 import { getUrlAsync } from '../deeplink'
 
 
@@ -32,9 +34,8 @@ const ManageNavigation = () => {
     const user = useSelector((state: RootState) => state.user.value)
     const [friend, setFriend] = useState([])
     const [todayFriends, setTodayFriends] = useState([]);
-
     const { sendBirthDay } = useSendNotification()
-    let oldNotifications;
+    const [oldNotifications, setOldNotifications] = useState([]);
     const handleAutoLogin = async () => {
         try {
             const keepLoggedIn = await AsyncStorage.getItem('keep');
@@ -114,7 +115,6 @@ const ManageNavigation = () => {
                         friendId: friend.user.id,
                         avatar: friend.user.avatar,
                         fullname: friend.user.fullname,
-                        receiver: user.id,
 
                     })
                 });
@@ -133,25 +133,25 @@ const ManageNavigation = () => {
             socket.on(`notification-${id}`, (data) => {
                 // addNotification(data);
                 // showLocal(data);
-                // console.log('Nhận thông báo');
-
+                console.log('Nhận thông báo 1: ', data);
                 const exists = oldNotifications.some(notification => notification.id == data.id);
                 if (!exists) {
                     addNotification(data);
                     showLocal(data);
-                    console.log('Nhận thông báo');
+                    console.log('Nhận thông báo sau check: ', data);
                 }
             });
         }
 
     }, [user]);
 
-    const addNotification = async (newNotification) => {
+    const addNotification = async (newNotification:any) => {
         try {
-            oldNotifications = await AsyncStorage.getItem(`notifications-${user.id}`);
-            const parsedNotifications = oldNotifications ? JSON.parse(oldNotifications) : [];
+            const data = await AsyncStorage.getItem(`notifications-${user?.id}`);
+            const parsedNotifications = data ? JSON.parse(data) : [];
             const updatedNotifications = [...parsedNotifications, newNotification];
-            await AsyncStorage.setItem(`notifications-${user.id}`, JSON.stringify(updatedNotifications));
+            await AsyncStorage.setItem(`notifications-${user?.id}`, JSON.stringify(updatedNotifications));
+            setOldNotifications(updatedNotifications);
             console.log('Notification added');
         } catch (error) {
             console.error('Error adding notification:', error);
@@ -238,41 +238,47 @@ const ManageNavigation = () => {
     }
 
     const linking = {
-        prefixes: ['http://www.netfore.click/app/', 'https://network-sever-1.onrender.com/app/'],
-
+        prefixes: ['netforge://', ''],
         config: {
             screens: {
-                Profile: 'home',
+                HomeScreen: 'home',
                 // Post: 'post/:id',
                 // CommentsScreen: 'comments/:id',
             },
         },
-        subscribe(listener: any) {
-
-
-            // Listen to incoming links from deep linking
-            const linkingSubscription = Linking.addEventListener('url', async ({ url }) => {
-                // console.log('url', url);
-                listener(url);
-            });
-
-            return () => {
-                // Clean up the event listeners
-                linkingSubscription.remove();
-            };
-        },
     };
 
-    return (
 
-        <GestureHandlerRootView style={{ flex: 1 }}>
-            <NavigationContainer linking={linking}>
-                {/*ZegoCallInvitationDialog hiện dialog nhận cuộc gọi */}
-                <ZegoCallInvitationDialog />
-                {user ? <NetworkStack /> : <UserStack />}
-                <ZegoUIKitPrebuiltCallFloatingMinimizedView />
-            </NavigationContainer>
-        </GestureHandlerRootView>
+    const handleDeepLink = (event) => {
+        let data = Linking.openURL(event.url);
+        console.log('Deep link data:', data);
+    };
+
+    Linking.addEventListener('url', handleDeepLink);
+
+    // return () => {
+    //     Linking.removeEventListener('url', handleDeepLink);
+    // };
+
+    const checkInitialLink = async () => {
+        const initialUrl = await Linking.getInitialURL();
+        if (initialUrl) {
+            let data = Linking.openURL(initialUrl);
+            console.log('Initial link data:', data);
+        }
+    };
+
+    checkInitialLink();
+
+    return (
+        // <GestureHandlerRootView style={{ flex: 1 }}>
+        <NavigationContainer linking={linking} ref={navigationRef}>
+            {/*ZegoCallInvitationDialog hiện dialog nhận cuộc gọi */}
+            <ZegoCallInvitationDialog />
+            {user ? <NetworkStack /> : <UserStack />}
+            <ZegoUIKitPrebuiltCallFloatingMinimizedView />
+        </NavigationContainer>
+        // </GestureHandlerRootView>
     )
 }
 
