@@ -10,6 +10,7 @@ import { useSendNotification } from '../../constant/notify';
 import Share, { Social } from 'react-native-share';
 import ModalPoup from '../Modal/ModalPoup';
 import ModalFail from '../Modal/ModalFail';
+import { deeplink } from '../../constant/url';
 
 
 interface ModalShareProps{
@@ -67,17 +68,9 @@ const ModalShare:React.FC<ModalShareProps> = ({creater, isVisible, onClose, idPo
         }
     };
 
-    // const sharePostToZalo = (postId) => {
-    //     const url = `https://netforge/post/${postId}`;
-    //     const zaloUrl = `https://zalo.me/share?url=${encodeURIComponent(url)}`;
-    //     Linking.openURL(zaloUrl)
-    //       .then(() => console.log('Mở Zalo thành công'))
-    //       .catch((err) => console.error('Lỗi mở Zalo:', err));
-    //   };
-
       const shareApp = async () => {
         
-        const url = `http://www.netforge.click/app/post/${idPost}`;
+        const url = `${deeplink}app/post/${idPost}`;
         const shareOptions = {
           title: 'Chia sẻ bài viết',
           message: 'Xem bài viết này trên ứng dụng của tôi!',
@@ -87,41 +80,15 @@ const ModalShare:React.FC<ModalShareProps> = ({creater, isVisible, onClose, idPo
       
         try {
             const result = await Share.open(shareOptions);
-            console.log('Đã chia sẻ thành công qua Messenger:', result);
+            if(!result) throw Error
+            ToastAndroid.show('Chia sẽ thành công', ToastAndroid.SHORT);
+
           } catch (error) {
             console.log('Chia sẻ bị hủy hoặc thất bại:', error);
           }
-        // try {
-        //   const result = await Share.open(shareOptions);
-        //   if (result.app === 'com.zing.zalo') {
-        //     const zaloUrl = `https://zalo.me/share?url=${encodeURIComponent(url)}`;
-        //     Linking.openURL(zaloUrl)
-        //       .then(() => console.log('Mở Zalo thành công'))
-        //       .catch((err) => console.error('Lỗi mở Zalo:', err));
-        //   } else if (result.app === 'com.facebook.orca') {
-        //     // Thêm xử lý cho Facebook Messenger nếu cần thiết
-        //   } else {
-        //     console.log('Đã chia sẻ thành công qua ứng dụng khác:', result);
-        //   }
-        // } catch (error) {
-        //   console.log('Chia sẻ bị hủy hoặc thất bại:', error);
-        // }
+        
       };
 
-    // const shareApp = (postId: string) => {
-    //     const deepLink = `https://netforge/post/${postId}`;
-    //     const shareOptions = {
-    //         title: 'Chia sẻ bài viết',
-    //         // message: `${deepLink}`,
-    //         url: deepLink,
-    //         social: Share.Social.FACEBOOK
-    //     };
-
-    //     Share.open(shareOptions)
-    //         .then((res) => console.log(res))
-    //         .catch((err) => console.log(err));
-        
-    // };
 
     const handleSendNotification = (post: any) => {
         const data = {

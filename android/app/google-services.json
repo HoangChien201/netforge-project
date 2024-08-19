@@ -99,6 +99,35 @@
           ]
         }
       }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:715228792994:android:4ab4b938a5947c439baffb",
+        "android_client_info": {
+          "package_name": "com.netforge"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "715228792994-fh5hj8g45rk7sf9src4bhnar1jjc1bjv.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCi-vPCF2MAUoLvKiF41Ou9FwTBUwLO7yE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "715228792994-fh5hj8g45rk7sf9src4bhnar1jjc1bjv.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
     }
   ],
   "configuration_version": "1"

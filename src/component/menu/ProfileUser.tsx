@@ -20,32 +20,8 @@ interface User {
 
 const ProfileUser = () => {
     const navigation: NavigationProp<ParamListBase> = useNavigation();
+
     const user = useSelector((state : RootState)=>state.user.value)
-    const userID = user?.id;
-    const token = user?.token;
-    const [userData, setUserData] = useState<User | null>(null);
-    const [loading, setLoading] = useState(false);
-
-    const dispatch = useDispatch();
-
-    const fetchUserData = async () => {
-        setLoading(true);
-        try {
-            const response = await getUSerByID(userID, token);
-            if (JSON.stringify(response) !== JSON.stringify(user)) { // So sánh dữ liệu
-                dispatch(setUsers(response));
-            }
-            setUserData(response)
-            setLoading(false);
-            console.log("ProfileUser ở menu: ", response);
-        } catch (error) {
-            console.log(error);
-        }
-    };
-
-    useEffect(() => {
-        fetchUserData();
-    }, [userID]);
 
     const handleToProfileScreen = () => {
         navigation.navigate(ProfileRootStackEnum.ProfileScreen);
@@ -53,9 +29,6 @@ const ProfileUser = () => {
 
     return (
         <TouchableOpacity onPress={handleToProfileScreen}>
-            {loading ? (
-                <SkeletonUserMenu />
-            ) : (
                 <View style={styles.profileUser}>
                     <Image
                         source={user && user.avatar ? { uri: user.avatar } : require('../../media/icon/avatar.png')}
@@ -82,7 +55,6 @@ const ProfileUser = () => {
                         )}
                     </View>
                 </View>
-            )}
         </TouchableOpacity>
     );
 };
