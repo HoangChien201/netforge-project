@@ -32,7 +32,7 @@ const GenerImageAI: React.FC<AI> = ({ showAI, setShowAI, imageUrl, setImageUrl }
     { value: 8, text: 'logo', color: '#20B2AA' },
     { value: 9, text: 'anime', color: '#00BFFF' },
   ];
-
+ const halfKey = "sk-ovZt_rfmyX2D3IN0qRv9bp7YPk0YJdI9wvXMed1GVlT3Blbk"
   const handleItemPress = (text) => {
     setTextInputValue(prevValue => prevValue ? `${prevValue}, ${text}` : text);
   };
@@ -66,7 +66,7 @@ const GenerImageAI: React.FC<AI> = ({ showAI, setShowAI, imageUrl, setImageUrl }
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "Authorization": "Bearer",
+          "Authorization": `Bearer ${halfKey}FJ5K8WKKdRliqMBid8w6idTat6Ny2uYOIGzpXuMdbT4A`,
         },
         body: JSON.stringify({
           prompt: textInputValue,

@@ -86,10 +86,10 @@ const ItemComment: React.FC<Item> = ({ notification }) => {
                         :
                         <Text style={styles.textUser_Post}> đã bình luận bài viết </Text>
                     }
-
+                <Text style={styles.text1} numberOfLines={1} ellipsizeMode="tail">"{notification.data[0].body}"</Text>
 
                 </Text>
-                <Text style={styles.text1} numberOfLines={1} ellipsizeMode="tail">"{notification.data[0].body}"</Text>
+
             </View>
             <View style={styles.viewTime}>
                 <Text style={styles.textTime}>{displayDate}</Text>
