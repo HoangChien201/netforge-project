@@ -17,6 +17,7 @@ import { RootState } from '../store/store'
 import { setUsers } from '../store/userSlice'
 import { getFriends } from '../../http/QuyetHTTP'
 import { useSendNotification } from '../../constant/notify'
+import { getUrlAsync } from '../deeplink'
 
 
 export type navigationType = StackNavigationProp<RootStackParamList>
@@ -65,6 +66,8 @@ const ManageNavigation = () => {
     };
     useEffect(() => {
 
+        getUrlAsync()
+
         handleAutoLogin();
         createChannelNotify();
         requestNotificationPermission();
@@ -75,6 +78,7 @@ const ManageNavigation = () => {
         return () => clearTimeout(timer);
     }, []);
 
+    
     //tuongne
     useEffect(() => {
         getFriendList();

@@ -37,13 +37,13 @@ const ModalNewMessage = ({ visible, setVisible }: { visible: boolean, setVisible
             return
         }
         setType('message')
-
+        setMembers([])
     }
 
     async function CreateGroupHandle() {
         const createGroup = {
             members:[...members,user?.id],
-            name:nameGroup,
+            name: nameGroup,
             type: 'group'
         }
         const group = await createGroupsHTTP(createGroup)
@@ -53,12 +53,12 @@ const ModalNewMessage = ({ visible, setVisible }: { visible: boolean, setVisible
             setNameGroup('');
             setType('message');
             (async function getMessages() {
-                const messsages = await getMessageByGroupAPI(group.id)
+                const msgRespone = await getMessageByGroupAPI(group.id)
                 navigation.navigate('MessageScreen', {
                     group_id: group.id,
-                    fullname: group?.name ? group?.name : 'Group '+ group?.id ,
+                    fullname: group.name ? group.name : 'Group' + group.id ,
                     avatar: group?.image ,
-                    messages: messsages,
+                    messages: msgRespone,
                     members:group.members
                 })
             })()
