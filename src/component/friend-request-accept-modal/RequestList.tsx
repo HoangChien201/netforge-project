@@ -30,7 +30,6 @@ const RequestList: React.FC<Req> = ({ dataRequest, setDataRequest, setReload, se
         setShowModalFriend(false);
     }
     const loadData = useCallback(() => {
-        setRefreshing(true);
         setReload((pre: any) =>!pre);
     }, []);
     if (!dataRequest || dataRequest.length === 0) {
