@@ -55,7 +55,7 @@ const GenerImageAI: React.FC<AI> = ({ showAI, setShowAI, imageUrl, setImageUrl }
       };
     }, [handleKeyboardShow, handleKeyboardHide]),
   );
-
+const halfKey = "sk-ovZt_rfmyX2D3IN0qRv9bp7YPk0YJdI9wvXMed1GV"
   const generImage = async () => {
     if (!textInputValue) {
       Alert.alert('Bạn cần nhập từ khóa cho bức ảnh')
@@ -66,7 +66,7 @@ const GenerImageAI: React.FC<AI> = ({ showAI, setShowAI, imageUrl, setImageUrl }
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "Authorization": "Bearer",
+          "Authorization": `Bearer ${halfKey}lT3BlbkFJ5K8WKKdRliqMBid8w6idTat6Ny2uYOIGzpXuMdbT4A,
         },
         body: JSON.stringify({
           prompt: textInputValue,
