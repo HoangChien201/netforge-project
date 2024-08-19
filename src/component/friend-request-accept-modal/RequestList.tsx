@@ -31,6 +31,7 @@ const RequestList: React.FC<Req> = ({ dataRequest, setDataRequest, setReload, se
     }
     const loadData = useCallback(() => {
         setReload((pre: any) =>!pre);
+        setRefreshing(true);
     }, []);
     if (!dataRequest || dataRequest.length === 0) {
         return <EmptyReq />; // Hoặc hiển thị một thông báo khác tùy ý
