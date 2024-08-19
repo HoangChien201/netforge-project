@@ -27,7 +27,7 @@ const InputCmt = ({ fetchComments, onMediaSelected, parent = null, postId, text,
 
                 setText('chính mình')
             } else {
-                setComments(text)
+                setComments(text + " ")
             }
 
         }
