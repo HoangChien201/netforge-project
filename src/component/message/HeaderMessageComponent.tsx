@@ -2,7 +2,7 @@ import React, { useEffect, useMemo, useState } from 'react'
 import { Image, StyleSheet, Text, View } from 'react-native'
 import { useRoute } from '@react-navigation/native'
 // @ts-ignore
-import { ZegoSendCallInvitationButton } from '@zegocloud/zego-uikit-prebuilt-call-rn';
+import ZegoUIKitPrebuiltCallService,{ ZegoSendCallInvitationButton } from '@zegocloud/zego-uikit-prebuilt-call-rn';
 import OcticonsIcon from 'react-native-vector-icons/Octicons'
 
 import { MessageScreenRouteProp } from '../../screens/message/MessageScreen'
@@ -49,7 +49,6 @@ const HeaderMessageComponent = ({ partner }: { partner: any }) => {
 
 
     }
-
 
     return (
         <View style={styles.container}>

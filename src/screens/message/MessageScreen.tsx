@@ -44,9 +44,9 @@ const MessageScreen = () => {
   })
   const [groupId, setGroupId] = useState<number | null>(null)
   const [reply, setReply] = useState<messageType | null>(null)
+  
 
   const isFocus = useIsFocused()
-  const dispatch=useDispatch()
 
   const navigation = useNavigation()
   const route: MessageScreenRouteProp = useRoute()
@@ -82,7 +82,6 @@ const MessageScreen = () => {
     }, [navigation, isFocus])
   );
   useLayoutEffect(() => {
-    // navigation.getParent()?.setOptions({ tabBarStyle: { display: 'none' } });
 
     if (route.params?.group_id) {
       const { fullname, avatar } = route.params

@@ -23,40 +23,37 @@ export type GroupChatType = {
 }
 const STATUS_SEEN = 2
 const ListMessageItem = ({ group }: { group: GroupChatType }) => {
-    const user=useSelector((state:RootState)=>state.user.value)
-    
+    const user = useSelector((state: RootState) => state.user.value)
+
     const navigation: MessageScreenNavigationProp = useNavigation()
 
     let avatar = ''
     let name = ''
-    let members:Array<number>=[]
+    let members: Array<number> = []
 
     let id_user = null
-    if (group.type === 'group') {
-        avatar = group.image ? group.image : '';
-        name = group.name ? group.name : '';
-    }
-    else {
+    avatar = group.image ? group.image : '';
+    name = group.name ? group.name : '';
+
+    if (group.type === 'single') {
+        avatar = '../../media/quyet_icon/netforge.png';
+        name = "Netforge"
         const userSend = group.members.find(member => member.user?.id !== user?.id)
         if (userSend) {
             avatar = userSend?.user.avatar
             name = userSend.user.fullname
             id_user = userSend.user.id
         }
-        else {
-            avatar = '../../media/quyet_icon/netforge.png';
-            name = "Netforge"
-        }
     }
     const onPress = () => {
-            navigation.navigate('MessageScreen',{
-                group_id: group.id,
-                fullname: name,
-                avatar: avatar,
-                messages: group.messages,
-                members:group.members
+        navigation.navigate('MessageScreen', {
+            group_id: group.id,
+            fullname: name,
+            avatar: avatar,
+            messages: group.messages,
+            members: group.members
 
-            })
+        })
     }
     const messageLastest = group.messages[0]
     const messageUnSeen =
@@ -75,7 +72,7 @@ const ListMessageItem = ({ group }: { group: GroupChatType }) => {
                 <View style={styles.content}>
                     <Text style={[styles.name,
                     messageUnSeen ? styles.nameUnSeen : undefined
-                    ]}>{name ? name : 'Group '+ group?.id}</Text>
+                    ]}>{name ? name : 'Group ' + group?.id}</Text>
                     <View style={{
                         flexDirection: "row"
                     }}>

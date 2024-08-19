@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
-import { View, Animated, StyleSheet, Dimensions, Text, TouchableOpacity } from 'react-native';
+import { View, Animated, StyleSheet, Dimensions, Text, TouchableOpacity, ToastAndroid } from 'react-native';
 import { useFocusEffect, useNavigation, useRoute } from '@react-navigation/native';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import { useDispatch, useSelector } from 'react-redux';
@@ -15,6 +15,7 @@ import MediaOfUser from './MediaOfUser';
 import { COLOR } from '../../constant/color';
 import { RootState } from '../store/store';
 import SkeletonProfile from '../skeleton-placeholder/SkeletonProfile';
+import { deeplink } from '../../constant/url';
 
 
 interface ModalFriendProfileProps {
@@ -56,7 +57,7 @@ const FriendProfile: React.FC<ModalFriendProfileProps> = () => {
       headerTitleAlign: 'center',
       headerRight: (() => {
         return (
-          <TouchableOpacity onPress={ShareUserHandle}>
+          <TouchableOpacity style={{margin:10}} onPress={ShareUserHandle}>
             <AntIcon name='sharealt' size={24} color={"#000"} />
           </TouchableOpacity>
         )
@@ -118,7 +119,7 @@ const FriendProfile: React.FC<ModalFriendProfileProps> = () => {
 
   const shareApp = async () => {
         
-    const url = `http://www.netforge.click/app/user/${userShowId}`;
+    const url = `${deeplink}app/user/${userShowId}`;
     const shareOptions = {
       title: 'Chia sẻ người dùng',
       message: 'Xem người dùng này trên ứng dụng của tôi!',
@@ -128,7 +129,9 @@ const FriendProfile: React.FC<ModalFriendProfileProps> = () => {
   
     try {
         const result = await Share.open(shareOptions);
-        console.log('Đã chia sẻ thành công qua Messenger:', result);
+        if(!result) throw Error;
+
+        ToastAndroid.show('Chia sẽ thành công', ToastAndroid.SHORT);
       } catch (error) {
         console.log('Chia sẻ bị hủy hoặc thất bại:', error);
       }

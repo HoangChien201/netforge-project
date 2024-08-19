@@ -19,6 +19,8 @@ import { getFriends } from '../../http/QuyetHTTP'
 import { navigationRef } from './NavigationRef'
 import { useSendNotification } from '../../constant/notify'
 import LoginScreen from '../../screens/LoginScreen'
+import { getUrlAsync } from '../deeplink'
+
 
 export type navigationType = StackNavigationProp<RootStackParamList>
 export type RootStackParamList = {
@@ -64,6 +66,9 @@ const ManageNavigation = () => {
         }
     };
     useEffect(() => {
+
+        getUrlAsync()
+
         handleAutoLogin();
         createChannelNotify();
         requestNotificationPermission();
@@ -74,6 +79,7 @@ const ManageNavigation = () => {
         return () => clearTimeout(timer);
     }, []);
 
+    
     //tuongne
     useEffect(() => {
         getFriendList();
