@@ -17,7 +17,6 @@ import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { ZegoUIKitPrebuiltLiveStreamingFloatingMinimizedView } from '@zegocloud/zego-uikit-prebuilt-live-streaming-rn';
 import { Host } from 'react-native-portalize';
 import RequestNotificationPermission from './src/permissions/RequestNotificationPermission';
-import { registerRemoteNotificationsEvent } from './src/notifications/Events';
 import PushNotification from 'react-native-push-notification';
 import { Provider } from 'react-redux';
 import store from './src/component/store/store';

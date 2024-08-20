@@ -28,7 +28,6 @@ const NotificationScreen = () => {
   const [showModalFriend, setShowModalFriend] = useState(false);
   const [showModalBirthday, setShowModalBirthday] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
-  const [reload, setReload] = useState(false);
   const [dot, setDot] = useState(0);
   const [notifications, setNotifications] = useState([]);
 
@@ -217,11 +216,9 @@ const NotificationScreen = () => {
       </View>
 
       <MODALFRIEND
-        reload={reload}
         showModalFriend={showModalFriend}
         setShowModalFriend={setShowModalFriend}
         setDot={setDot}
-        setReload={setReload}
       />
       <BirthDayScreen visible={showModalBirthday} setVisible={setShowModalBirthday} />
     </View>

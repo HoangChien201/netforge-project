@@ -12,8 +12,8 @@ type Wait = {
     setDataWaitAccept: (value: any) => void,
     setShowModalFriend: (value: any) => void,
     getWaitAcceptList: () => void,
-    reload:any, setReload:any,
-    refreshing:any, setRefreshing:any
+    reload:any, setReload:(value: any) => void,
+    refreshing:any, setRefreshing:(value: any) => void
 }
 const WaitAcceptList: React.FC<Wait> = ({ dataWaitAccept, setDataWaitAccept, setShowModalFriend ,reload, setReload,refreshing, setRefreshing}) => {
     const navigation = useNavigation();

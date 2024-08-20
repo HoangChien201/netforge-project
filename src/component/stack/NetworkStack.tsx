@@ -14,6 +14,8 @@ import { useSelector } from 'react-redux';
 import { RootState } from '../store/store';
 import { updateStatusOnline } from '../../http/ChienHTTP';
 import { Link, useIsFocused, useNavigation } from '@react-navigation/native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { EventZego } from '../zego';
 const Stack = createNativeStackNavigator<NetworkRootStackParams>();
 
 export default function NetworkStack(): React.JSX.Element {
@@ -39,7 +41,6 @@ export default function NetworkStack(): React.JSX.Element {
         });
 
 
-
         return () => {
             socket.off('connect')
             socket.off('disconnect')
@@ -51,7 +52,11 @@ export default function NetworkStack(): React.JSX.Element {
     useEffect(() => {
 
         const linkingSubscription = Linking.addEventListener('url', handleOpenURL);
-        getUrlAsync()
+
+        getDeepLink()
+
+        
+
         return () => {
             // Clean up the event listeners
             linkingSubscription.remove();
@@ -59,12 +64,13 @@ export default function NetworkStack(): React.JSX.Element {
         };
     }, [navigation]);
 
-    const getUrlAsync = async () => {
-        // Get the deep link used to open the app
-        const url = await Linking.getInitialURL();
-        handleOpenURL({url})
-        console.log(url);
-      };
+    async function getDeepLink() {
+        //getdeeplink
+        const deeplinkInitia = await AsyncStorage.getItem('deeplink')
+        if(deeplinkInitia){
+            handleOpenURL({url:deeplinkInitia})
+        }
+    }
 
     const handleOpenURL = ({ url }) => {
         const index = parseInt(url.indexOf('/app')) + 5
@@ -74,6 +80,7 @@ export default function NetworkStack(): React.JSX.Element {
         const parts = path.split('/');
 
         const namePage = parts[0];
+        AsyncStorage.removeItem('deeplink')
 
         switch (namePage) {
             case 'post':

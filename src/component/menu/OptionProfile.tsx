@@ -45,7 +45,7 @@ const OptionProfile = () => {
             'liveID',
             'userToken',
             'token',
-            'TokenForgot'
+            'TokenForgot',
         ];
         try {
             await AsyncStorage.multiRemove(keysToRemove);

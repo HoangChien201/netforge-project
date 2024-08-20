@@ -121,7 +121,7 @@ const ActionBar = memo(({ creater, like_count,type, postId, comment_count, share
                                     const pre1 =parseInt(numberLike)+1
                                     return pre1
                                 })
-                                sendNReaction(postId,creater,1)
+                                sendNReaction({postId,receiver:creater.id,reactionType:1})
                                 setIsLike(false)
                             }}>
                                 <AntDesignIcon name='like2' size={22} color='#000' />
@@ -159,7 +159,7 @@ const ActionBar = memo(({ creater, like_count,type, postId, comment_count, share
                                 setIsLike(false)
                                 numberLike === null ? setNumberLike(1) : (numberLike === 0 && setNumberLike(pre=>pre+1) ) 
                                number === null ? likepost(postId, item.type):updatePost(postId,item.type)
-                               sendNReaction(postId,creater,item.type)
+                               sendNReaction({postId,receiver:creater.id,reactionType:item.type})
                             }}>
                                 <Image source={item.Emoji} style={{ width: 23, height: 23, marginVertical: 6 }} />
     

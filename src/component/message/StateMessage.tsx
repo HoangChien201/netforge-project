@@ -105,32 +105,10 @@ const StateMessage: React.FC<StateMessageType> = ({ message, group_id, sender, l
 
   const isShowState = sender && lastMessage
 
-  function StyleState() {
-    if (seens?.length <1) {
-      return <Text style={styles.status}>{StateMessageFormat(seens.length > 0 ? STATUS_SEEN : state)}</Text>
-    }
-    console.log('seen',seens);
-    
-    return (
-    <View style={styles.listSeen}>
-        <FlatList
-          data={seens}
-          renderItem={({item})=>{
-            return (
-              <Image style={styles.avatar} source={{uri:item.user?.avatar}}/>
-            )
-          }}
-          horizontal={true}
-          scrollEnabled={false}
-          keyExtractor={(item)=>item?.id?.toString()}
-        />
-    </View>)
-  }
-
   return (
     <View style={styles.container}>
       {
-        isShowState && <StyleState/>
+        isShowState && <Text>{StateMessageFormat(seens.length > 0 ? STATUS_SEEN : state)}</Text>
       }
     </View>
   )

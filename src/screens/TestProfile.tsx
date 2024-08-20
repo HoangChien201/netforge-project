@@ -29,7 +29,7 @@ const TestProfile = () => {
   const [tabBarPosition, setTabBarPosition] = useState(headerHeight);
   const [refreshing, setRefreshing] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [loadingPost, setLoadingPosst] = useState(false);
+  const [loadingPost, setLoadingPost] = useState<boolean>(false);
 
   const userID = user?.id;
   const token = user?.token;
@@ -131,7 +131,7 @@ const TestProfile = () => {
     if (!userData) return null;
     return (
       <>
-        <HeaderBanner  setLoadingPost={setLoadingPosst} value={scrollOffsetY} userId={user?.id} />
+        <HeaderBanner  setLoadingPost={loadingPost} value={scrollOffsetY} userId={user?.id} />
         <View style={{marginTop:260}}></View>
           <ProfileHeader
           avatar={userData.avatar}

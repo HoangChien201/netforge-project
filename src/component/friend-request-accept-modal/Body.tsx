@@ -1,5 +1,5 @@
 import { Animated, Modal, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState, useRef, useCallback } from 'react';
 import { getAllUser, getFriends, getRequest, getSuggest } from '../../http/QuyetHTTP';
 import Icon from 'react-native-vector-icons/AntDesign';
 import Swiper from 'react-native-swiper';
@@ -11,14 +11,13 @@ import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import SkelotonFriend from './SkelontonFriend';
 
 type Bob = {
-    reload: any,
     showModalFriend: any,
     setShowModalFriend: (value: boolean) => void,
     setDot: (value: any) => void,
-    setReload: (value: boolean) => void,
+
 }
 
-const Body: React.FC<Bob> = ({ reload, showModalFriend, setShowModalFriend, setDot, setReload }) => {
+const Body: React.FC<Bob> = ({ showModalFriend, setShowModalFriend, setDot }) => {
     const [textHeader, setTextHeader] = useState('Lời mời kết bạn');
     const [textShowRA, setTextShowRA] = useState('Lời mời');
     const [showRA, setShowRA] = useState(true);
@@ -26,6 +25,8 @@ const Body: React.FC<Bob> = ({ reload, showModalFriend, setShowModalFriend, setD
     const [dataRequest, setDataRequest] = useState([]);
     const [dataWaitAccept, setDataWaitAccept] = useState([]);
     const [dataSuggest, setDataSuggest] = useState([]);
+    const [refreshing, setRefreshing] = useState(false);
+    const [reload, setReload] = useState(false);
     const [data, setData] = useState([]);
     const status1 = 1;
     const status2 = 2;
@@ -54,8 +55,17 @@ const Body: React.FC<Bob> = ({ reload, showModalFriend, setShowModalFriend, setD
     useEffect(() => {
         getRequestList(status1);
         getWaitAcceptList();
-    }, []);
 
+    }, []);
+    useEffect(() => {
+        getRequestList(status1);
+        getWaitAcceptList();
+    }, [reload]);
+    useFocusEffect(
+        useCallback(() => {
+            setCurrentIndex(0)
+        }, [])
+    )
     useEffect(() => {
         const total = dataRequest.length + dataWaitAccept.length;
         setDot(total);
@@ -74,6 +84,7 @@ const Body: React.FC<Bob> = ({ reload, showModalFriend, setShowModalFriend, setD
             const result = await getFriends(num);
             setDataRequest(result);
             setNumReq(result.length)
+            setRefreshing(false)
         } catch (error) {
             console.log(error);
         }
@@ -84,6 +95,7 @@ const Body: React.FC<Bob> = ({ reload, showModalFriend, setShowModalFriend, setD
             const result = await getRequest();
             setDataWaitAccept(result);
             setNumWA(result.length);
+            setRefreshing(false)
         } catch (error) {
             console.log(error);
         }
@@ -141,7 +153,7 @@ const Body: React.FC<Bob> = ({ reload, showModalFriend, setShowModalFriend, setD
                     flexDirection: 'row',
                 }}>
                     <TouchableOpacity
-                        style={[styles.buttonS, currentIndex === 0 && styles.activeButton]}
+                        style={[styles.buttonS]}
                         onPress={() => handleButtonPress(0)}
                     >
                         <Icon1 name='add-to-list' size={20} color={COLOR.PrimaryColor} />
@@ -151,7 +163,7 @@ const Body: React.FC<Bob> = ({ reload, showModalFriend, setShowModalFriend, setD
                         </View>
                     </TouchableOpacity>
                     <TouchableOpacity
-                        style={[styles.buttonS, currentIndex === 1 && styles.activeButton]}
+                        style={[styles.buttonS,]}
                         onPress={() => handleButtonPress(1)}
                     >
                         <Icon1 name='paper-plane' size={20} color={COLOR.PrimaryColor} />
@@ -161,20 +173,20 @@ const Body: React.FC<Bob> = ({ reload, showModalFriend, setShowModalFriend, setD
                         </View>
                     </TouchableOpacity>
                 </View>
-                {dataWaitAccept?
-                
-                <Swiper ref={swiperRef} loop={false} showsButtons={false}
-                    onIndexChanged={handleIndexChanged}
-                >
-                    <View>
-                        <WaitAcceptList dataWaitAccept={dataWaitAccept} setDataWaitAccept={setDataWaitAccept} setShowModalFriend={setShowModalFriend} />
-                    </View>
-                    <View>
-                        <RequestList dataRequest={dataRequest} setDataRequest={setDataRequest} setReload={setReload} setShowModalFriend={setShowModalFriend} />
-                    </View>
-                </Swiper>
-                :
-                <SkelotonFriend/>}
+                {dataWaitAccept ?
+
+                    <Swiper ref={swiperRef} loop={false} showsButtons={false}
+                        onIndexChanged={handleIndexChanged}
+                    >
+                        <View>
+                            <WaitAcceptList dataWaitAccept={dataWaitAccept} setDataWaitAccept={setDataWaitAccept} setShowModalFriend={setShowModalFriend} setRefreshing={setRefreshing} setReload={setReload} reload={reload} refreshing={refreshing} />
+                        </View>
+                        <View>
+                            <RequestList dataRequest={dataRequest} setDataRequest={setDataRequest} setReload={setReload} setShowModalFriend={setShowModalFriend} setRefreshing={setRefreshing} reload={reload} refreshing={refreshing} />
+                        </View>
+                    </Swiper>
+                    :
+                    <SkelotonFriend />}
             </Animated.View>
         </Modal>
     );

@@ -26,8 +26,6 @@ const MenuScreen = () => {
     
     }, [isFocus]);
 
-    function updateOnPressHandle() {
-    }
 
     const handleEditProfile = async () => {
         navigation.navigate("EditProfileScreen");
