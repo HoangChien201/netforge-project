@@ -11,7 +11,7 @@ type Req = {
     setReload: (value: any) => void,
     setShowModalFriend: (value: any) => void,
     reload:any,
-    refreshing:any, setRefreshing:any
+    refreshing:any, setRefreshing:(value: any) => void,
 }
 const RequestList: React.FC<Req> = ({ dataRequest, setDataRequest, setReload, setShowModalFriend,refreshing, setRefreshing ,reload}) => {
     const navigation = useNavigation();
@@ -31,6 +31,7 @@ const RequestList: React.FC<Req> = ({ dataRequest, setDataRequest, setReload, se
     }
     const loadData = useCallback(() => {
         setReload((pre: any) =>!pre);
+        setRefreshing(true);
     }, []);
     if (!dataRequest || dataRequest.length === 0) {
         return <EmptyReq />; // Hoặc hiển thị một thông báo khác tùy ý
