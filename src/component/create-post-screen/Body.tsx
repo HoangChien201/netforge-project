@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
-import { StyleSheet, Text, View, TouchableOpacity, Image, FlatList, Animated, Keyboard, Easing, KeyboardAvoidingView, TextInput } from 'react-native';
+import { StyleSheet, Text, View, TouchableOpacity, Image, FlatList, Animated, Keyboard, Easing, KeyboardAvoidingView, TextInput , Dimensions} from 'react-native';
 import Video from 'react-native-video';
 import USER from './User';
 import TEXTAREA from './TextArea';
@@ -8,7 +8,8 @@ import { COLOR } from '../../constant/color';
 import SwiperFlatList from 'react-native-swiper-flatlist';
 import Icon from 'react-native-vector-icons/Feather';
 import { useFocusEffect } from '@react-navigation/native';
-
+import { useNavigation } from '@react-navigation/native';
+ const width = Dimensions.get("window").width;
 type Bpob = {
     content: any,
     setContent: (value: any) => void,
@@ -25,12 +26,13 @@ type Bpob = {
     hiddenView: any,
     setEmotions: (value: any) => void,
     emotions: any,
-    setImageUrl:(value: any) => void,
+    setImageUrl: (value: any) => void,
+    setHiddenView: (value: any) => void,
 }
-const Body: React.FC<Bpob> = ({ hiddenView, content, setContent, media, setMedia, permission, setPermission, 
-    setStatus, setShowPopup, friends, setFriends, setShowAI, imageUrl, emotions, setEmotions, setImageUrl }) => {
+const Body: React.FC<Bpob> = ({ hiddenView, content, setContent, media, setMedia, permission, setPermission,
+    setStatus, setShowPopup, friends, setFriends, setShowAI, imageUrl, emotions, setEmotions, setImageUrl, setHiddenView }) => {
     //const [media, setMedia] = useState([]);
-
+    const navigation = useNavigation();
     const [playingVideo, setPlayingVideo] = useState(null);
     const [viewMore, setViewMore] = useState(false);
     const [uries, setUries] = useState<any>([]);
@@ -51,11 +53,11 @@ const Body: React.FC<Bpob> = ({ hiddenView, content, setContent, media, setMedia
     );
     useEffect(() => {
     }, [emotions])
-    useEffect(()=>{
-        if(viewMore){
-            setCurrentIndex(0)
+    useEffect(() => {
+        if (viewMore) {
+            //setCurrentIndex(0)
         }
-    },[viewMore])
+    }, [viewMore])
 
     useEffect(() => {
         pushAImage();
@@ -82,6 +84,15 @@ const Body: React.FC<Bpob> = ({ hiddenView, content, setContent, media, setMedia
     const togglePlayVideo = (uri: any) => {
         setPlayingVideo(playingVideo === uri ? null : uri);
     };
+
+    const closeKeyboard = () => {
+        Keyboard.dismiss();
+    };
+    const openVideo = (index:number)=>{
+        setViewMore(true)
+        setCurrentIndex(index)
+        setSwiperKey(index) 
+    }
     // View danh sách media
     const renderMedia = (item: any) => {
         if (!item || item.length === 0) {
@@ -89,9 +100,11 @@ const Body: React.FC<Bpob> = ({ hiddenView, content, setContent, media, setMedia
         }
         if (hiddenView == true) {
             return (
-                <View style={{ width: '100%', justifyContent: 'center', marginStart: 20 }}>
+                <TouchableOpacity style={{ width: '100%', justifyContent: 'center', alignItems: 'center', marginBottom: 8 }}
+                    onPress={() => { closeKeyboard() }}
+                >
                     <Text style={{ color: COLOR.PrimaryColor, fontSize: 16, fontWeight: "400" }}>Đã ẩn hình ảnh</Text>
-                </View>
+                </TouchableOpacity>
             )
         }
         const numMedia = item.length;
@@ -231,10 +244,12 @@ const Body: React.FC<Bpob> = ({ hiddenView, content, setContent, media, setMedia
                                     />
                                     <TouchableOpacity
                                         style={styles.playButton}
-                                        onPress={() => togglePlayVideo(item[2].uri)}
+                                        // onPress={() => togglePlayVideo(item[2].uri)}
+                                        onPress={() => setViewMore(true)}
                                     >
                                         <Text style={styles.playButtonText}>
-                                            {playingVideo === item[2].uri ? <Icon name="pause-circle" size={24} color={'#fff'} /> : <Icon name="play-circle" size={24} color={'#fff'} />}
+                                            {/* {playingVideo === item[2].uri ? <Icon name="pause-circle" size={24} color={'#fff'} /> : <Icon name="play-circle" size={24} color={'#fff'} />} */}
+                                            <Icon name="pause-circle" size={24} color={'#fff'} />
                                         </Text>
                                     </TouchableOpacity>
                                 </View>
@@ -251,21 +266,24 @@ const Body: React.FC<Bpob> = ({ hiddenView, content, setContent, media, setMedia
                     <View style={styles.media1ContainerOf3}>
                         {item[0].uri.endsWith('.mp4') ? (
                             <View style={styles.media1of3}>
-                                <Video
+                                {/* <Video
                                     source={{ uri: item[0] }}
                                     style={styles.mediaFill}
                                     resizeMode="cover"
                                     paused={playingVideo !== item[0]}
                                     repeat={true}
-                                />
+                                /> */}
+                                <Image source={{ uri: item[0].uri }} style={styles.mediaFill} resizeMode="cover" />
                                 <TouchableOpacity
-                                    style={styles.playButton}
-                                    onPress={() => togglePlayVideo(item[0])}
-                                >
-                                    <Text style={styles.playButtonText}>
-                                        {playingVideo === item[0] ? <Icon name="pause-circle" size={24} color={'#fff'} /> : <Icon name="play-circle" size={24} color={'#fff'} />}
-                                    </Text>
-                                </TouchableOpacity>
+                                        style={styles.playButton}
+                                        // onPress={() => togglePlayVideo(item[2].uri)}
+                                        onPress={() => openVideo(0)}
+                                    >
+                                        <Text style={styles.playButtonText}>
+                                            {/* {playingVideo === item[2].uri ? <Icon name="pause-circle" size={24} color={'#fff'} /> : <Icon name="play-circle" size={24} color={'#fff'} />} */}
+                                            <Icon name="pause-circle" size={24} color={'#fff'} />
+                                        </Text>
+                                    </TouchableOpacity>
                             </View>
                         ) : (
                             <Image source={{ uri: item[0].uri }} style={styles.mediaFill} resizeMode="cover" />
@@ -275,19 +293,22 @@ const Body: React.FC<Bpob> = ({ hiddenView, content, setContent, media, setMedia
                         <View style={styles.multiplemediaContainer}>
                             {item[1].uri.endsWith('.mp4') ? (
                                 <View style={styles.media1of3}>
-                                    <Video
+                                    {/* <Video
                                         source={{ uri: item[1].uri }}
                                         style={styles.mediaFill}
                                         resizeMode="cover"
                                         paused={playingVideo !== item[1].uri}
                                         repeat={true}
-                                    />
+                                    /> */}
+                                    <Image source={{ uri: item[1].uri }} style={styles.mediaFill} resizeMode="cover" />
                                     <TouchableOpacity
                                         style={styles.playButton}
-                                        onPress={() => togglePlayVideo(item[1].uri)}
+                                        // onPress={() => togglePlayVideo(item[2].uri)}
+                                        onPress={() => openVideo(1)}
                                     >
                                         <Text style={styles.playButtonText}>
-                                            {playingVideo === item[1].uri ? <Icon name="pause-circle" size={24} color={'#fff'} /> : <Icon name="play-circle" size={24} color={'#fff'} />}
+                                            {/* {playingVideo === item[2].uri ? <Icon name="pause-circle" size={24} color={'#fff'} /> : <Icon name="play-circle" size={24} color={'#fff'} />} */}
+                                            <Icon name="pause-circle" size={24} color={'#fff'} />
                                         </Text>
                                     </TouchableOpacity>
                                 </View>
@@ -298,20 +319,23 @@ const Body: React.FC<Bpob> = ({ hiddenView, content, setContent, media, setMedia
                         <View style={styles.multiplemediaContainer}>
                             {item[2].uri.endsWith('.mp4') ? (
                                 <View style={styles.media1of3}>
-                                    <Video
+                                    {/* <Video
                                         source={{ uri: item[2].uri }}
                                         style={styles.mediaFill}
                                         resizeMode="cover"
                                         repeat={true}
                                         paused={playingVideo !== item[2].uri}
 
-                                    />
+                                    /> */}
+                                    <Image source={{ uri: item[2].uri }} style={styles.mediaFill} resizeMode="cover" />
                                     <TouchableOpacity
                                         style={styles.playButton}
-                                        onPress={() => togglePlayVideo(item[2].uri)}
+                                        // onPress={() => togglePlayVideo(item[2].uri)}
+                                        onPress={() => openVideo(2)}
                                     >
                                         <Text style={styles.playButtonText}>
-                                            {playingVideo === item[2].uri ? <Icon name="pause-circle" size={24} color={'#fff'} /> : <Icon name="play-circle" size={24} color={'#fff'} />}
+                                            {/* {playingVideo === item[2].uri ? <Icon name="pause-circle" size={24} color={'#fff'} /> : <Icon name="play-circle" size={24} color={'#fff'} />} */}
+                                            <Icon name="pause-circle" size={24} color={'#fff'} />
                                         </Text>
                                     </TouchableOpacity>
                                 </View>
@@ -320,7 +344,7 @@ const Body: React.FC<Bpob> = ({ hiddenView, content, setContent, media, setMedia
                             )}
                         </View>
                         {numMedia > 3 && (
-                            <TouchableOpacity style={styles.multiplemediaContainer} onPress={() => setViewMore(true)}>
+                            <TouchableOpacity style={styles.multiplemediaContainer} onPress={() => openVideo(3)}>
                                 <Text style={styles.viewMoreText}>Xem thêm</Text>
                                 <Image source={{ uri: item[3].uri }} style={styles.viewMore} resizeMode="cover" />
                             </TouchableOpacity>
@@ -339,9 +363,11 @@ const Body: React.FC<Bpob> = ({ hiddenView, content, setContent, media, setMedia
         }
         if (hiddenView == true) {
             return (
-                <View style={{ width: '100%', justifyContent: 'center', marginStart: 20 }}>
+                <TouchableOpacity style={{ width: '100%', justifyContent: 'center', marginStart: 20, alignItems: 'center' }}
+                    onPress={() => { closeKeyboard() }}
+                >
                     <Text style={{ color: COLOR.PrimaryColor, fontSize: 16, fontWeight: "400" }}>Đã ẩn hình ảnh</Text>
-                </View>
+                </TouchableOpacity>
             )
         }
         if (item) {
@@ -374,10 +400,10 @@ const Body: React.FC<Bpob> = ({ hiddenView, content, setContent, media, setMedia
                             )}
                         </View>
                     )}
-                    keyExtractor={(item, index) => index.toString()}
+                    //keyExtractor={(item, index) => index.toString()}
                     horizontal
                     onChangeIndex={({ index }) => setCurrentIndex(index)}
-
+                    index={swiperKey}
 
                 />
             )
@@ -431,7 +457,7 @@ const Body: React.FC<Bpob> = ({ hiddenView, content, setContent, media, setMedia
                                 {/* <Icon name='x' color={'#fff'} size={24} /> */}
                                 <Text style={{ color: COLOR.primary300, fontWeight: '400' }}>Đóng</Text>
                             </TouchableOpacity>
-                            {renderDots()}
+                                {renderDots()}
                             </>
 
                         }
@@ -441,9 +467,9 @@ const Body: React.FC<Bpob> = ({ hiddenView, content, setContent, media, setMedia
                         {renderMedia(media)}
                     </View>
                 }
-                <OPTIONS onSelectEmoji={handleEmojiSelect} onSelectMedia={handleMediaSelect} setShowAI={setShowAI} 
-                imageUrl={imageUrl} emotions={emotions} setEmotions={setEmotions}   content={content} media={media} 
-                setContent={setContent} setMedia={setMedia} setImageUrl={setImageUrl}/>
+                <OPTIONS onSelectEmoji={handleEmojiSelect} onSelectMedia={handleMediaSelect} setShowAI={setShowAI}
+                    imageUrl={imageUrl} emotions={emotions} setEmotions={setEmotions} content={content} media={media}
+                    setContent={setContent} setMedia={setMedia} setImageUrl={setImageUrl} />
             </View>
         </View>
     );
@@ -499,7 +525,7 @@ const styles = StyleSheet.create({
 
     },
     imageContainer: {
-        width: 388,
+        width: width,
         height: 300,
         marginTop: 20,
         alignSelf: 'center',

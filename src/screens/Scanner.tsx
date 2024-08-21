@@ -115,6 +115,7 @@ const Scanner = () => {
   };
   useEffect(() => {
     socket.on(`qr-login-${device}`, (data) => {
+      console.log('done', data);
       Alert.alert(
         'Đăng nhập',
         'Đăng nhập thành công!',
@@ -131,7 +132,7 @@ const Scanner = () => {
         { cancelable: false }
       );
     });
-  }, [user.id])
+  }, [])
 
 
   return (

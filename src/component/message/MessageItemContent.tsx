@@ -31,7 +31,12 @@ const MessageItemContent = ({ message, sender }: { message: Message, sender: boo
     switch (message.type) {
         case "video":
             return (
-                <TouchableOpacity style={[styles.messageImage, { backgroundColor: "" }]} onPress={() => setIsVideoFullScreen(true)}>
+                <TouchableOpacity style={[styles.messageImage, { backgroundColor: "" }]} onPress={
+                    () => {
+                        setSelectedMedia(message.message)
+                        setIsModalVisible(true)
+                    }
+                }>
 
                     <Video
                         // Can be a URL or a local file.
@@ -48,6 +53,10 @@ const MessageItemContent = ({ message, sender }: { message: Message, sender: boo
                         controls={true}
                     />
                     <Image style={styles.imagePlay} source={require('../../media/icon/video_play.png')}/>
+                    <ModalImage
+                        isVisible={isModalVisible}
+                        media={selectedMedia}
+                        onClose={() => setIsModalVisible(false)} />
                 </TouchableOpacity>
 
             )

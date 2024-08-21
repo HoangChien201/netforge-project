@@ -53,7 +53,12 @@ export const useSendNotification = () => {
         params: Number(postId)
       },
     };
-    socket.emit('notification', data);
+    if(receiver != user?.id){
+      socket.emit('notification', data);
+    }else{
+      console.log('receiver: ', receiver + ' và user: ', user?.id);
+      
+    }
   };
   const sendNRepComment = ({ postId1, body, commentId, receiver }) => {
     const notificationTemplate = createNotificationTemplate();
@@ -75,7 +80,15 @@ export const useSendNotification = () => {
         params: Number(postId1)
       },
     };
-    socket.emit('notification', data);
+    if(receiver != user?.id){
+      socket.emit('notification', data);
+      console.log('sendNRepComment');
+      
+    }else{
+      console.log('receiver: ', receiver + ' và user: ', user?.id);
+      
+    }
+
     
   };
   const sendNReaction = ({ postId, receiver, reactionType }) => {
@@ -99,7 +112,12 @@ export const useSendNotification = () => {
         params: Number(postId)
       },
     };
-    socket.emit('notification', data);
+    if(receiver != user?.id){
+      socket.emit('notification', data);
+    }else{
+      console.log('receiver: ', receiver + ' và user: ', user?.id);
+      
+    }
     
   };
   const sendNReactionComment = ({ postId1, commentId, body, receiver, reactionType }) => {
@@ -125,7 +143,12 @@ export const useSendNotification = () => {
         params: Number(postId1)
       },
     };
-    socket.emit('notification', data);
+    if(receiver != user?.id){
+      socket.emit('notification', data);
+    }else{
+      console.log('receiver: ', receiver + ' và user: ', user?.id);
+      
+    }
     
   };
   const sendNCreateNewPostHistory = ({ postId, body, }) => {
@@ -194,7 +217,9 @@ export const useSendNotification = () => {
       },
 
     };
-    socket.emit('notification', data);
+    if(receiver != user?.id){
+      socket.emit('notification', data);
+    }
     
   };
   const sendNSharePost = ({ postId, body, receiver }) => {
@@ -218,7 +243,9 @@ export const useSendNotification = () => {
       },
 
     };
-    socket.emit('notification', data);
+    if(receiver != user?.id){
+      socket.emit('notification', data);
+    }
     
   };
   const sendBirthDay = ({ friendId, fullname, avatar }) => {

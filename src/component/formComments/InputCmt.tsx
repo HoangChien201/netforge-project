@@ -11,6 +11,7 @@ import IconSend from 'react-native-vector-icons/FontAwesome'
 import { addComments, uploadImage } from '../../http/TuongHttp'
 import { COLOR } from '../../constant/color'
 import { useSendNotification } from '../../constant/notify'
+import { result } from 'lodash'
 
 const InputCmt = ({ fetchComments, onMediaSelected, parent = null, postId, text, setParent, setText, comment, userPostId , creator}) => {
     const user = useSelector((state: RootState) => state.user.value)
@@ -115,7 +116,7 @@ const InputCmt = ({ fetchComments, onMediaSelected, parent = null, postId, text,
                     setCheckComments(false)
                     const reponse = await addComments(data.posts, data.content, data.image, data.parent)
                     // nếu thêm thành công thì set các biến về trạng thái bang đầu 
-                    if (data.parent) {
+                    if (data.parent && reponse) {
                         //postId1, body,commentId, receiver 
                         sendNRepComment({ postId1: postId, body: comments, commentId: reponse.id, receiver: comment })
                     } else {

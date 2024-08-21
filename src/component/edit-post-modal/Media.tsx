@@ -253,7 +253,7 @@ const Media: React.FC<Media> = ({ images, media, setMedia, setShowModal,hiddenVi
                     </View>
                     {numMedia > 3 && (
                         <TouchableOpacity style={styles.multiplemediaContainer} onPress={() => setShowModal(true)}>
-                            <Text style={styles.viewMoreText}>View More</Text>
+                            <Text style={styles.viewMoreText}>Xem thêm</Text>
                             <Image source={{ uri: images[3].url }} style={styles.viewMore} resizeMode="cover" />
                         </TouchableOpacity>
                     )}
@@ -417,7 +417,7 @@ const styles = StyleSheet.create({
         position: 'absolute',
         zIndex: 99,
         color: 'white',
-        backgroundColor: 'black',
+        backgroundColor: COLOR.PrimaryColor,
         padding: 2,
         borderRadius: 5
     },
