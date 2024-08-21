@@ -102,7 +102,7 @@ const StateMessage: React.FC<StateMessageType> = ({ message, group_id, sender, l
 
     }
   }
-
+  console.log('contentonpress');
   const isShowState = sender && lastMessage
 
   return (
