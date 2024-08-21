@@ -20,10 +20,10 @@ interface UpLoadAvatarProps {
   initialImage: string;
   onImageSelect: (imagePath: string) => void;
   userId: any;
-  setLoadingPosst?:(val?:boolean |undefined)=>void
+  setLoadingPost?: (val: boolean) => void;
 }
 
-const UpLoadAvatar: React.FC<UpLoadAvatarProps> = ({ initialImage, onImageSelect, userId,setLoadingPosst }) => {
+const UpLoadAvatar: React.FC<UpLoadAvatarProps> = ({ initialImage, onImageSelect, userId, setLoadingPost }) => {
   const user = useSelector((state : RootState)=>state.user.value)
   const token = user?.token;
   const dispatch = useDispatch();
@@ -171,7 +171,9 @@ const UpLoadAvatar: React.FC<UpLoadAvatarProps> = ({ initialImage, onImageSelect
           setShowModal(true);
           setStatus(true);
           setLoading(false);
-          setLoadingPosst(true);
+          if (setLoadingPost) {
+            setLoadingPost(true);
+          }
           setTimeout(() => {
               setShowModal(false);
           }, 2000);
@@ -181,7 +183,7 @@ const UpLoadAvatar: React.FC<UpLoadAvatarProps> = ({ initialImage, onImageSelect
       setLoading(false);
     } catch (error: any) {
       setLoading(false);
-      console.log("Error update profile:", error);
+      console.log("Error update avatar:", error);
     }
   };
 

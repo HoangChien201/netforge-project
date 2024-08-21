@@ -64,27 +64,27 @@ const HostScreen: React.FC<Props> = ({ route }) => {
     }
 };
   const createLivePost = async () => {
+    // console.log("live nè")
     try {
         const type = 3;
         const content = liveID
         const permission = 1;
-     
         const newPost = await createNewPost({ type,  permission, content });
         await AsyncStorage.setItem("liveID",content);
         
-       setIdPost(newPost.post)
+        setIdPost(newPost.post)
         const value = await AsyncStorage.getItem("liveID");
     } catch (error) {
         console.error('Error live post: ', error);
     }
 };
 
-useEffect(() => {
-  const startLiveStream = async () => {
-    await createLivePost();
-  };
-  startLiveStream();
-}, [liveID]);
+// useEffect(() => {
+//   const startLiveStream = async () => {
+//     await createLivePost();
+//   };
+//   startLiveStream();
+// }, [liveID]);
 
   return (
     <View style={styles.container}>
@@ -106,7 +106,7 @@ useEffect(() => {
             buttons: [
                 // ZegoMenuBarButtonName.minimizingButton,
                 ZegoMenuBarButtonName.leaveButton,
-                
+              
             ],
             styles: {
               color: 'red',
@@ -120,7 +120,11 @@ useEffect(() => {
       },
         onLiveStreamingEnded: handleLeaveLiveStreaming,
         onLeaveLiveStreaming: handleLeaveLiveStreaming,
-        onStartLiveStreaming: createLivePost,
+        //onStartLiveButtonPressed: createLivePost,
+        onStartLiveButtonPressed: async () => {
+          await createLivePost();
+        },
+        //onStartLiveStreaming: createLivePost,
         // onWindowMinimized: () => {
         //     navigation.navigate('LiveWithZego' as never);
         // },

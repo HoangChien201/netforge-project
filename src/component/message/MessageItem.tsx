@@ -125,7 +125,8 @@ const MessageItem: React.FC<MessageItemProp> = React.memo((
 
   function ContentOnPress() {
     console.log('contentonpress');
-    
+   
+
   }
 
   //sự kiện show option reaction

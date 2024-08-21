@@ -1,5 +1,5 @@
-import React, { useState, useCallback } from 'react';
-import { StyleSheet, View, TouchableOpacity, Image, Modal, Text, Pressable, Dimensions } from 'react-native';
+import React, { useState, useCallback, useEffect } from 'react';
+import { StyleSheet, View, TouchableOpacity, Image, Modal, Text, Pressable, Dimensions, PermissionsAndroid, Alert } from 'react-native';
 import { launchCamera, launchImageLibrary, CameraOptions, ImageLibraryOptions } from 'react-native-image-picker';
 import Icon from 'react-native-vector-icons/AntDesign';
 import FontistoIcon from 'react-native-vector-icons/Fontisto';
@@ -12,6 +12,7 @@ import ImageViewModal from './ImageViewModal';
 import { useFocusEffect } from '@react-navigation/native';
 import { useSelector } from 'react-redux';
 import { RootState } from '../store/store';
+import Loading from '../Modal/Loading';
 
 interface UploadBannerProps {
   initialImage: string; 
@@ -29,7 +30,32 @@ const UploadBanner: React.FC<UploadBannerProps> = ({ initialImage, onImageSelect
   const [status, setStatus] = useState(true);
   const [isImageViewerVisible, setIsImageViewerVisible] = useState(false);
   const [userData, setUserData] = useState<any>(null);
-  const [image, setImage] = useState<string>('');
+  const [image, setImage] = useState<string>(user?.background || '');
+  const [loading, setLoading] = useState(false);
+
+  const requestCameraPermission = async () => {
+    try {
+        const granted = await PermissionsAndroid.request(
+            PermissionsAndroid.PERMISSIONS.CAMERA,
+            {
+                title: "Quyền truy cập Camera",
+                message: "Chúng tôi cần cấp quyền truy cập Camera",
+                buttonNeutral: "Hỏi tôi sau",
+                buttonNegative: "Hủy bỏ",
+                buttonPositive: "Chấp nhận"
+            }
+        );
+        if (granted !== PermissionsAndroid.RESULTS.GRANTED) {
+            Alert.alert('Quyền sử dụng máy ảnh bị từ chối');
+        }
+    } catch (err) {
+        console.warn(err);
+    }
+  };
+
+  useEffect(() => {
+    requestCameraPermission();
+  }, []);
 
   useFocusEffect(
     React.useCallback(() => {
@@ -43,7 +69,7 @@ const UploadBanner: React.FC<UploadBannerProps> = ({ initialImage, onImageSelect
         }
       };
       fetchUserData();
-    }, [userId])
+    }, [userId,image])
   );
 
   const handleImageResponse = useCallback(async (response: any) => {
@@ -105,6 +131,7 @@ const UploadBanner: React.FC<UploadBannerProps> = ({ initialImage, onImageSelect
   };
 
   const handleUpdateBackground = async (image: string) => {
+    setLoading(true);
     try {
       const response = await updateBackground(user?.id, image);
       if (response) {
@@ -117,7 +144,9 @@ const UploadBanner: React.FC<UploadBannerProps> = ({ initialImage, onImageSelect
         onImageSelect(image);
         setImage(image); 
       }
+      setLoading(false);
     } catch (error: any) {
+      setLoading(false);
       console.log("Error update ảnh bìa:", error);
     }
   };
@@ -137,6 +166,7 @@ const UploadBanner: React.FC<UploadBannerProps> = ({ initialImage, onImageSelect
 
   return (
     <View style={styles.container}>
+      <Loading isLoading={loading}></Loading>
       {userId === user?.id ? ( 
       <TouchableOpacity onPress={handleUpLoadAvatar} style={{ position: 'relative' }}>
         <Image
@@ -150,7 +180,7 @@ const UploadBanner: React.FC<UploadBannerProps> = ({ initialImage, onImageSelect
           <Image
             source={image ? { uri: image } : require('../../media/icon/background_2.jpg')}
             style={styles.editBackground}
-           resizeMode='cover'
+            resizeMode='cover'
           />
         </TouchableOpacity>
       )}

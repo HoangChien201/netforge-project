@@ -1,4 +1,4 @@
 <resources>
     <string name="app_name">NetForge</string>
-    <string name="asset_statements" translatable="false">[{ \"include\": \"https://network-sever-1.onrender.com/.well-known/assetlinks.json\" }]</string>
+    <string name="asset_statements">https://www.netforge.click/.well-known/assetlinks.json</string>
 </resources>

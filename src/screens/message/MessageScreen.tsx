@@ -184,7 +184,8 @@ const MessageScreen = () => {
               setMessageReactionsSelected={setMessageReactionsSelected}
               deleteMessage={DeleteMessage}
               setReply={setReply}
-              lastMessage={index === 0}/>
+              lastMessage={index === 0}
+              />
           )
         }}
         keyExtractor={(item) => item.getId.toString()}

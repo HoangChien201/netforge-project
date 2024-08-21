@@ -105,7 +105,6 @@ const FormLogin = ({ setModal, setStatus, setIsLoading }: { setModal: (value: bo
 
       //login zego
       onUserLogin(id, fullname, avatar, navigation).then(() => {
-        AsyncStorage.setItem('token', data.token);
         dispatch(setUsers(data))
       })
 
