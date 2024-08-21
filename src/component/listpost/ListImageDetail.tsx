@@ -3,6 +3,7 @@ import { Modal, View, Image, StyleSheet, TouchableOpacity, ScrollView, Dimension
 import Icon from 'react-native-vector-icons/AntDesign';
 import FastImage from 'react-native-fast-image';
 import { useNavigation, useRoute } from '@react-navigation/native';
+import Video from 'react-native-video';
 
 const ListImageDetail = memo(() => {
   const route = useRoute();
@@ -32,14 +33,27 @@ const ListImageDetail = memo(() => {
         >
           {img?.map((imageUrl, index: any) => (
             <View key={imageUrl?.id} style={{ width: Dimensions.get('screen').width }}>
-              <FastImage
+             {
+                imageUrl.url.endsWith('.mp4') ? 
+                <Video
+                paused={true}
+                source={{ uri: img[0]?.url }} // Sử dụng uri của video
                 style={styles.image}
-                source={{
-                  uri: imageUrl?.url,
-                  priority: FastImage.priority.normal,
-                }}
-                resizeMode={FastImage.resizeMode.contain}
-              />
+                resizeMode="cover"
+                controls={true}
+              />:
+              <FastImage
+              style={styles.image}
+              source={{
+                uri: imageUrl?.url,
+                priority: FastImage.priority.normal,
+              }}
+              resizeMode={FastImage.resizeMode.contain}
+            />
+
+             }
+              
+                  
             </View>
           ))}
         </ScrollView>

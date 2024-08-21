@@ -135,7 +135,7 @@ const ItemPost = memo(({ data, setShowModalEdit, setSelectedId, setShowDelete })
 
     return (
         <Pressable onPress={handleItemPress} style={{ margin: 5, marginBottom: 6, backgroundColor: "#fff" }}>
-            {shareId && renderShare ? (
+            {shareId  ? (
                 <>
                     <View style={styles.home1}>
                         <View style={styles.containerAvt}>
