@@ -116,7 +116,7 @@ export const updateAvatar = async (id:any, avatar: string) => {
 }
 
 //update background
-export const updateBackground = async (id:number, background: string) => {
+export const updateBackground = async (id:any, background: string) => {
     try {
         const url = `/user/update/${id}`;
         const body = { background};

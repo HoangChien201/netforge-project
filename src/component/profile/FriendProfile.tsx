@@ -44,7 +44,7 @@ const FriendProfile: React.FC<ModalFriendProfileProps> = () => {
   const [post, setPosts] = useState<any[]>([]);
   const [refreshing, setRefreshing] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [loadingPost, setLoadingPosst] = useState(false);
+  const [loadingPost, setLoadingPost] = useState<boolean>(false);
 
   useEffect(() => {
     navigation.getParent()?.setOptions({ tabBarStyle: { display: 'none' } });
@@ -162,7 +162,7 @@ const FriendProfile: React.FC<ModalFriendProfileProps> = () => {
     if (!userData) return null;
     return (
       <>
-        <HeaderBanner setLoadingPost={setLoadingPosst} value={scrollOffsetY} userId={userShowId} />
+        <HeaderBanner setLoadingPost={loadingPost} value={scrollOffsetY} userId={userShowId} />
         <View style={{ marginTop: 260 }}></View>
         <ProfileHeader
           avatar={userData.avatar}

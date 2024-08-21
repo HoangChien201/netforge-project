@@ -76,6 +76,8 @@ const styles = StyleSheet.create({
         width: 93,
         marginRight: 16,
         borderRadius: 10,
+        borderWidth:5,
+        borderColor:'#ddd'
     },
     nameUser: {
         fontWeight: '500',
