@@ -1,3 +1,3 @@
-//export const url='https://network-sever-1.onrender.com/'
-export const deeplink='https://network-sever-1.onrender.com/'
+export const url='https://www.netforge.click/'
+export const deeplink='https://www.netforge.click/'
 

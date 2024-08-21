@@ -62,7 +62,7 @@ export default function NetworkStack(): React.JSX.Element {
             linkingSubscription.remove();
 
         };
-    }, [navigation]);
+    }, []);
 
     async function getDeepLink() {
         //getdeeplink
