@@ -41,7 +41,7 @@ const MediaOfUser: React.FC<MediaOfUserProps> = React.memo(({ data, onRefresh })
     if (mediaItem.resource_type === 'image') {
       return <Image source={{ uri: mediaItem.url }} style={styles.image} resizeMode="cover" />;
     } else if (mediaItem.resource_type === 'video') {
-      return <Video source={{ uri: mediaItem.url }} style={styles.image} resizeMode="cover" controls={true} />;
+      return <Video source={{ uri: mediaItem.url }} style={styles.image} resizeMode="cover" controls={true} paused= {true}/>;
     } else {
       return null;
     }
