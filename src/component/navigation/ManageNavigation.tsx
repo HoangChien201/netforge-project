@@ -238,37 +238,22 @@ const ManageNavigation = () => {
     }
 
     const linking = {
-        prefixes: ['netforge://', ''],
-        config: {
-            screens: {
-                HomeScreen: 'home',
-                // Post: 'post/:id',
-                // CommentsScreen: 'comments/:id',
-            },
+        prefixes: ['https://www.netfore.click/app/'],
+        subscribe(listener: any) {
+
+
+            // Listen to incoming links from deep linking
+            const linkingSubscription = Linking.addEventListener('url', async ({ url }) => {
+                // console.log('url', url);
+                listener(url);
+            });
+
+            return () => {
+                // Clean up the event listeners
+                linkingSubscription.remove();
+            };
         },
     };
-
-
-    const handleDeepLink = (event) => {
-        let data = Linking.openURL(event.url);
-        console.log('Deep link data:', data);
-    };
-
-    Linking.addEventListener('url', handleDeepLink);
-
-    // return () => {
-    //     Linking.removeEventListener('url', handleDeepLink);
-    // };
-
-    const checkInitialLink = async () => {
-        const initialUrl = await Linking.getInitialURL();
-        if (initialUrl) {
-            let data = Linking.openURL(initialUrl);
-            console.log('Initial link data:', data);
-        }
-    };
-
-    checkInitialLink();
 
     return (
         // <GestureHandlerRootView style={{ flex: 1 }}>
