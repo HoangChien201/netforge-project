@@ -61,7 +61,7 @@ const ItemImg = ({ image }: { image: Medias[] }) => {
                         source={{ uri: img[0]?.url }} // Sử dụng uri của video
                         style={{ flex: 1 }}
                         resizeMode="contain"
-                        controls={false}
+                        controls={true}
                       />
                       :
                       <FastImage source={{ uri: img[0]?.url }} style={{ flex: 1 }} />

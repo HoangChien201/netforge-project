@@ -193,7 +193,7 @@ const StoryDetail = ({ route }) => {
             <TouchableOpacity onPress={handleAaPress} style={{ position: 'absolute', top: 50, right: 30, width: "25%", height: '8%', backgroundColor: 'rgba(105,105,105,0.2)', borderRadius: 10, alignItems: 'center', justifyContent: 'center' }}>
                 <Image source={require('../../media/Dicons/aa.png')} />
             </TouchableOpacity>
-            <TouchableOpacity onPress={handleSuggestionPress} style={{ position: 'absolute', top: 110, right: 30, width: "25%", height: '8%', backgroundColor: 'rgba(105,105,105,0.2)', borderRadius: 10, alignItems: 'center', justifyContent: 'center' }}>
+            <TouchableOpacity onPress={handleSuggestionPress} style={{ position: 'absolute', top: 120, right: 30, width: "25%", height: '8%', backgroundColor: 'rgba(105,105,105,0.2)', borderRadius: 10, alignItems: 'center', justifyContent: 'center' }}>
                 <Text style={{ color: '#fff' }}>Gợi ý</Text>
             </TouchableOpacity>
             {isTextInputVisible && (
