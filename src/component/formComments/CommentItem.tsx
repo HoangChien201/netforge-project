@@ -13,16 +13,18 @@ import { ProfileRootStackEnum } from '../stack/ProfileRootStackParams';
 import { navigationType } from '../stack/UserStack';
 import Reaction from './Reaction';
 import { RootState } from '../store/store';
+import FastImage from 'react-native-fast-image';
+import ICON from 'react-native-vector-icons/Entypo'
+import { COLOR } from '../../constant/color';
 
-
-const CommentItem = ({ comment, onReply, depth = 0, render, parent, setText, setUserId, postId,  userPostId}) => {
-    const user = useSelector((state : RootState)=>state.user.value)
+const CommentItem = ({ comment, onReply, depth = 0, render, parent, setText, setUserId, postId, userPostId }) => {
+    const user = useSelector((state: RootState) => state.user.value)
     const navigation = useNavigation<navigationType>()
     const [modalReactionVisible, setModaReactionlVisible] = useState(false);
     const [likeIcon, setLikeIcon] = useState(null);
     const [replies, setReplies] = useState([]);
-    const [checkLike,setCheckLike] = useState(false)
-    
+    const [checkLike, setCheckLike] = useState(false)
+
 
 
     // phóng to image
@@ -36,7 +38,7 @@ const CommentItem = ({ comment, onReply, depth = 0, render, parent, setText, set
         if (comment.id) {
             fetchReplies(comment.id);
         }
-        
+
 
     }, [comment]);
     const handleImagePress = (media) => {
@@ -99,8 +101,8 @@ const CommentItem = ({ comment, onReply, depth = 0, render, parent, setText, set
                             setText={setText}
                             setUserId={setUserId}
                             postId={postId}
-                            userPostId = {userPostId}
-                         
+                            userPostId={userPostId}
+
                         />
                     ))}
                 </View>
@@ -119,8 +121,8 @@ const CommentItem = ({ comment, onReply, depth = 0, render, parent, setText, set
                             setText={setText}
                             setUserId={setUserId}
                             postId={postId}
-                            userPostId = {userPostId}
-                            
+                            userPostId={userPostId}
+
                         />
                     ))}
                 </View>
@@ -141,7 +143,7 @@ const CommentItem = ({ comment, onReply, depth = 0, render, parent, setText, set
     };
     const handleCheck = () => {
         setCheckLike(false)
-        
+
     }
     return (
         <Pressable onPress={handleCheck} style={[
@@ -159,49 +161,58 @@ const CommentItem = ({ comment, onReply, depth = 0, render, parent, setText, set
                         </Pressable>
 
                         <Pressable onLongPress={() => handleCommentPress()}>
-                            <View style={[styles.BackgroundComment, 
-                                { backgroundColor: comment.content && '#E6E6FA',}]}>
-                            <Pressable style={{ padding: 10, flexDirection: 'column' }} onLongPress={() => handleCommentPress()}>
-                                <Pressable onLongPress={() => handleCommentPress()}>
-                                    <Text style={styles.fullname}>{comment.user.fullname}</Text>
-                                </Pressable>
-                                {comment.content ? (
-                                    <Text style={styles.content}>{comment.content}</Text>
-                                ) : null}
-                             
-                            </Pressable>
-                            </View>
-                            <View style={{ marginTop: 5, alignItems: 'center',  bottom: comment.image && !comment.content && 10, marginBottom: comment.image && !comment.content && -10, right: 15 }}>
-                                    {comment.image ? (
-                                        comment.image.endsWith('.mp4') ? (
-                                            <Pressable style={{ width: 100, height: 150, }} onPress={() => handleImagePress(comment.image)} onLongPress={() => handleCommentPress()}>
-                                                <Video source={{ uri: comment.image }} style={styles.media} resizeMode='cover' />
-                                            </Pressable>
-
-                                        ) : (
-                                            <Pressable style={{ width: 100, height: 150, }} onPress={() => handleImagePress(comment.image)} onLongPress={() => handleCommentPress()}>
-                                                <Image source={{ uri: comment.image }} style={styles.media} />
-                                            </Pressable>
-
-                                        )
+                            <View style={[styles.BackgroundComment,
+                            { backgroundColor: comment.content && '#E6E6FA', }]}>
+                                <Pressable style={{ padding: 10, flexDirection: 'column' }} onLongPress={() => handleCommentPress()}>
+                                    <Pressable onLongPress={() => handleCommentPress()}>
+                                        <Text style={styles.fullname}>{comment.user.fullname}</Text>
+                                    </Pressable>
+                                    {comment.content ? (
+                                        <Text style={styles.content}>{comment.content}</Text>
                                     ) : null}
-                                </View>
-                           
+
+                                </Pressable>
+                            </View>
+                            <View style={{ marginTop: 5, alignItems: 'center', bottom: comment.image && !comment.content && 10, marginBottom: comment.image && !comment.content && -10, right: 15 }}>
+                                {comment.image ? (
+                                    comment.image.endsWith('.mp4') ? (
+                                        <Pressable style={{ width: 100, height: 150, alignItems:'center', justifyContent:'center'}} onPress={() => handleImagePress(comment.image)} onLongPress={() => handleCommentPress()}>
+                                            {/* <Video source={{ uri: comment.image }} style={styles.media} resizeMode='cover' /> */}
+                                            <FastImage
+                                                style={styles.media}
+                                                source={{
+                                                    uri: comment?.image,
+                                                    priority: FastImage.priority.normal,
+                                                }}
+                                                resizeMode={FastImage.resizeMode.cover}
+                                            />
+                                            <ICON name='controller-play' color={COLOR.PrimaryColor1} size={22} style={{position:'absolute', padding:5, backgroundColor:'gray', borderRadius:5}}/>
+                                        </Pressable>
+
+                                    ) : (
+                                        <Pressable style={{ width: 100, height: 150, }} onPress={() => handleImagePress(comment.image)} onLongPress={() => handleCommentPress()}>
+                                            <Image source={{ uri: comment.image }} style={styles.media} />
+                                        </Pressable>
+
+                                    )
+                                ) : null}
+                            </View>
+
                         </Pressable>
                     </View>
                     <View style={{ flexDirection: "row", alignItems: 'center', marginStart: 55, marginTop: 3 }}>
                         <Text style={{ marginRight: 5, fontWeight: 'bold', fontSize: 14 }}>{DateOfTimePost(comment.create_at)}</Text>
-                  
-                          <>
-                                <Text style={{ fontWeight: 'bold', fontSize: 14, color: 'black', }}>᛫</Text>
-                                <TouchableOpacity onPress={handleReply} style={styles.replyButton}>
-                                    <Text style={{ fontWeight: 'bold', fontSize: 13 }}>Trả lời</Text>
-                                </TouchableOpacity>
-                            </>
+
+                        <>
+                            <Text style={{ fontWeight: 'bold', fontSize: 14, color: 'black', }}>᛫</Text>
+                            <TouchableOpacity onPress={handleReply} style={styles.replyButton}>
+                                <Text style={{ fontWeight: 'bold', fontSize: 13 }}>Trả lời</Text>
+                            </TouchableOpacity>
+                        </>
 
                         <Text style={{ fontWeight: 'bold', fontSize: 14, color: 'black', marginLeft: 5 }}>᛫</Text>
-                        <Reaction like_count = {comment.like_count} type={comment.reaction} 
-                        commentId={comment.id} checkReaction = {checkLike} setCheckReaction = {setCheckLike} render={render} Cmt = {comment} postId= {postId}  userPostId = {userPostId}/>
+                        <Reaction like_count={comment.like_count} type={comment.reaction}
+                            commentId={comment.id} checkReaction={checkLike} setCheckReaction={setCheckLike} render={render} Cmt={comment} postId={postId} userPostId={userPostId} />
 
                     </View>
                 </View>

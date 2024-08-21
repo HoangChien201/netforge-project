@@ -8,6 +8,7 @@ import 'react-native-gesture-handler';
 import React, { useEffect, useState } from 'react';
 import {
   AppState,
+  Dimensions,
   LogBox,
   SafeAreaView,
   StatusBar,
@@ -21,7 +22,7 @@ import PushNotification from 'react-native-push-notification';
 import { Provider } from 'react-redux';
 import store from './src/component/store/store';
 import { navigate } from './src/component/navigation/NavigationRef';
-
+const height = Dimensions.get('window').height
 function App(): React.JSX.Element {
   useEffect(() => {
     PushNotification.configure({
@@ -71,7 +72,7 @@ function App(): React.JSX.Element {
 
   return (
 
-    <GestureHandlerRootView style={{flex:1}}>
+    <GestureHandlerRootView style={{flex:1 , height:height}}>
       <Provider store={store}>
         <StatusBar barStyle="dark-content" backgroundColor="transparent" />
           <Host>

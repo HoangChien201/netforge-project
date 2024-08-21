@@ -10,7 +10,7 @@ import { socket } from '../../http/SocketHandle'
 import ModalNewMessage from '../../component/message/ModalNewMessage'
 import SkelotonMessage from '../../component/message/SkelotonMessage'
 import { RootState } from '../../component/store/store'
-
+import { PanGestureHandler } from 'react-native-gesture-handler';
 const ListMessageScreen = () => {
   const user = useSelector((state: RootState) => state.user.value)
   const [groups, setGroups] = useState<Array<GroupChatType> | null>(null)
@@ -74,26 +74,27 @@ const ListMessageScreen = () => {
   }
 
   return (
+    <PanGestureHandler enabled={false}>
+      <View style={styles.container}>
+        <View style={styles.headerContainer}>
+          <Text style={styles.header}>Nhắn tin</Text>
+          <TouchableOpacity onPress={() => SetVisibleModalNewMessage(true)} >
+            <EntypoIcon name='new-message' size={24} color={'#000'} />
+          </TouchableOpacity>
+        </View>
+        <View style={styles.content}>
+          {
+            groups ?
+              <ListMessage />
+              :
+              <SkelotonMessage />
+          }
 
-    <View style={styles.container}>
-      <View style={styles.headerContainer}>
-        <Text style={styles.header}>Nhắn tin</Text>
-        <TouchableOpacity onPress={() => SetVisibleModalNewMessage(true)} >
-          <EntypoIcon name='new-message' size={24} color={'#000'} />
-        </TouchableOpacity>
+
+        </View>
+        <ModalNewMessage visible={visibleModalNewMessage} setVisible={SetVisibleModalNewMessage} />
       </View>
-      <View style={styles.content}>
-        {
-          groups ?
-            <ListMessage />
-            :
-            <SkelotonMessage />
-        }
-
-
-      </View>
-      <ModalNewMessage visible={visibleModalNewMessage} setVisible={SetVisibleModalNewMessage} />
-    </View>
+    </PanGestureHandler>
   )
 }
 

@@ -123,8 +123,8 @@ const CreatePostScreen = memo(() => {
 
   const tags = friends.map(id => ({ user: String(id) }));
   const uploadPost = async () => {
+    setIsLoading(true);
     try {
-      setIsLoading(true);
       if (media && media.length > 0 && content.length > 0) {
         const formData = new FormData();
         media.forEach((file: fileType, index) => {
@@ -350,6 +350,7 @@ const CreatePostScreen = memo(() => {
         emotions={emotions}
         setEmotions={setEmotions}
         setImageUrl ={setImageUrl}
+        setHiddenView={setHiddenView}
       />
       {showPopup ? (
         isError ? (

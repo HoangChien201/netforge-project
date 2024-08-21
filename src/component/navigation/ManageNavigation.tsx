@@ -50,7 +50,8 @@ const ManageNavigation = () => {
                         const result = await login(email, password);
                         await AsyncStorage.setItem('token', result?.data.token);
                         dispatch(setUsers(result?.data))
-
+                        console.log(result);
+                        
                     } catch (error) {
                         console.log(error);
 
