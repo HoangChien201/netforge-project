@@ -50,10 +50,8 @@ const CommentItem = ({ comment, onReply, depth = 0, render, parent, setText, set
     const handleCommentPress = () => {
         if (user?.id === comment.user.id) {
             setIsDleteVisible(true);
-        } else {
-            setIsOtherDleteVisible(true)
-
         }
+
     };
     // handle delete comments
     const handleConfirmDelete = async () => {

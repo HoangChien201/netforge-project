@@ -102,7 +102,7 @@ export default ListMessageScreen
 
 const styles = StyleSheet.create({
   content: {
-    marginTop: 20
+    marginTop: 20,
   },
   header: {
     color: '#000',
@@ -116,6 +116,10 @@ const styles = StyleSheet.create({
   },
   container: {
     paddingHorizontal: 24,
-    paddingVertical: 8
+    // paddingVertical: 8,
+    paddingBottom:120,
+    paddingTop:8
+
+
   },
 })

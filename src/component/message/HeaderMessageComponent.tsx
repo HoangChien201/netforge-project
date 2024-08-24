@@ -1,14 +1,15 @@
 import React, { useEffect, useMemo, useState } from 'react'
-import { Image, StyleSheet, Text, View } from 'react-native'
+import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import { useRoute } from '@react-navigation/native'
 // @ts-ignore
-import ZegoUIKitPrebuiltCallService,{ ZegoSendCallInvitationButton } from '@zegocloud/zego-uikit-prebuilt-call-rn';
+import ZegoUIKitPrebuiltCallService, { ZegoSendCallInvitationButton } from '@zegocloud/zego-uikit-prebuilt-call-rn';
 import OcticonsIcon from 'react-native-vector-icons/Octicons'
 
 import { MessageScreenRouteProp } from '../../screens/message/MessageScreen'
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../store/store';
 import { checkStatusOnline } from '../../http/ChienHTTP';
+import AlertCallError from './AlertCallError';
 type InviteeType = {
     userID: string,
     userName: string
@@ -18,7 +19,10 @@ type InviteeType = {
 const HeaderMessageComponent = ({ partner }: { partner: any }) => {
 
     const user = useSelector((state: RootState) => state.user.value)
+    const dispatch = useDispatch()
     const [online, setOnline] = useState(false)
+    const [alertVisible, setAlertVisible] = useState(false);
+
     const route: MessageScreenRouteProp = useRoute()
     const { fullname, avatar, members } = route.params;
     const invitees: Array<InviteeType>
@@ -49,6 +53,17 @@ const HeaderMessageComponent = ({ partner }: { partner: any }) => {
 
 
     }
+    function CallOnPress(errorCode, errorMessage, errorInvitees) {
+        if (errorCode || errorMessage) {
+            console.log("Loi goi");
+
+        }
+        console.log('errorCode', errorCode);
+        console.log('errorMessage', errorMessage);
+        console.log('errorInvitees', errorInvitees);
+
+
+    }
 
     return (
         <View style={styles.container}>
@@ -61,7 +76,9 @@ const HeaderMessageComponent = ({ partner }: { partner: any }) => {
                     <View style={styles.avatarContainer}>
                         {
                             partner.avatar &&
-                            <Image style={styles.avatar} source={{ uri: partner.avatar }} />
+                            <TouchableOpacity onPress={()=>{setAlertVisible(true)}}>
+                                <Image style={styles.avatar} source={{ uri: partner.avatar }} />
+                            </TouchableOpacity>
                         }
 
                     </View>
@@ -82,6 +99,7 @@ const HeaderMessageComponent = ({ partner }: { partner: any }) => {
                         isVideoCall={false}
                         backgroundColor={'rgba(255,255,255,0.2)'}
                         icon={require('../../media/icon/telephone-call.png')}
+                        onPressed={CallOnPress}
 
                     />
                     <ZegoSendCallInvitationButton
@@ -89,10 +107,21 @@ const HeaderMessageComponent = ({ partner }: { partner: any }) => {
                         isVideoCall={true}
                         backgroundColor={'rgba(255,255,255,0.2)'}
                         icon={require('../../media/icon/facetime-button.png')}
+                        onPressed={CallOnPress}
+
                     />
                 </View>
 
             </View>
+            {
+                alertVisible &&
+                <AlertCallError
+                    visible={alertVisible}
+                    onClose={() => setAlertVisible(false)}
+                    title="Thông báo"
+                    message="Kết nối không ổn định. Vui lòng đợi !"
+                />
+            }
         </View>
     )
 }

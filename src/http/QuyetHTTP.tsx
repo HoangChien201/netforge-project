@@ -29,10 +29,13 @@ export const getPostById = async (postId: any) => {
 // https://network-social-sever.onrender.com
 export const upLoadMedia = async (formData: any) => {
     try {
-        const response = await axios.post(
-            `${url}image/uploads/`,
+        const token = await AsyncStorage.getItem('token');
+        const response =  await axios.post(
+            `https://network-sever-1.onrender.com/image/uploads/`,
             formData,
-            { headers: { "Content-Type": "multipart/form-data" } }
+            { headers: {
+                Authorization: `Bearer ${token}`,
+                "Content-Type": "multipart/form-data" } }
         );
 
         // Check if response data is an array

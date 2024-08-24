@@ -52,7 +52,7 @@ const SignupScreen: React.FC = () => {
                          </Pressable>
                         </View>
                         <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
-                            <View style={{ position: "absolute", bottom: 30 }}>
+                            <View style={{  bottom: 30 }}>
                                 <Text style={{ textAlign: "center", color: "black" }}>Bằng cách tạo một tài khoản, bạn đồng ý với</Text>
                                 <Text style={{ color: "black" }}>
                                     <Text style={{ color: COLOR.PrimaryColor }}>Điều khoản & Điều kiện</Text> và đồng ý <Text style={{ color: COLOR.PrimaryColor }}>Chính sách bảo mật</Text>

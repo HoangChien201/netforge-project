@@ -28,21 +28,21 @@ export type valid = {
     email: boolean,
 }
 
-const ForgotPassword:React.FC = () => {
-    const navigation:NavigationProp<ParamListBase> = useNavigation();
-    const [isLoading,setIsLoading] = useState(false);
-    const [showModal,setShowModal] = useState(false);
-    const [status,setStatus] = useState(true);
-    const [valueF, setValueF] = useState<user>({ email: ""});
-    const [valid, setValid] = useState<valid>({ email: true});
+const ForgotPassword: React.FC = () => {
+    const navigation: NavigationProp<ParamListBase> = useNavigation();
+    const [isLoading, setIsLoading] = useState(false);
+    const [showModal, setShowModal] = useState(false);
+    const [status, setStatus] = useState(true);
+    const [valueF, setValueF] = useState<user>({ email: "" });
+    const [valid, setValid] = useState<valid>({ email: true });
     function onChangText(key: string, values: string) {
         setValueF({
-        ...valueF,
-        [key]: values
-    });
+            ...valueF,
+            [key]: values
+        });
     }
 
-    const showModalFalse =() => {
+    const showModalFalse = () => {
         setShowModal(true);
         setStatus(false);
         setTimeout(() => {
@@ -53,18 +53,25 @@ const ForgotPassword:React.FC = () => {
     }
 
     const handelSendMail = async () => {
-        const { email} = { ...valueF };
+        const { email } = { ...valueF };
         const trimmedEmail = email.trim();
         const isValidEmail = emailPattern.test(trimmedEmail);
         if (!isValidEmail) {
-            setValid({ email: isValidEmail});
+            setValid({ email: isValidEmail });
         } else {
-            setValid({ email: true});
+            setValid({ email: true });
             setIsLoading(true);
             try {
-                const response= await sendMail(email);
-                const token = response.token; 
-                await AsyncStorage.setItem('TokenForgot',token)
+                const response = await sendMail(email);
+                const { status } = response
+                if (status === -1) {
+                    setStatus(false)
+                    showModalFalse()
+                    return
+                }
+
+                const token = response.token;
+                await AsyncStorage.setItem('TokenForgot', token)
                 if (response) {
                     setShowModal(true);
                     setStatus(true);
@@ -87,43 +94,45 @@ const ForgotPassword:React.FC = () => {
 
     return (
         <View style={styles.container}>
-            <View  style={styles.viewToolbar}>
-                <TouchableOpacity onPress={()=>navigation.goBack()} style={{alignItems:"center"}}>
-                    <Icon name="arrow-back" size={24} color="#fff"  />
+            <View style={styles.viewToolbar}>
+                <TouchableOpacity onPress={() => navigation.goBack()} style={{ alignItems: "center" }}>
+                    <Icon name="arrow-back" size={24} color="#fff" />
                 </TouchableOpacity>
             </View>
-        <View style={{ flexDirection: "row", paddingVertical: 75 }}>
-            <View style={{position:"absolute",right:0,top:0}}>
-                <Image source={require('../media/Dicons/elip.png')}/>
-            </View>
-            <View style={[styles.viewAll]}>
-                <Text style={styles.txt1}>Bạn quên mật khẩu?</Text>
-            </View>
-        </View>
-        <KeyboardAvoidingView style={styles.viewContent}>
-            <Loading isLoading= {isLoading}/> 
-            <View>
-                <View style={{ marginTop: 16,paddingHorizontal:20 }}>
-                    <Text style={styles.txt2}>
-                        Nhập địa chỉ email của bạn để thiết lập lại mật khẩu.</Text>
+            <View style={{ flexDirection: "row", paddingVertical: 75 }}>
+                <View style={{ position: "absolute", right: 0, top: 0 }}>
+                    <Image source={require('../media/Dicons/elip.png')} />
                 </View>
-                <View style={{flexDirection:'column',justifyContent:'space-between',paddingVertical:15}}></View>
-                <InputLogin invalid={!valid.email} label="Email" value={valueF.email} 
-                    onchangText={onChangText.bind(this, 'email')} 
-                    iconE />
+                <View style={[styles.viewAll]}>
+                    <Text style={styles.txt1}>Bạn quên mật khẩu?</Text>
+                </View>
             </View>
-            <View style={{flexDirection:'column',justifyContent:'space-between',paddingVertical:20}}>
-            </View>
-            <View style={styles.btnSendMail}>
-                <ButtonLogin textLogin chilren='Gửi email' textColor='#fff' onPress={handelSendMail} />
-            </View>
-        </KeyboardAvoidingView>
-        {status ? (
-                    <ModalPoup text="Đã gửi email!" visible={showModal} />
-                ) : (
-                    <ModalFail text="Gửi email thất bại!" visible={showModal} />
-                )}
-    </View>
+            <KeyboardAvoidingView style={styles.viewContent}>
+                <ScrollView>
+                    <Loading isLoading={isLoading} />
+                    <View>
+                        <View style={{ marginTop: 16, paddingHorizontal: 20 }}>
+                            <Text style={styles.txt2}>
+                                Nhập địa chỉ email của bạn để thiết lập lại mật khẩu.</Text>
+                        </View>
+                        <View style={{ flexDirection: 'column', justifyContent: 'space-between', paddingVertical: 15 }}></View>
+                        <InputLogin invalid={!valid.email} label="Email" value={valueF.email}
+                            onchangText={onChangText.bind(this, 'email')}
+                            iconE />
+                    </View>
+                    <View style={{ flexDirection: 'column', justifyContent: 'space-between', paddingVertical: 20 }}>
+                    </View>
+                    <View style={styles.btnSendMail}>
+                        <ButtonLogin textLogin chilren='Gửi email' textColor='#fff' onPress={handelSendMail} />
+                    </View>
+                </ScrollView>
+            </KeyboardAvoidingView>
+            {status ? (
+                <ModalPoup text="Đã gửi email!" visible={showModal} />
+            ) : (
+                <ModalFail text="Email không tồn tại!" visible={showModal} />
+            )}
+        </View>
     )
 }
 
@@ -140,17 +149,17 @@ const styles = StyleSheet.create({
         flex: 1,
     },
     viewContent: {
-        backgroundColor: "#ffff", 
-        flex: 1, 
-        borderTopEndRadius: 30, 
-        borderTopStartRadius: 30, 
+        backgroundColor: "#ffff",
+        flex: 1,
+        borderTopEndRadius: 30,
+        borderTopStartRadius: 30,
         padding: 18
     },
     txt1: {
         color: "#fff",
         fontWeight: "bold",
         fontSize: 36,
-        paddingLeft:30
+        paddingLeft: 30
     },
     txt2: {
         fontSize: 16,
@@ -162,18 +171,18 @@ const styles = StyleSheet.create({
     iconBack: {
         // width: 20,
         // height: 15,
-        backgroundColor:'transparent',
+        backgroundColor: 'transparent',
     },
     viewToolbar: {
         flexDirection: "row",
         alignItems: "center",
         paddingLeft: 20,
-        paddingTop:20,
-        backgroundColor:'transparent',
+        paddingTop: 20,
+        backgroundColor: 'transparent',
     },
     btnSendMail: {
-        alignItems:'center'
+        alignItems: 'center'
     }
-    
+
 })
 

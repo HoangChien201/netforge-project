@@ -1,21 +1,22 @@
 import {
-  StyleSheet,
-  Text,
-  View,
-  Image,
-  TouchableOpacity,
-  KeyboardAvoidingView,
-  TextInput,
-  Alert,
+    StyleSheet,
+    Text,
+    View,
+    Image,
+    TouchableOpacity,
+    KeyboardAvoidingView,
+    TextInput,
+    Alert,
+    ScrollView,
 } from 'react-native';
-import React, {useState} from 'react';
-import {COLOR} from '../constant/color';
-import {navigationType} from '../component/stack/UserStack';
-import {emailPattern} from '../constant/valid';
+import React, { useState } from 'react';
+import { COLOR } from '../constant/color';
+import { navigationType } from '../component/stack/UserStack';
+import { emailPattern } from '../constant/valid';
 import Loading from '../component/Modal/Loading';
 import ButtonLogin from '../component/form/ButtonLogin';
-import {UserRootStackEnum} from '../component/stack/UserRootStackParams';
-import {NavigationProp, ParamListBase, RouteProp, useNavigation, useRoute,} from '@react-navigation/native';
+import { UserRootStackEnum } from '../component/stack/UserRootStackParams';
+import { NavigationProp, ParamListBase, RouteProp, useNavigation, useRoute, } from '@react-navigation/native';
 import InputLogin from '../component/formlogin/Input';
 import { resetPassword } from '../http/PhuHTTP';
 import ModalPoup from '../component/Modal/ModalPoup';
@@ -31,25 +32,25 @@ export type valid = {
     confirmPassword: boolean,
 }
 
-export const ResetPassword:React.FC = () => {
+export const ResetPassword: React.FC = () => {
     const navigation: NavigationProp<ParamListBase> = useNavigation();
-    const [isLoading,setIsLoading] = useState(false);
-    const [showModal,setShowModal] = useState(false);
-    const [status,setStatus] = useState(true);
-    const [valueF, setValueF] = useState<resetPass>({ newPassword: "",confirmPassword: "" });
-    const [valid, setValid] = useState<valid>({ newPassword: true , confirmPassword: true});
-    
+    const [isLoading, setIsLoading] = useState(false);
+    const [showModal, setShowModal] = useState(false);
+    const [status, setStatus] = useState(true);
+    const [valueF, setValueF] = useState<resetPass>({ newPassword: "", confirmPassword: "" });
+    const [valid, setValid] = useState<valid>({ newPassword: true, confirmPassword: true });
+
     const route: RouteProp<{ params: { email: string } }, 'params'> = useRoute();
     const { email } = route.params;
 
     function onChangText(key: string, values: string) {
         setValueF({
             ...valueF,
-            [key]: values 
+            [key]: values
         })
     }
 
-    const showModalFalse =() => {
+    const showModalFalse = () => {
         setShowModal(true);
         setStatus(false);
         setTimeout(() => {
@@ -58,9 +59,9 @@ export const ResetPassword:React.FC = () => {
         }, 2000);
     }
 
-    const handleChangePassword = async() => {
+    const handleChangePassword = async () => {
         //const token = await AsyncStorage.getItem('TokenForgot');
-        const { newPassword, confirmPassword} = { ...valueF };
+        const { newPassword, confirmPassword } = { ...valueF };
         let isValidNewPass = newPassword.trim().length > 0;
         let isValidConfirmPass = confirmPassword.trim() === newPassword.trim();
 
@@ -88,57 +89,59 @@ export const ResetPassword:React.FC = () => {
                 showModalFalse();
             }
         }
-        
+
     }
 
     return (
-    <View style={styles.container}>
-        <View  style={styles.viewToolbar}>
-                <TouchableOpacity onPress={()=>navigation.goBack()} style={{alignItems:"center"}}>
-                    <Icon name="arrow-back" size={24} color="#fff"  />
+        <View style={styles.container}>
+            <View style={styles.viewToolbar}>
+                <TouchableOpacity onPress={() => navigation.goBack()} style={{ alignItems: "center" }}>
+                    <Icon name="arrow-back" size={24} color="#fff" />
                 </TouchableOpacity>
-        </View>
-        <View style={{flexDirection: 'row', paddingVertical: 75}}>    
-        <View style={{position: 'absolute', right: 0, top: 0}}>
-            <Image source={require('../media/Dicons/elip.png')} />
-        </View>
-        <View style={[styles.viewAll]}>
-            <Text style={styles.txt1}>Cập nhập mật khẩu mới</Text>
-        </View>
-        </View>
-        <KeyboardAvoidingView style={styles.viewContent}>
-        <Loading isLoading= {isLoading}/>
-        <View>
-            <View style={{marginTop: 16}}>
-                <Text style={styles.txt2}>
-                    Vui lòng cập nhập lại mật khẩu mới của bạn.</Text>   
             </View>
-                {/* <InputLogin invalid={!valid.oldPassword} label="Mật khẩu cũ" value={valueF.oldPassword} onchangText={onChangText.bind(this, 'oldPassword')} iconPass password={true} /> */}
-                <InputLogin invalid={!valid.newPassword} label="Mật khẩu mới" value={valueF.newPassword} onchangText={onChangText.bind(this, 'newPassword')} iconPass password={true} />
-                <InputLogin invalid={!valid.confirmPassword} label="Xác nhận lại mật khẩu mới" value={valueF.confirmPassword} onchangText={onChangText.bind(this, 'confirmPassword')} iconPass password={true} />
-        </View>
-        <View
-          style={{
-            flexDirection: 'column',
-            justifyContent: 'space-between',
-            paddingVertical: 20,
-          }}></View>
-        <View style={styles.btnResetPass}>
-          <ButtonLogin
-            textLogin
-            chilren="Cập nhập"
-            textColor="#fff"
-            onPress={handleChangePassword}
-          />
-        </View>
-      </KeyboardAvoidingView>
-      {status ? (
-            <ModalPoup text="Đặt lại mật khẩu thành công!" visible={showModal} />
-        ) : (
-            <ModalFail text="Đặt lại mật khẩu thất bại!" visible={showModal} />
+            <View style={{ flexDirection: 'row', paddingVertical: 75 }}>
+                <View style={{ position: 'absolute', right: 0, top: 0 }}>
+                    <Image source={require('../media/Dicons/elip.png')} />
+                </View>
+                <View style={[styles.viewAll]}>
+                    <Text style={styles.txt1}>Cập nhập mật khẩu mới</Text>
+                </View>
+            </View>
+            <KeyboardAvoidingView style={styles.viewContent}>
+                <ScrollView>
+                    <Loading isLoading={isLoading} />
+                    <View>
+                        <View style={{ marginTop: 16 }}>
+                            <Text style={styles.txt2}>
+                                Vui lòng cập nhập lại mật khẩu mới của bạn.</Text>
+                        </View>
+                        {/* <InputLogin invalid={!valid.oldPassword} label="Mật khẩu cũ" value={valueF.oldPassword} onchangText={onChangText.bind(this, 'oldPassword')} iconPass password={true} /> */}
+                        <InputLogin invalid={!valid.newPassword} label="Mật khẩu mới" value={valueF.newPassword} onchangText={onChangText.bind(this, 'newPassword')} iconPass password={true} />
+                        <InputLogin invalid={!valid.confirmPassword} label="Xác nhận lại mật khẩu mới" value={valueF.confirmPassword} onchangText={onChangText.bind(this, 'confirmPassword')} iconPass password={true} />
+                    </View>
+                    <View
+                        style={{
+                            flexDirection: 'column',
+                            justifyContent: 'space-between',
+                            paddingVertical: 20,
+                        }}></View>
+                    <View style={styles.btnResetPass}>
+                        <ButtonLogin
+                            textLogin
+                            chilren="Cập nhập"
+                            textColor="#fff"
+                            onPress={handleChangePassword}
+                        />
+                    </View>
+                </ScrollView>
+            </KeyboardAvoidingView>
+            {status ? (
+                <ModalPoup text="Đặt lại mật khẩu thành công!" visible={showModal} />
+            ) : (
+                <ModalFail text="Đặt lại mật khẩu thất bại!" visible={showModal} />
             )}
-    </View>
-  );
+        </View>
+    );
 };
 
 const styles = StyleSheet.create({
@@ -152,17 +155,17 @@ const styles = StyleSheet.create({
         flex: 1,
     },
     viewContent: {
-        backgroundColor: "#ffff", 
-        flex: 1, 
-        borderTopEndRadius: 30, 
-        borderTopStartRadius: 30, 
+        backgroundColor: "#ffff",
+        flex: 1,
+        borderTopEndRadius: 30,
+        borderTopStartRadius: 30,
         padding: 18
     },
     txt1: {
         color: "#fff",
         fontWeight: "bold",
         fontSize: 36,
-        paddingLeft:30
+        paddingLeft: 30
     },
     txt2: {
         fontSize: 16,
@@ -180,9 +183,9 @@ const styles = StyleSheet.create({
         flexDirection: "row",
         alignItems: "center",
         paddingLeft: 20,
-        paddingTop:20,
+        paddingTop: 20,
     },
     btnResetPass: {
-        alignItems:'center'
+        alignItems: 'center'
     }
 });
