@@ -102,10 +102,6 @@ const StateMessage: React.FC<StateMessageType> = ({ message, group_id, sender, l
 
     }
   }
-<<<<<<< Updated upstream
-=======
-
->>>>>>> Stashed changes
   const isShowState = sender && lastMessage
 
   return (

@@ -30,13 +30,8 @@ export const getPostById = async (postId: any) => {
 export const upLoadMedia = async (formData: any) => {
     try {
         const token = await AsyncStorage.getItem('token');
-<<<<<<< Updated upstream
         const response =  await axios.post(
             `https://network-sever-1.onrender.com/image/uploads/`,
-=======
-        const response = await axios.post(
-            `${url}image/uploads/`,
->>>>>>> Stashed changes
             formData,
             { headers: {
                 Authorization: `Bearer ${token}`,
