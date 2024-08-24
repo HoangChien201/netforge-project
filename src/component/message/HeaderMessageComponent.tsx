@@ -55,7 +55,7 @@ const HeaderMessageComponent = ({ partner }: { partner: any }) => {
     }
     function CallOnPress(errorCode, errorMessage, errorInvitees) {
         if (errorCode || errorMessage) {
-            console.log("Loi goi");
+            setAlertVisible(true)
 
         }
         console.log('errorCode', errorCode);
@@ -76,9 +76,7 @@ const HeaderMessageComponent = ({ partner }: { partner: any }) => {
                     <View style={styles.avatarContainer}>
                         {
                             partner.avatar &&
-                            <TouchableOpacity onPress={()=>{setAlertVisible(true)}}>
-                                <Image style={styles.avatar} source={{ uri: partner.avatar }} />
-                            </TouchableOpacity>
+                            <Image style={styles.avatar} source={{ uri: partner.avatar }} />
                         }
 
                     </View>
