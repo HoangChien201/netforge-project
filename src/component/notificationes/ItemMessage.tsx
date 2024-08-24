@@ -9,37 +9,40 @@ import { NetworkStackNavigationProp } from '../stack/NetworkRootStackParams'
 type Item = {
     notification: any
 }
-const ItemMessage:React.FC<Item> = ({ notification }) => {
-    const navigation:NetworkStackNavigationProp = useNavigation();
+const ItemMessage: React.FC<Item> = ({ notification }) => {
+    const navigation: NetworkStackNavigationProp = useNavigation();
     const displayDate = DateOfTimePost(notification.data[0].timestamp);
-    function onPress(){
-        const userInfo=notification.data[0].userInfo
-        const {fullname,avatar,sender:id}=userInfo
-        
+    function onPress() {
+        const userInfo = notification.data[0].userInfo
+        const { fullname, avatar, sender: id } = userInfo
+
         NavigateToMessage(
             {
-                id,fullname,avatar
+                id, fullname, avatar
             },
             navigation
         )
     }
     return (
-        <TouchableOpacity style={styles.container} key={notification.idv4.toString()} 
-        onPress={onPress}
+        <TouchableOpacity style={styles.container} key={notification.idv4.toString()}
+            onPress={onPress}
         >
-        <View style={styles.iconFriend} >
-            <Image style={styles.avatar} source={{ uri: notification.data[0].userInfo.avatar }} />
-            <Icon style={styles.iconHeart} name='message' size={18} color={COLOR.PrimaryColor} />
-        </View>
-        <View style={styles.text}>
-            <Text style={styles.textUser_Post}>{notification.data[0].title} </Text>
-            <Text style={styles.text1} numberOfLines={1} ellipsizeMode="tail">{notification.data[0].body}</Text>
-        </View>
-        <View style={styles.viewTime}>
-            <Text style={styles.textTime}>{displayDate}</Text>
-        </View>
+            <View style={styles.iconFriend} >
+                <Image style={styles.avatar} source={{ uri: notification.data[0].userInfo.avatar }} />
+                <Icon style={styles.iconHeart} name='message' size={18} color={COLOR.PrimaryColor} />
+            </View>
+            <View style={styles.text}>
+                <Text numberOfLines={2} >
+                    <Text style={styles.textUser_Post}>{notification.data[0].title} </Text>
+                    <Text style={styles.text1} numberOfLines={1} ellipsizeMode="tail">{notification.data[0].body}</Text>
+                </Text>
 
-    </TouchableOpacity>
+            </View>
+            <View style={styles.viewTime}>
+                <Text style={styles.textTime}>{displayDate}</Text>
+            </View>
+
+        </TouchableOpacity>
     )
 }
 
@@ -113,9 +116,9 @@ const styles = StyleSheet.create({
     text: {
         marginStart: 10,
         flex: 5,
-        flexDirection:'column',
-        overflow:'hidden',
-        
+        flexDirection: 'column',
+        overflow: 'hidden',
+
     },
     textUser_Post: {
         fontSize: 15,
@@ -129,7 +132,7 @@ const styles = StyleSheet.create({
         fontWeight: '500',
         fontStyle: "normal",
         color: COLOR.PrimaryColor,
-        marginEnd:5
+        marginEnd: 5
     },
     textTime: {
         fontSize: 9,
@@ -138,7 +141,7 @@ const styles = StyleSheet.create({
         color: 'black',
         position: 'absolute',
         end: 5,
-        bottom:8
+        bottom: 8
     },
     headerText: {
         fontSize: 18,
@@ -149,6 +152,6 @@ const styles = StyleSheet.create({
     },
     viewTime: {
         flex: 0.9,
-        height:'100%'
+        height: '100%'
     }
 })

@@ -12,7 +12,7 @@ type Item = {
     notification: any
 }
 const ItemLike: React.FC<Item> = ({ notification }) => {
-    const navigation:CommentsScreenNavigationProp = useNavigation();
+    const navigation: CommentsScreenNavigationProp = useNavigation();
     function navigationScreen(screen: string) {
         navigation.navigate(`${screen}`)
     }
@@ -38,9 +38,9 @@ const ItemLike: React.FC<Item> = ({ notification }) => {
     };
     const { text, iconName, iconColor, linkImage } = getReactionDetails(reaction);
     return (
-        <TouchableOpacity style={styles.container} key={notification.idv4.toString()} 
+        <TouchableOpacity style={styles.container} key={notification.idv4.toString()}
             onPress={() => navigation.navigate('CommentsScreen', { postId })}
-            //onPress={log}
+        //onPress={log}
         >
             <View style={styles.iconFriend} >
                 <Image style={styles.avatar} source={{ uri: notification.data[0].userInfo.avatar }} />
@@ -62,7 +62,7 @@ const ItemLike: React.FC<Item> = ({ notification }) => {
                 <Image source={linkImage} style={styles.iconHeart} />
             </View>
             <View style={styles.text}>
-                <Text >
+                <Text numberOfLines={2} >
                     <Text style={styles.textUser_Post} numberOfLines={2} >{notification.data[0].userInfo.fullname}</Text>
                     {notification.data[1] ?
                         <Text style={styles.textUser_Post}>, {notification.data[1].userInfo.fullname}</Text>
@@ -75,9 +75,9 @@ const ItemLike: React.FC<Item> = ({ notification }) => {
                         null
                     }
                     <Text style={styles.textUser_Post}> đã bày tỏ cảm xúc bài viết </Text>
-
+                    <Text style={styles.text1} numberOfLines={1} ellipsizeMode="tail"  >{notification.data[0].body}</Text>
                 </Text>
-                <Text style={styles.text1} numberOfLines={1} ellipsizeMode="tail"  >{notification.data[0].body}</Text>
+
             </View>
             <View style={styles.viewTime}>
                 <Text style={styles.textTime}>{displayDate}</Text>
@@ -172,7 +172,7 @@ const styles = StyleSheet.create({
         fontWeight: '500',
         fontStyle: "normal",
         color: COLOR.PrimaryColor,
-        marginEnd:5
+        marginEnd: 5
     },
 
     textTime: {

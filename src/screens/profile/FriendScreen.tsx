@@ -1,6 +1,6 @@
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
-import React, {useEffect, useRef, useState } from 'react'
-import {  useIsFocused, useNavigation } from '@react-navigation/native';
+import React, { useCallback, useEffect, useRef, useState } from 'react'
+import { useFocusEffect, useIsFocused, useNavigation } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/Entypo'
 import { COLOR } from '../../constant/color'
 import { useSelector } from 'react-redux';
@@ -27,20 +27,21 @@ const FriendScreen: React.FC<Friends> = () => {
   const [friends, setFriends] = useState<any[]>([]);
   const status2 = 2;
   const status1 = 1;
-  const user = useSelector((state : RootState)=>state.user.value)
+  const user = useSelector((state: RootState) => state.user.value)
   const userId = user?.id
   const [showModalFriend, setShowModalFriend] = useState(false);
   const [dot, setDot] = useState(Number);
   const [reload, setReload] = useState(false);
   const [dataSuggest, setDataSuggest] = useState([]);
+  const [dataSuggestAS, setDataSuggestAS] = useState([]);
   const [dataRequest, setDataRequest] = useState([]);
   const [dataWaitAccept, setDataWaitAccept] = useState([]);
   const swiperRef = useRef(null);
   const [currentIndex, setCurrentIndex] = useState(0);
   const { sendNRequestFriend } = useSendNotification();
   const [refreshing, setRefreshing] = useState(false);
-  const [numReq,setNumReq] = useState(0);
-  const [numWA,setNumWA] = useState(0);
+  const [numReq, setNumReq] = useState(0);
+  const [numWA, setNumWA] = useState(0);
   const getFriendList = async (status: number) => {
     try {
       const result = await getFriends(status);
@@ -52,13 +53,25 @@ const FriendScreen: React.FC<Friends> = () => {
       console.log(error);
     }
   };
+  useEffect(() => {
+    const idsToRemove = new Set([
+      ...dataRequest.map(item => item.user.id),
+      ...dataWaitAccept.map(item => item.user.id)
+    ]);
+    const filteredDataSuggest = dataSuggest.filter(item => !idsToRemove.has(item.id));
+    setDataSuggestAS(filteredDataSuggest);
+    console.log('1');
+
+  }, [dataRequest, dataWaitAccept,dataSuggest]);
   const getSuggestList = async () => {
     try {
       //const result = await getAllUser();
       const result = await getSuggest();
       if (result) {
-        setDataSuggest(result);
+        setDataSuggest(result)
         setRefreshing(false)
+        console.log('getSuggestList');
+        
       }
     } catch (error) {
       console.log(error);
@@ -70,7 +83,8 @@ const FriendScreen: React.FC<Friends> = () => {
       if (result) {
         setDataRequest(result);
         setRefreshing(false);
-        setNumReq(result.length)
+        setNumReq(result.length);
+        console.log('getRequestList');
       }
     } catch (error) {
       console.log(error);
@@ -83,6 +97,7 @@ const FriendScreen: React.FC<Friends> = () => {
         setDataWaitAccept(result);
         setRefreshing(false);
         setNumWA(result.length);
+        console.log('getWaitAcceptList');
       }
     } catch (error) {
       console.log(error);
@@ -107,6 +122,8 @@ const FriendScreen: React.FC<Friends> = () => {
     getSuggestList();
     getRequestList(status1);
     getWaitAcceptList();
+    console.log('loadAllData');
+    
   };
   useEffect(() => {
     socket.on(`notification-${userId}`, (data) => {
@@ -135,12 +152,17 @@ const FriendScreen: React.FC<Friends> = () => {
       swiperRef.current.scrollBy(index - currentIndex, true);
     }
   };
-  useEffect(()=>{
-    getRequestList(status1)
-  },[dataRequest])
-  useEffect(()=>{
-    getWaitAcceptList()
-  },[dataWaitAccept])
+  // useEffect(() => {
+  //   //getRequestList(status1)
+  // }, [dataRequest])
+  // useEffect(() => {
+  //   //getWaitAcceptList()
+  // }, [dataWaitAccept])
+  useFocusEffect(
+    useCallback(()=>{
+      loadAllData()
+    },[])
+  )
   return (
     <View style={styles.container}>
       <View style={styles.header}>
@@ -150,7 +172,7 @@ const FriendScreen: React.FC<Friends> = () => {
         >
           <Icon name='add-to-list' size={20} color={COLOR.PrimaryColor} />
           <Text style={styles.text1}>Yêu cầu</Text>
-          <View style={{position:'absolute', height:14,width:12, backgroundColor:COLOR.PrimaryColor1, alignItems:'center',justifyContent:'center',borderRadius:8,end:-2,top:-2}}>
+          <View style={{ position: 'absolute', height: 14, width: 12, backgroundColor: COLOR.PrimaryColor1, alignItems: 'center', justifyContent: 'center', borderRadius: 8, end: -2, top: -2 }}>
             <Text style={styles.num}>{numWA}</Text>
           </View>
         </TouchableOpacity>
@@ -160,7 +182,7 @@ const FriendScreen: React.FC<Friends> = () => {
         >
           <Icon name='paper-plane' size={20} color={COLOR.PrimaryColor} />
           <Text style={styles.text1}>Lời mời</Text>
-          <View style={{position:'absolute', height:14,width:12, backgroundColor:COLOR.PrimaryColor1, alignItems:'center',justifyContent:'center',borderRadius:8,end:-2,top:-2}}>
+          <View style={{ position: 'absolute', height: 14, width: 12, backgroundColor: COLOR.PrimaryColor1, alignItems: 'center', justifyContent: 'center', borderRadius: 8, end: -2, top: -2 }}>
             <Text style={styles.num}>{numReq}</Text>
           </View>
         </TouchableOpacity>
@@ -173,30 +195,30 @@ const FriendScreen: React.FC<Friends> = () => {
         </TouchableOpacity>
       </View>
       <View style={[styles.container1]}>
-        {dataWaitAccept? 
-        
-        <Swiper ref={swiperRef} loop={false} showsButtons={false}
-          onIndexChanged={handleIndexChanged}
-        >
-          <View>
-            <WaitAcceptList dataWaitAccept={dataWaitAccept}
-              setDataWaitAccept={setDataWaitAccept} setShowModalFriend={setShowModalFriend}
-              getWaitAcceptList={getWaitAcceptList}
-              reload={reload} setReload={setReload}
-              refreshing={refreshing} setRefreshing={setRefreshing}
-            />
-          </View>
-          <View>
-            <RequestList dataRequest={dataRequest} setDataRequest={setDataRequest}
-              setReload={setReload} reload={reload}
-              setShowModalFriend={setShowModalFriend}
-              refreshing={refreshing} setRefreshing={setRefreshing}
-            />
-          </View>
-        </Swiper>
-        : <SkelotonFriend/>}
+        {dataWaitAccept ?
+
+          <Swiper ref={swiperRef} loop={false} showsButtons={false}
+            onIndexChanged={handleIndexChanged}
+          >
+            <View>
+              <WaitAcceptList dataWaitAccept={dataWaitAccept}
+                setDataWaitAccept={setDataWaitAccept} setShowModalFriend={setShowModalFriend}
+                getWaitAcceptList={getWaitAcceptList}
+                reload={reload} setReload={setReload}
+                refreshing={refreshing} setRefreshing={setRefreshing}
+              />
+            </View>
+            <View>
+              <RequestList dataRequest={dataRequest} setDataRequest={setDataRequest}
+                setReload={setReload} reload={reload}
+                setShowModalFriend={setShowModalFriend}
+                refreshing={refreshing} setRefreshing={setRefreshing}
+              />
+            </View>
+          </Swiper>
+          : <SkelotonFriend />}
       </View>
-      <SuggestFriends data={dataSuggest} setData={setDataSuggest} />
+      <SuggestFriends data={dataSuggestAS} setData={setDataSuggest} />
 
     </View >
   )
@@ -241,7 +263,7 @@ const styles = StyleSheet.create({
     fontWeight: '400',
     fontStyle: "normal",
     color: 'black',
-    marginStart:3
+    marginStart: 3
   },
   text2: {
     fontSize: 13,
@@ -292,17 +314,17 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     flexDirection: 'row',
-    position:'absolute',
-    end:5,
-    top:5
+    position: 'absolute',
+    end: 5,
+    top: 5
 
   },
   activeButton: {
     backgroundColor: COLOR.primary150 // Change to the active color
   },
-  num:{
-    fontSize:10,
-    color:'black',
-    fontWeight:'400'
+  num: {
+    fontSize: 10,
+    color: 'black',
+    fontWeight: '400'
   }
 })
