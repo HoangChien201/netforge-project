@@ -61,13 +61,18 @@ const EditProfileScreen: React.FC = () => {
 
 
   const [avatarPath, setAvatarPath] = useState<string>('');
-  const [startDate, setStartDate] = useState(dateOfBirth);
+  // const [startDate, setStartDate] = useState(dateOfBirth);
   const [dateError, setDateError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [status, setStatus] = useState(true);
   const formikRef = useRef<FormikProps<{ email: string; fullname: string; phone?: string; gender?: string; dateOfBirth?: any }>>(null);
   const [initialAvatar, setInitialAvatar] = useState('');
+  const [startDate, setStartDate] = useState(() => {
+    const currentDate = new Date();
+    return currentDate;
+  });
+  
   
 
   // address

@@ -16,6 +16,7 @@ import QRcodeScreen from "../../screens/QRcodeScreen";
 import LiveStack from "./LiveStack";
 import AudienceScreen from "../../screens/live/AudienceScreen";
 import HostScreen from "../../screens/live/HostScreen";
+import Friends from "../../screens/profile/friendScreen/Friends";
 
 export enum HomeRootStackEnum {
     StoryScreen = 'StoryScreen',
@@ -30,7 +31,8 @@ export enum HomeRootStackEnum {
     Birtday = 'Birtday',
     QRcodeScreen = 'QRcodeScreen',
     LiveStack = 'LiveStack',
-    HostScreen = 'HostScreen'
+    HostScreen = 'HostScreen',
+    Friends = 'Friends',
 
 }
 
@@ -45,7 +47,8 @@ export type HomeRootStackParams = {
     Birtday: undefined
     QRcodeScreen:undefined
     LiveStack:undefined
-    HostScreen:undefined
+    HostScreen:undefined,
+    Friends: undefined
 
 }
 
@@ -159,6 +162,16 @@ export const HomeRootStackScreens = [
             headerTitleAlign:'center'
         }
     },
-   
+    {
+        id: Math.random() + "" + Date,
+        name: HomeRootStackEnum.Friends,
+        component: Friends,
+        options: {
+            headerShown: true,
+            tabBarShowLabel: false,
+            title:"Bạn bè",
+            headerTitleAlign:'center'
+        }
+    },
 
 ]
