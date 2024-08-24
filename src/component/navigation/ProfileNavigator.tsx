@@ -15,6 +15,7 @@ export type RootStackParamList = {
   ChangePassword: undefined;
   QRcodeScreen: undefined;
   Scanner: undefined;
+  Friends: undefined;
 };
 
 export type navigationType=StackNavigationProp<RootStackParamList>

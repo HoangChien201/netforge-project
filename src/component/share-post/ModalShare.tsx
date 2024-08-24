@@ -28,6 +28,7 @@ const ModalShare:React.FC<ModalShareProps> = ({creater, isVisible, onClose, idPo
     const { sendNSharePost} = useSendNotification();
     const [status, setStatus] = useState(true);
     const [showModalLoading, setShowModalLoading] = useState(false);
+    const [isButtonDisabled, setIsButtonDisabled] = useState(false);
     
     useEffect(() => {
         if (isVisible) {
@@ -42,6 +43,8 @@ const ModalShare:React.FC<ModalShareProps> = ({creater, isVisible, onClose, idPo
     }
 
     const handleShare = async () => {
+        if (isButtonDisabled) return;
+        setIsButtonDisabled(true);
         try {
             if (share) {
                 const response = await sharePost(share, content, permission, 1);
@@ -56,6 +59,7 @@ const ModalShare:React.FC<ModalShareProps> = ({creater, isVisible, onClose, idPo
             setTimeout(() => {
                 setShowModalLoading(false);
                 handleClose();
+                setIsButtonDisabled(false);
             }, 2000);
         } catch (error) {
             console.log("lỗi share post: ", error)
@@ -64,6 +68,7 @@ const ModalShare:React.FC<ModalShareProps> = ({creater, isVisible, onClose, idPo
             setTimeout(() => {
                 setShowModalLoading(false);
                 handleClose();
+                setIsButtonDisabled(false);
             }, 2000);
         }
     };

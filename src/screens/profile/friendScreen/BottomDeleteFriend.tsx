@@ -46,7 +46,7 @@ const BottomDeleteFriend: React.FC<Bottom> = ({ isVisible, setIsVisible, data, s
         id: id
       }, navigation)
     };
-    const renderBackdrop = (props) => (
+    const renderBackdrop = (props: any) => (
       <BottomSheetBackdrop
         {...props}
         disappearsOnIndex={-1}
@@ -82,9 +82,9 @@ const BottomDeleteFriend: React.FC<Bottom> = ({ isVisible, setIsVisible, data, s
               <TouchableOpacity style={styles.itemButton}
               onPress={IconMessageOnPressHandle.bind(this,data)}
               >
-                <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }} >
+                <TouchableOpacity style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }} >
                   <Icon name='message1' size={24} color={COLOR.PrimaryColor1} style={{ padding: 8 }} />
-                </View>
+                </TouchableOpacity>
                 <Text style={{ flex: 4, fontSize: 16, color: 'black', fontWeight: '400' }}>Nhắn tin</Text>
               </TouchableOpacity>
               <TouchableOpacity style={styles.itemButton}
@@ -95,11 +95,12 @@ const BottomDeleteFriend: React.FC<Bottom> = ({ isVisible, setIsVisible, data, s
                 </View>
                 <Text style={{ flex: 4, fontSize: 16, color: 'black', fontWeight: '400' }}>Hủy kết bạn</Text>
               </TouchableOpacity>
-              <TouchableOpacity onPress={handleClosePress}
+              <View style={[ { flex:1 }]} />
+              {/* <TouchableOpacity onPress={handleClosePress}
                 style={styles.itemButton}
               >
                 <Icon name='close' size={28} color='#000' />
-              </TouchableOpacity>
+              </TouchableOpacity> */}
             </View>
             <DeleteFriend show={show} setShow={setShow} user2={user2} setFriends={setFriends} name={name} setDeleted={setDeleted} />
           </BottomSheetView>
