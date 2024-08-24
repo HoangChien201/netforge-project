@@ -30,8 +30,13 @@ export const getPostById = async (postId: any) => {
 export const upLoadMedia = async (formData: any) => {
     try {
         const token = await AsyncStorage.getItem('token');
+<<<<<<< Updated upstream
         const response =  await axios.post(
             `https://network-sever-1.onrender.com/image/uploads/`,
+=======
+        const response = await axios.post(
+            `${url}image/uploads/`,
+>>>>>>> Stashed changes
             formData,
             { headers: {
                 Authorization: `Bearer ${token}`,
@@ -95,8 +100,12 @@ export const updatePost = async (postId: number, postDetails: any) => {
 //https://network-social-sever.onrender.com/posts/delete/:id
 export const deletePost = async (postId: number) => {
     try {
+        const token = await AsyncStorage.getItem('token');
         const url = `/posts/delete/${postId}`;
-        return await AxiosInstance().delete(url);
+        return await AxiosInstance().delete(url,
+            { headers: {
+                Authorization: `Bearer ${token}`}}
+        );
     } catch (error) {
         console.error(error);
         throw error;
@@ -304,11 +313,15 @@ export const getUserHistories = async () => {
 
 export const deleteFriend = async (user1: number, user2: number) => {
     try {
+        const token = await AsyncStorage.getItem('token');
         const url = '/friendship/un-friendship'
         const response = await AxiosInstance().delete(url, {
             data: {
                 user1: user1,
                 user2: user2,
+            },
+            headers: {
+                Authorization: `Bearer ${token}`,
             },
         });
         return response;

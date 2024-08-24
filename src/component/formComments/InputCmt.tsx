@@ -298,7 +298,7 @@ const styles = StyleSheet.create({
         backgroundColor: '#F4F4F4',
         justifyContent: 'space-between',
         width: '100%',
-        height: 70,
+        height: 50,
         paddingBottom:10,
         flexDirection: 'row',
         alignItems: 'center',
