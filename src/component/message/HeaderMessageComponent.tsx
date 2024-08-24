@@ -58,11 +58,6 @@ const HeaderMessageComponent = ({ partner }: { partner: any }) => {
             setAlertVisible(true)
 
         }
-        console.log('errorCode', errorCode);
-        console.log('errorMessage', errorMessage);
-        console.log('errorInvitees', errorInvitees);
-
-
     }
 
     return (
