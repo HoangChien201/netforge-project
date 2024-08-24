@@ -251,7 +251,7 @@ const styles = StyleSheet.create({
     flex: 1,
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
-    paddingHorizontal: 20
+    paddingHorizontal: 20,
   },
   container: {
     backgroundColor: COLOR.PrimaryColor,

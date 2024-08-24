@@ -33,7 +33,7 @@ const ListMessageItem = ({ group }: { group: GroupChatType }) => {
 
     let id_user = null
     avatar = group.image ? group.image : '';
-    name = group.name ? group.name : '';
+    name = group.name ? group.name : 'Group '+group.id;
 
     if (group.type === 'single') {
         avatar = '../../media/quyet_icon/netforge.png';
