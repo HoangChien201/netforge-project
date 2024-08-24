@@ -8,7 +8,8 @@ import Icon from 'react-native-vector-icons/Feather'
 import IconPhoto from 'react-native-vector-icons/Foundation'
 import IconSend from 'react-native-vector-icons/FontAwesome'
 
-import { addComments, uploadImage } from '../../http/TuongHttp'
+import { addComments } from '../../http/TuongHttp'
+import {upLoadMedia} from '../../http/QuyetHTTP'
 import { COLOR } from '../../constant/color'
 import { useSendNotification } from '../../constant/notify'
 import { result } from 'lodash'
@@ -76,7 +77,7 @@ const InputCmt = ({ fetchComments, onMediaSelected, parent = null, postId, text,
                 name: asset.fileName,
             });
             try {
-                const result = await uploadImage(files);
+                const result = await upLoadMedia(files);
                 console.log('>>>>>upload image: ', result[0]);
                 // Kiểm tra cấu trúc phản hồi từ API uploadImage
                 // Kiểm tra xem phản hồi có phải là một mảng và có ít nhất một phần tử không

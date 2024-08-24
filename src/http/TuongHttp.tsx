@@ -70,18 +70,7 @@ export const addComments = async (posts: number, content: string, image: string,
     
   }
 }
-// upload image
-export const uploadImage = async (files) => {
-  try {
-    const axiosInstance = AxiosInstance("multipart/form-data");
-    const url = '/image/uploads';
-    const result = await axiosInstance.post(url, files);
-    return result;
-  } catch (error) {
-    console.log('>>>>>upload Image: ', error);
-    throw error
-  }
-}
+
 // lấy danh sách trả lời bình luận
 export const getReplyComments = async(parent: number) => {
   try {
