@@ -55,6 +55,8 @@ export const useSendNotification = () => {
     };
     if(receiver != user?.id){
       socket.emit('notification', data);
+      console.log('sendNCommentPost');
+      
     }else{
       console.log('receiver: ', receiver + ' và user: ', user?.id);
       

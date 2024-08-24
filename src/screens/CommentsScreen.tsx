@@ -182,7 +182,7 @@ const CommentsScreen = () => {
                     <SkelotonComment />
                     :
                     <View>
-                        <View style={{ height: "95%", backgroundColor: 'white' }}>
+                        <View style={{ height: "91%", backgroundColor: 'white' }}>
 
                             <ScrollView ref={scrollViewRef} showsVerticalScrollIndicator={false}>
                                 {

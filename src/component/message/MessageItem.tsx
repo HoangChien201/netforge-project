@@ -124,7 +124,7 @@ const MessageItem: React.FC<MessageItemProp> = React.memo((
 
 
   function ContentOnPress() {
-    console.log('contentonpress');
+    //console.log('contentonpress');
    
 
   }
