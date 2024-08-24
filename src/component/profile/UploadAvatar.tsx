@@ -7,7 +7,7 @@ import FontistoIcon from 'react-native-vector-icons/Fontisto';
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons';
 import ImagePicker from 'react-native-image-crop-picker';
 import { useFocusEffect } from '@react-navigation/native';
-import { uploadImage } from '../../http/TuongHttp';
+import {upLoadMedia} from '../../http/QuyetHTTP'
 import { getUSerByID, updateAvatar } from '../../http/PhuHTTP';
 import ModalPoup from '../Modal/ModalPoup';
 import ModalFail from '../Modal/ModalFail';
@@ -112,7 +112,7 @@ const UpLoadAvatar: React.FC<UpLoadAvatarProps> = ({ initialImage, onImageSelect
           name: asset.fileName,
         });
 
-        const result = await uploadImage(files);
+        const result = await upLoadMedia(files);
         if (Array.isArray(result) && result.length > 0) {
           const firstImage = result[0];
           if (firstImage.url && firstImage.url.length > 0) {
@@ -135,7 +135,7 @@ const UpLoadAvatar: React.FC<UpLoadAvatarProps> = ({ initialImage, onImageSelect
       setShow(false)
       setLoading(false);
     }
-  }, [onImageSelect, setImage, setShow, uploadImage]);
+  }, [onImageSelect, setImage, setShow, upLoadMedia]);
 
 
 
