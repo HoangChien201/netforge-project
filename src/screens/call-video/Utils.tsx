@@ -89,10 +89,3 @@ export const onUserLogout = async () => {
     return ZegoUIKitPrebuiltCallService.uninit();
 
 };
-
-const registerEventListeners = () => {
-    ZegoUIKitPrebuiltCallService.on('connectionStateUpdate', (state, reason) => {
-      console.log('conenetetezedgo');
-      
-    });
-}

@@ -12,7 +12,6 @@ const AlertCallError = ({ visible, onClose, title, message }:{ visible:boolean, 
     const { id, fullname, avatar } = user
     const navigation = useNavigation()
     //login zego
-    
     onUserLogout()
     onUserLogin(id, fullname, avatar, navigation).then(() => {
         setTimeout(()=>{
