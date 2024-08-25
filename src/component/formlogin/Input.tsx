@@ -15,11 +15,12 @@ type props = {
     iconP?: boolean,
     iconPass?: boolean,
     invalid?:boolean,
+    errorMessage?:string | null
 
 }
 
 const InputLogin = (props: props) => {
-    const { label, onchangText, value, requireField, password, iconE, iconP, iconPass, invalid } = props;
+    const { label, onchangText, value, requireField, password, iconE, iconP, iconPass, invalid, errorMessage} = props;
     const [hidePassword, setHidePassword] = useState<boolean | undefined>(password)
     const [showInvalid, setShowInvalid] = useState(invalid);
     const [isFocused, setIsFocused] = useState(false);
@@ -85,7 +86,7 @@ const InputLogin = (props: props) => {
             {iconE && <Image style={styles.iconMail} source={require('../../media/icon/Mail.png')} />}
             {iconPass && <Image style={styles.iconMail} source={require('../../media/icon/Password.png')} />}
             {iconP && <Image style={{
-position: 'absolute',
+                position: 'absolute',
                 top: 22,
                 start: 10,
                 width:15,
@@ -97,8 +98,8 @@ position: 'absolute',
             {
                 
                 
-                showInvalid && <Text style={{fontSize:12,position:"absolute",bottom:-20,left:10,color:"red",fontWeight:"400", fontFamily: "poppins"
-                }}>Vui lòng nhập {label} !</Text>
+                showInvalid && errorMessage &&<Text style={{fontSize:12,position:"absolute",bottom:-20,left:10,color:"red",fontWeight:"400", fontFamily: "poppins"
+                }}> {errorMessage} </Text>
             }
          
         </View>
