@@ -13,6 +13,7 @@ import {upLoadMedia} from '../../http/QuyetHTTP'
 import { COLOR } from '../../constant/color'
 import { useSendNotification } from '../../constant/notify'
 import { result } from 'lodash'
+import { UIActivityIndicator } from 'react-native-indicators'
 
 const InputCmt = ({ fetchComments, onMediaSelected, parent = null, postId, text, setParent, setText, comment, userPostId , creator}) => {
     const user = useSelector((state: RootState) => state.user.value)
@@ -64,7 +65,7 @@ const InputCmt = ({ fetchComments, onMediaSelected, parent = null, postId, text,
         if (response.didCancel || response.errorCode || response.errorMessage) return;
         if (response.assets && response.assets.length > 0) {
             const asset = response.assets[0];
-            setMedia(asset.uri);
+          
             setMediaType(asset.type.split('/')[0]);
 
 
@@ -76,6 +77,9 @@ const InputCmt = ({ fetchComments, onMediaSelected, parent = null, postId, text,
                 type: asset.type,
                 name: asset.fileName,
             });
+            console.log("hehe",asset.uri);
+            setMedia(asset.uri)
+            
             try {
                 const result = await upLoadMedia(files);
                 console.log('>>>>>upload image: ', result[0]);
@@ -155,7 +159,7 @@ const InputCmt = ({ fetchComments, onMediaSelected, parent = null, postId, text,
 
         }} >
 
-            {imagePath && (
+            {imagePath ? (
                 <View style={styles.mediaContainer}>
                     {mediaType === 'image' ? (
                         <Image source={{ uri: imagePath }} style={styles.media} />
@@ -170,8 +174,22 @@ const InputCmt = ({ fetchComments, onMediaSelected, parent = null, postId, text,
                     <TouchableOpacity onPress={handleDleteMedia} style={{ marginStart: -5, marginTop: 5 }}>
                         <Icon name='x-circle' size={25} color={COLOR.PrimaryColor} />
                     </TouchableOpacity>
+
                 </View>
+            ): media && (
+                <View style={styles.mediaContainer}>
+                <View style={styles.media}>
+                    {/* <ActivityIndicator size="large" color={COLOR.PrimaryColor} /> */}
+                    <UIActivityIndicator color={'#FA2600'} size={20} />
+                </View>
+                <TouchableOpacity onPress={handleDleteMedia} style={{ marginStart: -5, marginTop: 5 }}>
+                    <Icon name='x-circle' size={25} color={COLOR.PrimaryColor} />
+                </TouchableOpacity>
+
+            </View>
             )}
+           
+          
 
 
             <View >
@@ -299,7 +317,7 @@ const styles = StyleSheet.create({
         backgroundColor: '#F4F4F4',
         justifyContent: 'space-between',
         width: '100%',
-        height: 50,
+        height: 70,
         paddingBottom:10,
         flexDirection: 'row',
         alignItems: 'center',
