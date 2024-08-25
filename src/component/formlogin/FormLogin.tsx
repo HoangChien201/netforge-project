@@ -32,7 +32,7 @@ const FormLogin = ({ setModal, setStatus, setIsLoading }: { setModal: (value: bo
 
   const [valueF, setValueF] = useState<user>({ email: 'hoangchien@gmail.com', password: '220401' })
 
-  const [valid, setValid] = useState<valid>({ email: true, password: true })
+  const [valid, setValid] = useState<valid>({ email: null, password: null })
 
   const dispatch = useDispatch();
 
