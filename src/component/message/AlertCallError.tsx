@@ -4,7 +4,7 @@ import { COLOR } from '../../constant/color';
 import { useSelector } from 'react-redux';
 import { RootState } from '../store/store';
 import { useNavigation } from '@react-navigation/native';
-import { onUserLogin } from '../../screens/call-video/Utils';
+import { onUserLogin, onUserLogout } from '../../screens/call-video/Utils';
 
 const AlertCallError = ({ visible, onClose, title, message }:{ visible:boolean, onClose:any, title:string, message:string }) => {
     const user = useSelector((state: RootState) => state.user.value)
@@ -12,6 +12,8 @@ const AlertCallError = ({ visible, onClose, title, message }:{ visible:boolean, 
     const { id, fullname, avatar } = user
     const navigation = useNavigation()
     //login zego
+    
+    onUserLogout()
     onUserLogin(id, fullname, avatar, navigation).then(() => {
         setTimeout(()=>{
             onClose()

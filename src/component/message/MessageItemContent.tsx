@@ -22,7 +22,6 @@ const MessageItemContent = ({ message, sender }: { message: Message, sender: boo
 
     }
     function onFullscreenPlayerWillDismiss() {
-        console.log('dismisss');
 
         setIsVideoFullScreen(false)
 

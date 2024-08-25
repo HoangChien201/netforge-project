@@ -29,7 +29,7 @@ export type MessageCreateRes = {
 export const getGroupsAPI = async () => {
   try {
     const token = await AsyncStorage.getItem('token');
-    const url = '/group-chat/get-by-user';
+    const url = `/group-chat/get-by-user`;
     const respone: Array<GroupChatType> = await AxiosInstance().get(url,
       {
         headers: {
@@ -55,9 +55,9 @@ export const createGroupsHTTP = async (body: any) => {
   }
 }
 
-export const getMessageByGroupAPI = async (group_id: number) => {
+export const getMessageByGroupAPI = async (group_id: number,limit:number) => {
   try {
-    const url = '/message/get-by-group/' + group_id;
+    const url = `/message/get-by-group?group=${group_id}&limit=${limit}`;
     const respone: Array<messageType> = await AxiosInstance().get(url);
     return respone
   } catch (error) {
