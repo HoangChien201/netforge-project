@@ -56,8 +56,9 @@ const ItemBirth: React.FC<Item> = ({ notification , setShowModalBirthday }) => {
                         :
                         null
                     }
+                    <Text>{notification.data[0].body}</Text>
                 </Text>
-                <Text>{notification.data[0].body}</Text>
+
             </View>
             <View style={styles.viewTime}>
                 <Text style={styles.textTime}>{displayDate}</Text>

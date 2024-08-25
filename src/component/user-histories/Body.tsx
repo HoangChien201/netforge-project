@@ -27,14 +27,19 @@ const Body: React.FC<BodyH> = ({ }) => {
     function navigationScreen(screen: string) {
         navigation.navigate(`${screen}`)
     };
-
     const getData = async () => {
         setLoad(true)
         try {
             const result = await getUserHistories();
             const likePosts = result.likePosts || [];
             const likeComments = result.likeComments || [];
-            setDataLike([...likeComments, ...likePosts]);
+            const combinedLikes = [...likeComments, ...likePosts];
+            const sorted = combinedLikes.sort((a, b) => new Date(b.create_at) - new Date(a.create_at));
+        
+            // Cập nhật dữ liệu đã sắp xếp
+            setDataLike([...sorted]);
+            // console.log('likePosts', likePosts);
+            // console.log('likeComments', likeComments);
             setDataComment(result.comments);
             setLoad(false);
             setRefreshing(false)
@@ -75,7 +80,7 @@ const Body: React.FC<BodyH> = ({ }) => {
 
     return (
         <View style={styles.container}>
-            <Loading isLoading={loadWheel}/>
+            <Loading isLoading={loadWheel} />
             <View style={styles.header}>
                 <View style={styles.typeHis}>
                     <TouchableOpacity style={[styles.likeButton, currentIndex === 0 && styles.activeButton]} onPress={() => { handleButtonPress(0) }}>
@@ -89,37 +94,37 @@ const Body: React.FC<BodyH> = ({ }) => {
                 </View>
             </View>
             <View style={[styles.container]}>
-                {dataLike? 
-                <Swiper ref={swiperRef} loop={false} showsButtons={false} style={{ marginBottom: 50 }}
-                    onIndexChanged={handleIndexChanged}
-                >
-                    <View>
-                        <View style={styles.header}>
-                            <Text style={styles.headerText}>Lịch sử thích</Text>
+                {dataLike ?
+                    <Swiper ref={swiperRef} loop={false} showsButtons={false} style={{ marginBottom: 50 }}
+                        onIndexChanged={handleIndexChanged}
+                    >
+                        <View>
+                            <View style={styles.header}>
+                                <Text style={styles.headerText}>Lịch sử thích</Text>
+                            </View>
+                            <ScrollView style={styles.page}
+                                refreshControl={
+                                    <RefreshControl refreshing={refreshing} onRefresh={loadData} />
+                                }
+                            >
+                                {memoizedLikeHistories}
+                            </ScrollView>
                         </View>
-                        <ScrollView style={styles.page}
-                            refreshControl={
-                                <RefreshControl refreshing={refreshing} onRefresh={loadData} />
-                            }
-                        >
-                            {memoizedLikeHistories}
-                        </ScrollView>
-                    </View>
 
-                    <View>
-                        <View style={styles.header}>
-                            <Text style={styles.headerText}>Lịch sử bình luận</Text>
+                        <View>
+                            <View style={styles.header}>
+                                <Text style={styles.headerText}>Lịch sử bình luận</Text>
+                            </View>
+                            <ScrollView style={styles.page}
+                                refreshControl={
+                                    <RefreshControl refreshing={refreshing} onRefresh={loadData} />
+                                }
+                            >
+                                {memoizedCommentHistories}
+                            </ScrollView>
                         </View>
-                        <ScrollView style={styles.page}
-                            refreshControl={
-                                <RefreshControl refreshing={refreshing} onRefresh={loadData} />
-                            }
-                        >
-                            {memoizedCommentHistories}
-                        </ScrollView>
-                    </View>
-                </Swiper>
-                : <SkelotonHistory/>}
+                    </Swiper>
+                    : <SkelotonHistory />}
             </View>
         </View>
     )
@@ -149,7 +154,7 @@ const styles = StyleSheet.create({
         borderRadius: 10,
         backgroundColor: COLOR.primary300,
         flexDirection: 'row',
-        margin:5
+        margin: 5
     },
     commentButton: {
         height: 32,

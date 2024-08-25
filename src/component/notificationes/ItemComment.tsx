@@ -69,7 +69,7 @@ const ItemComment: React.FC<Item> = ({ notification }) => {
                 <Icon style={styles.iconHeart} name="comment-bank" size={18} color={COLOR.PrimaryColor} />
             </View>
             <View style={styles.text}>
-                <Text >
+                <Text  numberOfLines={2} >
                     <Text style={styles.textUser_Post} numberOfLines={2} >{notification.data[0].userInfo.fullname}</Text>
                     {notification.data[1] ?
                         <Text style={styles.textUser_Post}>, {notification.data[1].userInfo.fullname}</Text>

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Image, StyleSheet, Text, View,TouchableOpacity } from 'react-native';
+import { Image, StyleSheet, Text, View, TouchableOpacity } from 'react-native';
 import { GetTimeComment } from '../../format/FormatDate';
 import { useNavigation } from '@react-navigation/native';
 import { useSelector } from 'react-redux';
@@ -7,33 +7,35 @@ import { RootState } from '../store/store';
 import SkelotonHistory from './SkelontonHistory';
 type Like = {
     dataLike: any,
-    load:any
+    load: any
 }
 const LikeHistories: React.FC<Like> = ({ dataLike, load }) => {
     const navigation = useNavigation();
     const [totalData, setTotalData] = useState([]);
-    const user = useSelector((state : RootState)=>state.user.value)
+    const user = useSelector((state: RootState) => state.user.value)
     const [sortedData, setSortedData] = useState<any[]>([]);
     const [dataLikeP, setDataLikeP] = useState<any[]>([]);
     const [dataLikeC, setDataLikeC] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
     useEffect(() => {
 
+        console.log('sorted', sortedData);
+
         renderItem;
     }, [dataLike]);
-    
-    const noData =()=>{
-    if (!load) {
-        return (
-            (dataLike.map(renderItem))
-        )
-    } else {
-        return (
-            <View style={styles.containerEmpty}>
-                <SkelotonHistory/>
-            </View>
-        )
-    }
+
+    const noData = () => {
+        if (!load) {
+            return (
+                (dataLike.map(renderItem))
+            )
+        } else {
+            return (
+                <View style={styles.containerEmpty}>
+                    <SkelotonHistory />
+                </View>
+            )
+        }
     }
     // useEffect(() => {
     //     // Set a timeout to simulate loading
@@ -101,11 +103,13 @@ const LikeHistories: React.FC<Like> = ({ dataLike, load }) => {
 
     return (
         <View style={styles.container}>
-            {dataLike.length>0 ?
-            noData()
-        :
-            null
-        }            
+            {dataLike.length > 0 ?
+                noData()
+                :
+                <View style={styles.containerEmpty}>
+                    <Text style={styles.textEmpty}>Hãy tương tác với mọi người để lưu giữ kỉ niệm!</Text>
+                </View>
+            }
         </View >
     );
 };
@@ -159,6 +163,7 @@ const styles = StyleSheet.create({
         fontSize: 16,
         color: 'black',
         fontWeight: '400',
+        height:40
     },
     containerEmpty: {
         height: '100%',
