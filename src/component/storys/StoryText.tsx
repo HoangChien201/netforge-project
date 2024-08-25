@@ -164,7 +164,7 @@ const StoryText = () => {
             <Loading isLoading={isLoading} />
             <View style={{ flex: 1, backgroundColor: COLOR.PrimaryColor1 }}></View>
             <Animated.View style={{ position: 'absolute', bottom: animatedBottom, right: 30, width: "25%", height: '8%', backgroundColor: COLOR.PrimaryColor, borderRadius: 10, alignItems: 'center', justifyContent: 'center' }}>
-                <TouchableOpacity onPress={uploadImage}>
+                <TouchableOpacity style={{  width:"100%",height:'100%',alignItems:"center",justifyContent:"center" }} onPress={uploadImage}>
                     <Text style={{ color: '#fff', fontWeight: 'bold' }}>Đăng</Text>
                 </TouchableOpacity>
             </Animated.View>
