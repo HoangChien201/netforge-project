@@ -37,7 +37,7 @@ const ListImageDetail = memo(() => {
                 imageUrl.url.endsWith('.mp4') ? 
                 <Video
                 paused={true}
-                source={{ uri: img[0]?.url }} // Sử dụng uri của video
+                source={{ uri: img[index]?.url }} // Sử dụng uri của video
                 style={styles.image}
                 resizeMode="cover"
                 controls={true}

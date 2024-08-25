@@ -22,8 +22,8 @@ interface user {
 
 }
 export type valid = {
-  email: boolean,
-  password: boolean,
+  email: string | null,
+  password: string | null,
 }
 
 
@@ -66,10 +66,14 @@ const FormLogin = ({ setModal, setStatus, setIsLoading }: { setModal: (value: bo
     const trimmedPassword = password.trim();
     const isValidPassword = trimmedPassword.length > 0;
 
-    if (!isValidEmail || !isValidPassword) {
-      setValid({ email: isValidEmail, password: isValidPassword });
-    } else {
-      setValid({ email: true, password: true });
+    if (!isValidEmail ) {
+      setValid({ email: isValidEmail ? null : 'Email không hợp lệ !', password:  'Mật khẩu không đúng !' });
+      return
+    }else if ( !isValidPassword){
+      setValid({ email: 'Email không đúng !', password: isValidPassword ? null : 'Mật khẩu không được để trống !' });
+      return
+    }else {
+      setValid({ email: null, password: null });
       setIsLoading(true);
       try {
 
@@ -82,12 +86,12 @@ const FormLogin = ({ setModal, setStatus, setIsLoading }: { setModal: (value: bo
           handleLoginResult(data)
         }else{
           setIsLoading(false);
-          setValid({ email: false, password: false });
+          setValid({ email: 'Email không đúng !', password: 'Mật khẩu không đúng !' });
         }
         setIsLoading(false);
       } catch (error) {
         setIsLoading(false);
-        setValid({ email: false, password: false });
+        setValid({ email: null, password: 'Thông tin đăng nhập không chính xác !' });
         console.log("Login error", error);
       }
     }
@@ -146,8 +150,8 @@ const FormLogin = ({ setModal, setStatus, setIsLoading }: { setModal: (value: bo
   };
   return (
     <View>
-      <InputLogin invalid={!valid.email} label="Email" value={valueF.email} onchangText={onChangText.bind(this, 'email')} iconE />
-      <InputLogin invalid={!valid.password} label="Mật khẩu" value={valueF.password} onchangText={onChangText.bind(this, 'password')} iconPass password={true} />
+      <InputLogin errorMessage={valid.email} invalid={!!valid.email} label="Email" value={valueF.email} onchangText={onChangText.bind(this, 'email')} iconE />
+      <InputLogin errorMessage={valid.password} invalid={!!valid.password} label="Mật khẩu" value={valueF.password} onchangText={onChangText.bind(this, 'password')} iconPass password={true} />
       <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center", paddingHorizontal: 12 }}>
         <Remember />
 
