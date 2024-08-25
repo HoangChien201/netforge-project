@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, FlatList, Button } from 'react-native'
+import { StyleSheet, Text, View, FlatList, Button, FlatListProps } from 'react-native'
 import React, { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
 
 import MessageItem, { messageType } from '../../component/message/MessageItem'
@@ -35,7 +35,7 @@ export type MessageScreenNavigationProp = StackNavigationProp<
 export type MessageScreenRouteProp = RouteProp<MessageRootStackParams, 'MessageScreen'>;
 
 const MessageScreen = () => {
-  const user = useSelector((state:RootState)=>state.user?.value)
+  const user = useSelector((state: RootState) => state.user?.value)
   const [messages, setMessages] = useState<Array<Message>>([])
   const [partner, setPartner] = useState<{ fullname: string, avatar: string, partner_id: number | null }>({
     fullname: '',
@@ -44,7 +44,6 @@ const MessageScreen = () => {
   })
   const [groupId, setGroupId] = useState<number | null>(null)
   const [reply, setReply] = useState<messageType | null>(null)
-  
 
   const isFocus = useIsFocused()
 
@@ -53,10 +52,12 @@ const MessageScreen = () => {
 
 
   async function getMessages(group_id: number) {
-    const messagesAPI = await getMessageByGroupAPI(group_id)
+    const messagesAPI = await getMessageByGroupAPI(group_id, 30)
     //convert listMessage to listObject
     const messages = new MessageManage(messagesAPI).messages
+
     setMessages(messages)
+
   }
 
   function DeleteMessage(message_id: number) {
@@ -91,12 +92,6 @@ const MessageScreen = () => {
       setPartner(prevValue => { return { ...prevValue, fullname, avatar } })
       setGroupId(group_id)
 
-      if (route.params?.messages) {
-        const messages = new MessageManage(route.params?.messages).messages
-        
-        setMessages(messages)
-      }
-
       socket.on(`message-${user?.id}`, (message) => {
         if (isFocus) {
           //đọc tin nhắn khi đang trong phần tin nhắn tin nhắn
@@ -130,10 +125,10 @@ const MessageScreen = () => {
   //add
   function addMessage(message: Message) {
     setReply(null)
-    
+
     setMessages(
-      (prevValue) => {     
-        return [message,...prevValue]
+      (prevValue) => {
+        return [message, ...prevValue]
       }
     )
   }
@@ -144,7 +139,7 @@ const MessageScreen = () => {
       members: [user?.id, friend_id]
     }
     const group: GroupChatType = await createGroupsHTTP(createGroup)
-    
+
     if (!group) return
 
     socket.on(`message-${user?.id}`, (message) => {
@@ -185,7 +180,7 @@ const MessageScreen = () => {
               deleteMessage={DeleteMessage}
               setReply={setReply}
               lastMessage={index === 0}
-              />
+            />
           )
         }}
         keyExtractor={(item) => item.getId.toString()}
