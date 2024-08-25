@@ -1,7 +1,6 @@
-import { StyleSheet, ToastAndroid, View } from 'react-native'
-import React, { useEffect, useState } from 'react'
-
-
+import { Alert, StyleSheet, Text, TextInput, ToastAndroid, TouchableOpacity, View } from 'react-native'
+import React, { useContext, useEffect, useRef, useState } from 'react'
+import { COLOR } from '../../constant/color'
 import { emailPattern } from '../../constant/valid'
 import TouchId from './TouchId'
 import ButtonLogin from '../form/ButtonLogin'
@@ -9,57 +8,41 @@ import InputLogin from './Input'
 import Remember from './Remember'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { login } from '../../http/userHttp/user'
-import { NavigationProp, ParamListBase, useNavigation, useRoute } from '@react-navigation/native'
+import { NavigationProp, ParamListBase, useNavigation } from '@react-navigation/native'
 import { UserRootStackEnum } from '../stack/UserRootStackParams'
-import { onUserLogin } from '../../screens/call-video/Utils'
+import { onUserLogin, onUserLogout } from '../../screens/call-video/Utils'
 import { useDispatch } from 'react-redux'
 import { setUsers } from '../store/userSlice'
 
-
-interface user {
+interface User {
   email: string,
   password: string,
-
-}
-export type valid = {
-  email: boolean,
-  password: boolean,
 }
 
+export type Valid = {
+  email: string | null,   // Error message or null
+  password: string | null, // Error message or null
+}
 
 const FormLogin = ({ setModal, setStatus, setIsLoading }: { setModal: (value: boolean) => void, setStatus: (value: boolean) => void, setIsLoading: (value: boolean) => void }) => {
   const navigation: NavigationProp<ParamListBase> = useNavigation();
 
-  const [valueF, setValueF] = useState<user>({ email: '', password: '' })
-
-  const [valid, setValid] = useState<valid>({ email: true, password: true })
-
+  const [valueF, setValueF] = useState<User>({ email: 'tuong123@gmail.com', password: '1234' })
+  const [valid, setValid] = useState<Valid>({ email: null, password: null })
   const dispatch = useDispatch();
-
-  const route = useRoute()
-
-  const {username,pass} = route.params || {}
-
-  useEffect(()=>{
-    if(username && pass) return setValueF({email:username,password:pass})
-  },[username,pass])
-
 
   function onChangText(key: string, values: string) {
     setValueF({
       ...valueF,
       [key]: values
     })
-
   }
 
   const handleForgotPassword = () => {
     navigation.navigate(UserRootStackEnum.ForgotPassword);
   }
 
-
   const submit = async () => {
-    //await AsyncStorage.clear();
     const { email, password } = { ...valueF };
     const trimmedEmail = email.trim();
     const isValidEmail = emailPattern.test(trimmedEmail);
@@ -67,53 +50,46 @@ const FormLogin = ({ setModal, setStatus, setIsLoading }: { setModal: (value: bo
     const isValidPassword = trimmedPassword.length > 0;
 
     if (!isValidEmail || !isValidPassword) {
-      setValid({ email: isValidEmail, password: isValidPassword });
-    } else {
-      setValid({ email: true, password: true });
-      setIsLoading(true);
-      try {
-
-        await AsyncStorage.setItem('email', email);
-        await AsyncStorage.setItem('password', password);
-        const result = await login(email, password);
-
-        if (result) {
-          const { data } = result
-          handleLoginResult(data)
-        }else{
-          setIsLoading(false);
-          setValid({ email: false, password: false });
-        }
-        setIsLoading(false);
-      } catch (error) {
-        setIsLoading(false);
-        setValid({ email: false, password: false });
-        console.log("Login error", error);
-      }
+      setValid({
+        email: isValidEmail ? null : 'Email không hợp lệ !',
+        password: isValidPassword ? null : 'Mật khẩu không được để trống !',
+      });
+      return;
     }
-  };
 
-  const handleLoginResult = (data) => {
-    if (data) {
-      AsyncStorage.setItem('token', data.token);
-      const { id, avatar, fullname } = data
-      setModal(true);
-      setStatus(true);
-      setTimeout(() => {
-        setModal(false);
-      }, 1000);
+    setValid({ email: null, password: null });
+    setIsLoading(true);
+    try {
+      await AsyncStorage.setItem('email', email);
+      await AsyncStorage.setItem('password', password);
+      const result = await login(email, password);
 
-      //login zego
-      onUserLogin(id, fullname, avatar, navigation).then(() => {
-        dispatch(setUsers(data))
-      })
+      if (result) {
+        const { data } = result;
+        const { id, avatar, fullname } = data;
+        console.log('Login success', data);
+        onUserLogin(id, fullname, avatar, navigation).then(() => {
+          AsyncStorage.setItem('AccessToken', data.token);
+          dispatch(setUsers(data));
+        });
+      }else{
+        setValid({
+          email: "Email không đúng !",
+          password: 'Mật khẩu không đúng !',
+        });
+    
 
-    } else {
-      setModal(true);
-      setStatus(false);
-      setTimeout(() => {
-        setModal(false);
-      }, 1000);
+      }
+
+      setIsLoading(false);
+   
+    } catch (error) {
+      setIsLoading(false);
+      setValid({
+        email: null,
+        password: 'Thông tin đăng nhập không chính xác !',
+      });
+      console.log("Login error", error);
     }
   };
 
@@ -126,31 +102,46 @@ const FormLogin = ({ setModal, setStatus, setIsLoading }: { setModal: (value: bo
         const password = String(stPassword);
         try {
           const result = await login(email, password);
-          await AsyncStorage.setItem('token', result?.data.token);
-          handleLoginResult(result?.data);
-
+          await AsyncStorage.setItem('userToken', result?.data.token);
+          handleLoginResult(result);
         } catch (error) {
           console.log("Touch ID login error", error);
-          console.log('email: ' + JSON.stringify(stEmail) + 'pass :' + JSON.stringify(stPassword));
+          setValid({ email: null, password: 'Touch ID đăng nhập thất bại' });
         }
       } else {
         ToastAndroid.showWithGravity(
           "Bạn cần đăng nhập trước",
           ToastAndroid.SHORT,
-          ToastAndroid.CENTER)
+          ToastAndroid.CENTER
+        );
       }
     }
-
-
-
   };
+
+  const handleLoginResult = (data: any) => {
+    if (data) {
+      AsyncStorage.setItem('token', data.token);
+      setModal(true);
+      setStatus(true);
+      setTimeout(() => {
+        setModal(false);
+      }, 1000);
+      dispatch(setUsers(data));
+    } else {
+      setModal(true);
+      setStatus(false);
+      setTimeout(() => {
+        setModal(false);
+      }, 1000);
+    }
+  };
+
   return (
     <View>
-      <InputLogin invalid={!valid.email} label="Email" value={valueF.email} onchangText={onChangText.bind(this, 'email')} iconE />
-      <InputLogin invalid={!valid.password} label="Mật khẩu" value={valueF.password} onchangText={onChangText.bind(this, 'password')} iconPass password={true} />
+      <InputLogin invalid={!!valid.email} label="Email" value={valueF.email} onchangText={onChangText.bind(this, 'email')} iconE errorMessage={valid.email} />
+      <InputLogin invalid={!!valid.password} label="Mật khẩu" value={valueF.password} onchangText={onChangText.bind(this, 'password')} iconPass password={true} errorMessage={valid.password} />
       <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center", paddingHorizontal: 12 }}>
         <Remember />
-
       </View>
       <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingHorizontal: 14 }}>
         <ButtonLogin textLogin chilren='Đăng nhập' textColor='#fff' onPress={submit} />
@@ -160,6 +151,6 @@ const FormLogin = ({ setModal, setStatus, setIsLoading }: { setModal: (value: bo
   )
 }
 
-export default FormLogin
+export default FormLogin;
 
-const styles = StyleSheet.create({})
+const styles = StyleSheet.create({});
