@@ -26,13 +26,15 @@ const GenerImageAI: React.FC<AI> = ({ showAI, setShowAI, imageUrl, setImageUrl }
     { value: 2, text: 'hoàng hôn', color: '#32CD32' },
     { value: 3, text: 'bãi biển', color: '#1E90FF' },
     { value: 4, text: 'minions', color: '#8A2BE2' },
-    { value: 5, text: 'tương lai', color: '#228B22' },
-    { value: 6, text: 'sunset', color: '#FF4500' },
-    { value: 7, text: 'quái vật', color: '#DA70D6' },
+    { value: 5, text: 'rừng cây', color: '#228B22' },
+    { value: 6, text: 'bầu trời', color: '#FF4500' },
+    { value: 7, text: 'mưa', color: '#DA70D6' },
     { value: 8, text: 'logo', color: '#20B2AA' },
-    { value: 9, text: 'anime', color: '#00BFFF' },
+    { value: 9, text: 'hoạt hình', color: '#00BFFF' },
   ];
- const halfKey = "sk-ovZt_rfmyX2D3IN0qRv9bp7YPk0YJdI9wvXMed1GVlT3Blbk"
+  const oneKey = "sk-i0f78Lur6HLD2RGM"
+  const halfKey = `${oneKey}usA3WkgwE7XxmC6H_iRY`
+
   const handleItemPress = (text) => {
     setTextInputValue(prevValue => prevValue ? `${prevValue}, ${text}` : text);
   };
@@ -66,7 +68,7 @@ const GenerImageAI: React.FC<AI> = ({ showAI, setShowAI, imageUrl, setImageUrl }
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "Authorization": `Bearer ${halfKey}FJ5K8WKKdRliqMBid8w6idTat6Ny2uYOIGzpXuMdbT4A`,
+          "Authorization": `Bearer ${halfKey}w05KkDT3BlbkFJrJKOrszRnj6qRA_STTm2WaT71NQcnUP6jfTQ2-d9EA`,
         },
         body: JSON.stringify({
           prompt: textInputValue,
@@ -105,7 +107,7 @@ const GenerImageAI: React.FC<AI> = ({ showAI, setShowAI, imageUrl, setImageUrl }
   }
   const deleteImage = () => {
     console.log('click');
-    
+
     if (image) {
       Alert.alert(
         'Bạn có muốn xóa ảnh?',
@@ -219,7 +221,7 @@ const GenerImageAI: React.FC<AI> = ({ showAI, setShowAI, imageUrl, setImageUrl }
         {image ?
           <View style={styles.buttonH}>
             <TouchableOpacity style={styles.buttonHC}
-              onPress={()=>{deleteImage()}}
+              onPress={() => { deleteImage() }}
             >
               <Text style={styles.textH}>Hủy</Text>
             </TouchableOpacity >

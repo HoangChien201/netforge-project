@@ -10,10 +10,10 @@ import { useSendNotification } from '../../../constant/notify';
 import { RootState } from '../../../component/store/store';
 type Suggest = {
   data: any,
-  setData: () => void,
+  setData: (value:any) => void,
 }
 const SuggestFriends: React.FC<Suggest> = ({ data, setData }) => {
-  const snapPoints = useMemo(() => ['10%', '100%'], []);
+  const snapPoints = useMemo(() => ['10%', '50%','100%'], []);
   const snapPointsE = useMemo(() => ['10%'], []);
   const bottomSheetRef = useRef<BottomSheet>(null);
   const [textReqState, setTextReqState] = useState({});

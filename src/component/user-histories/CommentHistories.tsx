@@ -134,6 +134,7 @@ const styles = StyleSheet.create({
         fontSize: 16,
         color: 'black',
         fontWeight: '400',
+        height:40
     },
     text1: {
         fontSize: 16,
