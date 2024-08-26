@@ -16,6 +16,7 @@ import BODYMODAL from '../component/edit-post-modal/Body'
 import DELETEPOST from '../component/listpost/DeletePostModal'
 import { RootState } from '../component/store/store';
 import SkelotonComment from '../component/formComments/SkelotonComment';
+import { socket } from '../http/SocketHandle';
 const CommentsScreen = () => {
     const navigation = useNavigation<navigationType>()
     const user = useSelector((state: RootState) => state.user.value)
@@ -96,6 +97,13 @@ const CommentsScreen = () => {
     // // hàm render comments
     useEffect(() => {
         fetchPosts();
+        socket.on(`notification-${user?.id}`,()=>{
+            fetchPosts()
+        })
+
+        return ()=>{
+            socket.off(`notification-${user?.id}`)
+        }
     }, []);
     useEffect(() => {
         if (moveToHome == false) {
