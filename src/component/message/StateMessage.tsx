@@ -1,11 +1,11 @@
 import { FlatList, Image, StyleSheet, Text, View } from 'react-native'
 import React, { useEffect, useState } from 'react'
-import { uploadImage } from '../../http/TuongHttp'
 import { socket } from '../../http/SocketHandle'
 import { StateMessageFormat } from './format/StatusMessage'
 import { Message } from './class/MessageProvider'
 import { useSelector } from 'react-redux'
 import { RootState } from '../store/store'
+import { upLoadMedia } from '../../http/QuyetHTTP'
 export type StateMessageType = {
   message: Message,
   group_id: number | null,
@@ -23,10 +23,10 @@ const StateMessage: React.FC<StateMessageType> = ({ message, group_id, sender, l
   const user = useSelector((state: RootState) => state.user.value)
   //
   useEffect(() => {
-    if (message.state === STATUS_SENDING) {
+    if (state === STATUS_SENDING) {
       addMessage()
     }
-  }, [message.state])
+  }, [state])
 
   useEffect(() => {
 
@@ -76,7 +76,7 @@ const StateMessage: React.FC<StateMessageType> = ({ message, group_id, sender, l
     });
     
     try {
-      const resultImage = await uploadImage(files);
+      const resultImage = await upLoadMedia(files);
       
       // Kiểm tra cấu trúc phản hồi từ API uploadImage
       // Kiểm tra xem phản hồi có phải là một mảng và có ít nhất một phần tử không

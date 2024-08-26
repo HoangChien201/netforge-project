@@ -14,7 +14,7 @@ import { PanGestureHandler } from 'react-native-gesture-handler';
 const ListMessageScreen = () => {
   const user = useSelector((state: RootState) => state.user.value)
   const [groups, setGroups] = useState<Array<GroupChatType> | null>(null)
-  const [visibleModalNewMessage, SetVisibleModalNewMessage] = useState(false)
+  const [visibleModalNewMessage, setVisibleModalNewMessage] = useState(false)
   const isFocus = useIsFocused()
   useEffect(() => {
     getGroups()
@@ -26,7 +26,7 @@ const ListMessageScreen = () => {
     return () => {
       socket.off(`list-group-${user?.id}`)
     }
-  }, [isFocus])
+  }, [isFocus,visibleModalNewMessage])
   async function getGroups() {
     const respone = await getGroupsAPI()
     if (respone) {
@@ -78,7 +78,7 @@ const ListMessageScreen = () => {
       <View style={styles.container}>
         <View style={styles.headerContainer}>
           <Text style={styles.header}>Nhắn tin</Text>
-          <TouchableOpacity onPress={() => SetVisibleModalNewMessage(true)} >
+          <TouchableOpacity onPress={() => setVisibleModalNewMessage(true)} >
             <EntypoIcon name='new-message' size={24} color={'#000'} />
           </TouchableOpacity>
         </View>
@@ -92,7 +92,7 @@ const ListMessageScreen = () => {
 
 
         </View>
-        <ModalNewMessage visible={visibleModalNewMessage} setVisible={SetVisibleModalNewMessage} />
+        <ModalNewMessage visible={visibleModalNewMessage} setVisible={setVisibleModalNewMessage} />
       </View>
     </PanGestureHandler>
   )

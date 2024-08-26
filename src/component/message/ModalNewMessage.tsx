@@ -10,6 +10,7 @@ import { MessageScreenNavigationProp } from '../../screens/message/MessageScreen
 import { useNavigation } from '@react-navigation/native'
 import { useSelector } from 'react-redux';
 import { RootState } from '../store/store'
+import { socket } from '../../http/SocketHandle'
 export type FriendType = {
     id: number,
     status: number,
@@ -48,17 +49,19 @@ const ModalNewMessage = ({ visible, setVisible }: { visible: boolean, setVisible
         }
         const group = await createGroupsHTTP(createGroup)
         if(group){
+            socket.emit(`message`, {
+                group:group.id,
+                sender:user?.id
+            })
             setVisible(false);
             setMembers([]);
             setNameGroup('');
             setType('message');
             (async function getMessages() {
-                const msgRespone = await getMessageByGroupAPI(group.id)
                 navigation.navigate('MessageScreen', {
                     group_id: group.id,
                     fullname: group.name ? group.name : 'Group' + group.id ,
                     avatar: group?.image ,
-                    messages: msgRespone,
                     members:group.members
                 })
             })()
