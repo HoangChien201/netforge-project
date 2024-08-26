@@ -196,7 +196,8 @@ const CommentsScreen = () => {
                                 {
                                     post && (
                                         <View style={{ margin: 0 }}>
-                                            <ItemPost key={post.id} data={post} onPressProfile={handleToProfile} />
+                                            <ItemPost key={post.id} data={post} setShowModalEdit={setShowModalEdit} setSelectedId={setSelectedId}
+                                                showDelete={showDelete} setShowDelete={setShowDelete} />
                                         </View>
                                     )
                                 }
