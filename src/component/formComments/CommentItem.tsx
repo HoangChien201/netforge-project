@@ -171,7 +171,9 @@ const CommentItem = ({ comment, onReply, depth = 0, render, parent, setText, set
 
                                 </Pressable>
                             </View>
-                            <View style={{ marginTop: 5, marginStart:20, bottom: comment.image && !comment.content && 10, marginBottom: comment.image && !comment.content && -10, right: 15 }}>
+
+                            <View style={{ marginTop: 5,marginStart:20, bottom: comment.image && !comment.content && 10, marginBottom: comment.image && !comment.content && -10, right: 15 }}>
+
                                 {comment.image ? (
                                     comment.image.endsWith('.mp4') ? (
                                         <Pressable style={{ width: 100, height: 150, alignItems:'center', justifyContent:'center'}} onPress={() => handleImagePress(comment.image)} onLongPress={() => handleCommentPress()}>
