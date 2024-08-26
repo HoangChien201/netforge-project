@@ -57,7 +57,7 @@ const LikeHistories: React.FC<Like> = ({ dataLike, load }) => {
             case 4:
                 return { text: "Yêu thích ", iconName: "dislike1", iconColor: '#FF7F00', linkImage: require("../../media/Dicons/heartF.png") };
             case 5:
-                return { text: "Tức giận ", iconName: "question", iconColor: 'blue', linkImage: require("../../media/Dicons/wow.png") };
+                return { text: "Ngạc nhiên", iconName: "question", iconColor: 'blue', linkImage: require("../../media/Dicons/wow.png") };
             default:
                 return { text: "Tức giận ", iconName: "question", iconColor: 'blue', linkImage: require("../../media/Dicons/angry.png") };
         }
