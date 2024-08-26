@@ -121,7 +121,7 @@ const ProgressBarScreen = ({ listpostStory, setCurrentIndex, currentIndex, dataL
     const hanleLiveStream = () => {
         dispatch(setPostid(getLivePostID()))
         navigation.navigate(HomeRootStackEnum.LiveStack,{
-            userID: '12345',
+            userID: String(Math.floor(Math.random() * 100000)),
             userName: user?.fullname,
             liveID: getLivePostContent()
         })

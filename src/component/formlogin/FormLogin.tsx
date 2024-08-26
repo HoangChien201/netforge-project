@@ -18,6 +18,10 @@ interface User {
   email: string,
   password: string,
 }
+export type valid = {
+  email: string | null,
+  password: string | null,
+}
 
 export type Valid = {
   email: string | null,   // Error message or null
@@ -27,8 +31,9 @@ export type Valid = {
 const FormLogin = ({ setModal, setStatus, setIsLoading }: { setModal: (value: boolean) => void, setStatus: (value: boolean) => void, setIsLoading: (value: boolean) => void }) => {
   const navigation: NavigationProp<ParamListBase> = useNavigation();
 
-  const [valueF, setValueF] = useState<User>({ email: 'tuong123@gmail.com', password: '1234' })
+  const [valueF, setValueF] = useState<User>({ email: '', password: '' })
   const [valid, setValid] = useState<Valid>({ email: null, password: null })
+
   const dispatch = useDispatch();
 
   function onChangText(key: string, values: string) {
@@ -49,12 +54,35 @@ const FormLogin = ({ setModal, setStatus, setIsLoading }: { setModal: (value: bo
     const trimmedPassword = password.trim();
     const isValidPassword = trimmedPassword.length > 0;
 
-    if (!isValidEmail || !isValidPassword) {
-      setValid({
-        email: isValidEmail ? null : 'Email không hợp lệ !',
-        password: isValidPassword ? null : 'Mật khẩu không được để trống !',
-      });
-      return;
+
+    if (!isValidEmail ) {
+      setValid({ email: isValidEmail ? null : 'Email không hợp lệ !', password:  'Mật khẩu không đúng !' });
+      return
+    }else if ( !isValidPassword){
+      setValid({ email: 'Email không đúng !', password: isValidPassword ? null : 'Mật khẩu không được để trống !' });
+      return
+    }else {
+      setValid({ email: null, password: null });
+      setIsLoading(true);
+      try {
+
+        await AsyncStorage.setItem('email', email);
+        await AsyncStorage.setItem('password', password);
+        const result = await login(email, password);
+
+        if (result) {
+          const { data } = result
+          handleLoginResult(data)
+        }else{
+          setIsLoading(false);
+          setValid({ email: 'Email không đúng !', password: 'Mật khẩu không đúng !' });
+        }
+        setIsLoading(false);
+      } catch (error) {
+        setIsLoading(false);
+        setValid({ email: null, password: 'Thông tin đăng nhập không chính xác !' });
+        console.log("Login error", error);
+      }
     }
 
     setValid({ email: null, password: null });
@@ -138,8 +166,8 @@ const FormLogin = ({ setModal, setStatus, setIsLoading }: { setModal: (value: bo
 
   return (
     <View>
-      <InputLogin invalid={!!valid.email} label="Email" value={valueF.email} onchangText={onChangText.bind(this, 'email')} iconE errorMessage={valid.email} />
-      <InputLogin invalid={!!valid.password} label="Mật khẩu" value={valueF.password} onchangText={onChangText.bind(this, 'password')} iconPass password={true} errorMessage={valid.password} />
+      <InputLogin errorMessage={valid.email} invalid={!!valid.email} label="Email" value={valueF.email} onchangText={onChangText.bind(this, 'email')} iconE />
+      <InputLogin errorMessage={valid.password} invalid={!!valid.password} label="Mật khẩu" value={valueF.password} onchangText={onChangText.bind(this, 'password')} iconPass password={true} />
       <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center", paddingHorizontal: 12 }}>
         <Remember />
       </View>

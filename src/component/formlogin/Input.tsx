@@ -1,141 +1,104 @@
-import { View, Text, StyleSheet, TextInput, Animated } from "react-native"
-import React, { useCallback, useEffect, useState } from "react"
+import { View, Text, StyleSheet, TextInput } from "react-native"
+import React, { useState } from "react"
 import { Image } from "react-native"
-import Iconbutton from "../form/Iconbutton"
-import { COLOR } from "../../constant/color"
+import Iconbutton from "./Iconbutton"
 
-type Props = {
-  label: string,
-  value: string,
-  onchangText: (value: string) => void,
-  requireField?: boolean,
-  password?: boolean,
-  iconE?: boolean,
-  iconP?: boolean,
-  iconPass?: boolean,
-  invalid?: boolean,
-  errorMessage?: string, // thêm prop errorMessage
+type props = {
+    label: string,
+    value: string
+    onchangText: (value: string) => void,
+    requireField?: any,
+    password?: boolean,
+    iconE?: boolean,
+    iconP?: boolean,
+    iconPass?: boolean,
+    invalid?:boolean,
+    labels?:string
+
 }
 
-const InputLogin = (props: Props) => {
-  const { label, onchangText, value, requireField, password, iconE, iconP, iconPass, invalid, errorMessage } = props;
-  const [hidePassword, setHidePassword] = useState<boolean | undefined>(password);
-  const [showInvalid, setShowInvalid] = useState(invalid);
-  const [isFocused, setIsFocused] = useState(false);
-  const ref = React.useRef<TextInput>(null);
+const Input = (props: props) => {
+    const { labels,label, onchangText, value, requireField, password, iconE, iconP, iconPass, invalid } = props;
+    const [hidePassword, setHidePassword] = useState<boolean | undefined>(password)
 
-  useEffect(() => {
-    setShowInvalid(invalid);
-  }, [invalid]);
-
-  const handleFocus = () => {
-    if (ref.current) {
-      setIsFocused(true)
-      ref.current.setNativeProps({
-        style: { borderColor: COLOR.PrimaryColor, borderBottomWidth: 1 }
-      });
+    function Secure() {
+        if (hidePassword) {
+            setHidePassword(false);
+        } else {
+            setHidePassword(true);
+        }
     }
-  };
 
-  const handleBlur = () => {
-    if (ref.current) {
-      setIsFocused(false)
-      ref.current.setNativeProps({
-        style: { borderColor: '#DDDDDD', borderBottomWidth: 1 }
-      });
+    const EyePass = () =>{
+        return(
+            hidePassword ? <View style={{position:"absolute",end:10,top:20}}>
+                <Iconbutton name='eye-slash' size={20} color='#DCDCDC' onPress={Secure}/>
+            </View>:
+             <View style={{position:"absolute",end:10,top:20}}>
+             <Iconbutton name='eye' size={20} color='#DCDCDC' onPress={Secure}/>
+         </View>
+        )
     }
-  };
 
-  function Secure() {
-    setHidePassword(prevState => !prevState);
-  }
-
-  const EyePass = () => {
+    const onchantext = (value: string) => {
+        onchangText(value)
+    }
     return (
-      <View style={{ position: "absolute", end: 10, top: 45 }}>
-        <Iconbutton name={hidePassword ? 'eye-slash' : 'eye'} size={20} color='#DCDCDC' onPress={Secure} />
-      </View>
-    );
-  };
-
-  const onchantext = (value: string) => {
-    onchangText(value);
-    handleFocus();
-  };
-
-  return (
-    <View style={[{ margin: 9 }, showInvalid && { marginBottom: 30 }]}>
-      <Text style={styles.label}>{label} {requireField && <Text style={{ color: "#C30052" }}>*</Text>}</Text>
-      <TextInput
-        ref={ref}
-        style={[
-          styles.input,
-          showInvalid && styles.validation
-        ]}
-        onFocus={handleFocus}
-        onBlur={handleBlur}
-        placeholder={" " + label}
-        secureTextEntry={hidePassword}
-        value={value}
-        onChangeText={onchantext}
-      />
-      {iconE && <Image style={styles.iconMail} source={require('../../media/icon/Mail.png')} />}
-      {iconPass && <Image style={styles.iconMail} source={require('../../media/icon/Password.png')} />}
-      {iconP && <Image style={styles.iconUser} source={require('../../media/Dicons/user.png')} />}
-      {password && <EyePass />}
-      {showInvalid && errorMessage && (
-        <Text style={styles.errorText}>
-          {errorMessage}
-        </Text>
-      )}
-    </View>
-  );
-};
-
-export default InputLogin;
+        <View style={[invalid && {margin:0},{margin:9}]}>
+            {/* <Text style={[styles.label]}>{label} {requireField && <Text style={{color:"#C30052"}}>*</Text>}</Text> */}
+            <TextInput placeholder={"Nhập"+" "+labels} style={[styles.input,invalid && styles.validation]} secureTextEntry={hidePassword} value={value} onChangeText={onchantext} />
+            {iconE && <Image style={styles.iconMail} source={require('../../media/icon/Mail.png')} />}
+            {iconPass && <Image style={styles.iconMail} source={require('../../media/icon/Password.png')} />}
+            {iconP && <Image style={{
+                position: 'absolute',
+                top: 22,
+                start: 10,
+                width:15,
+                height:15
+            }} source={require('../../media/Dicons/user.png')} />}
+            {
+                password && <EyePass/>
+            }
+            {
+                invalid && <Text style={{fontSize:10,position:"absolute",bottom:-15,left:10,color:"red",fontWeight:"400", fontFamily: "poppins"
+                }}> {label} !</Text>
+            }
+         
+        </View>
+    )
+}
+export default Input
 
 const styles = StyleSheet.create({
-  input: {
-    borderBottomWidth: 1,
-    borderColor: '#DDDDDD',
-    height: 50,
-    paddingLeft: 35,
-  },
-  label: {
-    width: 200,
-    height: 21,
-    fontFamily: "poppins",
-    fontWeight: "400",
-    lineHeight: 21,
-    fontSize: 14,
-    letterSpacing: 0.12,
-    marginVertical: 5,
-    marginLeft: 10,
-    color: "black"
-  },
-  iconMail: {
-    position: 'absolute',
-    top: 45,
-    start: 10
-  },
-  iconUser: {
-    position: 'absolute',
-    top: 22,
-    start: 10,
-    width: 15,
-    height: 15
-  },
-  validation: {
-    borderColor: "#C30052",
-    borderBottomWidth: 1,
-  },
-  errorText: {
-    fontSize: 12,
-    color: "red",
-    fontWeight: "400",
-    fontFamily: "poppins",
-    position: "absolute",
-    bottom: -20,
-    left: 10,
-  }
-});
+    input: {
+        borderRadius: 6,
+        borderWidth: 1,
+        borderColor: '#DDDDDD',
+        height: 60,
+        paddingLeft: 35,
+        backgroundColor:'#F5F5F5'
+    },
+    label: {
+        width: 80,
+        height: 21,
+        fontFamily: "poppins",
+        fontWeight: "400",
+        lineHeight: 21,
+        fontSize: 14,
+        letterSpacing: 0.12,
+        marginVertical: 5
+    },
+    iconMail: {
+        position: 'absolute',
+        top: 19,
+        start: 10
+    },
+  validation:{
+        borderRadius: 6,
+        borderColor:"#C30052",
+        borderWidth:1,
+        height: 60,
+        paddingLeft: 35,
+    }
+})
+  

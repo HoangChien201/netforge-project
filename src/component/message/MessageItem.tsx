@@ -210,10 +210,6 @@ const MessageItem: React.FC<MessageItemProp> = React.memo((
     switch (status) {
       //add reaction
       case 1:
-        console.log({
-          ...reactionCurrent,
-          message: message.getId
-        });
 
         socket.emit('reaction-message',
           {

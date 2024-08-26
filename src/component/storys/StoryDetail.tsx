@@ -186,8 +186,8 @@ const StoryDetail = ({ route }) => {
             <Loading isLoading={isLoading} />
             <Image source={{ uri: uri }} style={{ flex: 1 }} />
             <Animated.View style={{ position: 'absolute', bottom: animatedBottom, right: 30, width: "25%", height: '8%', backgroundColor: COLOR.PrimaryColor, borderRadius: 10, alignItems: 'center', justifyContent: 'center' }}>
-                <TouchableOpacity style={{  width:"100%",height:'100%',alignItems:"center",justifyContent:"center" }}  onPress={uploadImage} disabled={isSubmitDisabled}>
-                    <Text style={{ color: '#fff', fontWeight: 'bold' }}>Đăng</Text>
+                <TouchableOpacity style={{width:"100%",height:'100%',alignItems:'center',justifyContent:'center'}} onPress={uploadImage} disabled={isSubmitDisabled}>
+                    <Text style={{ color: '#000', fontWeight: 'bold' }}>Đăng</Text>
                 </TouchableOpacity>
             </Animated.View>
             <TouchableOpacity onPress={handleAaPress} style={{ position: 'absolute', top: 50, right: 30, width: "25%", height: '8%', backgroundColor: 'rgba(105,105,105,0.2)', borderRadius: 10, alignItems: 'center', justifyContent: 'center' }}>

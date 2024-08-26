@@ -1,5 +1,5 @@
 import React, { memo, useEffect, useState } from 'react';
-import { FlatList, View, StyleSheet, Text, TouchableOpacity } from 'react-native';
+import { FlatList, View, StyleSheet, Text, TouchableOpacity, Image } from 'react-native';
 import Video from 'react-native-video';
 import FastImage from 'react-native-fast-image';
 import ListImageDetail from './ListImageDetail';
@@ -128,16 +128,13 @@ const ItemImg = ({ image }: { image: Medias[] }) => {
                   <FlatList
                     data={img.slice(1)}
                     renderItem={({ item, index }) => (
-                      <TouchableOpacity onPress={() => onPressImg(index + 1)} style={{ width: 119, height: 70 }}>
+                      <TouchableOpacity onPress={() => onPressImg(index + 1)} style={{ width: 120, height: 70 }}>
                         {
                           item.url.endsWith('.mp4') ? // Kiểm tra nếu là video
-                            <Video
-                              paused={true}
-                              source={{ uri: item.url }} // Sử dụng uri của video
-                              style={{ width: '100%', height: '100%' }}
-                              resizeMode="cover"
-                              controls={true}
-                            />
+                            <View style={{ width: '100%', height: '100%', margin: 1 }} >
+                              <FastImage source={{ uri: item.url }} style={{ width: '100%', height: '100%', margin: 1 }}  />
+                              <Image source={require('../../media/Dicons/play.png')} style={{ position:'absolute',top:'40%',right:'35%',width:'25%',height:'35%' }}/>
+                            </View>
                             :
                             <FastImage source={{ uri: item.url }} style={{ width: '100%', height: '100%', margin: 1 }}  />
                         }

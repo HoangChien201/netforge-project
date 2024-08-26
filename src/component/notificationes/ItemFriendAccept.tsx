@@ -12,26 +12,30 @@ type Item = {
     notification: any
 }
 const ItemFriendAccept: React.FC<Item> = ({ notification }) => {
-    const navigation:FriendProfileNavigationProp = useNavigation();
+    const navigation: FriendProfileNavigationProp = useNavigation();
     const userId = Number(notification.data[0].friendId)
 
     const displayDate = DateOfTimePost(notification.data[0].timestamp);
     return (
         <TouchableOpacity style={styles.container} key={notification.idv4.toString()}
-            onPress={() => navigation.navigate('FriendProfile', {userId})}
-            //onPress={log}
-            //onPress={()=>{handleToFriendProfile(userId)}}
+            onPress={() => navigation.navigate('FriendProfile', { userId })}
+        //onPress={log}
+        //onPress={()=>{handleToFriendProfile(userId)}}
         >
             <View style={styles.iconFriend} >
                 <Image style={styles.avatar} source={{ uri: notification.data[0].userInfo.avatar }} />
                 <Icon style={styles.iconHeart} name='group' size={18} color={COLOR.PrimaryColor} />
             </View>
             <View style={styles.text}>
-                <Text style={styles.textUser_Post}>{notification.data[0].title} </Text>
-                <Text
-                    style={styles.text1}
-                    numberOfLines={1} ellipsizeMode="tail"
-                >{notification.data[0].body}</Text>
+                <Text numberOfLines={2} >
+                    <Text style={styles.textUser_Post}>{notification.data[0].title} </Text>
+                    <Text
+                        style={styles.text1}
+                        numberOfLines={1} ellipsizeMode="tail"
+                    >{notification.data[0].body}</Text>
+
+                </Text>
+
             </View>
             <View style={styles.viewTime}>
                 <Text style={styles.textTime}>{displayDate}</Text>
@@ -126,7 +130,7 @@ const styles = StyleSheet.create({
         fontWeight: '500',
         fontStyle: "normal",
         color: COLOR.PrimaryColor,
-        marginEnd:5
+        marginEnd: 5
     },
 
     textTime: {

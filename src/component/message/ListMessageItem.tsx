@@ -50,7 +50,6 @@ const ListMessageItem = ({ group }: { group: GroupChatType }) => {
             group_id: group.id,
             fullname: name,
             avatar: avatar,
-            messages: group.messages,
             members: group.members
 
         })

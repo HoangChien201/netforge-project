@@ -84,7 +84,6 @@ const CreatePostScreen = memo(() => {
     setPermission(1);
     setImageUrl('');
     setEmotions(null);
-    navigation.navigate('HomeScreen');
   };
 
   const handleLeaveScreen = useCallback(() => {
@@ -168,8 +167,9 @@ const CreatePostScreen = memo(() => {
               setShowPopup(false);
               setIsError(true);
               clear();
+              navigation.navigate('HomeScreen')
             }, 1500);
-
+            
           }, 1000);
         } else {
           console.error('Lỗi khi tạo bài viết!', newPost.message);
@@ -209,6 +209,7 @@ const CreatePostScreen = memo(() => {
               setStatus('');
               setShowPopup(false);
               clear();
+              navigation.navigate('HomeScreen')
             }, 1500);
 
           }, 1000);
