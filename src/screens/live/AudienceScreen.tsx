@@ -7,6 +7,7 @@ import KeyCenter from './KeyCenter';
 import {useNavigation, RouteProp} from '@react-navigation/native';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../component/store/store';
+import { onLiveStreamLogout, onUserLogin, onUserLogout } from '../call-video/Utils';
 
 type AudienceScreenRouteProp = RouteProp<{
   Audience: {
@@ -34,7 +35,15 @@ const AudienceScreen: React.FC<Props> = ({route}) => {
   const user = useSelector((state : RootState)=>state.user.value)
 
   const handleLeaveLiveStreaming = () => {
-    navigation.popToTop()
+    onLiveStreamLogout()
+    onUserLogout()
+    console.log('leaverout');
+    
+    //login laij cho nay
+    onUserLogin(userID,userName,'',navigation).then(()=>{
+      navigation.popToTop()
+
+    })
   };
 
 
