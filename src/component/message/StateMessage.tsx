@@ -1,6 +1,5 @@
 import { FlatList, Image, StyleSheet, Text, View } from 'react-native'
 import React, { useEffect, useState } from 'react'
-import { upLoadMedia } from '../../http/QuyetHTTP'
 import { socket } from '../../http/SocketHandle'
 import { StateMessageFormat } from './format/StatusMessage'
 import { Message } from './class/MessageProvider'
