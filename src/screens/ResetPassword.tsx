@@ -61,7 +61,6 @@ export const ResetPassword: React.FC = () => {
         //const token = await AsyncStorage.getItem('TokenForgot');
         const { newPassword, confirmPassword } = { ...valueF };
         let isValidNewPass = newPassword.trim().length > 0;
-        let isValidNewPassLength = newPassword.trim.length >= 6;
         let isValidConfirmPass = confirmPassword.trim() === newPassword.trim();
         if (!isValidNewPass) {
             setValid({
@@ -69,13 +68,7 @@ export const ResetPassword: React.FC = () => {
                 confirmPassword: null,
             });
             return
-        }  else if (!isValidNewPassLength && !isValidConfirmPass) {
-            setValid({
-                newPassword: isValidNewPassLength ? null : 'Mật khẩu phải có 6 ký tự trở lên!',
-                confirmPassword: isValidConfirmPass ? null : 'Vui lòng nhập lại mật khẩu mới!'
-            });
-            return
-        }
+        } 
         else if (!isValidConfirmPass) {
             setValid({
                 newPassword: null,
