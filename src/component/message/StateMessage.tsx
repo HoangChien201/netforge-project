@@ -1,6 +1,6 @@
 import { FlatList, Image, StyleSheet, Text, View } from 'react-native'
 import React, { useEffect, useState } from 'react'
-import { uploadImage } from '../../http/TuongHttp'
+import { upLoadMedia } from '../../http/QuyetHTTP'
 import { socket } from '../../http/SocketHandle'
 import { StateMessageFormat } from './format/StatusMessage'
 import { Message } from './class/MessageProvider'
@@ -76,7 +76,7 @@ const StateMessage: React.FC<StateMessageType> = ({ message, group_id, sender, l
     });
     
     try {
-      const resultImage = await uploadImage(files);
+      const resultImage = await upLoadMedia(files);
       
       // Kiểm tra cấu trúc phản hồi từ API uploadImage
       // Kiểm tra xem phản hồi có phải là một mảng và có ít nhất một phần tử không

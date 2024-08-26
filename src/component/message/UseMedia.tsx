@@ -25,7 +25,7 @@ const UseMedia = ({ onSubmit, reply }: { onSubmit: any, reply: messageType | nul
     // kho ảnh
     const openLibrary = useCallback(async () => {
         const options: ImageLibraryOptions = {
-            mediaType: 'video',
+            mediaType: 'mixed',
             quality: 1,
             selectionLimit: 0, // Cho phép chọn nhiều ảnh
         };
