@@ -64,11 +64,11 @@ export default ProfileUser;
 const styles = StyleSheet.create({
     profileUser: {
         borderRadius: 20,
-        height: 180,
+        height: 160,
         backgroundColor: '#fff',
         flexDirection: "row",
         alignItems: 'center',
-        paddingHorizontal: 18,
+        paddingHorizontal: 10,
         marginTop:10
     },
     avatar: {
