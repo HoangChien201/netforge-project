@@ -12,6 +12,7 @@ import { Message } from './class/MessageProvider';
 import { useSelector } from 'react-redux';
 import { RootState } from '../store/store';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import ModalImage from '../formComments/ModalImage';
 export type messageType = {
   id: number,
   create_at: string,
@@ -95,7 +96,10 @@ const MessageItem: React.FC<MessageItemProp> = React.memo((
       message.reactions
     )
 
-    
+  //
+  const [selectedMedia, setSelectedMedia] = useState(null); // Đường dẫn hình ảnh được chọn
+  const [isModalVisible, setIsModalVisible] = useState(false);
+
   //
   const [selectedMessage, setSelectedMessage] = useState<messageType | null>(null)
   const [messageCordinates, setMessageCordinates] = useState<MessageCordinatesType>({ x: 0, y: 0 })
@@ -125,7 +129,11 @@ const MessageItem: React.FC<MessageItemProp> = React.memo((
 
   function ContentOnPress() {
     //console.log('contentonpress');
-   
+    if(message.type === 'image' || message.type === 'video'){
+      setSelectedMedia(message.message)
+      setIsModalVisible(true)
+    }
+    
 
   }
 
@@ -165,7 +173,7 @@ const MessageItem: React.FC<MessageItemProp> = React.memo((
       if (reactionExist) return prevValue
 
       //
-      const reactions= prevValue.map(rct => {
+      const reactions = prevValue.map(rct => {
         if (parseInt(rct.user.toString()) === parseInt(reactionCurrent.user.toString())) {
           return { ...rct, ...reactionCurrent }
         }
@@ -186,7 +194,7 @@ const MessageItem: React.FC<MessageItemProp> = React.memo((
 
       if (reactionExist) return prevValue
 
-      const reactionNew=[...prevValue, reactionCurrent]
+      const reactionNew = [...prevValue, reactionCurrent]
       message.UpdateReaction(reactionNew)
 
       return reactionNew;
@@ -197,9 +205,9 @@ const MessageItem: React.FC<MessageItemProp> = React.memo((
 
   function deleteReaction(reactionCurrent: any) {
     setReactions(prevValue => {
-      const reactions=prevValue.filter(rct => parseInt(rct.user.toString()) !== parseInt(reactionCurrent.user.toString()))
+      const reactions = prevValue.filter(rct => parseInt(rct.user.toString()) !== parseInt(reactionCurrent.user.toString()))
       message.UpdateReaction(reactions)
-      
+
       return reactions
     })
   }
@@ -258,7 +266,7 @@ const MessageItem: React.FC<MessageItemProp> = React.memo((
 
   function AvatarOnPress() {
     console.log('AvatarOnPress');
-
+    
   }
 
   //lấy kích thước của item message
@@ -302,8 +310,8 @@ const MessageItem: React.FC<MessageItemProp> = React.memo((
             onLongPress={ContentOnLongPress}
             onLayout={onLayout}
           >
-            <GestureHandlerRootView style={{flex:1}}>
-            <MessageItemContent message={message} sender={sender} />
+            <GestureHandlerRootView style={{ flex: 1 }}>
+              <MessageItemContent message={message} sender={sender} />
             </GestureHandlerRootView>
 
             {
@@ -327,6 +335,10 @@ const MessageItem: React.FC<MessageItemProp> = React.memo((
         deleteMessage={deleteMessage}
         setReply={setReply}
       />
+      <ModalImage
+        isVisible={isModalVisible}
+        media={selectedMedia}
+        onClose={() => setIsModalVisible(false)} />
     </View>
 
   )

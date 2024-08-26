@@ -6,6 +6,7 @@ import { StateMessageFormat } from './format/StatusMessage'
 import { Message } from './class/MessageProvider'
 import { useSelector } from 'react-redux'
 import { RootState } from '../store/store'
+import { upLoadMedia } from '../../http/QuyetHTTP'
 export type StateMessageType = {
   message: Message,
   group_id: number | null,
@@ -23,10 +24,10 @@ const StateMessage: React.FC<StateMessageType> = ({ message, group_id, sender, l
   const user = useSelector((state: RootState) => state.user.value)
   //
   useEffect(() => {
-    if (message.state === STATUS_SENDING) {
+    if (state === STATUS_SENDING) {
       addMessage()
     }
-  }, [message.state])
+  }, [state])
 
   useEffect(() => {
 

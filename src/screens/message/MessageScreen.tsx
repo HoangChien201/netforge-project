@@ -61,10 +61,11 @@ const MessageScreen = () => {
   }
 
   function DeleteMessage(message_id: number) {
-    setMessages((prev) => {
-      const messagesFilter = prev.filter((message) => message.getId !== message_id)
-      return messagesFilter
-    })
+    // setMessages((prev) => {
+    //   const messagesFilter = prev.filter((message) => message.getId !== message_id)
+    //   return messagesFilter
+    // })
+    getMessages(groupId)
   }
   useFocusEffect(
     React.useCallback(() => {

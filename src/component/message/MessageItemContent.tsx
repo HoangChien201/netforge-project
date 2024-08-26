@@ -8,8 +8,8 @@ import ModalImage from '../formComments/ModalImage';
 
 const MessageItemContent = ({ message, sender }: { message: Message, sender: boolean }) => {
     const [isVideoFullScreen, setIsVideoFullScreen] = useState(false)
-    const [selectedMedia, setSelectedMedia] = useState(null); // Đường dẫn hình ảnh được chọn
-    const [isModalVisible, setIsModalVisible] = useState(false);
+    // const [selectedMedia, setSelectedMedia] = useState(null); // Đường dẫn hình ảnh được chọn
+    // const [isModalVisible, setIsModalVisible] = useState(false);
 
     const videoRef = useRef<VideoRef>(null);
     function onBuffer(event) {
@@ -30,54 +30,26 @@ const MessageItemContent = ({ message, sender }: { message: Message, sender: boo
     switch (message.type) {
         case "video":
             return (
-                <TouchableOpacity style={[styles.messageImage, { backgroundColor: "" }]} onPress={
-                    () => {
-                        setSelectedMedia(message.message)
-                        setIsModalVisible(true)
-                    }
-                }>
-
-                    <Video
-                        // Can be a URL or a local file.
-                        source={{ uri: typeof message.message === 'object' ? message.message.uri : message.message }}
-                        // Callback when video cannot be loaded              
-                        onError={onVideoError}
-                        style={styles.messageImage}
-                        paused={!isVideoFullScreen}
-                        fullscreen={isVideoFullScreen}
-                        onFullscreenPlayerWillDismiss={onFullscreenPlayerWillDismiss}
-                        repeat={false}
-                        muted={false}
-                        resizeMode='cover'
-                        controls={true}
-                    />
-                    <Image style={styles.imagePlay} source={require('../../media/icon/video_play.png')}/>
-                    <ModalImage
-                        isVisible={isModalVisible}
-                        media={selectedMedia}
-                        onClose={() => setIsModalVisible(false)} />
-                </TouchableOpacity>
-
+                <Video
+                    // Can be a URL or a local file.
+                    source={{ uri: typeof message.message === 'object' ? message.message.uri : message.message }}
+                    // Callback when video cannot be loaded              
+                    onError={onVideoError}
+                    style={styles.messageImage}
+                    paused={!isVideoFullScreen}
+                    fullscreen={isVideoFullScreen}
+                    onFullscreenPlayerWillDismiss={onFullscreenPlayerWillDismiss}
+                    repeat={false}
+                    muted={false}
+                    resizeMode='cover'
+                    controls={true}
+                />
             )
 
         case "image": {
 
             return (
-                <TouchableOpacity style={styles.messageImage} onPress={
-                    () => {
-                        setSelectedMedia(message.message)
-                        setIsModalVisible(true)
-                    }
-                }>
-                    {
-                        message.message &&
-                        <Image style={{ width: '100%', height: '100%', borderRadius: 20 }} source={{ uri: typeof message.message === 'object' ? message.message.uri : message.message }} />
-                    }
-                    <ModalImage
-                        isVisible={isModalVisible}
-                        media={selectedMedia}
-                        onClose={() => setIsModalVisible(false)} />
-                </TouchableOpacity>
+                <Image style={styles.messageImage} source={{ uri: typeof message.message === 'object' ? message.message.uri : message.message }} />
             )
         }
 
@@ -100,10 +72,11 @@ const styles = StyleSheet.create({
     messageImage: {
         height: 300,
         width: 200,
-        justifyContent:'center',
-        alignItems:'center',
+        justifyContent: 'center',
+        alignItems: 'center',
+        borderRadius:20
     },
-    imagePlay:{
-        position:'absolute',
+    imagePlay: {
+        position: 'absolute',
     }
 })
