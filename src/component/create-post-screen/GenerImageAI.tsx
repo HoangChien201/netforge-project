@@ -71,9 +71,10 @@ const GenerImageAI: React.FC<AI> = ({ showAI, setShowAI, imageUrl, setImageUrl }
           "Authorization": `Bearer ${halfKey}w05KkDT3BlbkFJrJKOrszRnj6qRA_STTm2WaT71NQcnUP6jfTQ2-d9EA`,
         },
         body: JSON.stringify({
+          model:"dall-e-3",
           prompt: textInputValue,
           n: 1,
-          size: "512x512"
+          size: "1024x1024"
         }),
       });
 
@@ -106,7 +107,6 @@ const GenerImageAI: React.FC<AI> = ({ showAI, setShowAI, imageUrl, setImageUrl }
 
   }
   const deleteImage = () => {
-    console.log('click');
 
     if (image) {
       Alert.alert(
