@@ -25,7 +25,7 @@ interface user {
     email: string,
 }
 export type valid = {
-    email: boolean,
+    email: string | null,
 }
 
 const ForgotPassword: React.FC = () => {
@@ -34,7 +34,7 @@ const ForgotPassword: React.FC = () => {
     const [showModal, setShowModal] = useState(false);
     const [status, setStatus] = useState(true);
     const [valueF, setValueF] = useState<user>({ email: "" });
-    const [valid, setValid] = useState<valid>({ email: true });
+    const [valid, setValid] = useState<valid>({ email: null });
     function onChangText(key: string, values: string) {
         setValueF({
             ...valueF,
@@ -55,11 +55,12 @@ const ForgotPassword: React.FC = () => {
     const handelSendMail = async () => {
         const { email } = { ...valueF };
         const trimmedEmail = email.trim();
-        const isValidEmail = emailPattern.test(trimmedEmail);
-        if (!isValidEmail) {
-            setValid({ email: isValidEmail });
-        } else {
-            setValid({ email: true });
+        const isValidEmailTest = emailPattern.test(trimmedEmail);
+        const trimmedEmailNew = email.trim.length > 0;
+        if (!isValidEmailTest) {
+            setValid({ email: isValidEmailTest ? null : 'Email không đúng định dạng!' });
+        } 
+        else {
             setIsLoading(true);
             try {
                 const response = await sendMail(email);
@@ -116,7 +117,7 @@ const ForgotPassword: React.FC = () => {
                                 Nhập địa chỉ email của bạn để thiết lập lại mật khẩu.</Text>
                         </View>
                         <View style={{ flexDirection: 'column', justifyContent: 'space-between', paddingVertical: 15 }}></View>
-                        <InputLogin invalid={!valid.email} label="Email" value={valueF.email}
+                        <InputLogin errorMessage= {valid.email} invalid={!!valid.email} label="Email" value={valueF.email}
                             onchangText={onChangText.bind(this, 'email')}
                             iconE />
                     </View>

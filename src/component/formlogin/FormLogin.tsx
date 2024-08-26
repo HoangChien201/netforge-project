@@ -56,10 +56,10 @@ const FormLogin = ({ setModal, setStatus, setIsLoading }: { setModal: (value: bo
 
 
     if (!isValidEmail ) {
-      setValid({ email: isValidEmail ? null : 'Email không hợp lệ !', password:  'Mật khẩu không đúng !' });
+      setValid({ email: isValidEmail ? null : 'Email không hợp lệ!', password:  'Mật khẩu không đúng!' });
       return
     }else if ( !isValidPassword){
-      setValid({ email: 'Email không đúng !', password: isValidPassword ? null : 'Mật khẩu không được để trống !' });
+      setValid({ email: 'Email không đúng!', password: isValidPassword ? null : 'Mật khẩu không được để trống!' });
       return
     }else {
       setValid({ email: null, password: null });

@@ -54,7 +54,7 @@ const Form = ({ setModal }: { setModal: (values: boolean) => void }) => {
     const emailValid = emailPattern.test(email.trim());
 
     // Kiểm tra password không để trống
-    const passwordValid = password.trim().length > 0;
+    const passwordValid = password.trim().length > 6;
 
     // Kiểm tra password confirmation khớp
     const passwordConfirmValid = password === confirmpassword;
