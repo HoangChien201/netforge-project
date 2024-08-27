@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react'
-import { StyleSheet, Text, View, TouchableOpacity, Image, ScrollView, Pressable, Keyboard } from 'react-native'
+import { StyleSheet, Text, View, TouchableOpacity, Image, ScrollView, Pressable, Keyboard, RefreshControl } from 'react-native'
 import { useFocusEffect, useNavigation } from '@react-navigation/native'
 import { useRoute } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/Ionicons'
@@ -17,6 +17,7 @@ import DELETEPOST from '../component/listpost/DeletePostModal'
 import { RootState } from '../component/store/store';
 import SkelotonComment from '../component/formComments/SkelotonComment';
 import { socket } from '../http/SocketHandle';
+import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
 const CommentsScreen = () => {
     const navigation = useNavigation<navigationType>()
     const user = useSelector((state: RootState) => state.user.value)
@@ -73,6 +74,8 @@ const CommentsScreen = () => {
             setCreator(response.creater.id)
             fetchComments();
             setLoadData(false)
+
+
         } catch (error) {
             console.log('lỗi ở fetchPosts:', error);
         }
@@ -82,9 +85,11 @@ const CommentsScreen = () => {
         try {
             //goo
             const response: any = await getComments(postId);
-
+            
             setComments(response.reverse());
             setCommentCount(response.length);
+          setRefreshing(false);
+
         } catch (error) {
             console.log('lỗi ở fetchComments:', error);
         }
@@ -97,13 +102,7 @@ const CommentsScreen = () => {
     // // hàm render comments
     useEffect(() => {
         fetchPosts();
-        socket.on(`notification-${user?.id}`,()=>{
-            fetchPosts()
-        })
 
-        return ()=>{
-            socket.off(`notification-${user?.id}`)
-        }
     }, []);
     useEffect(() => {
         if (moveToHome == false) {
@@ -156,107 +155,121 @@ const CommentsScreen = () => {
 
     const isFinishFetchAPI = comment && post
 
+    const [refreshing, setRefreshing] = React.useState(false);
+    const onRefresh = React.useCallback( async () => {
+        setRefreshing(true);
+        fetchComments();
+
+    }, []);
 
     return (
+        <BottomSheetModalProvider>
 
-        <Pressable style={[styles.container]}>
-            <BODYMODAL
-                showModalEdit={showModalEdit}
-                setShowModalEdit={setShowModalEdit}
-                selectedId={selectedId}
-                setSelectedId={setSelectedId}
-                setLoadAfterUpdate={setLoadAfterUpdate}
+            <Pressable style={[styles.container]}>
+                <BODYMODAL
+                    showModalEdit={showModalEdit}
+                    setShowModalEdit={setShowModalEdit}
+                    selectedId={selectedId}
+                    setSelectedId={setSelectedId}
+                    setLoadAfterUpdate={setLoadAfterUpdate}
 
-            />
-            <DELETEPOST
-                showDelete={showDelete}
-                setShowDelete={setShowDelete}
-                postId={selectedId}
-                setSelectedId={setSelectedId}
-                setMoveToHome={setMoveToHome}
-                setLoadAfterUpdate={setLoadAfterUpdate}
-            />
-            <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center', position: 'relative', height: 50, backgroundColor: '#fff' }}>
-                <Pressable onPress={() => { navigation.goBack() }} style={{ position: 'absolute', left: 15 }}>
-                    <Icon name='arrow-back' size={28} color={'#000'} />
-                </Pressable>
-                <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', }}>
-                    <Text style={{ fontSize: 20, fontWeight: '700', color: '#000' }}>Bình Luận</Text>
-                </View>
-            </View>
-
-            {
-                !isFinishFetchAPI ?
-                    <SkelotonComment />
-                    :
-                    <View>
-                        <View style={{ height: "91%", backgroundColor: 'white' }}>
-
-                            <ScrollView ref={scrollViewRef} showsVerticalScrollIndicator={false}>
-                                {
-                                    post && (
-                                        <View style={{ margin: 0 }}>
-                                            <ItemPost key={post.id} data={post} setShowModalEdit={setShowModalEdit} setSelectedId={setSelectedId}
-                                                showDelete={showDelete} setShowDelete={setShowDelete} />
-                                        </View>
-                                    )
-                                }
-                                {
-                                    post.like_count && (
-                                        <TouchableOpacity onPress={() => setModalGetLikePostVisible(true)}>
-
-                                            <View style={styles.ViewPostLike}>
-                                                <Image style={{ width: 18, height: 18 }} source={require('../media/Dicons/thumb-up.png')} />
-                                                <Text style={{ marginStart: 4, fontSize: 16, fontWeight: '500', color: '#000' }}>{post.like_count}</Text>
-                                            </View>
-                                        </TouchableOpacity>
-                                    )
-                                }
-                                {comment.length < 1 ? (
-                                    <View style={styles.ViewNoComment}>
-                                        <View style={{ justifyContent: 'center', alignItems: 'center' }}>
-
-                                            <Image style={{ width: 150, height: 150, marginBottom: 20 }} source={require('../media/icon_tuong/chat.png')} />
-                                            <Text style={styles.textNoComment1}>Chưa có bình luận nào</Text>
-                                            <Text style={styles.textNoComment2}>Hãy là người đầu tiên bình luận.</Text>
-                                        </View>
-                                    </View>
-                                ) : (
-                                    comment.map(comment => (
-                                        <CommentItem key={comment.id} comment={comment} onReply={handleReply} render={fetchComments} parent={replyTo} setText={setText} setUserId={setCommentUserId} postId={postId} userPostId={post.creater} />
-                                    ))
-                                )
-                                }
-                            </ScrollView>
-                        </View>
-
-                        {
-                            modalGetLikePostVisible ? (
-                                <Modal_GetLikePosts
-                                    isVisible={modalGetLikePostVisible}
-                                    onClose={() => setModalGetLikePostVisible(false)}
-                                    postId={postId}
-                                    like={like}
-                                    setLike={setLike} />
-                            ) : (
-                                <InputCmt
-                                    userPostId={post.creater}
-                                    comment={commentUserId}
-                                    setText={setText}
-                                    text={text}
-                                    parent={replyTo} // Truyền ID bình luận cha khi trả lời
-                                    fetchComments={fetchComments}
-                                    onMediaSelected={handleMediaSelected} // Xử lý khi người dùng chọn hình ảnh hoặc video
-                                    postId={postId}
-                                    setParent={setReplyTo}
-                                    creator={creator}
-                                />
-                            )
-                        }
+                />
+                <DELETEPOST
+                    showDelete={showDelete}
+                    setShowDelete={setShowDelete}
+                    postId={selectedId}
+                    setSelectedId={setSelectedId}
+                    setMoveToHome={setMoveToHome}
+                    setLoadAfterUpdate={setLoadAfterUpdate}
+                />
+                <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center', position: 'relative', height: 50, backgroundColor: '#fff' }}>
+                    <Pressable onPress={() => { navigation.goBack() }} style={{ position: 'absolute', left: 15 }}>
+                        <Icon name='arrow-back' size={28} color={'#000'} />
+                    </Pressable>
+                    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', }}>
+                        <Text style={{ fontSize: 20, fontWeight: '700', color: '#000' }}>Bình Luận</Text>
                     </View>
-            }
+                </View>
 
-        </Pressable>
+                {
+                    !isFinishFetchAPI ?
+                        <SkelotonComment />
+                        :
+                        <View>
+                            <View style={{ height: "91%", backgroundColor: 'white' }}>
+
+                                <ScrollView 
+                                ref={scrollViewRef} 
+                                showsVerticalScrollIndicator={false} 
+                                refreshControl={
+                                <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
+                                >
+                                    {
+                                        post && (
+                                            <View style={{ margin: 0 }}>
+                                                <ItemPost key={post.id} data={post} setShowModalEdit={setShowModalEdit} setSelectedId={setSelectedId}
+                                                    showDelete={showDelete} setShowDelete={setShowDelete} />
+                                            </View>
+                                        )
+                                    }
+                                    {
+                                        post.like_count && (
+                                            <TouchableOpacity onPress={() => setModalGetLikePostVisible(true)}>
+
+                                                <View style={styles.ViewPostLike}>
+                                                    <Image style={{ width: 18, height: 18 }} source={require('../media/Dicons/thumb-up.png')} />
+                                                    <Text style={{ marginStart: 4, fontSize: 16, fontWeight: '500', color: '#000' }}>{post.like_count}</Text>
+                                                </View>
+                                            </TouchableOpacity>
+                                        )
+                                    }
+                                    {comment.length < 1 ? (
+                                        <View style={styles.ViewNoComment}>
+                                            <View style={{ justifyContent: 'center', alignItems: 'center' }}>
+
+                                                <Image style={{ width: 150, height: 150, marginBottom: 20 }} source={require('../media/icon_tuong/chat.png')} />
+                                                <Text style={styles.textNoComment1}>Chưa có bình luận nào</Text>
+                                                <Text style={styles.textNoComment2}>Hãy là người đầu tiên bình luận.</Text>
+                                            </View>
+                                        </View>
+                                    ) : (
+                                        comment.map(comment => (
+                                            <CommentItem key={comment.id} comment={comment} onReply={handleReply} render={fetchComments} parent={replyTo} setText={setText} setUserId={setCommentUserId} postId={postId} userPostId={post.creater} />
+                                        ))
+                                    )
+                                    }
+                                </ScrollView>
+                            </View>
+
+                            {
+                                modalGetLikePostVisible ? (
+                                    <Modal_GetLikePosts
+                                        isVisible={modalGetLikePostVisible}
+                                        onClose={() => setModalGetLikePostVisible(false)}
+                                        postId={postId}
+                                        like={like}
+                                        setLike={setLike} />
+                                ) : (
+                                    <InputCmt
+                                        userPostId={post.creater}
+                                        comment={commentUserId}
+                                        setText={setText}
+                                        text={text}
+                                        parent={replyTo} // Truyền ID bình luận cha khi trả lời
+                                        fetchComments={fetchComments}
+                                        onMediaSelected={handleMediaSelected} // Xử lý khi người dùng chọn hình ảnh hoặc video
+                                        postId={postId}
+                                        setParent={setReplyTo}
+                                        creator={creator}
+                                    />
+                                )
+                            }
+                        </View>
+                }
+
+            </Pressable>
+        </BottomSheetModalProvider>
+
     )
 }
 
@@ -287,7 +300,7 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
         height: 300,
-        marginBottom:10
+        marginBottom: 10
     },
     itemRecentContai: {
         backgroundColor: '#f2f2f2'

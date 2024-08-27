@@ -1,5 +1,5 @@
 import { Image, Pressable, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import React, { useState, useRef, memo, useLayoutEffect } from 'react';
+import React, { useState, useRef, memo, useLayoutEffect, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
 import AntDesignIcon from 'react-native-vector-icons/AntDesign';
@@ -9,6 +9,9 @@ import { reaction } from '../../constant/emoji';
 import { addLikeComments, deleteLikeComments, updateLikeComment } from '../../http/TuongHttp';
 import { RootState } from '../store/store';
 import { useSendNotification } from '../../constant/notify';
+import ListReactionComment from './ListReactionComment';
+import { socket } from '../../http/SocketHandle';
+import { getLikeCommentHTTP } from '../../http/ChienHTTP';
 
 const Reaction = memo(({ like_count, type, commentId, render,Cmt,postId,userPostId, checkReaction, setCheckReaction }: {setCheckReaction:(Value:boolean)=>void,checkReaction?:boolean,type: number, commentId?: number,like_count?:number }) => {
     const [islike, setIsLike] = useState(false);
@@ -18,6 +21,8 @@ const Reaction = memo(({ like_count, type, commentId, render,Cmt,postId,userPost
     const [number, setNumber] = useState<number | null>(type);
     const animationRef = useRef(null);
     const {sendNReactionComment} = useSendNotification()
+    const [reactions, setReactions] = useState<Array<number>>([])
+
     useLayoutEffect(() => {
         setNumber(type)
     }, [type])
@@ -37,13 +42,11 @@ const Reaction = memo(({ like_count, type, commentId, render,Cmt,postId,userPost
     const addLikeComment = async (commentId: number, type: number) => {
         try {
             const result = await addLikeComments(commentId, type);
+            getLikeComment()
             //postId1,commentId, body, receiver,reactionType
             if(userPostId.id != user.id){
                 sendNReactionComment({postId1: postId,commentId, body: Cmt.content, receiver:Cmt.user.id,reactionType:type})
             }
-            
-            console.log('Thêm like thành công');
-            console.log(result);
         } catch (error) {
             console.log("Lỗi khi addlike", error);
             throw error;
@@ -52,7 +55,8 @@ const Reaction = memo(({ like_count, type, commentId, render,Cmt,postId,userPost
     const updateLike = async (commentId: number, type: number) => {
         try {
             const result: any = await updateLikeComment(commentId, user?.id, type);
-
+            getLikeComment()
+            console.log('update like thành công');
         } catch (error) {
             console.log("Lỗi update like", error);
             throw error;
@@ -101,6 +105,27 @@ const Reaction = memo(({ like_count, type, commentId, render,Cmt,postId,userPost
         return null;
     };
 
+    //danh sách reaction comment
+    async function getLikeComment() {
+        try{
+            
+            const respone = await getLikeCommentHTTP(commentId)
+            if (!respone) return
+            const filterReaction = respone.map(item => item.reaction)
+            const reactions = [...new Set(filterReaction)]
+            setReactions(reactions)
+        }catch{
+
+        }
+
+    }
+    useEffect(() => {
+        getLikeComment()
+
+    }, [])
+    //danh sách reaction comment
+
+
     return (
         <View style={styles.container}>
             <View style={{ flexDirection: 'row', alignItems: 'center' }}>
@@ -121,7 +146,11 @@ const Reaction = memo(({ like_count, type, commentId, render,Cmt,postId,userPost
                             {ViewReaction(number, commentId)}
                         </View>
                     }
-                    <Text style={styles.text}>{numberLike === null ? 0 : numberLike}</Text>
+                    
+                    {/* reactions*/}
+                    <ListReactionComment comment={commentId} reactions={reactions}/>
+                        {/* reactions*/}
+                    <Text style={styles.text}>{numberLike !== null && numberLike}</Text>
                 </View>
 
 
@@ -179,4 +208,5 @@ const styles = StyleSheet.create({
     text: {
 
     },
+    
 });

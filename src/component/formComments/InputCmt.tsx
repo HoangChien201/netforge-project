@@ -9,13 +9,14 @@ import IconPhoto from 'react-native-vector-icons/Foundation'
 import IconSend from 'react-native-vector-icons/FontAwesome'
 
 import { addComments } from '../../http/TuongHttp'
-import {upLoadMedia} from '../../http/QuyetHTTP'
+import { upLoadMedia } from '../../http/QuyetHTTP'
 import { COLOR } from '../../constant/color'
 import { useSendNotification } from '../../constant/notify'
 import { result } from 'lodash'
 import { UIActivityIndicator } from 'react-native-indicators'
+import { socket } from '../../http/SocketHandle'
 
-const InputCmt = ({ fetchComments, onMediaSelected, parent = null, postId, text, setParent, setText, comment, userPostId , creator}) => {
+const InputCmt = ({ fetchComments, onMediaSelected, parent = null, postId, text, setParent, setText, comment, userPostId, creator }) => {
     const user = useSelector((state: RootState) => state.user.value)
     const [comments, setComments] = useState('')
     const [media, setMedia] = useState(null);
@@ -65,7 +66,7 @@ const InputCmt = ({ fetchComments, onMediaSelected, parent = null, postId, text,
         if (response.didCancel || response.errorCode || response.errorMessage) return;
         if (response.assets && response.assets.length > 0) {
             const asset = response.assets[0];
-          
+
             setMediaType(asset.type.split('/')[0]);
 
 
@@ -77,9 +78,9 @@ const InputCmt = ({ fetchComments, onMediaSelected, parent = null, postId, text,
                 type: asset.type,
                 name: asset.fileName,
             });
-            console.log("hehe",asset.uri);
+            console.log("hehe", asset.uri);
             setMedia(asset.uri)
-            
+
             try {
                 const result = await upLoadMedia(files);
                 console.log('>>>>>upload image: ', result[0]);
@@ -125,7 +126,7 @@ const InputCmt = ({ fetchComments, onMediaSelected, parent = null, postId, text,
                         //postId1, body,commentId, receiver 
                         sendNRepComment({ postId1: postId, body: comments, commentId: reponse.id, receiver: comment })
                     } else {
-                        //postId1, body, receiver
+                        // //postId1, body, receiver
                         if (creator != user?.id) {
                             sendNCommentPost({ postId: postId, body: comments, receiver: creator })
                         }
@@ -176,20 +177,20 @@ const InputCmt = ({ fetchComments, onMediaSelected, parent = null, postId, text,
                     </TouchableOpacity>
 
                 </View>
-            ): media && (
+            ) : media && (
                 <View style={styles.mediaContainer}>
-                <View style={styles.media}>
-                    {/* <ActivityIndicator size="large" color={COLOR.PrimaryColor} /> */}
-                    <UIActivityIndicator color={'#FA2600'} size={20} />
-                </View>
-                <TouchableOpacity onPress={handleDleteMedia} style={{ marginStart: -5, marginTop: 5 }}>
-                    <Icon name='x-circle' size={25} color={COLOR.PrimaryColor} />
-                </TouchableOpacity>
+                    <View style={styles.media}>
+                        {/* <ActivityIndicator size="large" color={COLOR.PrimaryColor} /> */}
+                        <UIActivityIndicator color={'#FA2600'} size={20} />
+                    </View>
+                    <TouchableOpacity onPress={handleDleteMedia} style={{ marginStart: -5, marginTop: 5 }}>
+                        <Icon name='x-circle' size={25} color={COLOR.PrimaryColor} />
+                    </TouchableOpacity>
 
-            </View>
+                </View>
             )}
-           
-          
+
+
 
 
             <View >
@@ -318,7 +319,7 @@ const styles = StyleSheet.create({
         justifyContent: 'space-between',
         width: '100%',
         height: 70,
-        paddingBottom:10,
+        paddingBottom: 10,
         flexDirection: 'row',
         alignItems: 'center',
 

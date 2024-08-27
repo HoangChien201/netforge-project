@@ -3,6 +3,7 @@ import { GroupChatType } from "../component/message/ListMessageItem";
 import { messageType, reactionType } from "../component/message/MessageItem";
 import AxiosInstance from "./AxiosInstance";
 import { Message } from "../component/message/class/MessageProvider";
+import { reactionComment } from "../component/formComments/ListReactionComment";
 
 export type MessageCreateRes = {
   msg: {
@@ -130,6 +131,17 @@ export const checkStatusOnline = async (user_id: number) => {
   try {
     const url = '/user/check-online/' + user_id;
     const respone = await AxiosInstance().get(url)
+    return respone
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+}
+
+export const getLikeCommentHTTP = async (comment: number) => {
+  try {
+    const url = '/like-comment/get-by-comment/' + comment;
+    const respone:Array<reactionComment> = await AxiosInstance().get(url)
     return respone
   } catch (error) {
     console.log(error);
