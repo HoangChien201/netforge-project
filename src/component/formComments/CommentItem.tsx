@@ -16,6 +16,8 @@ import { RootState } from '../store/store';
 import FastImage from 'react-native-fast-image';
 import ICON from 'react-native-vector-icons/Entypo'
 import { COLOR } from '../../constant/color';
+import ListReactionComment from './ListReactionComment';
+import { getLikeCommentHTTP } from '../../http/ChienHTTP';
 
 const CommentItem = ({ comment, onReply, depth = 0, render, parent, setText, setUserId, postId, userPostId }) => {
     const user = useSelector((state: RootState) => state.user.value)
@@ -143,6 +145,8 @@ const CommentItem = ({ comment, onReply, depth = 0, render, parent, setText, set
         setCheckLike(false)
 
     }
+
+
     return (
         <Pressable onPress={handleCheck} style={[
             styles.commentContainer,
@@ -172,11 +176,11 @@ const CommentItem = ({ comment, onReply, depth = 0, render, parent, setText, set
                                 </Pressable>
                             </View>
 
-                            <View style={{ marginTop: 5,marginStart:20, bottom: comment.image && !comment.content && 10, marginBottom: comment.image && !comment.content && -10, right: 15 }}>
+                            <View style={{ marginTop: 5, marginStart: 20, bottom: comment.image && !comment.content && 10, marginBottom: comment.image && !comment.content && -10, right: 15 }}>
 
                                 {comment.image ? (
                                     comment.image.endsWith('.mp4') ? (
-                                        <Pressable style={{ width: 100, height: 150, alignItems:'center', justifyContent:'center'}} onPress={() => handleImagePress(comment.image)} onLongPress={() => handleCommentPress()}>
+                                        <Pressable style={{ width: 100, height: 150, alignItems: 'center', justifyContent: 'center' }} onPress={() => handleImagePress(comment.image)} onLongPress={() => handleCommentPress()}>
                                             {/* <Video source={{ uri: comment.image }} style={styles.media} resizeMode='cover' /> */}
                                             <FastImage
                                                 style={styles.media}
@@ -186,7 +190,7 @@ const CommentItem = ({ comment, onReply, depth = 0, render, parent, setText, set
                                                 }}
                                                 resizeMode={FastImage.resizeMode.cover}
                                             />
-                                            <ICON name='controller-play' color={COLOR.PrimaryColor1} size={22} style={{position:'absolute', padding:5, backgroundColor:'gray', borderRadius:5}}/>
+                                            <ICON name='controller-play' color={COLOR.PrimaryColor1} size={22} style={{ position: 'absolute', padding: 5, backgroundColor: 'gray', borderRadius: 5 }} />
                                         </Pressable>
 
                                     ) : (
@@ -213,6 +217,7 @@ const CommentItem = ({ comment, onReply, depth = 0, render, parent, setText, set
                         <Text style={{ fontWeight: 'bold', fontSize: 14, color: 'black', marginLeft: 5 }}>᛫</Text>
                         <Reaction like_count={comment.like_count} type={comment.reaction}
                             commentId={comment.id} checkReaction={checkLike} setCheckReaction={setCheckLike} render={render} Cmt={comment} postId={postId} userPostId={userPostId} />
+
 
                     </View>
                 </View>

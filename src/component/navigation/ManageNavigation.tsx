@@ -142,8 +142,11 @@ const ManageNavigation = () => {
                     console.log('Nhận thông báo sau check: ', data);
                 }
             });
+            
+            return ()=>{
+                socket.off(`notification-${user?.id}`)
+            }
         }
-
     }, [user]);
 
     const addNotification = async (newNotification:any) => {
