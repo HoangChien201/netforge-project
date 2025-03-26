@@ -18,8 +18,8 @@ NetForge is a modern social networking application designed to connect people se
 ### Setup Guide
 1. **Clone the repository**
    ```
-   git clone https://github.com/yourusername/NetForge.git
-   cd NetForge
+   git clone https://github.com/HoangChien201/netforge-project/
+   cd netforge-project
    ```
 2. **Install dependencies**
    ```
