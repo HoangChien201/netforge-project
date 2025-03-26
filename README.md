@@ -22,30 +22,32 @@ NetForge is a modern social networking application designed to connect people se
    cd NetForge
    ```
 2. **Install dependencies**
-``` npm install ```
-3. **Set up Firebase**
+   ```
+   npm install
+   ```
+4. **Set up Firebase**
    - Add ```google-serivces.json```(Android) and ```GoogleService-Info.plist```(IOS) to the project
    - Configure Firebase Authentication & Firestore
-4. **Run the app**
- - ##### For Android
-
-```bash
-# using npm
-npm run android
-
-# OR using Yarn
-yarn android
-```
-
-- ##### For iOS
-
-```bash
-# using npm
-npm run ios
-
-# OR using Yarn
-yarn ios
-```
+5. **Run the app**
+    - ##### For Android
+   
+   ```bash
+   # using npm
+   npm run android
+   
+   # OR using Yarn
+   yarn android
+   ```
+   
+   - ##### For iOS
+   
+   ```bash
+   # using npm
+   npm run ios
+   
+   # OR using Yarn
+   yarn ios
+   ```
 
 If everything is set up _correctly_, you should see your new app running in your _Android Emulator_ or _iOS Simulator_ shortly provided you have set up your emulator/simulator correctly.
 
